@@ -1,17 +1,18 @@
-"use client"
+"use client";
 
 import {
   BarChart3,
   Bot,
   Calendar,
   CreditCard,
+  Frame,
   Package,
   ShoppingCart,
   Store,
   Truck,
   Users,
   Warehouse,
-} from "lucide-react"
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -24,8 +25,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar"
-import Link from "next/link"
+} from "@/components/ui/sidebar";
+import Link from "next/link";
 
 const data = {
   navMain: [
@@ -100,15 +101,17 @@ const data = {
       ],
     },
   ],
-}
+};
 
 export function AppSidebar() {
   return (
-    <Sidebar collapsible="icon" className="bg-background">
+    <Sidebar collapsible="icon">
       <SidebarHeader>
-        <div className="flex items-center gap-2 px-4 py-2">
-          <Warehouse className="h-6 w-6" />
-          <span className="font-semibold text-lg">Inventory Pro</span>
+        <div className="flex items-center gap-2 p-2">
+          <div className="p-1 round bg-primary text-primary-foreground">
+            <Frame className="size-3" />
+          </div>
+          <span className="font-semibold text-base">Quantra</span>
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -139,5 +142,5 @@ export function AppSidebar() {
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

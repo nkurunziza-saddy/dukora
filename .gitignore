@@ -42,3 +42,4 @@ next-env.d.ts
 
 # specific files
 todo.md
+test.ts
