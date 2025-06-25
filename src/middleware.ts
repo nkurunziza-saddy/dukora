@@ -1,8 +1,67 @@
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
+import { NextRequest, NextResponse } from "next/server";
+import * as routes from "@/utils/routes";
+import { getSessionCookie } from "better-auth/cookies";
 
-export default createMiddleware(routing);
+const intlMiddleware = createMiddleware(routing);
+
+const locales = routing.locales;
+
+function getPathWithoutLocale(pathname: string, locales: string[]) {
+  const parts = pathname.split("/");
+  if (parts.length > 1 && locales.includes(parts[1])) {
+    return "/" + parts.slice(2).join("/");
+  }
+  return pathname;
+}
+
+export async function middleware(req: NextRequest) {
+  const intlResponse = intlMiddleware(req);
+  if (intlResponse) {
+    return intlResponse;
+  }
+
+  const sessionCookie = getSessionCookie(req);
+  const isLoggedIn = !!sessionCookie;
+
+  const { nextUrl } = req;
+  const pathname = nextUrl.pathname;
+
+  const pathWithoutLocale = getPathWithoutLocale(pathname, locales);
+
+  if (isApiAuthRoute(pathname)) {
+    return NextResponse.next();
+  }
+
+  if (isAuthRoute(pathWithoutLocale)) {
+    if (isLoggedIn) {
+      return NextResponse.redirect(
+        new URL(routes.DEFAULT_AUTH_REDIRECT, nextUrl)
+      );
+    }
+    return NextResponse.next();
+  }
+
+  if (!isLoggedIn && !isPublicRoute(pathWithoutLocale)) {
+    return NextResponse.redirect(new URL(routes.authRoutes[0], nextUrl));
+  }
+
+  return NextResponse.next();
+}
+
+function isApiAuthRoute(pathname: string) {
+  return pathname.startsWith(routes.apiAuthPrefix);
+}
+
+function isPublicRoute(pathname: string) {
+  return routes.publicRoutes.includes(pathname);
+}
+
+function isAuthRoute(pathname: string) {
+  return routes.authRoutes.includes(pathname);
+}
 
 export const config = {
-  matcher: "/((?!api|trpc|_next|_vercel|.*\\..*).*)",
+  matcher: ["/((?!api|_next|.*\\..*).*)"],
 };

@@ -27,12 +27,14 @@ import {
 
 import { DataTablePagination } from "./data-table-pagination";
 import { DefaultDataTableToolbar } from "@/components/table/data-table-toolbar";
-import { BooksDataTableToolbar } from "./products-data-table-toolbar";
+import { ProductsDataTableToolbar } from "./products-data-table-toolbar";
+import { SuppliersDataTableToolbar } from "./suppliers-data-table-toolbar";
+import { TransactionsDataTableToolbar } from "@/components/table/transactions-data-table-toolbar";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  tag?: "books" | "students" | "lending";
+  tag?: "products" | "suppliers" | "transactions";
 }
 
 export function DataTable<TData, TValue>({
@@ -77,12 +79,12 @@ export function DataTable<TData, TValue>({
 
   function renderToolbar() {
     switch (tag) {
-      case "books":
-        return <BooksDataTableToolbar table={table} />;
-      case "students":
-        return <StudentsDataTableToolbar table={table} />;
-      case "lending":
-        return <LendingsDataTableToolbar table={table} />;
+      case "products":
+        return <ProductsDataTableToolbar table={table} />;
+      case "suppliers":
+        return <SuppliersDataTableToolbar table={table} />;
+      case "transactions":
+        return <TransactionsDataTableToolbar table={table} />;
       default:
         return <DefaultDataTableToolbar table={table} />;
     }

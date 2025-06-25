@@ -11,3 +11,5 @@ export function formatKeys(key: string) {
     .replace(/([a-z])([A-Z])/g, "$1 $2")
     .replace(/^./, (str) => str.toUpperCase());
 }
+
+export const fetcher = (url: string) => fetch(url).then((res) => res.json());

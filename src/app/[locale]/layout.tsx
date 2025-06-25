@@ -24,8 +24,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Inventory Pro - Dashboard",
-  description: "Comprehensive inventory management dashboard with AI insights",
+  title: "quantra",
+  description: "inventory",
 };
 
 export default async function RootLayout({
@@ -55,7 +55,6 @@ export default async function RootLayout({
             <ClientBody>
               <SidebarContainer>
                 {children}
-
                 <Toaster />
               </SidebarContainer>
             </ClientBody>

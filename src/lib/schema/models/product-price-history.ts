@@ -7,8 +7,8 @@ import {
   check,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
-import { productTable } from "./product";
-import { businessUserTable } from "./business-user";
+import { productsTable } from "./products";
+import { usersTable } from "./users";
 
 export const productPriceHistoryTable = pgTable(
   "product_price_history",
@@ -16,7 +16,7 @@ export const productPriceHistoryTable = pgTable(
     id: text("id").primaryKey().notNull(),
     productId: text("product_id")
       .notNull()
-      .references(() => productTable.id, { onDelete: "cascade" }),
+      .references(() => productsTable.id, { onDelete: "cascade" }),
     price: numeric("price", { precision: 10, scale: 2 }).notNull(),
     costPrice: numeric("cost_price", { precision: 10, scale: 2 }).notNull(),
     effectiveFrom: timestamp("effective_from", { withTimezone: true })
@@ -24,7 +24,7 @@ export const productPriceHistoryTable = pgTable(
       .defaultNow(),
     createdBy: text("created_by")
       .notNull()
-      .references(() => businessUserTable.id),
+      .references(() => usersTable.id),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),

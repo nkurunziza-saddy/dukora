@@ -1,52 +1,48 @@
 import { NextRequest, NextResponse } from "next/server";
-import * as booksService from "@/server/books";
+import * as productService from "@/server/actions/product-actions";
 
 export async function GET() {
   try {
-    const books = await booksService.getBooks();
-    return Response.json(books);
+    const products = await productService.getProducts();
+    return NextResponse.json(products.data);
   } catch (error) {
     console.error(error);
-    return new Response("Failed to get books", { status: 500 });
+    return NextResponse.json("Failed to get products", { status: 500 });
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const book = await request.json();
-    const newBook = await booksService.createBook(book);
-    return Response.json(newBook);
+    const product = await request.json();
+    const newProduct = await productService.createProduct(product);
+    return NextResponse.json(newProduct);
   } catch (error) {
     console.error(error);
-    return new Response("Failed to create book", { status: 500 });
+    return NextResponse.json("Failed to create product", { status: 500 });
   }
 }
 
 export async function PUT(request: NextRequest) {
   try {
-    const { id, status } = await request.json();
-    const updatedBook = await booksService.updateBookStatus(id, status);
-    return Response.json(updatedBook);
+    const { product, productId } = await request.json();
+    const updatedProduct = await productService.updateProduct(
+      productId,
+      product
+    );
+    return NextResponse.json(updatedProduct);
   } catch (error) {
     console.error(error);
-    return new Response("Failed to update book", { status: 500 });
+    return NextResponse.json("Failed to update product", { status: 500 });
   }
 }
 
 export async function DELETE(request: NextRequest) {
   try {
     const { id } = await request.json();
-    if (!id) {
-      return NextResponse.json(
-        { message: "Book ID is required" },
-        { status: 400 }
-      );
-    }
-    const r = await booksService.deleteBook(id);
-    if (r.status === 204) return new Response(undefined, { status: r.status });
-    return NextResponse.json(r.msg, { status: r.status });
+    const r = await productService.deleteProduct(id);
+    return NextResponse.json(r);
   } catch (error) {
-    console.error("Error deleting book:", error);
-    return NextResponse.json("Failed to delete book", { status: 500 });
+    console.error("Error deleting product:", error);
+    return NextResponse.json("Failed to delete product", { status: 500 });
   }
 }

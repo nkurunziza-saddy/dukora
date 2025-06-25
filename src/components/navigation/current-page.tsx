@@ -1,5 +1,5 @@
 "use client";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { usePathname } from "next/navigation";
 
 import {
@@ -18,7 +18,6 @@ export function CurrentPage() {
 
   const generateBreadcrumbs = () => {
     const segments = pathname.split("/").filter(Boolean);
-    console.log(segments);
     return segments.slice(1).map((segment, index) => {
       const href = "/" + segments.slice(0, index + 1).join("/");
       const formattedSegment =

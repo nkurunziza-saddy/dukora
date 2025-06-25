@@ -1,128 +1,130 @@
 import { relations } from "drizzle-orm";
 import {
-  businessTable,
-  businessUserTable,
-  categoryTable,
-  productTable,
-  warehouseTable,
+  businessesTable,
+  usersTable,
+  categoriesTable,
+  productsTable,
+  warehousesTable,
   businessSettingsTable,
-  productSupplierTable,
-  profitReportTable,
-  metricTable,
-  auditLogTable,
-  transactionTable,
-  businessUserSettingsTable,
-  supplierTable,
-  productVariantTable,
-  salesOrderTable,
-  purchaseOrderTable,
-  productAttributeTable,
-  productAttributeValueTable,
-  productTagTable,
-  productProductTagTable,
-  warehouseItemTable,
+  productSuppliersTable,
+  profitReportsTable,
+  metricsTable,
+  auditLogsTable,
+  transactionsTable,
+  userSettingsTable,
+  suppliersTable,
+  productVariantsTable,
+  saleOrdersTable,
+  purchaseOrdersTable,
+  productAttributesTable,
+  productAttributeValuesTable,
+  productTagsTable,
+  productProductTagsTable,
+  warehouseItemsTable,
   productPriceHistoryTable,
 } from "./models";
 
-export const businessTableRelations = relations(businessTable, ({ many }) => ({
-  businessUsers: many(businessUserTable),
-  productSuppliers: many(productSupplierTable),
-  products: many(productTable),
-  warehouses: many(warehouseTable),
-  categories: many(categoryTable),
-  businessSettings: many(businessSettingsTable),
-  salesOrders: many(salesOrderTable),
-  purchaseOrders: many(purchaseOrderTable),
-  profitReports: many(profitReportTable),
-  metrics: many(metricTable),
-  auditLogs: many(auditLogTable),
-  transactions: many(transactionTable),
+export const businessesTableRelations = relations(
+  businessesTable,
+  ({ many }) => ({
+    businessUsers: many(usersTable),
+    productSuppliers: many(productSuppliersTable),
+    products: many(productsTable),
+    warehouses: many(warehousesTable),
+    categories: many(categoriesTable),
+    businessSettings: many(businessSettingsTable),
+    salesOrders: many(saleOrdersTable),
+    purchaseOrders: many(purchaseOrdersTable),
+    profitReports: many(profitReportsTable),
+    metrics: many(metricsTable),
+    auditLogs: many(auditLogsTable),
+    transactions: many(transactionsTable),
+  })
+);
+
+export const usersTableRelations = relations(usersTable, ({ one, many }) => ({
+  business: one(businessesTable, {
+    fields: [usersTable.businessId],
+    references: [businessesTable.id],
+  }),
+  businessUserSettings: many(userSettingsTable),
+  auditLogs: many(auditLogsTable),
 }));
 
-export const businessUserTableRelations = relations(
-  businessUserTable,
+export const categoriesTableRelations = relations(
+  categoriesTable,
   ({ one, many }) => ({
-    business: one(businessTable, {
-      fields: [businessUserTable.businessId],
-      references: [businessTable.id],
+    business: one(businessesTable, {
+      fields: [categoriesTable.businessId],
+      references: [businessesTable.id],
     }),
-    businessUserSettings: many(businessUserSettingsTable),
-    auditLogs: many(auditLogTable),
+    parent: one(categoriesTable, {
+      fields: [categoriesTable.parentId],
+      references: [categoriesTable.id],
+    }),
+    products: many(productsTable),
   })
 );
 
-export const categoryTableRelations = relations(
-  categoryTable,
+export const productsTableRelations = relations(
+  productsTable,
   ({ one, many }) => ({
-    business: one(businessTable, {
-      fields: [categoryTable.businessId],
-      references: [businessTable.id],
+    business: one(businessesTable, {
+      fields: [productsTable.businessId],
+      references: [businessesTable.id],
     }),
-    parent: one(categoryTable, {
-      fields: [categoryTable.parentId],
-      references: [categoryTable.id],
+    category: one(categoriesTable, {
+      fields: [productsTable.categoryId],
+      references: [categoriesTable.id],
     }),
-    products: many(productTable),
-  })
-);
-
-export const productTableRelations = relations(
-  productTable,
-  ({ one, many }) => ({
-    business: one(businessTable, {
-      fields: [productTable.businessId],
-      references: [businessTable.id],
-    }),
-    category: one(categoryTable, {
-      fields: [productTable.categoryId],
-      references: [categoryTable.id],
-    }),
-    productSuppliers: many(productSupplierTable),
-    productVariants: many(productVariantTable),
-    transactions: many(transactionTable),
+    productSuppliers: many(productSuppliersTable),
+    productVariants: many(productVariantsTable),
+    transactions: many(transactionsTable),
     productPriceHistory: many(productPriceHistoryTable),
+    warehouseItems: many(warehouseItemsTable),
   })
 );
 
-export const warehouseTableRelations = relations(
-  warehouseTable,
+export const warehousesTableRelations = relations(
+  warehousesTable,
   ({ one, many }) => ({
-    business: one(businessTable, {
-      fields: [warehouseTable.businessId],
-      references: [businessTable.id],
+    business: one(businessesTable, {
+      fields: [warehousesTable.businessId],
+      references: [businessesTable.id],
     }),
-    transactions: many(transactionTable),
+    transactions: many(transactionsTable),
+    warehouseItems: many(warehouseItemsTable),
   })
 );
 
-export const productVariantTableRelations = relations(
-  productVariantTable,
+export const productVariantsTableRelations = relations(
+  productVariantsTable,
   ({ one }) => ({
-    product: one(productTable, {
-      fields: [productVariantTable.productId],
-      references: [productTable.id],
+    product: one(productsTable, {
+      fields: [productVariantsTable.productId],
+      references: [productsTable.id],
     }),
-    attributeValue: one(productAttributeValueTable, {
-      fields: [productVariantTable.attributeValueId],
-      references: [productAttributeValueTable.id],
+    attributeValue: one(productAttributeValuesTable, {
+      fields: [productVariantsTable.attributeValueId],
+      references: [productAttributeValuesTable.id],
     }),
   })
 );
 
-export const productSupplierTableRelations = relations(
-  productSupplierTable,
+export const productSuppliersTableRelations = relations(
+  productSuppliersTable,
   ({ one }) => ({
-    product: one(productTable, {
-      fields: [productSupplierTable.productId],
-      references: [productTable.id],
+    product: one(productsTable, {
+      fields: [productSuppliersTable.productId],
+      references: [productsTable.id],
     }),
-    supplier: one(supplierTable, {
-      fields: [productSupplierTable.supplierId],
-      references: [supplierTable.id],
+    supplier: one(suppliersTable, {
+      fields: [productSuppliersTable.supplierId],
+      references: [suppliersTable.id],
     }),
-    business: one(businessTable, {
-      fields: [productSupplierTable.businessId],
-      references: [businessTable.id],
+    business: one(businessesTable, {
+      fields: [productSuppliersTable.businessId],
+      references: [businessesTable.id],
     }),
   })
 );
@@ -130,19 +132,19 @@ export const productSupplierTableRelations = relations(
 export const businessSettingsTableRelations = relations(
   businessSettingsTable,
   ({ one }) => ({
-    business: one(businessTable, {
+    business: one(businessesTable, {
       fields: [businessSettingsTable.businessId],
-      references: [businessTable.id],
+      references: [businessesTable.id],
     }),
   })
 );
 
-export const businessUserSettingsTableRelations = relations(
-  businessUserSettingsTable,
+export const userSettingsTableRelations = relations(
+  userSettingsTable,
   ({ one }) => ({
-    businessUser: one(businessUserTable, {
-      fields: [businessUserSettingsTable.businessUserId],
-      references: [businessUserTable.id],
+    businessUser: one(usersTable, {
+      fields: [userSettingsTable.businessUserId],
+      references: [usersTable.id],
     }),
   })
 );
@@ -150,160 +152,167 @@ export const businessUserSettingsTableRelations = relations(
 export const productPriceHistoryTableRelations = relations(
   productPriceHistoryTable,
   ({ one }) => ({
-    product: one(businessTable, {
+    product: one(businessesTable, {
       fields: [productPriceHistoryTable.productId],
-      references: [businessTable.id],
+      references: [businessesTable.id],
     }),
-    createdBy: one(businessUserTable, {
+    createdBy: one(usersTable, {
       fields: [productPriceHistoryTable.createdBy],
-      references: [businessUserTable.id],
+      references: [usersTable.id],
     }),
   })
 );
 
-export const profitReportTableRelations = relations(
-  profitReportTable,
+export const profitReportsTableRelations = relations(
+  profitReportsTable,
   ({ one }) => ({
-    business: one(businessTable, {
-      fields: [profitReportTable.businessId],
-      references: [businessTable.id],
+    business: one(businessesTable, {
+      fields: [profitReportsTable.businessId],
+      references: [businessesTable.id],
     }),
   })
 );
 
-export const salesOrderTableRelations = relations(
-  salesOrderTable,
+export const saleOrdersTableRelations = relations(
+  saleOrdersTable,
   ({ one }) => ({
-    business: one(businessTable, {
-      fields: [salesOrderTable.businessId],
-      references: [businessTable.id],
+    business: one(businessesTable, {
+      fields: [saleOrdersTable.businessId],
+      references: [businessesTable.id],
     }),
-    createdBy: one(businessUserTable, {
-      fields: [salesOrderTable.createdBy],
-      references: [businessUserTable.id],
+    createdBy: one(usersTable, {
+      fields: [saleOrdersTable.createdBy],
+      references: [usersTable.id],
     }),
   })
 );
 
-export const purchaseOrderTableRelations = relations(
-  purchaseOrderTable,
+export const purchaseOrdersTableRelations = relations(
+  purchaseOrdersTable,
   ({ one }) => ({
-    business: one(businessTable, {
-      fields: [purchaseOrderTable.businessId],
-      references: [businessTable.id],
+    business: one(businessesTable, {
+      fields: [purchaseOrdersTable.businessId],
+      references: [businessesTable.id],
     }),
-    suppliedBy: one(supplierTable, {
-      fields: [purchaseOrderTable.supplierId],
-      references: [supplierTable.id],
+    suppliedBy: one(suppliersTable, {
+      fields: [purchaseOrdersTable.supplierId],
+      references: [suppliersTable.id],
     }),
   })
 );
 
-export const metricTableRelations = relations(metricTable, ({ one }) => ({
-  business: one(businessTable, {
-    fields: [metricTable.businessId],
-    references: [businessTable.id],
+export const metricsTableRelations = relations(metricsTable, ({ one }) => ({
+  business: one(businessesTable, {
+    fields: [metricsTable.businessId],
+    references: [businessesTable.id],
   }),
 }));
 
-export const auditLogTableRelations = relations(auditLogTable, ({ one }) => ({
-  business: one(businessTable, {
-    fields: [auditLogTable.businessId],
-    references: [businessTable.id],
+export const auditLogsTableRelations = relations(auditLogsTable, ({ one }) => ({
+  business: one(businessesTable, {
+    fields: [auditLogsTable.businessId],
+    references: [businessesTable.id],
   }),
-  performedBy: one(businessUserTable, {
-    fields: [auditLogTable.performedBy],
-    references: [businessUserTable.id],
-  }),
-}));
-
-export const transactionsRelations = relations(transactionTable, ({ one }) => ({
-  product: one(productTable, {
-    fields: [transactionTable.productId],
-    references: [productTable.id],
-  }),
-  warehouse: one(warehouseTable, {
-    fields: [transactionTable.warehouseId],
-    references: [warehouseTable.id],
-  }),
-  business: one(businessTable, {
-    fields: [transactionTable.businessId],
-    references: [businessTable.id],
-  }),
-  createdBy: one(businessUserTable, {
-    fields: [transactionTable.createdBy],
-    references: [businessUserTable.id],
+  performedBy: one(usersTable, {
+    fields: [auditLogsTable.performedBy],
+    references: [usersTable.id],
   }),
 }));
 
-export const productAttributeTableRelations = relations(
-  productAttributeTable,
-  ({ one, many }) => ({
-    business: one(businessTable, {
-      fields: [productAttributeTable.businessId],
-      references: [businessTable.id],
-    }),
-    values: many(productAttributeValueTable),
-  })
-);
-
-export const productAttributeValueTableRelations = relations(
-  productAttributeValueTable,
-  ({ one, many }) => ({
-    attribute: one(productAttributeTable, {
-      fields: [productAttributeValueTable.attributeId],
-      references: [productAttributeTable.id],
-    }),
-    productVariants: many(productVariantTable),
-  })
-);
-
-export const productTagTableRelations = relations(
-  productTagTable,
-  ({ one, many }) => ({
-    business: one(businessTable, {
-      fields: [productTagTable.businessId],
-      references: [businessTable.id],
-    }),
-    productProductTags: many(productProductTagTable),
-  })
-);
-
-export const productProductTagTableRelations = relations(
-  productProductTagTable,
+export const transactionsRelations = relations(
+  transactionsTable,
   ({ one }) => ({
-    product: one(productTable, {
-      fields: [productProductTagTable.productId],
-      references: [productTable.id],
+    product: one(productsTable, {
+      fields: [transactionsTable.productId],
+      references: [productsTable.id],
     }),
-    tag: one(productTagTable, {
-      fields: [productProductTagTable.tagId],
-      references: [productTagTable.id],
+    warehouse: one(warehousesTable, {
+      fields: [transactionsTable.warehouseId],
+      references: [warehousesTable.id],
     }),
-  })
-);
-
-export const warehouseItemTableRelations = relations(
-  warehouseItemTable,
-  ({ one }) => ({
-    product: one(productTable, {
-      fields: [warehouseItemTable.productId],
-      references: [productTable.id],
+    warehouseItem: one(warehouseItemsTable, {
+      fields: [transactionsTable.warehouseItemId],
+      references: [warehouseItemsTable.id],
     }),
-    warehouse: one(warehouseTable, {
-      fields: [warehouseItemTable.warehouseId],
-      references: [warehouseTable.id],
+    business: one(businessesTable, {
+      fields: [transactionsTable.businessId],
+      references: [businessesTable.id],
+    }),
+    createdByUser: one(usersTable, {
+      fields: [transactionsTable.createdBy],
+      references: [usersTable.id],
     }),
   })
 );
 
-export const supplierTableRelations = relations(
-  supplierTable,
+export const productAttributesTableRelations = relations(
+  productAttributesTable,
   ({ one, many }) => ({
-    business: one(businessTable, {
-      fields: [supplierTable.businessId],
-      references: [businessTable.id],
+    business: one(businessesTable, {
+      fields: [productAttributesTable.businessId],
+      references: [businessesTable.id],
     }),
-    productSuppliers: many(productSupplierTable),
+    values: many(productAttributeValuesTable),
+  })
+);
+
+export const productAttributeValuesTableRelations = relations(
+  productAttributeValuesTable,
+  ({ one, many }) => ({
+    attribute: one(productAttributesTable, {
+      fields: [productAttributeValuesTable.attributeId],
+      references: [productAttributesTable.id],
+    }),
+    productVariants: many(productVariantsTable),
+  })
+);
+
+export const productTagsTableRelations = relations(
+  productTagsTable,
+  ({ one, many }) => ({
+    business: one(businessesTable, {
+      fields: [productTagsTable.businessId],
+      references: [businessesTable.id],
+    }),
+    productProductTags: many(productProductTagsTable),
+  })
+);
+
+export const productProductTagsTableRelations = relations(
+  productProductTagsTable,
+  ({ one }) => ({
+    product: one(productsTable, {
+      fields: [productProductTagsTable.productId],
+      references: [productsTable.id],
+    }),
+    tag: one(productTagsTable, {
+      fields: [productProductTagsTable.tagId],
+      references: [productTagsTable.id],
+    }),
+  })
+);
+
+export const warehouseItemsTableRelations = relations(
+  warehouseItemsTable,
+  ({ one }) => ({
+    product: one(productsTable, {
+      fields: [warehouseItemsTable.productId],
+      references: [productsTable.id],
+    }),
+    warehouse: one(warehousesTable, {
+      fields: [warehouseItemsTable.warehouseId],
+      references: [warehousesTable.id],
+    }),
+  })
+);
+
+export const suppliersTableRelations = relations(
+  suppliersTable,
+  ({ one, many }) => ({
+    business: one(businessesTable, {
+      fields: [suppliersTable.businessId],
+      references: [businessesTable.id],
+    }),
+    productSuppliers: many(productSuppliersTable),
   })
 );

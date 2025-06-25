@@ -1,6 +1,3 @@
-// server/core/permissions/permissions.ts
-
-// Define all possible permissions in the system
 export enum Permission {
   // Business permissions
   BUSINESS_VIEW = "business:view",
@@ -42,6 +39,12 @@ export enum Permission {
   WAREHOUSE_CREATE = "warehouse:create",
   WAREHOUSE_UPDATE = "warehouse:update",
   WAREHOUSE_DELETE = "warehouse:delete",
+
+  // Warehouse permissions
+  WAREHOUSE_ITEM_VIEW = "warehouse:item:view",
+  WAREHOUSE_ITEM_CREATE = "warehouse:item:create",
+  WAREHOUSE_ITEM_UPDATE = "warehouse:item:update",
+  WAREHOUSE_ITEM_DELETE = "warehouse:item:delete",
 
   // Category permissions
   CATEGORY_VIEW = "category:view",
@@ -170,6 +173,12 @@ export const PermissionGroups = {
     Permission.WAREHOUSE_CREATE,
     Permission.WAREHOUSE_UPDATE,
     Permission.WAREHOUSE_DELETE,
+  ],
+  WAREHOUSE_ITEMS: [
+    Permission.WAREHOUSE_ITEM_VIEW,
+    Permission.WAREHOUSE_ITEM_CREATE,
+    Permission.WAREHOUSE_ITEM_UPDATE,
+    Permission.WAREHOUSE_ITEM_DELETE,
   ],
   CATEGORIES: [
     Permission.CATEGORY_VIEW,

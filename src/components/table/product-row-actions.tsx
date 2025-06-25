@@ -12,11 +12,12 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-// import type { SelectProduct } from "@/database/schema";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { format } from "date-fns";
 import ConfirmDialog from "../confirm-dialog";
 import UpdateDialog from "../update-dialog";
+import { SelectProduct } from "@/lib/schema/schema-types";
+import ProductForm from "../forms/create-product-form";
 
 export interface ProductRowActionsProps {
   product: SelectProduct;
@@ -112,7 +113,7 @@ const ProductRowActions: FC<ProductRowActionsProps> = ({ product }) => {
         isDialogOpen={isUpdateDialogOpen}
         setIsDialogOpen={setIsUpdateDialogOpen}
       >
-        <CreateProduct product={product} />
+        <ProductForm product={product} />
       </UpdateDialog>
     </>
   );

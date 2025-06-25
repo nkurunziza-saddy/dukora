@@ -1,9 +1,4 @@
-export const USER_ROLES = [
-  "SUPER_ADMIN",
-  "ADMIN",
-  "WAREHOUSE_OPERATIVE",
-  "VIEW_ONLY",
-] as const;
+export const USER_ROLES = ["OWNER", "ADMIN", "MEMBER", "VIEW_ONLY"] as const;
 
 export const PRODUCT_STATUS = ["ACTIVE", "INACTIVE", "DISCONTINUED"] as const;
 

@@ -7,6 +7,7 @@ export enum ErrorCode {
   NOT_FOUND = "NOT_FOUND",
   CONFLICT = "CONFLICT",
   VALIDATION_ERROR = "VALIDATION_ERROR",
+  FAILED_REQUEST = "FAILED_REQUEST",
 
   // Authentication errors
   INVALID_CREDENTIALS = "INVALID_CREDENTIALS",
@@ -55,6 +56,12 @@ export enum ErrorCode {
   FILE_UPLOAD_ERROR = "FILE_UPLOAD_ERROR",
   FILE_NOT_FOUND = "FILE_NOT_FOUND",
   INVALID_FILE_FORMAT = "INVALID_FILE_FORMAT",
+
+  // Input errors
+  MISSING_INPUT = "MISSING_INPUT",
+  INVALID_INPUT = "INVALID_INPUT",
+  INPUT_TOO_SHORT = "INPUT_TOO_SHORT",
+  INPUT_TOO_LONG = "INPUT_TOO_LONG",
 }
 
 export const ERROR_CODE_STATUS_MAP: Record<ErrorCode, number> = {
@@ -66,6 +73,7 @@ export const ERROR_CODE_STATUS_MAP: Record<ErrorCode, number> = {
   [ErrorCode.NOT_FOUND]: 404,
   [ErrorCode.CONFLICT]: 409,
   [ErrorCode.VALIDATION_ERROR]: 400,
+  [ErrorCode.FAILED_REQUEST]: 500,
 
   // Authentication errors
   [ErrorCode.INVALID_CREDENTIALS]: 401,
@@ -84,7 +92,7 @@ export const ERROR_CODE_STATUS_MAP: Record<ErrorCode, number> = {
   [ErrorCode.PRODUCT_NOT_FOUND]: 404,
   [ErrorCode.PRODUCT_ALREADY_EXISTS]: 409,
 
-  // Product errors
+  // Supplier errors
   [ErrorCode.SUPPLIER_NOT_FOUND]: 404,
   [ErrorCode.SUPPLIER_ALREADY_EXISTS]: 409,
 
@@ -114,4 +122,10 @@ export const ERROR_CODE_STATUS_MAP: Record<ErrorCode, number> = {
   [ErrorCode.FILE_UPLOAD_ERROR]: 500,
   [ErrorCode.FILE_NOT_FOUND]: 404,
   [ErrorCode.INVALID_FILE_FORMAT]: 400,
+
+  // Input errors
+  [ErrorCode.MISSING_INPUT]: 400,
+  [ErrorCode.INVALID_INPUT]: 400,
+  [ErrorCode.INPUT_TOO_SHORT]: 400,
+  [ErrorCode.INPUT_TOO_LONG]: 400,
 };

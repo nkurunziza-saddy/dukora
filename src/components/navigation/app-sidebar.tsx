@@ -26,7 +26,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 const data = {
   navMain: [
@@ -35,7 +35,7 @@ const data = {
       items: [
         {
           title: "Inventory Overview",
-          url: "/",
+          url: "/dashboard",
           icon: Warehouse,
         },
         {
@@ -105,13 +105,13 @@ const data = {
 
 export function AppSidebar() {
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="offcanvas">
       <SidebarHeader>
         <div className="flex items-center gap-2 p-2">
           <div className="p-1 round bg-primary text-primary-foreground">
             <Frame className="size-3" />
           </div>
-          <span className="font-semibold text-base">Quantra</span>
+          <span className="font-semibold text-base">quantra</span>
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -124,7 +124,7 @@ export function AppSidebar() {
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
                       <Link href={item.url}>
-                        <item.icon className="h-4 w-4" />
+                        {/* <item.icon className="h-4 w-4" /> */}
                         <span>{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
@@ -136,9 +136,7 @@ export function AppSidebar() {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <div className="p-4 text-xs text-muted-foreground">
-          © 2025 Inventory Pro
-        </div>
+        <div className="p-4 text-xs text-muted-foreground">© 2025 quantra</div>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

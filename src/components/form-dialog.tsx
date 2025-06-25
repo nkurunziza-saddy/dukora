@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Plus } from "lucide-react";
+import { ScrollArea } from "./ui/scroll-area";
 
 export function FormDialog({
   children,
@@ -37,13 +38,15 @@ export function FormDialog({
           {triggerText ?? title}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-2xl">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
-        {children}
+        <ScrollArea className="flex-1 px-1 overflow-auto">
+          <div className="px-1 space-y-4">{children}</div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

@@ -1,73 +1,76 @@
 import * as schema from "./models";
 
-// Select types
-export type Business = typeof schema.businessTable.$inferSelect;
-export type BusinessSetting = typeof schema.businessSettingsTable.$inferSelect;
-export type BusinessUser = typeof schema.businessUserTable.$inferSelect;
-export type BusinessUserSetting =
-  typeof schema.businessUserSettingsTable.$inferSelect;
-export type Category = typeof schema.categoryTable.$inferSelect;
-export type ProductAttribute = typeof schema.productAttributeTable.$inferSelect;
-export type ProductAttributeValue =
-  typeof schema.productAttributeValueTable.$inferSelect;
-export type Product = typeof schema.productTable.$inferSelect;
-export type ProductTag = typeof schema.productTagTable.$inferSelect;
-export type ProductProductTag =
-  typeof schema.productProductTagTable.$inferSelect;
-export type ProductVariant = typeof schema.productVariantTable.$inferSelect;
-export type Warehouse = typeof schema.warehouseTable.$inferSelect;
-export type WarehouseItem = typeof schema.warehouseItemTable.$inferSelect;
-export type Supplier = typeof schema.supplierTable.$inferSelect;
-export type ProductSupplier = typeof schema.productSupplierTable.$inferSelect;
-export type SalesOrder = typeof schema.salesOrderTable.$inferSelect;
-export type PurchaseOrder = typeof schema.purchaseOrderTable.$inferSelect;
-export type SalesOrderItem = typeof schema.salesOrderItemTable.$inferSelect;
-export type PurchaseOrderItem =
-  typeof schema.purchaseOrderItemTable.$inferSelect;
-export type ProfitReport = typeof schema.profitReportTable.$inferSelect;
-export type Metric = typeof schema.metricTable.$inferSelect;
-export type AuditLog = typeof schema.auditLogTable.$inferSelect;
-export type Transaction = typeof schema.transactionTable.$inferSelect;
-export type ProductPriceHistory =
+export type SelectBusiness = typeof schema.businessesTable.$inferSelect;
+export type SelectBusinessSetting =
+  typeof schema.businessSettingsTable.$inferSelect;
+export type SelectUser = typeof schema.usersTable.$inferSelect;
+export type SelectUserSetting = typeof schema.userSettingsTable.$inferSelect;
+export type SelectCategory = typeof schema.categoriesTable.$inferSelect;
+export type SelectProductAttribute =
+  typeof schema.productAttributesTable.$inferSelect;
+export type SelectProductAttributeValue =
+  typeof schema.productAttributeValuesTable.$inferSelect;
+export type SelectProduct = typeof schema.productsTable.$inferSelect;
+export type SelectProductTag = typeof schema.productTagsTable.$inferSelect;
+export type SelectProductProductTag =
+  typeof schema.productProductTagsTable.$inferSelect;
+export type SelectProductVariant =
+  typeof schema.productVariantsTable.$inferSelect;
+export type SelectWarehouse = typeof schema.warehousesTable.$inferSelect;
+export type SelectWarehouseItem =
+  typeof schema.warehouseItemsTable.$inferSelect;
+export type SelectSupplier = typeof schema.suppliersTable.$inferSelect;
+export type SelectProductSupplier =
+  typeof schema.productSuppliersTable.$inferSelect;
+export type SelectSalesOrder = typeof schema.saleOrdersTable.$inferSelect;
+export type SelectPurchaseOrder =
+  typeof schema.purchaseOrdersTable.$inferSelect;
+export type SelectSalesOrderItem =
+  typeof schema.saleOrderItemsTable.$inferSelect;
+export type SelectPurchaseOrderItem =
+  typeof schema.purchaseOrderItemsTable.$inferSelect;
+export type SelectProfitReport = typeof schema.profitReportsTable.$inferSelect;
+export type SelectMetric = typeof schema.metricsTable.$inferSelect;
+export type SelectAuditLog = typeof schema.auditLogsTable.$inferSelect;
+export type SelectTransaction = typeof schema.transactionsTable.$inferSelect;
+export type SelectProductPriceHistory =
   typeof schema.productPriceHistoryTable.$inferSelect;
 
-// Insert types
-export type BusinessInsert = typeof schema.businessTable.$inferInsert;
-export type BusinessSettingInsert =
+export type InsertBusiness = typeof schema.businessesTable.$inferInsert;
+export type InsertBusinessSetting =
   typeof schema.businessSettingsTable.$inferInsert;
-export type BusinessUserInsert = typeof schema.businessUserTable.$inferInsert;
-export type BusinessUserSettingInsert =
-  typeof schema.businessUserSettingsTable.$inferInsert;
-export type CategoryInsert = typeof schema.categoryTable.$inferInsert;
-export type ProductAttributeInsert =
-  typeof schema.productAttributeTable.$inferInsert;
-export type ProductAttributeValueInsert =
-  typeof schema.productAttributeValueTable.$inferInsert;
-export type ProductInsert = typeof schema.productTable.$inferInsert;
-export type ProductTagInsert = typeof schema.productTagTable.$inferInsert;
-export type ProductProductTagInsert =
-  typeof schema.productProductTagTable.$inferInsert;
-export type ProductVariantInsert =
-  typeof schema.productVariantTable.$inferInsert;
-export type WarehouseInsert = typeof schema.warehouseTable.$inferInsert;
-export type WarehouseItemInsert = typeof schema.warehouseItemTable.$inferInsert;
-export type SupplierInsert = typeof schema.supplierTable.$inferInsert;
-export type ProductSupplierInsert =
-  typeof schema.productSupplierTable.$inferInsert;
-export type SalesOrderInsert = typeof schema.salesOrderTable.$inferInsert;
-export type PurchaseOrderInsert = typeof schema.purchaseOrderTable.$inferInsert;
-export type SalesOrderItemInsert =
-  typeof schema.salesOrderItemTable.$inferInsert;
-export type PurchaseOrderItemInsert =
-  typeof schema.purchaseOrderItemTable.$inferInsert;
-export type ProfitReportInsert = typeof schema.profitReportTable.$inferInsert;
-export type MetricInsert = typeof schema.metricTable.$inferInsert;
-export type AuditLogInsert = typeof schema.auditLogTable.$inferInsert;
-export type TransactionInsert = typeof schema.transactionTable.$inferInsert;
-export type ProductPriceHistoryInsert =
+export type InsertUser = typeof schema.usersTable.$inferInsert;
+export type InsertUserSetting = typeof schema.userSettingsTable.$inferInsert;
+export type InsertCategory = typeof schema.categoriesTable.$inferInsert;
+export type InsertProductAttribute =
+  typeof schema.productAttributesTable.$inferInsert;
+export type InsertProductAttributeValue =
+  typeof schema.productAttributeValuesTable.$inferInsert;
+export type InsertProduct = typeof schema.productsTable.$inferInsert;
+export type InsertProductTag = typeof schema.productTagsTable.$inferInsert;
+export type InsertProductProductTag =
+  typeof schema.productProductTagsTable.$inferInsert;
+export type InsertProductVariant =
+  typeof schema.productVariantsTable.$inferInsert;
+export type InsertWarehouse = typeof schema.warehousesTable.$inferInsert;
+export type InsertWarehouseItem =
+  typeof schema.warehouseItemsTable.$inferInsert;
+export type InsertSupplier = typeof schema.suppliersTable.$inferInsert;
+export type InsertProductSupplier =
+  typeof schema.productSuppliersTable.$inferInsert;
+export type InsertSalesOrder = typeof schema.saleOrdersTable.$inferInsert;
+export type InsertPurchaseOrder =
+  typeof schema.purchaseOrdersTable.$inferInsert;
+export type InsertSalesOrderItem =
+  typeof schema.saleOrderItemsTable.$inferInsert;
+export type InsertPurchaseOrderItem =
+  typeof schema.purchaseOrderItemsTable.$inferInsert;
+export type InsertProfitReport = typeof schema.profitReportsTable.$inferInsert;
+export type InsertMetric = typeof schema.metricsTable.$inferInsert;
+export type InsertAuditLog = typeof schema.auditLogsTable.$inferInsert;
+export type InsertTransaction = typeof schema.transactionsTable.$inferInsert;
+export type InsertProductPriceHistory =
   typeof schema.productPriceHistoryTable.$inferInsert;
-
-// Enum types
 
 export const UserRole = schema.USER_ROLES.reduce((acc, role) => {
   acc[role] = role;
@@ -93,3 +96,20 @@ export const TransactionType = schema.TRANSACTION_TYPE.reduce((acc, role) => {
 }, {} as Record<(typeof schema.TRANSACTION_TYPE)[number], (typeof schema.TRANSACTION_TYPE)[number]>);
 export type TransactionType =
   (typeof TransactionType)[keyof typeof TransactionType];
+
+// Payloads
+
+export type ExtendedProductPayload = SelectProduct & {
+  category: SelectCategory;
+  productVariants: SelectProductVariant[];
+  // productSuppliers: SelectProductSupplier[];
+  // productPriceHistory: SelectProductPriceHistory[];
+  transactions: SelectTransaction[];
+  warehouseItems: (SelectWarehouseItem & {
+    warehouse: SelectWarehouse;
+  })[];
+};
+export type ExtendedTransactionPayload = SelectTransaction & {
+  product: SelectProduct;
+  createdByUser: SelectUser;
+};
