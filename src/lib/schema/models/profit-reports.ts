@@ -12,7 +12,10 @@ import { sql } from "drizzle-orm";
 export const profitReportsTable = pgTable(
   "profit_reports",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
     businessId: text("business_id")
       .notNull()
       .references(() => businessesTable.id, { onDelete: "cascade" }),

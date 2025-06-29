@@ -16,7 +16,10 @@ import { transactionType } from "./enums";
 export const transactionsTable = pgTable(
   "transactions",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
     productId: text("product_id")
       .notNull()
       .references(() => productsTable.id),
@@ -32,7 +35,7 @@ export const transactionsTable = pgTable(
     businessId: text("business_id")
       .notNull()
       .references(() => businessesTable.id, { onDelete: "cascade" }),
-    notes: text("notes"),
+    note: text("note"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),

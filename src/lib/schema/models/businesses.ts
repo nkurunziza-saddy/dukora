@@ -13,11 +13,15 @@ import { sql } from "drizzle-orm";
 export const businessesTable = pgTable(
   "businesses",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
     name: text("name").notNull(),
-    domain: text("domain").unique().notNull(),
+    domain: text("domain").unique(),
+    businessType: text("business_type"),
     logoUrl: text("logo_url"),
-    registrationNumber: text("registration_number").unique().notNull(),
+    registrationNumber: text("registration_number").unique(),
     isActive: boolean("is_active").notNull().default(true),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
@@ -37,7 +41,10 @@ export const businessesTable = pgTable(
 export const businessSettingsTable = pgTable(
   "business_settings",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
     key: text("key").notNull(),
     value: json("value").notNull(),
     businessId: text("business_id")

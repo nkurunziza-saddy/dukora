@@ -14,13 +14,30 @@ import {
   remove as removeProductRepo,
   createMany as createManyProductsRepo,
 } from "../repos/product-repo";
+import { getOverview as getOverviewRepo } from "@/server/repos/product-repo";
 
 export async function getProducts() {
   const currentUser = await getUserIfHasPermission(Permission.PRODUCT_VIEW);
   if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
 
   try {
-    const products = await getAllProductsRepo(currentUser.businessId);
+    const products = await getAllProductsRepo(currentUser.businessId!);
+    if (products.error) {
+      return { data: null, error: products.error };
+    }
+    return { data: products.data, error: null };
+  } catch (error) {
+    console.error("Error getting products:", error);
+    return { data: null, error: ErrorCode.FAILED_REQUEST };
+  }
+}
+
+export async function getOverviewProducts(limit: number) {
+  const currentUser = await getUserIfHasPermission(Permission.PRODUCT_VIEW);
+  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
+
+  try {
+    const products = await getOverviewRepo(currentUser.businessId!, limit);
     if (products.error) {
       return { data: null, error: products.error };
     }
@@ -40,7 +57,10 @@ export async function getProductById(productId: string) {
   }
 
   try {
-    const product = await getProductByIdRepo(productId, currentUser.businessId);
+    const product = await getProductByIdRepo(
+      productId,
+      currentUser.businessId!
+    );
 
     if (product.error) {
       return { data: null, error: product.error };
@@ -66,15 +86,18 @@ export async function createProduct(
   try {
     const product: InsertProduct = {
       ...productData,
-      businessId: currentUser.businessId,
+      businessId: currentUser.businessId!,
       id: `prod-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     };
-    const { data: resData, error: resError } = await createProductRepo(product);
+    const { data: resData, error: resError } = await createProductRepo(
+      product,
+      currentUser.id
+    );
     if (resError) {
       return { data: null, error: resError };
     }
 
-    revalidateTag(`products-${currentUser.businessId}`);
+    revalidateTag(`products-${currentUser.businessId!}`);
 
     return { data: resData, error: null };
   } catch (error) {
@@ -95,7 +118,7 @@ export async function updateProduct(
   }
   const existingProduct = await getProductByIdRepo(
     productId,
-    currentUser.businessId
+    currentUser.businessId!
   );
 
   if (!existingProduct) {
@@ -105,14 +128,15 @@ export async function updateProduct(
   try {
     const updatedProduct = await updateProductRepo(
       productId,
-      currentUser.businessId,
+      currentUser.businessId!,
+      currentUser.id,
       updates
     );
     if (updatedProduct.error) {
       return { data: null, error: updatedProduct.error };
     }
 
-    revalidateTag(`products-${currentUser.businessId}`);
+    revalidateTag(`products-${currentUser.businessId!}`);
     revalidateTag(`product-${productId}`);
 
     return { data: updatedProduct.data, error: null };
@@ -136,9 +160,9 @@ export async function deleteProduct(productId: string) {
   }
 
   try {
-    await removeProductRepo(productId, currentUser.businessId);
+    await removeProductRepo(productId, currentUser.businessId!, currentUser.id);
 
-    revalidateTag(`products-${currentUser.businessId}`);
+    revalidateTag(`products-${currentUser.businessId!}`);
     revalidateTag(`product-${productId}`);
 
     return { data: { success: true }, error: null };
@@ -166,7 +190,7 @@ export async function createManyProducts(
   try {
     const products: InsertProduct[] = productsData.map((product, index) => ({
       ...product,
-      businessId: currentUser.businessId,
+      businessId: currentUser.businessId!,
       id: `prod-${Date.now()}-${index}-${Math.random()
         .toString(36)
         .substr(2, 9)}`,
@@ -174,7 +198,7 @@ export async function createManyProducts(
 
     const createdProducts = await createManyProductsRepo(products);
 
-    revalidateTag(`products-${currentUser.businessId}`);
+    revalidateTag(`products-${currentUser.businessId!}`);
 
     return { data: createdProducts, error: null };
   } catch (error) {

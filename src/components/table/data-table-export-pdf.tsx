@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { formatKeys } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface DataExportPDFProps<TData> {
   table: Table<TData>;
@@ -26,6 +27,7 @@ export function DataTableExportPDF<TData>({
   filename = "report_export",
   title = "Report",
 }: DataExportPDFProps<TData>) {
+  const t = useTranslations("table");
   const [isExporting, setIsExporting] = useState(false);
 
   const exportToPDF = async (limit?: number) => {
@@ -53,7 +55,6 @@ export function DataTableExportPDF<TData>({
       doc.text(`Total Records: ${rows.length}`, 20, 30);
       doc.text(`Generated: ${new Date().toLocaleDateString()}`, 20, 37);
 
-      // Get visible columns (excluding select and actions columns)
       const visibleColumns = table
         .getFlatHeaders()
         .filter(
@@ -63,16 +64,13 @@ export function DataTableExportPDF<TData>({
             header.column.getIsVisible()
         );
 
-      // Create headers array
       const headers = visibleColumns.map((header) => formatKeys(header.id));
 
-      // Create data array - map each row to array of values
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const data = rows.map((row: any) =>
         visibleColumns.map((header) => {
           const value = row[header.id];
 
-          // Handle special formatting for specific columns
           switch (header.id) {
             case "status":
               return value
@@ -154,12 +152,12 @@ export function DataTableExportPDF<TData>({
           {isExporting ? (
             <>
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
-              Exporting...
+              {t("exporting")}
             </>
           ) : (
             <>
               <Download className="h-4 w-4" />
-              Export PDF
+              {t("exportPDF")}
             </>
           )}
         </Button>
@@ -167,19 +165,16 @@ export function DataTableExportPDF<TData>({
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel className="flex items-center gap-2">
           <FileText className="h-4 w-4" />
-          Export Options
+          {t("exportOptions")}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-
         <div className="px-2 py-1">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Users className="h-3 w-3" />
-            <span>Available: {totalRows} records</span>
+            <span>{t("availableRecords", { count: totalRows })}</span>
           </div>
         </div>
-
         <DropdownMenuSeparator />
-
         {totalRows > 0 && (
           <>
             <DropdownMenuItem
@@ -187,50 +182,45 @@ export function DataTableExportPDF<TData>({
               disabled={totalRows < 1}
               className="flex items-center justify-between"
             >
-              <span>First 20 records</span>
+              <span>{t("firstRecords", { count: 20 })}</span>
               <Badge variant="secondary" className="text-xs">
                 {Math.min(20, totalRows)}
               </Badge>
             </DropdownMenuItem>
-
             <DropdownMenuItem
               onClick={() => exportToPDF(50)}
               disabled={totalRows < 1}
               className="flex items-center justify-between"
             >
-              <span>First 50 records</span>
+              <span>{t("firstRecords", { count: 50 })}</span>
               <Badge variant="secondary" className="text-xs">
                 {Math.min(50, totalRows)}
               </Badge>
             </DropdownMenuItem>
-
             <DropdownMenuItem
               onClick={() => exportToPDF(70)}
               disabled={totalRows < 1}
               className="flex items-center justify-between"
             >
-              <span>First 70 records</span>
+              <span>{t("firstRecords", { count: 70 })}</span>
               <Badge variant="secondary" className="text-xs">
                 {Math.min(70, totalRows)}
               </Badge>
             </DropdownMenuItem>
-
             <DropdownMenuSeparator />
-
             <DropdownMenuItem
               onClick={() => exportToPDF()}
               className="flex items-center justify-between font-medium"
             >
-              <span>All records</span>
+              <span>{t("allRecords")}</span>
               <Badge variant="default" className="text-xs">
                 {totalRows}
               </Badge>
             </DropdownMenuItem>
           </>
         )}
-
         {totalRows === 0 && (
-          <DropdownMenuItem disabled>No data to export</DropdownMenuItem>
+          <DropdownMenuItem disabled>{t("noDataToExport")}</DropdownMenuItem>
         )}
       </DropdownMenuContent>
     </DropdownMenu>

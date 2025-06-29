@@ -12,7 +12,10 @@ import { sql } from "drizzle-orm";
 export const suppliersTable = pgTable(
   "suppliers",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
     name: text("name").notNull(),
     email: text("email").notNull(),
     phone: text("phone").notNull(),

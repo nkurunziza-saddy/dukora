@@ -7,11 +7,12 @@ export default async function AuthLayout({
   children: React.ReactNode;
 }>) {
   const session = await getCurrentSession();
-  if (!session?.user.businessId) {
+  if (!session?.user.businessId && session) {
     redirect("/onboarding");
   }
   if (session) {
     redirect("/dashboard");
   }
-  return <div>{children}</div>;
+
+  return <div className="h-[100vh] flex justify-center items-center">{children}</div>;
 }

@@ -7,7 +7,6 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import localFont from "next/font/local";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import SidebarContainer from "@/components/providers/sidebar-container";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -24,7 +23,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "quantra",
+  title: "quantura",
   description: "inventory",
 };
 
@@ -53,10 +52,8 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <ClientBody>
-              <SidebarContainer>
-                {children}
-                <Toaster />
-              </SidebarContainer>
+              {children}
+              <Toaster />
             </ClientBody>
           </ThemeProvider>
         </NextIntlClientProvider>

@@ -4,8 +4,8 @@ import { eq, desc, and } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { unstable_cache } from "next/cache";
-import { suppliersTable } from "@/lib/schema";
-import type { InsertSupplier } from "@/lib/schema/schema-types";
+import { auditLogsTable, suppliersTable } from "@/lib/schema";
+import type { InsertAuditLog, InsertSupplier } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
 
 export async function getAll(businessId: string) {
@@ -76,18 +76,40 @@ export const getByIdCached = async (supplierId: string, businessId: string) =>
     }
   );
 
-export async function create(supplier: InsertSupplier) {
+export async function create(
+  businessId: string,
+  userId: string,
+  supplier: InsertSupplier
+) {
   if (!supplier.name || !supplier.businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
 
   try {
-    const result = await db.insert(suppliersTable).values(supplier).returning();
+    const result = await db.transaction(async (tx) => {
+      const [newSupplier] = await tx
+        .insert(suppliersTable)
+        .values(supplier)
+        .returning();
+
+      const auditData: InsertAuditLog = {
+        businessId: businessId,
+        model: "supplier",
+        recordId: newSupplier.id,
+        action: "create-supplier",
+        changes: JSON.stringify(supplier),
+        performedBy: userId,
+        performedAt: new Date(),
+      };
+
+      await tx.insert(auditLogsTable).values(auditData);
+      return newSupplier;
+    });
 
     revalidateTag("suppliers");
     revalidateTag(`suppliers-${supplier.businessId}`);
 
-    return { data: result[0], error: null };
+    return { data: result, error: null };
   } catch (error) {
     console.error("Failed to create supplier:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
@@ -97,6 +119,7 @@ export async function create(supplier: InsertSupplier) {
 export async function update(
   supplierId: string,
   businessId: string,
+  userId: string,
   updates: Partial<InsertSupplier>
 ) {
   if (!supplierId || !businessId) {
@@ -104,18 +127,33 @@ export async function update(
   }
 
   try {
-    const result = await db
-      .update(suppliersTable)
-      .set({ ...updates, updatedAt: new Date() })
-      .where(
-        and(
-          eq(suppliersTable.id, supplierId),
-          eq(suppliersTable.businessId, businessId)
+    const result = await db.transaction(async (tx) => {
+      const [updatedSupplier] = await tx
+        .update(suppliersTable)
+        .set({ ...updates, updatedAt: new Date() })
+        .where(
+          and(
+            eq(suppliersTable.id, supplierId),
+            eq(suppliersTable.businessId, businessId)
+          )
         )
-      )
-      .returning();
+        .returning();
 
-    if (result.length === 0) {
+      const auditData: InsertAuditLog = {
+        businessId: businessId,
+        model: "supplier",
+        recordId: updatedSupplier.id,
+        action: "update-supplier",
+        changes: JSON.stringify(updates),
+        performedBy: userId,
+        performedAt: new Date(),
+      };
+
+      await tx.insert(auditLogsTable).values(auditData);
+      return updatedSupplier;
+    });
+
+    if (!result) {
       return {
         data: null,
         error: ErrorCode.SUPPLIER_NOT_FOUND ?? ErrorCode.PRODUCT_NOT_FOUND,
@@ -125,30 +163,55 @@ export async function update(
     revalidateTag(`suppliers-${businessId}`);
     revalidateTag(`supplier-${supplierId}`);
 
-    return { data: result[0], error: null };
+    return { data: result, error: null };
   } catch (error) {
     console.error("Failed to update supplier:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
 }
 
-export async function remove(supplierId: string, businessId: string) {
+export async function remove(
+  supplierId: string,
+  businessId: string,
+  userId: string
+) {
   if (!supplierId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
 
   try {
-    const result = await db
-      .delete(suppliersTable)
-      .where(
-        and(
-          eq(suppliersTable.id, supplierId),
-          eq(suppliersTable.businessId, businessId)
+    const existingRecord = await db.query.suppliersTable.findFirst({
+      where: eq(suppliersTable.id, supplierId),
+    });
+    if (!existingRecord) {
+      return { data: null, error: ErrorCode.SUPPLIER_NOT_FOUND };
+    }
+    const result = await db.transaction(async (tx) => {
+      const [updatedSupplier] = await tx
+        .delete(suppliersTable)
+        .where(
+          and(
+            eq(suppliersTable.id, supplierId),
+            eq(suppliersTable.businessId, businessId)
+          )
         )
-      )
-      .returning();
+        .returning();
 
-    if (result.length === 0) {
+      const auditData: InsertAuditLog = {
+        businessId: businessId,
+        model: "supplier",
+        recordId: supplierId,
+        action: "delete-supplier",
+        changes: JSON.stringify(existingRecord),
+        performedBy: userId,
+        performedAt: new Date(),
+      };
+
+      await tx.insert(auditLogsTable).values(auditData);
+      return updatedSupplier;
+    });
+
+    if (!result) {
       return {
         data: null,
         error: ErrorCode.SUPPLIER_NOT_FOUND ?? ErrorCode.PRODUCT_NOT_FOUND,
@@ -158,7 +221,7 @@ export async function remove(supplierId: string, businessId: string) {
     revalidateTag(`suppliers-${businessId}`);
     revalidateTag(`supplier-${supplierId}`);
 
-    return { data: result[0], error: null };
+    return { data: result, error: null };
   } catch (error) {
     console.error("Failed to delete supplier:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };

@@ -11,16 +11,41 @@ import { revalidateTag } from "next/cache";
 import {
   getAll as getAllTransactionsRepo,
   getById as getTransactionByIdRepo,
+  create_with_warehouse_item as createWithWarehouseItem,
   create as createTransactionRepo,
   getByType as getTransactionsByTypeRepo,
 } from "../repos/transaction-repo";
+import { getByTimeIntervalWithWith } from "@/server/repos/transaction-repo";
 
 export async function getTransactions() {
   const currentUser = await getUserIfHasPermission(Permission.FINANCIAL_VIEW);
   if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
 
   try {
-    const transactions = await getAllTransactionsRepo(currentUser.businessId);
+    const transactions = await getAllTransactionsRepo(currentUser.businessId!);
+    if (transactions.error) {
+      return { data: null, error: transactions.error };
+    }
+    return { data: transactions.data, error: null };
+  } catch (error) {
+    console.error("Error getting transactions:", error);
+    return { data: null, error: ErrorCode.FAILED_REQUEST };
+  }
+}
+
+export async function getTransactionsByTimeInterval(
+  startDate: Date,
+  endDate: Date
+) {
+  const currentUser = await getUserIfHasPermission(Permission.FINANCIAL_VIEW);
+  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
+
+  try {
+    const transactions = await getByTimeIntervalWithWith(
+      currentUser.businessId!,
+      startDate,
+      endDate
+    );
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
@@ -42,7 +67,7 @@ export async function getTransactionById(transactionId: string) {
   try {
     const transaction = await getTransactionByIdRepo(
       transactionId,
-      currentUser.businessId
+      currentUser.businessId!
     );
 
     if (transaction.error) {
@@ -76,7 +101,7 @@ export async function createTransaction(
   try {
     const transaction: InsertTransaction = {
       ...transactionData,
-      businessId: currentUser.businessId,
+      businessId: currentUser.businessId!,
       createdBy: currentUser.id,
       id: `txn-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     };
@@ -87,8 +112,50 @@ export async function createTransaction(
       return { data: null, error: resError };
     }
 
-    revalidateTag(`transactions-${currentUser.businessId}`);
-    revalidateTag(`warehouse-items-${currentUser.businessId}`);
+    revalidateTag(`transactions-${currentUser.businessId!}`);
+    revalidateTag(`warehouse-items-${currentUser.businessId!}`);
+
+    return { data: resData, error: null };
+  } catch (error) {
+    console.error("Error creating transaction:", error);
+    return { data: null, error: ErrorCode.FAILED_REQUEST };
+  }
+}
+
+export async function createTransactionAndWarehouseItem(
+  transactionData: Omit<
+    InsertTransaction,
+    "businessId" | "id" | "createdBy" | "warehouseItemId"
+  >
+) {
+  const currentUser = await getUserIfHasPermission(
+    Permission.TRANSACTION_PURCHASE_CREATE
+  );
+  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
+
+  if (
+    !transactionData.productId?.trim() ||
+    !transactionData.type ||
+    typeof transactionData.quantity !== "number"
+  ) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
+
+  try {
+    const transaction = {
+      ...transactionData,
+      businessId: currentUser.businessId!,
+      createdBy: currentUser.id,
+    };
+    const { data: resData, error: resError } = await createWithWarehouseItem(
+      transaction
+    );
+    if (resError) {
+      return { data: null, error: resError };
+    }
+
+    revalidateTag(`transactions-${currentUser.businessId!}`);
+    revalidateTag(`warehouse-items-${currentUser.businessId!}`);
 
     return { data: resData, error: null };
   } catch (error) {
@@ -107,7 +174,7 @@ export async function getTransactionsByType(type: TransactionType) {
 
   try {
     const transactions = await getTransactionsByTypeRepo(
-      currentUser.businessId,
+      currentUser.businessId!,
       type
     );
     if (transactions.error) {

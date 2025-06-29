@@ -1,10 +1,10 @@
-// filepath: /home/saddy/projects/web-based/quantra/src/server/repos/category.ts
+// filepath: /home/saddy/projects/web-based/quantura/src/server/repos/category-repo.ts
 "use server";
 import { eq, desc, and } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { revalidateTag, unstable_cache } from "next/cache";
-import { categoriesTable } from "@/lib/schema";
-import type { InsertCategory } from "@/lib/schema/schema-types";
+import { categoriesTable, auditLogsTable } from "@/lib/schema";
+import type { InsertCategory, InsertAuditLog } from "@/lib/schema/schema-types";
 import { ErrorCode } from "../constants/errors";
 
 export async function getAll(businessId: string) {
@@ -67,19 +67,34 @@ export const getByIdCached = async (categoryId: string, businessId: string) =>
     }
   );
 
-export async function create(category: InsertCategory) {
+export async function create(category: InsertCategory, userId: string) {
   if (!category.name || !category.businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
   try {
-    const result = await db
-      .insert(categoriesTable)
-      .values(category)
-      .returning();
+    const result = await db.transaction(async (tx) => {
+      const [newCategory] = await tx
+        .insert(categoriesTable)
+        .values(category)
+        .returning();
+
+      const auditData: InsertAuditLog = {
+        businessId: category.businessId,
+        model: "category",
+        recordId: newCategory.id,
+        action: "create-category",
+        changes: JSON.stringify(category),
+        performedBy: userId,
+        performedAt: new Date(),
+      };
+
+      await tx.insert(auditLogsTable).values(auditData);
+      return newCategory;
+    });
 
     revalidateTag(`categories-${category.businessId}`);
 
-    return { data: result[0], error: null };
+    return { data: result, error: null };
   } catch (error) {
     console.error("Failed to create category:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
@@ -89,68 +104,117 @@ export async function create(category: InsertCategory) {
 export async function update(
   categoryId: string,
   businessId: string,
+  userId: string,
   updates: Partial<InsertCategory>
 ) {
   if (!categoryId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
   try {
-    const result = await db
-      .update(categoriesTable)
-      .set({ ...updates, updatedAt: new Date() })
-      .where(
-        and(
-          eq(categoriesTable.id, categoryId),
-          eq(categoriesTable.businessId, businessId)
+    const result = await db.transaction(async (tx) => {
+      const [updatedCategory] = await tx
+        .update(categoriesTable)
+        .set({ ...updates, updatedAt: new Date() })
+        .where(
+          and(
+            eq(categoriesTable.id, categoryId),
+            eq(categoriesTable.businessId, businessId)
+          )
         )
-      )
-      .returning();
+        .returning();
 
-    if (result.length === 0) {
+      if (!updatedCategory) {
+        return null;
+      }
+
+      const auditData: InsertAuditLog = {
+        businessId: businessId,
+        model: "category",
+        recordId: updatedCategory.id,
+        action: "update-category",
+        changes: JSON.stringify(updates),
+        performedBy: userId,
+        performedAt: new Date(),
+      };
+
+      await tx.insert(auditLogsTable).values(auditData);
+      return updatedCategory;
+    });
+
+    if (!result) {
       return { data: null, error: ErrorCode.NOT_FOUND };
     }
 
     revalidateTag(`categories-${businessId}`);
     revalidateTag(`category-${categoryId}`);
 
-    return { data: result[0], error: null };
+    return { data: result, error: null };
   } catch (error) {
     console.error("Failed to update category:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
 }
 
-export async function remove(categoryId: string, businessId: string) {
+export async function remove(
+  categoryId: string,
+  businessId: string,
+  userId: string
+) {
   if (!categoryId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
   try {
-    const result = await db
-      .delete(categoriesTable)
-      .where(
-        and(
-          eq(categoriesTable.id, categoryId),
-          eq(categoriesTable.businessId, businessId)
+    const existingRecord = await db.query.categoriesTable.findFirst({
+      where: eq(categoriesTable.id, categoryId),
+    });
+    if (!existingRecord) {
+      return { data: null, error: ErrorCode.NOT_FOUND };
+    }
+    const result = await db.transaction(async (tx) => {
+      const [deletedCategory] = await tx
+        .delete(categoriesTable)
+        .where(
+          and(
+            eq(categoriesTable.id, categoryId),
+            eq(categoriesTable.businessId, businessId)
+          )
         )
-      )
-      .returning();
+        .returning();
 
-    if (result.length === 0) {
+      if (!deletedCategory) {
+        return null;
+      }
+
+      const auditData: InsertAuditLog = {
+        businessId: businessId,
+        model: "category",
+        recordId: categoryId,
+        action: "delete-category",
+        changes: JSON.stringify(existingRecord),
+        performedBy: userId,
+        performedAt: new Date(),
+      };
+
+      await tx.insert(auditLogsTable).values(auditData);
+      return deletedCategory;
+    });
+
+    if (!result) {
       return { data: null, error: ErrorCode.NOT_FOUND };
     }
 
     revalidateTag(`categories-${businessId}`);
     revalidateTag(`category-${categoryId}`);
 
-    return { data: result[0], error: null };
+    return { data: result, error: null };
   } catch (error) {
     console.error("Failed to delete category:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
 }
 
-export async function createMany(categories: InsertCategory[]) {
-  if (!categories.length) {
+export async function createMany(categories: InsertCategory[], userId: string) {
+  if (categories === null) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
 
@@ -160,10 +224,28 @@ export async function createMany(categories: InsertCategory[]) {
   }
 
   try {
-    const result = await db
-      .insert(categoriesTable)
-      .values(categories)
-      .returning();
+    const result = await db.transaction(async (tx) => {
+      const inserted = await tx
+        .insert(categoriesTable)
+        .values(categories)
+        .returning();
+
+      const auditLogs: InsertAuditLog[] = inserted.map((cat, idx) => ({
+        businessId: businessId,
+        model: "category",
+        recordId: cat.id,
+        action: "create-category",
+        changes: JSON.stringify(categories[idx]),
+        performedBy: userId,
+        performedAt: new Date(),
+      }));
+
+      if (auditLogs.length) {
+        await tx.insert(auditLogsTable).values(auditLogs);
+      }
+
+      return inserted;
+    });
 
     revalidateTag(`categories-${businessId}`);
 

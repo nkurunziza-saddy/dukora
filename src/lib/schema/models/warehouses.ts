@@ -15,10 +15,13 @@ import { productsTable } from "@/lib/schema/models";
 export const warehousesTable = pgTable(
   "warehouses",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
     name: text("name").notNull(),
     code: text("code").notNull(),
-    address: text("address").notNull(),
+    address: text("address"),
     businessId: text("business_id")
       .notNull()
       .references(() => businessesTable.id, { onDelete: "cascade" }),
@@ -43,7 +46,10 @@ export const warehousesTable = pgTable(
 export const warehouseItemsTable = pgTable(
   "warehouse_items",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
     productId: text("product_id")
       .notNull()
       .references(() => productsTable.id, { onDelete: "cascade" }),

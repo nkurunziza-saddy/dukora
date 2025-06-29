@@ -1,10 +1,10 @@
 import {
   pgTable,
-  text,
   numeric,
   timestamp,
   index,
   check,
+  text,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { productsTable } from "./products";
@@ -13,7 +13,10 @@ import { usersTable } from "./users";
 export const productPriceHistoryTable = pgTable(
   "product_price_history",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
     productId: text("product_id")
       .notNull()
       .references(() => productsTable.id, { onDelete: "cascade" }),

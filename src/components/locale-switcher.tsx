@@ -1,8 +1,8 @@
 "use client";
 
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter, usePathname } from "next/navigation";
-import { localeNames, locales } from "@/i18n/config"; // Adjust path if necessary
+import { localeNames, locales } from "@/i18n/config";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -20,14 +20,14 @@ export default function LocaleSwitcher() {
     const newPath = pathname.replace(`/${locale}`, `/${newLocale}`);
     router.replace(newPath);
   };
-
+  const t = useTranslations("common");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm">
           <Globe className="size-3.5" />
           {localeNames[locale as keyof typeof localeNames]}
-          <span className="sr-only">Toggle theme</span>
+          <span className="sr-only">{t("toggleLocale")}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

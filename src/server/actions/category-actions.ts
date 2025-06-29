@@ -4,21 +4,14 @@ import { getUserIfHasPermission } from "@/server/actions/auth/permission-middlew
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
 import { revalidateTag } from "next/cache";
-import {
-  create as createCategoryRepo,
-  getById as getCategoryByIdRepo,
-  remove as removeCategoryRepo,
-  update as updateCategoryRepo,
-  getAll as getAllCategoriesRepo,
-  createMany as createManyCategoriesRepo,
-} from "../repos/category-repo";
+import * as categoryRepo from "../repos/category-repo";
 
-export async function getCategories() {
+export async function fetchCategories() {
   const currentUser = await getUserIfHasPermission(Permission.CATEGORY_VIEW);
   if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
 
   try {
-    const categories = await getAllCategoriesRepo(currentUser.businessId);
+    const categories = await categoryRepo.getAll(currentUser.businessId!);
     if (categories.error) {
       return { data: null, error: categories.error };
     }
@@ -29,7 +22,7 @@ export async function getCategories() {
   }
 }
 
-export async function getCategoryById(categoryId: string) {
+export async function fetchCategoryById(categoryId: string) {
   const currentUser = await getUserIfHasPermission(Permission.CATEGORY_VIEW);
   if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
 
@@ -38,9 +31,9 @@ export async function getCategoryById(categoryId: string) {
   }
 
   try {
-    const category = await getCategoryByIdRepo(
+    const category = await categoryRepo.getById(
       categoryId,
-      currentUser.businessId
+      currentUser.businessId!
     );
 
     if (category.error) {
@@ -67,17 +60,17 @@ export async function createCategory(
   try {
     const category: InsertCategory = {
       ...categoryData,
-      businessId: currentUser.businessId,
-      id: `cat-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      businessId: currentUser.businessId!,
     };
-    const { data: resData, error: resError } = await createCategoryRepo(
-      category
+    const { data: resData, error: resError } = await categoryRepo.create(
+      category,
+      currentUser.id
     );
     if (resError) {
       return { data: null, error: resError };
     }
 
-    revalidateTag(`categories-${currentUser.businessId}`);
+    revalidateTag(`categories-${currentUser.businessId!}`);
 
     return { data: resData, error: null };
   } catch (error) {
@@ -96,9 +89,9 @@ export async function updateCategory(
   if (!categoryId?.trim()) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
-  const existingCategory = await getCategoryByIdRepo(
+  const existingCategory = await categoryRepo.getById(
     categoryId,
-    currentUser.businessId
+    currentUser.businessId!
   );
 
   if (!existingCategory) {
@@ -106,16 +99,17 @@ export async function updateCategory(
   }
 
   try {
-    const updatedCategory = await updateCategoryRepo(
+    const updatedCategory = await categoryRepo.update(
       categoryId,
-      currentUser.businessId,
+      currentUser.businessId!,
+      currentUser.id,
       updates
     );
     if (updatedCategory.error) {
       return { data: null, error: updatedCategory.error };
     }
 
-    revalidateTag(`categories-${currentUser.businessId}`);
+    revalidateTag(`categories-${currentUser.businessId!}`);
     revalidateTag(`category-${categoryId}`);
 
     return { data: updatedCategory.data, error: null };
@@ -139,9 +133,13 @@ export async function deleteCategory(categoryId: string) {
   }
 
   try {
-    await removeCategoryRepo(categoryId, currentUser.businessId);
+    await categoryRepo.remove(
+      categoryId,
+      currentUser.businessId!,
+      currentUser.id
+    );
 
-    revalidateTag(`categories-${currentUser.businessId}`);
+    revalidateTag(`categories-${currentUser.businessId!}`);
     revalidateTag(`category-${categoryId}`);
 
     return { data: { success: true }, error: null };
@@ -162,24 +160,22 @@ export async function createManyCategories(
   const currentUser = await getUserIfHasPermission(Permission.CATEGORY_CREATE);
   if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
 
-  if (!categoriesData?.length) {
+  if (categoriesData === null) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
 
   try {
-    const categories: InsertCategory[] = categoriesData.map(
-      (category, index) => ({
-        ...category,
-        businessId: currentUser.businessId,
-        id: `cat-${Date.now()}-${index}-${Math.random()
-          .toString(36)
-          .substr(2, 9)}`,
-      })
+    const categories: InsertCategory[] = categoriesData.map((category) => ({
+      ...category,
+      businessId: currentUser.businessId!,
+    }));
+
+    const createdCategories = await categoryRepo.createMany(
+      categories,
+      currentUser.id
     );
 
-    const createdCategories = await createManyCategoriesRepo(categories);
-
-    revalidateTag(`categories-${currentUser.businessId}`);
+    revalidateTag(`categories-${currentUser.businessId!}`);
 
     return { data: createdCategories, error: null };
   } catch (error) {

@@ -22,7 +22,7 @@ export async function getWarehouseItems() {
 
   try {
     const warehouseItems = await getAllWarehouseItemsRepo(
-      currentUser.businessId
+      currentUser.businessId!
     );
     if (warehouseItems.error) {
       return { data: null, error: warehouseItems.error };
@@ -69,14 +69,17 @@ export async function createWarehouseItem(
   try {
     const warehouseItem: InsertWarehouseItem = {
       ...warehouseItemData,
-      id: `prod-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     };
 
-    const res = await createWarehouseItemRepo(warehouseItem);
+    const res = await createWarehouseItemRepo(
+      currentUser.businessId!,
+      currentUser.id,
+      warehouseItem
+    );
     if (res.error) {
       return { data: null, error: res.error };
     }
-    revalidateTag(`warehouseItems-${currentUser.businessId}`);
+    revalidateTag(`warehouseItems-${currentUser.businessId!}`);
 
     return { data: res.data, error: null };
   } catch (error) {
@@ -100,14 +103,16 @@ export async function updateWarehouseItem(
 
   try {
     const updatedWarehouseItem = await updateWarehouseItemRepo(
+      currentUser.businessId!,
       warehouseItemId,
+      currentUser.id,
       updates
     );
     if (updatedWarehouseItem.error) {
       return { data: null, error: updatedWarehouseItem.error };
     }
 
-    revalidateTag(`warehouseItems-${currentUser.businessId}`);
+    revalidateTag(`warehouseItems-${currentUser.businessId!}`);
     revalidateTag(`warehouseItem-${warehouseItemId}`);
 
     return { data: updatedWarehouseItem.data, error: null };
@@ -133,9 +138,13 @@ export async function deleteWarehouseItem(warehouseItemId: string) {
   }
 
   try {
-    await removeWarehouseItemRepo(warehouseItemId);
+    await removeWarehouseItemRepo(
+      warehouseItemId,
+      currentUser.businessId!,
+      currentUser.id
+    );
 
-    revalidateTag(`warehouseItems-${currentUser.businessId}`);
+    revalidateTag(`warehouseItems-${currentUser.businessId!}`);
     revalidateTag(`warehouseItem-${warehouseItemId}`);
 
     return { data: { success: true }, error: null };
@@ -166,7 +175,7 @@ export async function createManyWarehouseItems(
     const warehouseItems: InsertWarehouseItem[] = warehouseItemsData.map(
       (warehouseItem, index) => ({
         ...warehouseItem,
-        businessId: currentUser.businessId,
+        businessId: currentUser.businessId!,
         id: `prod-${Date.now()}-${index}-${Math.random()
           .toString(36)
           .substr(2, 9)}`,
@@ -177,7 +186,7 @@ export async function createManyWarehouseItems(
       warehouseItems
     );
 
-    revalidateTag(`warehouseItems-${currentUser.businessId}`);
+    revalidateTag(`warehouseItems-${currentUser.businessId!}`);
 
     return { data: createdWarehouseItems, error: null };
   } catch (error) {

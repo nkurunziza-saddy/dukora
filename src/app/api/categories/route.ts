@@ -3,7 +3,7 @@ import * as categoryService from "@/server/actions/category-actions";
 
 export async function GET() {
   try {
-    const categories = await categoryService.getCategories();
+    const categories = await categoryService.fetchCategories();
     return NextResponse.json(categories.data);
   } catch (error) {
     console.error(error);

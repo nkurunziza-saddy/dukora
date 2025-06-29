@@ -5,6 +5,12 @@ export enum Permission {
   BUSINESS_UPDATE = "business:update",
   BUSINESS_DELETE = "business:delete",
 
+  // Business settings permissions
+  BUSINESS_SETTINGS_VIEW = "business_settings:view",
+  BUSINESS_SETTINGS_CREATE = "business_settings:create",
+  BUSINESS_SETTINGS_UPDATE = "business_settings:update",
+  BUSINESS_SETTINGS_DELETE = "business_settings:delete",
+
   // Product permissions
   PRODUCT_VIEW = "product:view",
   PRODUCT_CREATE = "product:create",
@@ -52,11 +58,29 @@ export enum Permission {
   CATEGORY_UPDATE = "category:update",
   CATEGORY_DELETE = "category:delete",
 
+  // Category permissions
+  LOG_VIEW = "log:view",
+  LOG_CREATE = "log:create",
+  LOG_UPDATE = "log:update",
+  LOG_DELETE = "log:delete",
+
   // Supplier permissions
   SUPPLIER_VIEW = "supplier:view",
   SUPPLIER_CREATE = "supplier:create",
   SUPPLIER_UPDATE = "supplier:update",
   SUPPLIER_DELETE = "supplier:delete",
+
+  // Sched permissions
+  SCHEDULE_VIEW = "schedule:view",
+  SCHEDULE_CREATE = "schedule:create",
+  SCHEDULE_UPDATE = "schedule:update",
+  SCHEDULE_DELETE = "schedule:delete",
+
+  // Invitation permissions
+  INVITATION_VIEW = "invitation:view",
+  INVITATION_CREATE = "invitation:create",
+  INVITATION_UPDATE = "invitation:update",
+  INVITATION_DELETE = "invitation:delete",
 
   // Transaction permissions
   TRANSACTION_PURCHASE_VIEW = "transaction:purchase:view",
@@ -139,6 +163,12 @@ export const PermissionGroups = {
     Permission.BUSINESS_UPDATE,
     Permission.BUSINESS_DELETE,
   ],
+  BUSINESS_SETTINGS: [
+    Permission.BUSINESS_SETTINGS_VIEW,
+    Permission.BUSINESS_SETTINGS_CREATE,
+    Permission.BUSINESS_SETTINGS_UPDATE,
+    Permission.BUSINESS_SETTINGS_DELETE,
+  ],
   PRODUCTS: [
     Permission.PRODUCT_VIEW,
     Permission.PRODUCT_CREATE,
@@ -186,11 +216,29 @@ export const PermissionGroups = {
     Permission.CATEGORY_UPDATE,
     Permission.CATEGORY_DELETE,
   ],
+  LOGS: [
+    Permission.LOG_VIEW,
+    Permission.LOG_CREATE,
+    Permission.LOG_UPDATE,
+    Permission.LOG_DELETE,
+  ],
   SUPPLIERS: [
     Permission.SUPPLIER_VIEW,
     Permission.SUPPLIER_CREATE,
     Permission.SUPPLIER_UPDATE,
     Permission.SUPPLIER_DELETE,
+  ],
+  SCHEDULES: [
+    Permission.SCHEDULE_VIEW,
+    Permission.SCHEDULE_CREATE,
+    Permission.SCHEDULE_UPDATE,
+    Permission.SCHEDULE_DELETE,
+  ],
+  INVITATIONS: [
+    Permission.INVITATION_VIEW,
+    Permission.INVITATION_CREATE,
+    Permission.INVITATION_UPDATE,
+    Permission.INVITATION_DELETE,
   ],
   TRANSACTIONS: [
     Permission.TRANSACTION_PURCHASE_VIEW,

@@ -15,9 +15,10 @@ import { userRoleEnum } from "./enums";
 export const usersTable = pgTable(
   "users",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id").primaryKey(),
     email: text("email").notNull(),
     name: text("name").notNull(),
+    password: text("password"),
     emailVerified: boolean("email_verified")
       .$defaultFn(() => false)
       .notNull(),
@@ -51,8 +52,11 @@ export const usersTable = pgTable(
 export const userSettingsTable = pgTable(
   "user_settings",
   {
-    id: text("id").primaryKey().notNull(),
-    businessUserId: text("user_id")
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
+    userId: text("user_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
     key: text("key").notNull(),
@@ -65,9 +69,6 @@ export const userSettingsTable = pgTable(
       .defaultNow(),
   },
   (table) => [
-    uniqueIndex("user_settings_user_id_key").on(
-      table.businessUserId,
-      table.key
-    ),
+    uniqueIndex("user_settings_user_id_key").on(table.userId, table.key),
   ]
 );

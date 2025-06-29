@@ -1,5 +1,5 @@
-export const publicRoutes = ["/en/landing"];
-export const authRoutes = ["/en/auth/sign-in"];
-export const apiAuthPrefix = "/en/api/auth";
-export const DEFAULT_AUTH_REDIRECT = "/en/dashboard";
-export const onboardingRoute = "/en/onboarding";
+export const publicRoutes = ["/landing", "/test"];
+export const authRoutes = ["/auth/sign-in"];
+export const apiAuthPrefix = "/api/auth";
+export const DEFAULT_AUTH_REDIRECT = "/dashboard";
+export const onboardingRoute = "/onboarding";

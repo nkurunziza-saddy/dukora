@@ -2,6 +2,7 @@
 
 import { Table } from "@tanstack/react-table";
 import { Input } from "@/components/ui/input";
+import { useTranslations } from "next-intl";
 
 interface DataTableSearchProps<TData> {
   table: Table<TData>;
@@ -11,12 +12,13 @@ interface DataTableSearchProps<TData> {
 
 export function DataTableSearch<TData>({
   table,
-  placeholder = "Search...",
+  placeholder,
   className = "h-8 w-[150px] lg:w-[250px]",
 }: DataTableSearchProps<TData>) {
+  const t = useTranslations("common");
   return (
     <Input
-      placeholder={placeholder}
+      placeholder={placeholder ?? t("search")}
       value={table.getState().globalFilter ?? ""}
       onChange={(event) => table.setGlobalFilter(event.target.value)}
       className={className}

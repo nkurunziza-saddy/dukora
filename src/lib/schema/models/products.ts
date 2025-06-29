@@ -18,7 +18,10 @@ import { productStatusEnum } from "./enums";
 export const productsTable = pgTable(
   "products",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
     name: text("name").notNull(),
     description: text("description"),
     sku: text("sku").notNull(),
@@ -73,8 +76,12 @@ export const productsTable = pgTable(
 export const categoriesTable = pgTable(
   "categories",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
     name: text("name").notNull(),
+    value: text("value").notNull(),
     description: text("description"),
     businessId: text("business_id")
       .notNull()
@@ -100,8 +107,11 @@ export const categoriesTable = pgTable(
 export const productAttributesTable = pgTable(
   "product_attributes",
   {
-    id: text("id").primaryKey().notNull(),
-    name: text("name").notNull(), // e.g "Color", "Size"
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
+    name: text("name").notNull(),
     businessId: text("business_id")
       .notNull()
       .references(() => businessesTable.id, { onDelete: "cascade" }),
@@ -121,11 +131,14 @@ export const productAttributesTable = pgTable(
 export const productAttributeValuesTable = pgTable(
   "product_attribute_values",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
     attributeId: text("attribute_id")
       .notNull()
       .references(() => productAttributesTable.id, { onDelete: "cascade" }),
-    value: text("value").notNull(), // e.g "Red", "Large"
+    value: text("value").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -141,7 +154,10 @@ export const productAttributeValuesTable = pgTable(
 export const productTagsTable = pgTable(
   "product_tags",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
     name: text("name").notNull(),
     businessId: text("business_id")
       .notNull()
@@ -174,7 +190,10 @@ export const productProductTagsTable = pgTable(
 export const productVariantsTable = pgTable(
   "product_variants",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
     productId: text("product_id")
       .notNull()
       .references(() => productsTable.id, { onDelete: "cascade" }),

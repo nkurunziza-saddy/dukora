@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { FormDialog } from "../form-dialog";
+import { TriggerDialog } from "../shared/reusable-form-dialog";
 import { Separator } from "../ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -41,26 +41,29 @@ import {
 import { toast } from "sonner";
 import { createTransaction } from "@/server/actions/transaction-actions";
 import { format } from "date-fns";
+import { useTranslations } from "next-intl";
 
 if (typeof window !== "undefined") {
   preload("/api/products", fetcher);
 }
-
-const saleTransactionSchema = z.object({
-  productId: z.string().min(1, "Product is required"),
-  warehouseItemId: z.string().min(1, "Warehouse is required"),
-  quantity: z.coerce.number().positive("Quantity must be greater than 0"),
-  notes: z.string().optional(),
-  reference: z.string().optional(),
-});
-
-type SaleTransactionFormData = z.infer<typeof saleTransactionSchema>;
 
 export default function SaleTransactionForm({
   saleTransaction,
 }: {
   saleTransaction?: SelectTransaction;
 }) {
+  const t = useTranslations("forms");
+  const tCommon = useTranslations("common");
+  const tInventory = useTranslations("inventory");
+  const saleTransactionSchema = z.object({
+    productId: z.string().min(1, t("productRequired")),
+    warehouseItemId: z.string().min(1, t("warehouseRequired")),
+    quantity: z.coerce.number().positive(t("quantityPositive")),
+    note: z.string().optional(),
+    reference: z.string().optional(),
+  });
+
+  type SaleTransactionFormData = z.infer<typeof saleTransactionSchema>;
   const {
     data: productsData,
     error: productsError,
@@ -73,7 +76,7 @@ export default function SaleTransactionForm({
       productId: saleTransaction ? saleTransaction.productId : "",
       warehouseItemId: saleTransaction ? saleTransaction.warehouseItemId : "",
       quantity: saleTransaction ? Math.abs(saleTransaction.quantity) : 1,
-      notes: saleTransaction ? saleTransaction.notes ?? "" : "",
+      note: saleTransaction ? saleTransaction.note ?? "" : "",
       reference: saleTransaction ? saleTransaction.reference ?? "" : "",
     },
   });
@@ -107,24 +110,24 @@ export default function SaleTransactionForm({
         quantity: data.quantity,
         type: "SALE",
         warehouseId: selectedWarehouseItem?.warehouseId ?? "",
-        notes: data.notes,
+        note: data.note,
         reference: data.reference,
       };
       const req = await createTransaction(formData);
       if (req.data) {
         form.reset();
-        toast.success("Transaction added successfully", {
+        toast.success(t("transactionAdded"), {
           description: format(new Date(), "MMM dd, yyyy"),
         });
       } else {
-        toast.error("error", {
+        toast.error(tCommon("error"), {
           description: req.error?.split("_").join(" ").toLowerCase(),
         });
       }
     } catch (error) {
       console.log(error);
-      toast.error("Error", {
-        description: "Failed to record sale transaction",
+      toast.error(tCommon("error"), {
+        description: t("transactionAddFailed"),
       });
     }
   };
@@ -135,9 +138,7 @@ export default function SaleTransactionForm({
     return (
       <Alert variant="destructive">
         <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          Failed to load products. Please refresh the page and try again.
-        </AlertDescription>
+        <AlertDescription>{t("failedToLoadProducts")}</AlertDescription>
       </Alert>
     );
   }
@@ -153,12 +154,12 @@ export default function SaleTransactionForm({
             name="productId"
             render={({ field }) => (
               <FormItem className="flex flex-col space-y-2">
-                <FormLabel>Product *</FormLabel>
+                <FormLabel>{tInventory("productName")} *</FormLabel>
                 {isProductsLoading ? (
                   <div className="flex items-center space-x-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     <span className="text-sm text-muted-foreground">
-                      Loading products...
+                      {t("loadingProducts")}
                     </span>
                   </div>
                 ) : productsData ? (
@@ -181,7 +182,7 @@ export default function SaleTransactionForm({
                               </Badge>
                             </div>
                           ) : (
-                            "Select product"
+                            t("selectProduct")
                           )}
                           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
@@ -189,9 +190,9 @@ export default function SaleTransactionForm({
                     </PopoverTrigger>
                     <PopoverContent className="w-full p-0" align="start">
                       <Command>
-                        <CommandInput placeholder="Search products..." />
+                        <CommandInput placeholder={t("searchProducts")} />
                         <CommandList>
-                          <CommandEmpty>No products found.</CommandEmpty>
+                          <CommandEmpty>{t("noProductsFound")}</CommandEmpty>
                           <CommandGroup>
                             {productsData.map((product) => (
                               <CommandItem
@@ -238,12 +239,12 @@ export default function SaleTransactionForm({
               name="warehouseItemId"
               render={({ field }) => (
                 <FormItem className="flex flex-col space-y-2">
-                  <FormLabel>Warehouse Location *</FormLabel>
+                  <FormLabel>{t("warehouseLocation")} *</FormLabel>
                   {isProductDetailsLoading ? (
                     <div className="flex items-center space-x-2">
                       <Loader2 className="h-4 w-4 animate-spin" />
                       <span className="text-sm text-muted-foreground">
-                        Loading warehouses...
+                        {t("loadingWarehouses")}
                       </span>
                     </div>
                   ) : productDetailsData ? (
@@ -264,11 +265,12 @@ export default function SaleTransactionForm({
                                   {selectedWarehouseItem?.warehouse.name}
                                 </span>
                                 <Badge variant="outline" className="text-xs">
-                                  Stock: {selectedWarehouseItem?.quantity || 0}
+                                  {tInventory("onHand")}:{" "}
+                                  {selectedWarehouseItem?.quantity || 0}
                                 </Badge>
                               </div>
                             ) : (
-                              "Select warehouse"
+                              tInventory("selectWarehouse")
                             )}
                             <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
@@ -276,9 +278,11 @@ export default function SaleTransactionForm({
                       </PopoverTrigger>
                       <PopoverContent className="w-full p-0" align="start">
                         <Command>
-                          <CommandInput placeholder="Search warehouses..." />
+                          <CommandInput placeholder={t("searchWarehouses")} />
                           <CommandList>
-                            <CommandEmpty>No warehouses found.</CommandEmpty>
+                            <CommandEmpty>
+                              {t("noWarehousesFound")}
+                            </CommandEmpty>
                             <CommandGroup>
                               {productDetailsData.warehouseItems.map((item) => (
                                 <CommandItem
@@ -293,7 +297,7 @@ export default function SaleTransactionForm({
                                         {item.warehouse.name}
                                       </span>
                                       <span className="text-sm text-muted-foreground">
-                                        Current Stock: {item.quantity}
+                                        {tInventory("onHand")}: {item.quantity}
                                       </span>
                                     </div>
                                     <CheckIcon
@@ -316,7 +320,7 @@ export default function SaleTransactionForm({
                     <Alert variant="destructive">
                       <AlertCircle className="h-4 w-4" />
                       <AlertDescription>
-                        Failed to load warehouse locations
+                        {t("failedToLoadWarehouses")}
                       </AlertDescription>
                     </Alert>
                   ) : null}
@@ -331,12 +335,12 @@ export default function SaleTransactionForm({
             name="quantity"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Quantity Sold *</FormLabel>
+                <FormLabel>{tCommon("quantity")} *</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     type="number"
-                    placeholder="Enter quantity"
+                    placeholder={t("enterQuantity")}
                     min="1"
                     max={selectedWarehouseItem?.quantity || undefined}
                     step="1"
@@ -344,7 +348,7 @@ export default function SaleTransactionForm({
                   />
                 </FormControl>
                 <FormDescription className="flex items-center justify-between">
-                  <span>This will be deducted from your inventory</span>
+                  <span>{t("deductedFromInventory")}</span>
                   {selectedWarehouseItem && (
                     <span
                       className={cn(
@@ -354,7 +358,7 @@ export default function SaleTransactionForm({
                           : "text-muted-foreground"
                       )}
                     >
-                      Available: {selectedWarehouseItem.quantity}
+                      {tInventory("onHand")}: {selectedWarehouseItem.quantity}
                     </span>
                   )}
                 </FormDescription>
@@ -362,8 +366,9 @@ export default function SaleTransactionForm({
                   <Alert variant="destructive">
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>
-                      Insufficient stock. Only {selectedWarehouseItem?.quantity}{" "}
-                      units available.
+                      {t("insufficientStock", {
+                        count: selectedWarehouseItem?.quantity,
+                      })}
                     </AlertDescription>
                   </Alert>
                 )}
@@ -377,13 +382,13 @@ export default function SaleTransactionForm({
             name="reference"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Reference/PO Number</FormLabel>
+                <FormLabel>
+                  {tCommon("reference")} {t("poNumber")}
+                </FormLabel>
                 <FormControl>
-                  <Input placeholder="INV-001, SO-123, etc." {...field} />
+                  <Input placeholder={t("referencePlaceholder")} {...field} />
                 </FormControl>
-                <FormDescription>
-                  Sales order number, invoice reference, or other identifier
-                </FormDescription>
+                <FormDescription>{t("referenceDescription")}</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -391,20 +396,18 @@ export default function SaleTransactionForm({
 
           <FormField
             control={form.control}
-            name="notes"
+            name="note"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Notes</FormLabel>
+                <FormLabel>{tCommon("note")}</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Customer information, delivery notes, special instructions, etc."
+                    placeholder={t("notePlaceholder")}
                     rows={3}
                     {...field}
                   />
                 </FormControl>
-                <FormDescription>
-                  Optional notes about this sale transaction
-                </FormDescription>
+                <FormDescription>{t("noteDescription")}</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -421,7 +424,7 @@ export default function SaleTransactionForm({
               }}
               disabled={isSubmitting}
             >
-              Reset Form
+              {t("resetForm")}
             </Button>
             <Button
               type="submit"
@@ -433,10 +436,13 @@ export default function SaleTransactionForm({
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {saleTransaction ? "Updating" : "Recording"}...
+                  {saleTransaction ? t("updating") : t("recording")}
                 </>
               ) : (
-                <>{saleTransaction ? "Update" : "Record"} Sale</>
+                <>
+                  {saleTransaction ? t("update") : t("record")}{" "}
+                  {tInventory("title").split(" ")[0]}
+                </>
               )}
             </Button>
           </div>
@@ -448,12 +454,12 @@ export default function SaleTransactionForm({
 
 export const CreateSaleTransactionDialog = () => {
   return (
-    <FormDialog
-      title="Record Sale Transaction"
-      triggerText="Record Sale"
-      description="Add new inventory by recording a sale transaction."
+    <TriggerDialog
+      title={useTranslations("forms")("recordSaleTransaction")}
+      triggerText={useTranslations("forms")("recordSale")}
+      description={useTranslations("forms")("recordSaleDescription")}
     >
       <SaleTransactionForm />
-    </FormDialog>
+    </TriggerDialog>
   );
 };

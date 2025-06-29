@@ -7,6 +7,7 @@ import { DataTableViewOptions } from "./data-table-view-options";
 import { DataTableSearch } from "@/components/table/data-table-search";
 import { DataTableExportPDF } from "@/components/table/data-table-export-pdf";
 import { CreateSupplierDialog } from "@/components/forms/create-supplier-form";
+import { useTranslations } from "next-intl";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -16,7 +17,7 @@ export function SuppliersDataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
-
+  const t = useTranslations("table");
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center gap-2">
@@ -27,7 +28,7 @@ export function SuppliersDataTableToolbar<TData>({
             size="sm"
             onClick={() => table.resetColumnFilters()}
           >
-            Reset
+            {t("reset")}
             <X />
           </Button>
         )}

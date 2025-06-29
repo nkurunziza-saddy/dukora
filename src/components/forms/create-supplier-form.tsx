@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { FormDialog } from "../form-dialog";
+import { TriggerDialog } from "../shared/reusable-form-dialog";
 import { SelectSupplier } from "@/lib/schema/schema-types";
 import { Separator } from "../ui/separator";
 import {
@@ -25,29 +25,30 @@ import {
 } from "@/server/actions/supplier-actions";
 import { toast } from "sonner";
 import { format } from "date-fns";
-
-const supplierSchema = z.object({
-  name: z.string().min(1, "Supplier name is required"),
-  email: z
-    .string()
-    .min(1, "Supplier email is required")
-    .email("Please enter a valid email address"),
-  phone: z.string().refine((val) => {
-    const digits = val.replace(/\D/g, "");
-    return digits.length >= 10 && digits.length <= 15;
-  }, "Phone number must be between 10-15 digits"),
-  address: z.string().optional(),
-  note: z.string().optional(),
-  contactName: z.string().optional(),
-});
-
-type SupplierFormData = z.infer<typeof supplierSchema>;
+import { useTranslations } from "next-intl";
 
 export default function SupplierForm({
   supplier,
 }: {
   supplier?: SelectSupplier;
 }) {
+  const t = useTranslations("forms");
+  const tCommon = useTranslations("common");
+  const supplierSchema = z.object({
+    name: z.string().min(1, t("supplierNameRequired")),
+    email: z
+      .string()
+      .min(1, t("supplierEmailRequired"))
+      .email(t("supplierEmailValid")),
+    phone: z.string().refine((val) => {
+      const digits = val.replace(/\D/g, "");
+      return digits.length >= 10 && digits.length <= 15;
+    }, t("phoneDigits")),
+    address: z.string().optional(),
+    note: z.string().optional(),
+    contactName: z.string().optional(),
+  });
+  type SupplierFormData = z.infer<typeof supplierSchema>;
   const form = useForm<SupplierFormData>({
     resolver: zodResolver(supplierSchema),
     defaultValues: {
@@ -66,11 +67,16 @@ export default function SupplierForm({
       : await createSupplier(data);
     if (req.data) {
       form.reset();
-      toast.success("Supplier added successfully", {
-        description: format(new Date(), "MMM dd, yyyy"),
-      });
+      toast.success(
+        supplier
+          ? tCommon("edit") + " " + t("supplier") + " " + tCommon("confirm")
+          : t("supplier") + " " + tCommon("add") + " " + tCommon("confirm"),
+        {
+          description: format(new Date(), "MMM dd, yyyy"),
+        }
+      );
     } else {
-      toast.error("error", {
+      toast.error(tCommon("error"), {
         description: req.error?.split("_").join(" ").toLowerCase(),
       });
     }
@@ -96,9 +102,14 @@ export default function SupplierForm({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Company Name *</FormLabel>
+                <FormLabel>
+                  {t("supplier")} {tCommon("name")} *
+                </FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter supplier company name" {...field} />
+                  <Input
+                    placeholder={t("enterSupplierCompanyName")}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -112,14 +123,10 @@ export default function SupplierForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
-                    Email Address *
+                    {tCommon("email")} *
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="supplier@company.com"
-                      {...field}
-                    />
+                    <Input type="email" placeholder={t("email")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -132,11 +139,11 @@ export default function SupplierForm({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
-                    Phone Number *
+                    {tCommon("phone")} *
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="123-456-7890"
+                      placeholder={t("phone")}
                       {...field}
                       onChange={(e) => {
                         const formatted = formatPhoneNumber(e.target.value);
@@ -144,9 +151,7 @@ export default function SupplierForm({
                       }}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Enter phone number (10-15 digits)
-                  </FormDescription>
+                  <FormDescription>{t("enterPhoneNumber")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -159,11 +164,11 @@ export default function SupplierForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="flex items-center gap-2">
-                  Address
+                  {tCommon("address")}
                 </FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Enter complete business address including street, city, state, and postal code"
+                    placeholder={t("enterBusinessAddress")}
                     className="min-h-[80px]"
                     {...field}
                   />
@@ -182,16 +187,11 @@ export default function SupplierForm({
             name="contactName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Contact Person Name</FormLabel>
+                <FormLabel>{t("contactName")}</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Enter primary contact person name"
-                    {...field}
-                  />
+                  <Input placeholder={t("enterContactName")} {...field} />
                 </FormControl>
-                <FormDescription>
-                  Primary person to contact at this supplier
-                </FormDescription>
+                <FormDescription>{t("contactDescription")}</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -206,17 +206,16 @@ export default function SupplierForm({
             name="note"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Notes</FormLabel>
+                <FormLabel>{tCommon("note")}</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Add any additional notes about this supplier (payment terms, delivery schedules, special requirements, etc.)"
+                    placeholder={t("noteSupplierPlaceholder")}
                     className="min-h-[100px]"
                     {...field}
                   />
                 </FormControl>
                 <FormDescription>
-                  Optional notes about payment terms, delivery, or other
-                  important details
+                  {t("noteSupplierDescription")}
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -232,7 +231,7 @@ export default function SupplierForm({
               onClick={() => form.reset()}
               disabled={isSubmitting}
             >
-              Reset Form
+              {t("resetForm")}
             </Button>
             <Button
               type="submit"
@@ -242,10 +241,10 @@ export default function SupplierForm({
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {supplier ? "Updating" : "Creating"}...
+                  {supplier ? t("updating") : t("creating")}
                 </>
               ) : (
-                `${supplier ? "Update" : "Create"} Supplier`
+                `${supplier ? t("updateSupplier") : t("createSupplier")}`
               )}
             </Button>
           </div>
@@ -256,13 +255,14 @@ export default function SupplierForm({
 }
 
 export const CreateSupplierDialog = () => {
+  const t = useTranslations("forms");
   return (
-    <FormDialog
-      title="Create New Supplier"
-      triggerText="Create Supplier"
-      description="Fill in the details of the new supplier you want to add."
+    <TriggerDialog
+      title={t("createNewSupplier")}
+      triggerText={t("createSupplier")}
+      description={t("createSupplierDescription")}
     >
       <SupplierForm />
-    </FormDialog>
+    </TriggerDialog>
   );
 };

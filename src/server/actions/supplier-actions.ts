@@ -19,7 +19,7 @@ export async function getSuppliers() {
   if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
 
   try {
-    const suppliers = await getAllSuppliersRepo(currentUser.businessId);
+    const suppliers = await getAllSuppliersRepo(currentUser.businessId!);
     if (suppliers.error) {
       return { data: null, error: suppliers.error };
     }
@@ -41,7 +41,7 @@ export async function getSupplierById(supplierId: string) {
   try {
     const supplier = await getSupplierByIdRepo(
       supplierId,
-      currentUser.businessId
+      currentUser.businessId!
     );
 
     if (supplier.error) {
@@ -68,15 +68,19 @@ export async function createSupplier(
   try {
     const supplier: InsertSupplier = {
       ...supplierData,
-      businessId: currentUser.businessId,
+      businessId: currentUser.businessId!,
       id: `prod-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     };
 
-    const res = await createSupplierRepo(supplier);
+    const res = await createSupplierRepo(
+      currentUser.businessId!,
+      currentUser.id,
+      supplier
+    );
     if (res.error) {
       return { data: null, error: res.error };
     }
-    revalidateTag(`suppliers-${currentUser.businessId}`);
+    revalidateTag(`suppliers-${currentUser.businessId!}`);
 
     return { data: res.data, error: null };
   } catch (error) {
@@ -99,14 +103,15 @@ export async function updateSupplier(
   try {
     const updatedSupplier = await updateSupplierRepo(
       supplierId,
-      currentUser.businessId,
+      currentUser.businessId!,
+      currentUser.id,
       updates
     );
     if (updatedSupplier.error) {
       return { data: null, error: updatedSupplier.error };
     }
 
-    revalidateTag(`suppliers-${currentUser.businessId}`);
+    revalidateTag(`suppliers-${currentUser.businessId!}`);
     revalidateTag(`supplier-${supplierId}`);
 
     return { data: updatedSupplier.data, error: null };
@@ -130,9 +135,13 @@ export async function deleteSupplier(supplierId: string) {
   }
 
   try {
-    await removeSupplierRepo(supplierId, currentUser.businessId);
+    await removeSupplierRepo(
+      supplierId,
+      currentUser.businessId!,
+      currentUser.id
+    );
 
-    revalidateTag(`suppliers-${currentUser.businessId}`);
+    revalidateTag(`suppliers-${currentUser.businessId!}`);
     revalidateTag(`supplier-${supplierId}`);
 
     return { data: { success: true }, error: null };
@@ -158,19 +167,14 @@ export async function createManySuppliers(
   }
 
   try {
-    const suppliers: InsertSupplier[] = suppliersData.map(
-      (supplier, index) => ({
-        ...supplier,
-        businessId: currentUser.businessId,
-        id: `prod-${Date.now()}-${index}-${Math.random()
-          .toString(36)
-          .substr(2, 9)}`,
-      })
-    );
+    const suppliers: InsertSupplier[] = suppliersData.map((supplier) => ({
+      ...supplier,
+      businessId: currentUser.businessId!,
+    }));
 
     const createdSuppliers = await createManySuppliersRepo(suppliers);
 
-    revalidateTag(`suppliers-${currentUser.businessId}`);
+    revalidateTag(`suppliers-${currentUser.businessId!}`);
 
     return { data: createdSuppliers, error: null };
   } catch (error) {

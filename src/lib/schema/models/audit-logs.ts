@@ -1,11 +1,15 @@
-import { pgTable, text, json, timestamp, index } from "drizzle-orm/pg-core";
+import { pgTable, json, timestamp, index, text } from "drizzle-orm/pg-core";
 import { businessesTable } from "./businesses";
 import { usersTable } from "./users";
+import { sql } from "drizzle-orm";
 
 export const auditLogsTable = pgTable(
   "audit_logs",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
     model: text("model").notNull(),
     recordId: text("record_id").notNull(),
     action: text("action").notNull(),

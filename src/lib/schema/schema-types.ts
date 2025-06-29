@@ -31,6 +31,8 @@ export type SelectPurchaseOrderItem =
   typeof schema.purchaseOrderItemsTable.$inferSelect;
 export type SelectProfitReport = typeof schema.profitReportsTable.$inferSelect;
 export type SelectMetric = typeof schema.metricsTable.$inferSelect;
+export type SelectSchedule = typeof schema.schedulesTable.$inferSelect;
+export type SelectInvitation = typeof schema.invitationsTable.$inferSelect;
 export type SelectAuditLog = typeof schema.auditLogsTable.$inferSelect;
 export type SelectTransaction = typeof schema.transactionsTable.$inferSelect;
 export type SelectProductPriceHistory =
@@ -67,6 +69,8 @@ export type InsertPurchaseOrderItem =
   typeof schema.purchaseOrderItemsTable.$inferInsert;
 export type InsertProfitReport = typeof schema.profitReportsTable.$inferInsert;
 export type InsertMetric = typeof schema.metricsTable.$inferInsert;
+export type InsertSchedule = typeof schema.schedulesTable.$inferInsert;
+export type InsertInvitation = typeof schema.invitationsTable.$inferInsert;
 export type InsertAuditLog = typeof schema.auditLogsTable.$inferInsert;
 export type InsertTransaction = typeof schema.transactionsTable.$inferInsert;
 export type InsertProductPriceHistory =
@@ -112,4 +116,7 @@ export type ExtendedProductPayload = SelectProduct & {
 export type ExtendedTransactionPayload = SelectTransaction & {
   product: SelectProduct;
   createdByUser: SelectUser;
+};
+export type ExtendedInvitationPayload = SelectInvitation & {
+  invitedByUser: SelectUser | null;
 };

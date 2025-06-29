@@ -11,6 +11,7 @@ import {
   FileText,
   Zap,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import {
   CommandDialog,
@@ -22,16 +23,17 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 import CreateProductForm from "./forms/create-product-form";
 import PurchaseTransactionForm from "@/components/forms/purchase-transaction-form";
 import SupplierForm from "@/components/forms/create-supplier-form";
 import { Button } from "./ui/button";
 import SaleTransactionForm from "./forms/sale-transaction-form";
+import { StateDialog } from "./shared/reusable-form-dialog";
 
 export default function QuickActions() {
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
+  const t = useTranslations("quickActions");
 
   const [productDialogOpen, setProductDialogOpen] = React.useState(false);
   const [supplierDialogOpen, setSupplierDialogOpen] = React.useState(false);
@@ -103,7 +105,7 @@ export default function QuickActions() {
             aria-hidden="true"
           />
           <span className="text-muted-foreground/70 font-normal group-hover:text-foreground transition-colors">
-            Quick Actions
+            {t("quickActions")}
           </span>
         </span>
         <kbd className="bg-background text-muted-foreground/70 ms-8 -me-1 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
@@ -112,14 +114,14 @@ export default function QuickActions() {
       </Button>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Search for actions or navigate to pages..." />
+        <CommandInput placeholder={t("searchActionsPlaceholder")} />
         <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandEmpty>{t("noResultsFound")}</CommandEmpty>
 
-          <CommandGroup heading="Quick Actions">
+          <CommandGroup heading={t("quickActionsGroup")}>
             <CommandItem onSelect={() => handleDialogAction("create-product")}>
               <Package size={16} className="opacity-60" aria-hidden="true" />
-              <span>Create New Product</span>
+              <span>{t("createNewProduct")}</span>
               <CommandShortcut className="justify-center">⇧⌘P</CommandShortcut>
             </CommandItem>
             <CommandItem onSelect={() => handleDialogAction("create-supplier")}>
@@ -128,62 +130,74 @@ export default function QuickActions() {
                 className="opacity-60"
                 aria-hidden="true"
               />
-              <span>Create New Supplier</span>
+              <span>{t("createNewSupplier")}</span>
               <CommandShortcut className="justify-center">⇧⌘S</CommandShortcut>
             </CommandItem>
             <CommandItem onSelect={() => handleDialogAction("record-sale")}>
               <Plus size={16} className="opacity-60" aria-hidden="true" />
-              <span>Record Sale Transaction</span>
+              <span>{t("recordSaleTransaction")}</span>
               <CommandShortcut className="justify-center">⇧⌘T</CommandShortcut>
             </CommandItem>
             <CommandItem onSelect={() => handleDialogAction("record-purchase")}>
               <Plus size={16} className="opacity-60" aria-hidden="true" />
-              <span>Record Purchase Transaction</span>
+              <span>{t("recordPurchaseTransaction")}</span>
               <CommandShortcut className="justify-center">⇧⌘B</CommandShortcut>
             </CommandItem>
           </CommandGroup>
 
           <CommandSeparator />
 
-          <CommandGroup heading="Management">
+          <CommandGroup heading={t("managementGroup")}>
             <CommandItem onSelect={() => handleNavigation("/categories")}>
               <FileText size={16} className="opacity-60" aria-hidden="true" />
-              <span>Product Categories</span>
+              <span>{t("productCategories")}</span>
             </CommandItem>
             <CommandItem onSelect={() => handleNavigation("/suppliers")}>
               <Users size={16} className="opacity-60" aria-hidden="true" />
-              <span>Supplier Management</span>
+              <span>{t("supplierManagement")}</span>
             </CommandItem>
             <CommandItem onSelect={() => handleNavigation("/settings")}>
               <Settings size={16} className="opacity-60" aria-hidden="true" />
-              <span>System Settings</span>
+              <span>{t("systemSettings")}</span>
             </CommandItem>
           </CommandGroup>
         </CommandList>
       </CommandDialog>
 
-      <Dialog open={productDialogOpen} onOpenChange={setProductDialogOpen}>
-        <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col">
-          <CreateProductForm />
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={supplierDialogOpen} onOpenChange={setSupplierDialogOpen}>
-        <DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col">
-          <SupplierForm />
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={saleDialogOpen} onOpenChange={setSaleDialogOpen}>
-        <DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col">
-          <SaleTransactionForm />
-        </DialogContent>
-      </Dialog>
-      <Dialog open={purchaseDialogOpen} onOpenChange={setPurchaseDialogOpen}>
-        <DialogContent className="sm:max-w-2xl max-h-[90vh] flex flex-col">
-          <PurchaseTransactionForm />
-        </DialogContent>
-      </Dialog>
+      <StateDialog
+        title={t("createNewProduct")}
+        description={t("createNewProductDesc")}
+        isDialogOpen={productDialogOpen}
+        setIsDialogOpen={setProductDialogOpen}
+      >
+        <CreateProductForm />
+      </StateDialog>
+      <StateDialog
+        title={t("createNewSupplier")}
+        description={t("createNewSupplierDesc")}
+        isDialogOpen={supplierDialogOpen}
+        setIsDialogOpen={setSupplierDialogOpen}
+      >
+        <SupplierForm />
+      </StateDialog>
+      <StateDialog
+        className="sm:max-w-2xl max-h-[90vh]"
+        title={t("recordSaleTransaction")}
+        description={t("recordSaleTransactionDesc")}
+        isDialogOpen={saleDialogOpen}
+        setIsDialogOpen={setSaleDialogOpen}
+      >
+        <SaleTransactionForm />
+      </StateDialog>
+      <StateDialog
+        className="sm:max-w-2xl max-h-[90vh]"
+        title={t("recordPurchaseTransaction")}
+        description={t("recordPurchaseTransactionDesc")}
+        isDialogOpen={purchaseDialogOpen}
+        setIsDialogOpen={setPurchaseDialogOpen}
+      >
+        <PurchaseTransactionForm />
+      </StateDialog>
     </>
   );
 }

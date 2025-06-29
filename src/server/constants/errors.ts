@@ -8,6 +8,7 @@ export enum ErrorCode {
   CONFLICT = "CONFLICT",
   VALIDATION_ERROR = "VALIDATION_ERROR",
   FAILED_REQUEST = "FAILED_REQUEST",
+  ALREADY_EXISTS = "ALREADY_EXISTS",
 
   // Authentication errors
   INVALID_CREDENTIALS = "INVALID_CREDENTIALS",
@@ -21,6 +22,8 @@ export enum ErrorCode {
   // User errors
   USER_NOT_FOUND = "USER_NOT_FOUND",
   USER_ALREADY_EXISTS = "USER_ALREADY_EXISTS",
+  CANNOT_DELETE_SELF = "CANNOT_DELETE_SELF",
+  CANNOT_DEACTIVATE_SELF = "CANNOT_DEACTIVATE_SELF",
 
   // Product errors
   PRODUCT_NOT_FOUND = "PRODUCT_NOT_FOUND",
@@ -73,6 +76,7 @@ export const ERROR_CODE_STATUS_MAP: Record<ErrorCode, number> = {
   [ErrorCode.NOT_FOUND]: 404,
   [ErrorCode.CONFLICT]: 409,
   [ErrorCode.VALIDATION_ERROR]: 400,
+  [ErrorCode.ALREADY_EXISTS]: 409,
   [ErrorCode.FAILED_REQUEST]: 500,
 
   // Authentication errors
@@ -87,6 +91,8 @@ export const ERROR_CODE_STATUS_MAP: Record<ErrorCode, number> = {
   // User errors
   [ErrorCode.USER_NOT_FOUND]: 404,
   [ErrorCode.USER_ALREADY_EXISTS]: 409,
+  [ErrorCode.CANNOT_DELETE_SELF]: 409,
+  [ErrorCode.CANNOT_DEACTIVATE_SELF]: 409,
 
   // Product errors
   [ErrorCode.PRODUCT_NOT_FOUND]: 404,

@@ -18,7 +18,10 @@ import { productsTable } from "./products";
 export const saleOrdersTable = pgTable(
   "sales_orders",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
     orderNumber: text("order_number").notNull(),
     status: orderStatusEnum("status").notNull().default("DRAFT"),
     orderDate: timestamp("order_date", { withTimezone: true })
@@ -34,7 +37,7 @@ export const saleOrdersTable = pgTable(
     taxAmount: numeric("tax_amount", { precision: 12, scale: 2 })
       .notNull()
       .default("0"),
-    notes: text("notes"),
+    note: text("note"),
     createdBy: text("created_by")
       .notNull()
       .references(() => usersTable.id),
@@ -62,7 +65,10 @@ export const saleOrdersTable = pgTable(
 export const purchaseOrdersTable = pgTable(
   "purchase_orders",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
     orderNumber: text("order_number").notNull(),
     status: orderStatusEnum("status").notNull().default("DRAFT"),
     orderDate: timestamp("order_date", { withTimezone: true })
@@ -78,7 +84,7 @@ export const purchaseOrdersTable = pgTable(
     taxAmount: numeric("tax_amount", { precision: 12, scale: 2 })
       .notNull()
       .default("0"),
-    notes: text("notes"),
+    note: text("note"),
     supplierId: text("supplier_id")
       .notNull()
       .references(() => suppliersTable.id),
@@ -106,7 +112,10 @@ export const purchaseOrdersTable = pgTable(
 export const saleOrderItemsTable = pgTable(
   "sales_order_items",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
     salesOrderId: text("sales_order_id")
       .notNull()
       .references(() => saleOrdersTable.id, { onDelete: "cascade" }),
@@ -118,7 +127,7 @@ export const saleOrderItemsTable = pgTable(
     discount: numeric("discount", { precision: 10, scale: 2 })
       .notNull()
       .default("0"),
-    notes: text("notes"),
+    note: text("note"),
   },
   (table) => [
     check("quantity_positive", sql`${table.quantity} > 0`),
@@ -132,7 +141,10 @@ export const saleOrderItemsTable = pgTable(
 export const purchaseOrderItemsTable = pgTable(
   "purchase_order_items",
   {
-    id: text("id").primaryKey().notNull(),
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
     purchaseOrderId: text("purchase_order_id")
       .notNull()
       .references(() => purchaseOrdersTable.id, { onDelete: "cascade" }),
@@ -144,7 +156,7 @@ export const purchaseOrderItemsTable = pgTable(
     discount: numeric("discount", { precision: 10, scale: 2 })
       .notNull()
       .default("0"),
-    notes: text("notes"),
+    note: text("note"),
   },
   (table) => [
     check("quantity_positive", sql`${table.quantity} > 0`),

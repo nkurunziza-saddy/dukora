@@ -1,0 +1,214 @@
+"use server";
+
+import { eq, desc, and } from "drizzle-orm";
+import { revalidateTag } from "next/cache";
+import { db } from "@/lib/db";
+import { schedulesTable } from "@/lib/schema/models/schedules";
+import type { InsertSchedule } from "@/lib/schema/schema-types";
+import { ErrorCode } from "@/server/constants/errors";
+
+export async function get_all(businessId: string, userId: string) {
+  if (!businessId) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
+
+  try {
+    const schedules = await db
+      .select()
+      .from(schedulesTable)
+      .where(
+        and(
+          eq(schedulesTable.businessId, businessId),
+          eq(schedulesTable.userId, userId)
+        )
+      )
+      .orderBy(desc(schedulesTable.created_at));
+    return { data: schedules, error: null };
+  } catch (error) {
+    console.error("Failed to fetch schedules:", error);
+    return { data: null, error: ErrorCode.FAILED_REQUEST };
+  }
+}
+
+export async function get_overview(
+  businessId: string,
+  userId: string,
+  limit?: number
+) {
+  if (!businessId) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
+
+  try {
+    const schedules = await db
+      .select()
+      .from(schedulesTable)
+      .where(
+        and(
+          eq(schedulesTable.businessId, businessId),
+          eq(schedulesTable.userId, userId)
+        )
+      )
+      .limit(limit ?? 5)
+      .orderBy(desc(schedulesTable.created_at));
+    return { data: schedules, error: null };
+  } catch (error) {
+    console.error("Failed to fetch schedules:", error);
+    return { data: null, error: ErrorCode.FAILED_REQUEST };
+  }
+}
+
+export async function get_by_id(scheduleId: string, businessId: string) {
+  if (!scheduleId || !businessId) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
+
+  try {
+    const schedule = await db.query.schedulesTable.findFirst({
+      where: and(
+        eq(schedulesTable.id, scheduleId),
+        eq(schedulesTable.businessId, businessId)
+      ),
+    });
+
+    if (!schedule) {
+      return {
+        data: null,
+        error: ErrorCode.NOT_FOUND,
+      };
+    }
+
+    return { data: schedule, error: null };
+  } catch (error) {
+    console.error("Failed to fetch schedule:", error);
+    return { data: null, error: ErrorCode.FAILED_REQUEST };
+  }
+}
+
+export async function create(
+  businessId: string,
+  userId: string,
+  schedule: InsertSchedule
+) {
+  if (!schedule.title || !schedule.businessId) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
+
+  try {
+    const [newSchedule] = await db
+      .insert(schedulesTable)
+      .values(schedule)
+      .returning();
+
+    revalidateTag("schedules");
+    revalidateTag(`schedules-${schedule.businessId}`);
+
+    return { data: newSchedule, error: null };
+  } catch (error) {
+    console.error("Failed to create schedule:", error);
+    return { data: null, error: ErrorCode.FAILED_REQUEST };
+  }
+}
+
+export async function update(
+  scheduleId: string,
+  businessId: string,
+  userId: string,
+  updates: Partial<InsertSchedule>
+) {
+  if (!scheduleId || !businessId) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
+
+  try {
+    const [updatedSchedule] = await db
+      .update(schedulesTable)
+      .set({ ...updates, updated_at: new Date() })
+      .where(
+        and(
+          eq(schedulesTable.id, scheduleId),
+          eq(schedulesTable.businessId, businessId)
+        )
+      )
+      .returning();
+
+    if (!updatedSchedule) {
+      return {
+        data: null,
+        error: ErrorCode.NOT_FOUND,
+      };
+    }
+
+    revalidateTag(`schedules-${businessId}`);
+    revalidateTag(`schedule-${scheduleId}`);
+
+    return { data: updatedSchedule, error: null };
+  } catch (error) {
+    console.error("Failed to update schedule:", error);
+    return { data: null, error: ErrorCode.FAILED_REQUEST };
+  }
+}
+
+export async function remove(scheduleId: string, businessId: string) {
+  if (!scheduleId || !businessId) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
+
+  try {
+    const existingRecord = await db.query.schedulesTable.findFirst({
+      where: eq(schedulesTable.id, scheduleId),
+    });
+    if (!existingRecord) {
+      return { data: null, error: ErrorCode.NOT_FOUND };
+    }
+    const [deletedSchedule] = await db
+      .delete(schedulesTable)
+      .where(
+        and(
+          eq(schedulesTable.id, scheduleId),
+          eq(schedulesTable.businessId, businessId)
+        )
+      )
+      .returning();
+
+    if (!deletedSchedule) {
+      return {
+        data: null,
+        error: ErrorCode.NOT_FOUND,
+      };
+    }
+
+    revalidateTag(`schedules-${businessId}`);
+    revalidateTag(`schedule-${scheduleId}`);
+
+    return { data: deletedSchedule, error: null };
+  } catch (error) {
+    console.error("Failed to delete schedule:", error);
+    return { data: null, error: ErrorCode.FAILED_REQUEST };
+  }
+}
+
+export async function create_many(schedules: InsertSchedule[]) {
+  if (!schedules.length) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
+
+  const businessId = schedules[0]?.businessId;
+  if (!businessId || !schedules.every((p) => p.businessId === businessId)) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
+
+  try {
+    const result = await db
+      .insert(schedulesTable)
+      .values(schedules)
+      .returning();
+
+    revalidateTag(`schedules-${businessId}`);
+
+    return { data: result, error: null };
+  } catch (error) {
+    console.error("Failed to create schedules:", error);
+    return { data: null, error: ErrorCode.FAILED_REQUEST };
+  }
+}

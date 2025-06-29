@@ -14,16 +14,18 @@ import {
 import { toast } from "sonner";
 import { Link } from "@/i18n/navigation";
 import { format } from "date-fns";
-import ConfirmDialog from "../confirm-dialog";
-import UpdateDialog from "../update-dialog";
+import ConfirmDialog from "../shared/confirm-dialog";
 import { SelectSupplier } from "@/lib/schema/schema-types";
 import SupplierForm from "../forms/create-supplier-form";
+import { StateDialog } from "../shared/reusable-form-dialog";
+import { useTranslations } from "next-intl";
 
 export interface SupplierRowActionsProps {
   supplier: SelectSupplier;
 }
 
 const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
+  const t = useTranslations("table");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,19 +41,19 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
       if (resp.status !== 204) {
         const message = await resp.json().catch(() => ({}));
         setIsLoading(false);
-        return toast.error("Error deleting supplier", {
+        return toast.error(t("supplier.deleteError"), {
           description: `${message}`,
         });
       }
       setIsDeleteDialogOpen(false);
-      return toast.success("Supplier deleted successfully.", {
+      return toast.success(t("supplier.deleteSuccess"), {
         description: `${format(new Date(), "PPP")}`,
       });
     } catch (err) {
       console.error(err);
-      return toast.error("Error deleting supplier", {
+      return toast.error(t("supplier.deleteError"), {
         description:
-          err instanceof Error ? err.message : "An unexpected error occurred",
+          err instanceof Error ? err.message : t("common.unexpectedError"),
       });
     } finally {
       setIsLoading(false);
@@ -63,21 +65,21 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{t("common.openMenu")}</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuLabel>{t("common.actions")}</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={() => navigator.clipboard.writeText(supplier.id)}
           >
-            Copy Supplier ID
+            {t("supplier.copyId")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link href={`/suppliers/${supplier.id}`} prefetch>
-              View supplier details
+              {t("supplier.viewDetails")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
@@ -86,7 +88,7 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
             className="cursor-pointer"
           >
             <Edit className="mr-2 h-4 w-4" />
-            Edit
+            {t("common.edit")}
           </DropdownMenuItem>
           <DropdownMenuItem
             variant="destructive"
@@ -94,7 +96,7 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
             className="cursor-pointer"
           >
             <Trash className="mr-2 h-4 w-4" />
-            Delete
+            {t("common.delete")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -104,17 +106,17 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
         setIsDialogOpen={setIsDeleteDialogOpen}
         handleConfirm={handleDeleteConfirm}
         isLoading={isLoading}
-        title="Delete supplier"
-        description={`Are you sure you want to delete this supplier? This action cannot be undone.`}
+        title={t("supplier.deleteDialogTitle")}
+        description={t("supplier.deleteDialogDescription")}
       />
-      <UpdateDialog
-        title="Edit Supplier"
-        description="Update the details of the selected supplier."
+      <StateDialog
+        title={t("supplier.editDialogTitle")}
+        description={t("supplier.editDialogDescription")}
         isDialogOpen={isUpdateDialogOpen}
         setIsDialogOpen={setIsUpdateDialogOpen}
       >
         <SupplierForm supplier={supplier} />
-      </UpdateDialog>
+      </StateDialog>
     </>
   );
 };

@@ -22,6 +22,8 @@ import {
   productProductTagsTable,
   warehouseItemsTable,
   productPriceHistoryTable,
+  schedulesTable,
+  invitationsTable,
 } from "./models";
 
 export const businessesTableRelations = relations(
@@ -39,6 +41,8 @@ export const businessesTableRelations = relations(
     metrics: many(metricsTable),
     auditLogs: many(auditLogsTable),
     transactions: many(transactionsTable),
+    schedules: many(schedulesTable),
+    invitations: many(invitationsTable),
   })
 );
 
@@ -49,6 +53,8 @@ export const usersTableRelations = relations(usersTable, ({ one, many }) => ({
   }),
   businessUserSettings: many(userSettingsTable),
   auditLogs: many(auditLogsTable),
+  schedules: many(schedulesTable),
+  invitations: many(invitationsTable),
 }));
 
 export const categoriesTableRelations = relations(
@@ -143,8 +149,21 @@ export const userSettingsTableRelations = relations(
   userSettingsTable,
   ({ one }) => ({
     businessUser: one(usersTable, {
-      fields: [userSettingsTable.businessUserId],
+      fields: [userSettingsTable.userId],
       references: [usersTable.id],
+    }),
+  })
+);
+export const invitationsTableRelations = relations(
+  invitationsTable,
+  ({ one }) => ({
+    invitedByUser: one(usersTable, {
+      fields: [invitationsTable.invitedBy],
+      references: [usersTable.id],
+    }),
+    businessesTable: one(businessesTable, {
+      fields: [invitationsTable.invitedBy],
+      references: [businessesTable.id],
     }),
   })
 );
@@ -215,6 +234,16 @@ export const auditLogsTableRelations = relations(auditLogsTable, ({ one }) => ({
   }),
   performedBy: one(usersTable, {
     fields: [auditLogsTable.performedBy],
+    references: [usersTable.id],
+  }),
+}));
+export const schedulesTableRelations = relations(schedulesTable, ({ one }) => ({
+  business: one(businessesTable, {
+    fields: [schedulesTable.businessId],
+    references: [businessesTable.id],
+  }),
+  performedBy: one(usersTable, {
+    fields: [schedulesTable.userId],
     references: [usersTable.id],
   }),
 }));

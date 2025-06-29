@@ -20,7 +20,7 @@ export async function getWarehouses() {
   if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
 
   try {
-    const warehouses = await getAllWarehousesRepo(currentUser.businessId);
+    const warehouses = await getAllWarehousesRepo(currentUser.businessId!);
     if (warehouses.error) {
       return { data: null, error: warehouses.error };
     }
@@ -42,7 +42,7 @@ export async function getWarehouseById(warehouseId: string) {
   try {
     const warehouse = await getWarehouseByIdRepo(
       warehouseId,
-      currentUser.businessId
+      currentUser.businessId!
     );
 
     if (warehouse.error) {
@@ -69,17 +69,17 @@ export async function createWarehouse(
   try {
     const warehouse: InsertWarehouse = {
       ...warehouseData,
-      businessId: currentUser.businessId,
-      id: `prod-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      businessId: currentUser.businessId!,
     };
     const { data: resData, error: resError } = await createWarehouseRepo(
-      warehouse
+      warehouse,
+      currentUser.id
     );
     if (resError) {
       return { data: null, error: resError };
     }
 
-    revalidateTag(`warehouses-${currentUser.businessId}`);
+    revalidateTag(`warehouses-${currentUser.businessId!}`);
 
     return { data: resData, error: null };
   } catch (error) {
@@ -100,7 +100,7 @@ export async function updateWarehouse(
   }
   const existingWarehouse = await getWarehouseByIdRepo(
     warehouseId,
-    currentUser.businessId
+    currentUser.businessId!
   );
 
   if (!existingWarehouse) {
@@ -110,14 +110,15 @@ export async function updateWarehouse(
   try {
     const updatedWarehouse = await updateWarehouseRepo(
       warehouseId,
-      currentUser.businessId,
+      currentUser.businessId!,
+      currentUser.id,
       updates
     );
     if (updatedWarehouse.error) {
       return { data: null, error: updatedWarehouse.error };
     }
 
-    revalidateTag(`warehouses-${currentUser.businessId}`);
+    revalidateTag(`warehouses-${currentUser.businessId!}`);
     revalidateTag(`warehouse-${warehouseId}`);
 
     return { data: updatedWarehouse.data, error: null };
@@ -141,9 +142,13 @@ export async function deleteWarehouse(warehouseId: string) {
   }
 
   try {
-    await removeWarehouseRepo(warehouseId, currentUser.businessId);
+    await removeWarehouseRepo(
+      warehouseId,
+      currentUser.businessId!,
+      currentUser.id
+    );
 
-    revalidateTag(`warehouses-${currentUser.businessId}`);
+    revalidateTag(`warehouses-${currentUser.businessId!}`);
     revalidateTag(`warehouse-${warehouseId}`);
 
     return { data: { success: true }, error: null };
@@ -159,29 +164,28 @@ export async function deleteWarehouse(warehouseId: string) {
 }
 
 export async function createManyWarehouses(
-  warehousesData: Omit<InsertWarehouse, "businessId" | "id">[]
+  warehousesData: Omit<InsertWarehouse, "businessId" | "id" | "code">[]
 ) {
   const currentUser = await getUserIfHasPermission(Permission.WAREHOUSE_CREATE);
   if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
 
-  if (!warehousesData?.length) {
+  if (warehousesData === null) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
 
   try {
-    const warehouses: InsertWarehouse[] = warehousesData.map(
-      (warehouse, index) => ({
-        ...warehouse,
-        businessId: currentUser.businessId,
-        id: `prod-${Date.now()}-${index}-${Math.random()
-          .toString(36)
-          .substr(2, 9)}`,
-      })
+    const warehouses: InsertWarehouse[] = warehousesData.map((warehouse) => ({
+      ...warehouse,
+      businessId: currentUser.businessId!,
+      code: Math.random().toString(36).substr(2, 6).toUpperCase(),
+    }));
+
+    const createdWarehouses = await createManyWarehousesRepo(
+      warehouses,
+      currentUser.id
     );
 
-    const createdWarehouses = await createManyWarehousesRepo(warehouses);
-
-    revalidateTag(`warehouses-${currentUser.businessId}`);
+    revalidateTag(`warehouses-${currentUser.businessId!}`);
 
     return { data: createdWarehouses, error: null };
   } catch (error) {

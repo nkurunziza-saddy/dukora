@@ -6,36 +6,33 @@ import { USER_ROLES } from "@/lib/schema/models/enums";
 import { UserRole } from "./schema/schema-types";
 
 export const auth = betterAuth({
+  emailAndPassword: {
+    enabled: true,
+
+    async sendResetPassword(data, request) {
+      console.log({ data, request });
+    },
+  },
   socialProviders: {
     github: {
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     },
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
   },
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
-  databaseHooks: {
-    user: {
-      create: {
-        before: async (user) => {
-          return {
-            data: {
-              ...user,
-              role: UserRole.VIEW_ONLY,
-            },
-          };
-        },
-      },
-    },
-  },
   user: {
     modelName: "usersTable",
     additionalFields: {
       role: {
         type: [...USER_ROLES],
         required: false,
-        defaultValue: "user",
+        defaultValue: UserRole.ADMIN,
         input: false,
       },
       lang: {
@@ -45,6 +42,8 @@ export const auth = betterAuth({
       },
       businessId: {
         type: "string",
+        input: false,
+        required: false,
       },
     },
   },

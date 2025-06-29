@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Check, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,54 +24,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { cn, fetcher } from "@/lib/utils";
+import { fetcher } from "@/lib/utils";
 import useSwr, { preload } from "swr";
 import type { SelectCategory, SelectProduct } from "@/lib/schema/schema-types";
-import { FormDialog } from "../form-dialog";
+import { TriggerDialog } from "../shared/reusable-form-dialog";
 import { Separator } from "../ui/separator";
 import { createProduct, updateProduct } from "@/server/actions/product-actions";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { useTranslations } from "next-intl";
 
 if (typeof window !== "undefined") {
   preload("/api/categories", fetcher);
 }
-
-const productSchema = z.object({
-  name: z.string().min(1, "Product name is required"),
-  description: z.string().optional(),
-  sku: z.string().min(1, "SKU is required"),
-  barcode: z.string().optional(),
-  price: z.string().refine((val) => {
-    const num = Number.parseFloat(val);
-    return !isNaN(num) && num >= 0;
-  }, "Price must be a positive number"),
-  costPrice: z.string().refine((val) => {
-    const num = Number.parseFloat(val);
-    return !isNaN(num) && num >= 0;
-  }, "Cost price must be a positive number"),
-  categoryId: z.string().optional(),
-  reorderPoint: z.string().refine((val) => {
-    const num = Number.parseInt(val);
-    return !isNaN(num) && num >= 0;
-  }, "Reorder point must be a positive number"),
-  maxStock: z.string().refine((val) => {
-    const num = Number.parseInt(val);
-    return !isNaN(num) && num > 0;
-  }, "Max stock must be greater than 0"),
-  unit: z.string(),
-  weight: z.string().optional(),
-});
-
-const units = [
-  { value: "pcs", label: "Pieces" },
-  { value: "kg", label: "Kilograms" },
-  { value: "lbs", label: "Pounds" },
-  { value: "m", label: "Meters" },
-  { value: "ft", label: "Feet" },
-  { value: "l", label: "Liters" },
-  { value: "gal", label: "Gallons" },
-];
 
 export default function ProductForm({ product }: { product?: SelectProduct }) {
   const {
@@ -79,6 +44,45 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
     error: categoriesError,
     isLoading: isCategoriesLoading,
   } = useSwr<SelectCategory[]>("/api/categories", fetcher);
+
+  const t = useTranslations("forms");
+  const tCommon = useTranslations("common");
+
+  const productSchema = z.object({
+    name: z.string().min(1, t("productNameRequired")),
+    description: z.string().optional(),
+    sku: z.string().min(1, t("skuRequired")),
+    barcode: z.string().optional(),
+    price: z.string().refine((val) => {
+      const num = Number.parseFloat(val);
+      return !isNaN(num) && num >= 0;
+    }, t("pricePositive")),
+    costPrice: z.string().refine((val) => {
+      const num = Number.parseFloat(val);
+      return !isNaN(num) && num >= 0;
+    }, t("costPricePositive")),
+    categoryId: z.string().optional(),
+    reorderPoint: z.string().refine((val) => {
+      const num = Number.parseInt(val);
+      return !isNaN(num) && num >= 0;
+    }, t("reorderPointPositive")),
+    maxStock: z.string().refine((val) => {
+      const num = Number.parseInt(val);
+      return !isNaN(num) && num > 0;
+    }, t("maxStockPositive")),
+    unit: z.string(),
+    weight: z.string().optional(),
+  });
+
+  const units = [
+    { value: "pcs", label: t("unitPieces") },
+    { value: "kg", label: t("unitKilograms") },
+    { value: "lbs", label: t("unitPounds") },
+    { value: "m", label: t("unitMeters") },
+    { value: "ft", label: t("unitFeet") },
+    { value: "l", label: t("unitLiters") },
+    { value: "gal", label: t("unitGallons") },
+  ];
 
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
@@ -106,17 +110,23 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
           : null,
       reorderPoint: Number.parseInt(values.reorderPoint, 10),
       maxStock: Number.parseInt(values.maxStock, 10),
+      // weight: Number.parseFloat(values.weight ?? ""),
     };
     const req = product
       ? await updateProduct(product.id, productData)
       : await createProduct(productData);
     if (req.data) {
       form.reset();
-      toast.success("Product added successfully", {
-        description: format(new Date(), "MMM dd, yyyy"),
-      });
+      toast.success(
+        product
+          ? `${tCommon("edit")} ${t("productName")} ${tCommon("confirm")}`
+          : `${t("productName")} ${tCommon("add")} ${tCommon("confirm")}`,
+        {
+          description: format(new Date(), "MMM dd, yyyy"),
+        }
+      );
     } else {
-      toast.error("error adding product", {
+      toast.error(tCommon("error"), {
         description: req.error?.split("_").join(" ").toLowerCase(),
       });
     }
@@ -134,9 +144,9 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Product Name *</FormLabel>
+                <FormLabel>{t("productName")} *</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter product name" {...field} />
+                  <Input placeholder={t("enterProductName")} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -148,10 +158,10 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>{t("description")}</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Enter product description"
+                    placeholder={t("enterProductDescription")}
                     className="min-h-[80px]"
                     {...field}
                   />
@@ -167,13 +177,11 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               name="sku"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>SKU *</FormLabel>
+                  <FormLabel>{t("SKU")} *</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., PROD-001" {...field} />
+                    <Input placeholder={t("SKUDescription")} {...field} />
                   </FormControl>
-                  <FormDescription>
-                    Stock Keeping Unit (unique identifier)
-                  </FormDescription>
+                  <FormDescription>{t("SKUDescription")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -184,9 +192,9 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               name="barcode"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Barcode</FormLabel>
+                  <FormLabel>{t("barcode")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter barcode" {...field} />
+                    <Input placeholder={t("barcodePlaceholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -198,37 +206,27 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
             name="categoryId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Category</FormLabel>
+                <FormLabel>{t("categoryId")}</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
                   <FormControl>
                     <SelectTrigger className="w-full sm:w-1/2">
-                      <SelectValue placeholder="Select product's category" />
+                      <SelectValue placeholder={t("categoryId")} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {isCategoriesLoading && <div>Loading categories...</div>}
-                    {categoriesError && (
-                      <div>Error loading categories. Please try again.</div>
-                    )}
+                    {isCategoriesLoading && <div>{t("loading")}...</div>}
+                    {categoriesError && <div>{t("errorLoading")}</div>}
 
                     {categoriesData?.map((category) => (
                       <SelectItem
-                        value={category.name}
+                        value={category.id}
                         key={category.id}
                         disabled={!category.isActive}
                       >
                         {category.name}
-                        <Check
-                          className={cn(
-                            "ml-auto",
-                            category.id === field.value
-                              ? "opacity-100"
-                              : "opacity-0"
-                          )}
-                        />
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -247,12 +245,12 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Selling Price *</FormLabel>
+                  <FormLabel>{t("price")} *</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       step="0.01"
-                      placeholder="0.00"
+                      placeholder={t("price")}
                       {...field}
                     />
                   </FormControl>
@@ -266,12 +264,12 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               name="costPrice"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Cost Price *</FormLabel>
+                  <FormLabel>{t("costPrice")} *</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       step="0.01"
-                      placeholder="0.00"
+                      placeholder={t("costPrice")}
                       {...field}
                     />
                   </FormControl>
@@ -290,11 +288,11 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               name="reorderPoint"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Reorder Point</FormLabel>
+                  <FormLabel>{t("reorderPoint")}</FormLabel>
                   <FormControl>
                     <Input type="number" {...field} />
                   </FormControl>
-                  <FormDescription>Minimum stock level</FormDescription>
+                  <FormDescription>{t("reorderPoint")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -305,11 +303,11 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               name="maxStock"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Max Stock</FormLabel>
+                  <FormLabel>{t("maxStock")}</FormLabel>
                   <FormControl>
                     <Input type="number" {...field} />
                   </FormControl>
-                  <FormDescription>Maximum stock level</FormDescription>
+                  <FormDescription>{t("maxStockDescription")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -322,7 +320,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               name="unit"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Unit</FormLabel>
+                  <FormLabel>{t("unit")}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
@@ -335,6 +333,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
                     <SelectContent>
                       {units.map((unit) => (
                         <SelectItem key={unit.value} value={unit.value}>
+                          {/* comment: No translation for unit label */}
                           {unit.label}
                         </SelectItem>
                       ))}
@@ -349,16 +348,16 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               name="weight"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Weight</FormLabel>
+                  <FormLabel>{t("weight")}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
                       step="0.001"
-                      placeholder="0.000"
+                      placeholder={t("weight")}
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>Weight in kg</FormDescription>
+                  <FormDescription>{t("weight")}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -366,21 +365,35 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
           </div>
         </div>
 
-        <div className="flex justify-end pt-2">
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="min-w-[120px]"
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {product ? "Updating" : "Creating"}...
-              </>
-            ) : (
-              `${product ? "Update" : "Create"} Product`
-            )}
-          </Button>
+        <div className="flex justify-end pt-6 border-t">
+          <div className="flex gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => form.reset()}
+              disabled={isSubmitting}
+            >
+              {tCommon("cancel")}
+            </Button>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="min-w-[120px]"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {/* comment: No translation for "Updating"/"Creating" */}
+                  {product ? tCommon("edit") : tCommon("add")}...
+                </>
+              ) : (
+                // comment: No translation for "Update Product"/"Create Product"
+                `${product ? tCommon("edit") : tCommon("add")} ${t(
+                  "productName"
+                )}`
+              )}
+            </Button>
+          </div>
         </div>
       </form>
     </Form>
@@ -388,13 +401,14 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
 }
 
 export const CreateProductDialog = () => {
+  // comment: No translation for dialog title/trigger/description
   return (
-    <FormDialog
+    <TriggerDialog
       title="Create New Product"
       triggerText="Create Product"
       description="Fill in the details of the new product you want to add."
     >
       <ProductForm />
-    </FormDialog>
+    </TriggerDialog>
   );
 };

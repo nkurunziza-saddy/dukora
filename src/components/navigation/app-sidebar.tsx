@@ -1,11 +1,13 @@
 "use client";
 
 import {
+  ArrowRightLeft,
   BarChart3,
   Bot,
   Calendar,
   CreditCard,
   Frame,
+  Layers,
   Package,
   ShoppingCart,
   Store,
@@ -27,6 +29,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 const data = {
   navMain: [
@@ -34,8 +37,13 @@ const data = {
       title: "Dashboard",
       items: [
         {
-          title: "Inventory Overview",
+          title: "Dashboard",
           url: "/dashboard",
+          icon: Layers,
+        },
+        {
+          title: "Inventory Overview",
+          url: "/inventory",
           icon: Warehouse,
         },
         {
@@ -47,6 +55,11 @@ const data = {
           title: "Supplier Management",
           url: "/suppliers",
           icon: Truck,
+        },
+        {
+          title: "Business transactions",
+          url: "/transactions",
+          icon: ArrowRightLeft,
         },
       ],
     },
@@ -78,6 +91,7 @@ const data = {
           url: "/users",
           icon: Users,
         },
+
         {
           title: "Scheduler",
           url: "/scheduler",
@@ -85,7 +99,7 @@ const data = {
         },
         {
           title: "E-commerce Sync",
-          url: "/ecommerce",
+          url: "/commerce",
           icon: Store,
         },
       ],
@@ -104,6 +118,7 @@ const data = {
 };
 
 export function AppSidebar() {
+  const t = useTranslations("navigation");
   return (
     <Sidebar collapsible="offcanvas">
       <SidebarHeader>
@@ -111,7 +126,7 @@ export function AppSidebar() {
           <div className="p-1 round bg-primary text-primary-foreground">
             <Frame className="size-3" />
           </div>
-          <span className="font-semibold text-base">quantra</span>
+          <span className="font-semibold text-base">quantura</span>
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -120,23 +135,26 @@ export function AppSidebar() {
             <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {group.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <Link href={item.url}>
-                        {/* <item.icon className="h-4 w-4" /> */}
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {group.items.map((item) => {
+                  const url = item.url.slice(1);
+                  return (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton asChild>
+                        <Link href={item.url}>
+                          {/* <item.icon className="h-4 w-4" /> */}
+                          <span>{t(url)}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <div className="p-4 text-xs text-muted-foreground">© 2025 quantra</div>
+        <div className="p-4 text-xs text-muted-foreground">© 2025 quantura</div>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
