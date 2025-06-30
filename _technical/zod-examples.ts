@@ -23,7 +23,7 @@ const phoneSchema = z
 const emailSchema = z
   .string()
   .transform((val) => val.trim().toLowerCase()) // Clean and normalize
-  .email("Invalid email format");
+  // .email("Invalid email format");
 
 // 4. Currency cleaning
 const currencySchema = z
@@ -41,21 +41,21 @@ const tagsSchema = z
   .transform((arr) => [...new Set(arr)]); // Remove duplicates
 
 // 6. Conditional cleaning
-const conditionalSchema = z.object({
-  type: z.enum(["physical", "digital"]),
-  weight: z
-    .string()
-    .optional()
-    .transform((val) => val?.trim() || undefined)
-    .refine((val, ctx) => {
-      // Only require weight for physical products
-      if (ctx.parent.type === "physical" && !val) {
-        return false;
-      }
-      return true;
-    }, "Weight is required for physical products")
-    .transform((val) => (val ? Number.parseFloat(val) : undefined)),
-});
+// const conditionalSchema = z.object({
+//   type: z.enum(["physical", "digital"]),
+//   weight: z
+//     .string()
+//     .optional()
+//     .transform((val) => val?.trim() || undefined)
+//     .refine((val, ctx) => {
+//       // Only require weight for physical products
+//       if (ctx.parent.type === "physical" && !val) {
+//         return false;
+//       }
+//       return true;
+//     }, "Weight is required for physical products")
+//     .transform((val) => (val ? Number.parseFloat(val) : undefined)),
+// });
 
 // 7. Date cleaning
 const dateSchema = z
