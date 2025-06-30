@@ -43,3 +43,6 @@ next-env.d.ts
 # specific files
 todo.md
 test.ts
+seed.ts
+seed-data.ts
+/_technical/** */
