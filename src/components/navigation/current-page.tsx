@@ -10,11 +10,9 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Fragment } from "react";
-// import { useTranslations } from "next-intl";
 
 export function CurrentPage() {
   const pathname = usePathname();
-  //  const t = useTranslations("inventory");
 
   const generateBreadcrumbs = () => {
     const segments = pathname.split("/").filter(Boolean);

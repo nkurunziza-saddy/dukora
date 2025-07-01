@@ -5,7 +5,7 @@ import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import type { InsertAuditLog } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
-import { auditLogsTable } from "@/lib/schema";
+import { auditLogsTable, usersTable } from "@/lib/schema";
 
 export async function get_all(businessId: string, userId: string) {
   if (!businessId) {
@@ -49,6 +49,7 @@ export async function get_overview(
           eq(auditLogsTable.performedBy, userId)
         )
       )
+      .innerJoin(usersTable, eq(auditLogsTable.performedBy, usersTable.id))
       .limit(limit ?? 5)
       .orderBy(desc(auditLogsTable.performedAt));
     return { data: auditLogs, error: null };

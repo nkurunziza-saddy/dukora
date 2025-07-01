@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { unstable_cache } from "next/cache";
 import {
   auditLogsTable,
+  categoriesTable,
   productsTable,
   warehouseItemsTable,
   warehousesTable,
@@ -43,6 +44,10 @@ export async function getOverview(businessId: string, limit?: number) {
       .innerJoin(
         warehouseItemsTable,
         eq(productsTable.id, warehouseItemsTable.productId)
+      )
+      .innerJoin(
+        categoriesTable,
+        eq(productsTable.categoryId, categoriesTable.id)
       )
       .innerJoin(
         warehousesTable,
@@ -220,7 +225,8 @@ export async function remove(
     }
     const result = await db.transaction(async (tx) => {
       const [deletedProduct] = await tx
-        .delete(productsTable)
+        .update(productsTable)
+        .set({ deletedAt: new Date() })
         .where(
           and(
             eq(productsTable.id, productId),

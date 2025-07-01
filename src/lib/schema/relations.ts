@@ -24,6 +24,7 @@ import {
   productPriceHistoryTable,
   schedulesTable,
   invitationsTable,
+  expensesTable,
 } from "./models";
 
 export const businessesTableRelations = relations(
@@ -43,6 +44,7 @@ export const businessesTableRelations = relations(
     transactions: many(transactionsTable),
     schedules: many(schedulesTable),
     invitations: many(invitationsTable),
+    expenses: many(expensesTable),
   })
 );
 
@@ -273,6 +275,16 @@ export const transactionsRelations = relations(
     }),
   })
 );
+export const expensesRelations = relations(expensesTable, ({ one }) => ({
+  business: one(businessesTable, {
+    fields: [expensesTable.businessId],
+    references: [businessesTable.id],
+  }),
+  createdByUser: one(usersTable, {
+    fields: [expensesTable.createdBy],
+    references: [usersTable.id],
+  }),
+}));
 
 export const productAttributesTableRelations = relations(
   productAttributesTable,

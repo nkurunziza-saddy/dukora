@@ -188,7 +188,8 @@ export async function remove(
     }
     const result = await db.transaction(async (tx) => {
       const [updatedSupplier] = await tx
-        .delete(suppliersTable)
+        .update(suppliersTable)
+        .set({ deletedAt: new Date() })
         .where(
           and(
             eq(suppliersTable.id, supplierId),

@@ -71,7 +71,6 @@ export async function createInvitation(
     const invitation: InsertInvitation = {
       ...invitationData,
       businessId: currentUser.businessId!,
-      id: `inv-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     };
 
     const res = await createInvitationRepo(

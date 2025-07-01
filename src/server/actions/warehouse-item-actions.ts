@@ -1,17 +1,22 @@
 "use server";
 
-import type { InsertWarehouseItem } from "@/lib/schema/schema-types";
+import type {
+  InsertWarehouseItem,
+  SelectProduct,
+  SelectWarehouseItem,
+} from "@/lib/schema/schema-types";
 import { getUserIfHasPermission } from "@/server/actions/auth/permission-middleware";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
 import { revalidateTag } from "next/cache";
 import {
-  getAll as getAllWarehouseItemsRepo,
-  getById as getWarehouseItemByIdRepo,
+  get_all as getAllWarehouseItemsRepo,
+  get_by_id as getWarehouseItemByIdRepo,
   create as createWarehouseItemRepo,
   update as updateWarehouseItemRepo,
   remove as removeWarehouseItemRepo,
-  createMany as createManyWarehouseItemsRepo,
+  create_many as createManyWarehouseItemsRepo,
+  get_all_by_business_id as getAllWarehouseItemsByBusinessIdRepo,
 } from "@/server/repos/warehouse-item-repo";
 
 export async function getWarehouseItems() {
@@ -28,6 +33,35 @@ export async function getWarehouseItems() {
       return { data: null, error: warehouseItems.error };
     }
     return { data: warehouseItems.data, error: null };
+  } catch (error) {
+    console.error("Error getting warehouseItems:", error);
+    return { data: null, error: ErrorCode.FAILED_REQUEST };
+  }
+}
+export async function getWarehouseItemsByBusiness() {
+  const currentUser = await getUserIfHasPermission(
+    Permission.WAREHOUSE_ITEM_VIEW
+  );
+  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
+
+  try {
+    const warehouseItemsResult = await getAllWarehouseItemsByBusinessIdRepo(
+      currentUser.businessId!
+    );
+    if (warehouseItemsResult.error) {
+      return { data: null, error: warehouseItemsResult.error };
+    }
+    const warehouseItems = (warehouseItemsResult.data ?? []).map(
+      (item: {
+        warehouseItem: SelectWarehouseItem;
+        product: SelectProduct;
+      }) => ({
+        ...item.warehouseItem,
+        product: item.product,
+      })
+    );
+
+    return { data: warehouseItems, error: null };
   } catch (error) {
     console.error("Error getting warehouseItems:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };

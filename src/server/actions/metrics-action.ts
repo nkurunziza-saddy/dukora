@@ -9,51 +9,74 @@ import { getAll as getAllBusinesses } from "../repos/business-repo";
 import { calculateAllMetrics } from "../helpers/accounting-formulas";
 import { syncMetricsToDatabase } from "../helpers/db-functional-helpers";
 import { endOfMonth, startOfMonth, subMonths } from "date-fns";
+import { getWarehouseItemsByBusiness } from "@/server/actions/warehouse-item-actions";
+import { calculateClosingStock } from "@/server/helpers/accounting-formulas";
+import { getExpensesByTimeInterval } from "./expense-actions";
+import type {
+  SelectProduct,
+  SelectTransaction,
+} from "@/lib/schema/schema-types";
 
-export async function calculateAndSyncMonthlyMetrics(date: Date) {
+export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
   const currentUser = await getUserIfHasPermission(Permission.FINANCIAL_VIEW);
   if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-  const dateFrom = startOfMonth(date);
-  const dateTo = endOfMonth(date);
+  const dateTo = endOfMonth(dateFrom);
   try {
+    const businessCreatedAt = currentUser.createdAt;
+
     const transactions = await transactionRepo.getByTimeInterval(
       currentUser.businessId!,
       dateFrom,
       dateTo
     );
-
+    const transactionsFormatted = (transactions.data ?? []).map(
+      (item: { transactions: SelectTransaction; products: SelectProduct }) => ({
+        ...item.transactions,
+        product: item.products,
+      })
+    );
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
+    if (dateFrom < businessCreatedAt) {
+      return { data: null, error: ErrorCode.BAD_REQUEST };
+    }
+    if (dateFrom === businessCreatedAt) {
+      return {};
+    }
 
-    // const metrics = await metricsRepo.getMonthlyMetrics(
-    //   currentUser.businessId!,
-    //   month
-    // );
-    // if (metrics.error) {
-    //   return { data: null, error: metrics.error };
-    // }
-    // if (metrics) return { data: metrics.data, error: null };
-    const prevMonth = subMonths(date, 1);
-    const previousClosingStock = await metricsRepo.getMetricByName(
+    const prevMonth = subMonths(dateFrom, 1);
+    const openingStockMetric = await metricsRepo.getMetricByName(
       currentUser.businessId!,
       "closingStock",
       "monthly",
       prevMonth
     );
+    const openingStockValue = parseFloat(openingStockMetric.data?.value ?? "0");
 
-    if (previousClosingStock.error) {
-      return { data: null, error: previousClosingStock.error };
+    const warehouseItemsReq = await getWarehouseItemsByBusiness();
+    if (warehouseItemsReq.error) {
+      return { data: null, error: warehouseItemsReq.error };
+    }
+    const closingStockValue = calculateClosingStock(
+      warehouseItemsReq.data ?? []
+    );
+
+    const expenses = await getExpensesByTimeInterval(dateFrom, dateTo);
+    if (expenses.error) {
+      return { data: null, error: expenses.error };
     }
 
     const calculatedMetrics = calculateAllMetrics(
-      transactions.data,
-      Number(previousClosingStock.data?.value) || 0
+      transactionsFormatted,
+      expenses.data!,
+      openingStockValue,
+      closingStockValue
     );
 
     await syncMetricsToDatabase(
       currentUser.businessId!,
-      date,
+      dateFrom,
       calculatedMetrics
     );
 

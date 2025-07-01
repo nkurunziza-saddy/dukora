@@ -333,7 +333,6 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
                     <SelectContent>
                       {units.map((unit) => (
                         <SelectItem key={unit.value} value={unit.value}>
-                          {/* comment: No translation for unit label */}
                           {unit.label}
                         </SelectItem>
                       ))}
@@ -383,11 +382,9 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {/* comment: No translation for "Updating"/"Creating" */}
                   {product ? tCommon("edit") : tCommon("add")}...
                 </>
               ) : (
-                // comment: No translation for "Update Product"/"Create Product"
                 `${product ? tCommon("edit") : tCommon("add")} ${t(
                   "productName"
                 )}`

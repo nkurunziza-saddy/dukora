@@ -111,6 +111,9 @@ export async function getMetricByName(
         )
       )
       .limit(1);
+    if (!result || result.length <= 0) {
+      return { data: null, error: ErrorCode.NOT_FOUND };
+    }
 
     return { data: result[0] || null, error: null };
   } catch (error) {

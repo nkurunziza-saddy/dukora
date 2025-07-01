@@ -5,6 +5,7 @@ import {
   timestamp,
   index,
   check,
+  numeric,
 } from "drizzle-orm/pg-core";
 import { productsTable } from "./products";
 import { warehouseItemsTable, warehousesTable } from "./warehouses";
@@ -51,5 +52,32 @@ export const transactionsTable = pgTable(
     index("transactions_business_id").on(table.businessId),
     index("transactions_created_at").on(table.createdAt),
     index("transactions_type").on(table.type),
+  ]
+);
+
+export const expensesTable = pgTable(
+  "expenses",
+  {
+    id: text("id")
+      .primaryKey()
+      .notNull()
+      .default(sql`gen_random_uuid()`),
+    amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
+    reference: text("reference"),
+    businessId: text("business_id")
+      .notNull()
+      .references(() => businessesTable.id, { onDelete: "cascade" }),
+    note: text("note"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    createdBy: text("created_by")
+      .notNull()
+      .references(() => usersTable.id),
+  },
+  (table) => [
+    check("quantity_not_zero", sql`${table.amount} != 0`),
+    index("expenses_business_id").on(table.businessId),
+    index("expenses_created_at").on(table.createdAt),
   ]
 );

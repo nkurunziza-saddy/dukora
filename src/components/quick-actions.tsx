@@ -9,7 +9,6 @@ import {
   Users,
   Settings,
   FileText,
-  Zap,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -29,6 +28,7 @@ import SupplierForm from "@/components/forms/create-supplier-form";
 import { Button } from "./ui/button";
 import SaleTransactionForm from "./forms/sale-transaction-form";
 import { StateDialog } from "./shared/reusable-form-dialog";
+import ExpenseTransactionForm from "./forms/expense-transaction-form";
 
 export default function QuickActions() {
   const [open, setOpen] = React.useState(false);
@@ -38,6 +38,7 @@ export default function QuickActions() {
   const [productDialogOpen, setProductDialogOpen] = React.useState(false);
   const [supplierDialogOpen, setSupplierDialogOpen] = React.useState(false);
   const [purchaseDialogOpen, setPurchaseDialogOpen] = React.useState(false);
+  const [expenseDialogOpen, setExpenseDialogOpen] = React.useState(false);
   const [saleDialogOpen, setSaleDialogOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -92,6 +93,9 @@ export default function QuickActions() {
       case "record-purchase":
         setPurchaseDialogOpen(true);
         break;
+      case "record-expense":
+        setExpenseDialogOpen(true);
+        break;
     }
   };
 
@@ -99,11 +103,6 @@ export default function QuickActions() {
     <>
       <Button size="sm" variant={"secondary"} onClick={() => setOpen(true)}>
         <span className="flex grow items-center">
-          <Zap
-            className="text-muted-foreground/80 -ms-1 me-3 group-hover:text-primary transition-colors"
-            size={14}
-            aria-hidden="true"
-          />
           <span className="text-muted-foreground/70 font-normal group-hover:text-foreground transition-colors">
             {t("quickActions")}
           </span>
@@ -141,6 +140,11 @@ export default function QuickActions() {
             <CommandItem onSelect={() => handleDialogAction("record-purchase")}>
               <Plus size={16} className="opacity-60" aria-hidden="true" />
               <span>{t("recordPurchaseTransaction")}</span>
+              <CommandShortcut className="justify-center">⇧⌘B</CommandShortcut>
+            </CommandItem>
+            <CommandItem onSelect={() => handleDialogAction("record=expense")}>
+              <Plus size={16} className="opacity-60" aria-hidden="true" />
+              <span>{t("recordExpenseTransaction")}</span>
               <CommandShortcut className="justify-center">⇧⌘B</CommandShortcut>
             </CommandItem>
           </CommandGroup>
@@ -197,6 +201,15 @@ export default function QuickActions() {
         setIsDialogOpen={setPurchaseDialogOpen}
       >
         <PurchaseTransactionForm />
+      </StateDialog>
+      <StateDialog
+        className="sm:max-w-2xl max-h-[90vh]"
+        title={t("recordExpenseTransaction")}
+        description={t("recordExpenseTransactionDesc")}
+        isDialogOpen={expenseDialogOpen}
+        setIsDialogOpen={setExpenseDialogOpen}
+      >
+        <ExpenseTransactionForm />
       </StateDialog>
     </>
   );

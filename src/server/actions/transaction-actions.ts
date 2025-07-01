@@ -103,7 +103,6 @@ export async function createTransaction(
       ...transactionData,
       businessId: currentUser.businessId!,
       createdBy: currentUser.id,
-      id: `txn-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     };
     const { data: resData, error: resError } = await createTransactionRepo(
       transaction

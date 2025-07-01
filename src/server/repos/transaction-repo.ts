@@ -5,6 +5,7 @@ import {
   transactionsTable,
   warehouseItemsTable,
   auditLogsTable,
+  productsTable,
 } from "@/lib/schema";
 import {
   InsertTransaction,
@@ -50,6 +51,10 @@ export async function getByTimeInterval(
           gte(transactionsTable.createdAt, dateFrom),
           lte(transactionsTable.createdAt, dateTo)
         )
+      )
+      .innerJoin(
+        productsTable,
+        eq(transactionsTable.productId, productsTable.id)
       );
     return {
       data: result,

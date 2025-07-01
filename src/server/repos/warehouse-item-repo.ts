@@ -2,14 +2,19 @@
 import { eq, and } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { revalidateTag, unstable_cache } from "next/cache";
-import { auditLogsTable, warehouseItemsTable } from "@/lib/schema";
+import {
+  auditLogsTable,
+  productsTable,
+  warehouseItemsTable,
+  warehousesTable,
+} from "@/lib/schema";
 import type {
   InsertAuditLog,
   InsertWarehouseItem,
 } from "@/lib/schema/schema-types";
 import { ErrorCode } from "../constants/errors";
 
-export async function getAll(warehouseId: string) {
+export async function get_all(warehouseId: string) {
   try {
     const items = await db
       .select()
@@ -24,7 +29,7 @@ export async function getAll(warehouseId: string) {
 
 export const getAllCached = async (warehouseId: string) =>
   unstable_cache(
-    async () => await getAll(warehouseId),
+    async () => await get_all(warehouseId),
     ["warehouseItems", warehouseId],
     {
       revalidate: 300,
@@ -32,7 +37,31 @@ export const getAllCached = async (warehouseId: string) =>
     }
   );
 
-export async function getById(warehouseItemId: string) {
+export async function get_all_by_business_id(businessId: string) {
+  try {
+    const items = await db
+      .select({
+        warehouseItem: warehouseItemsTable,
+        product: productsTable,
+      })
+      .from(warehousesTable)
+      .innerJoin(
+        warehouseItemsTable,
+        eq(warehousesTable.id, warehouseItemsTable.warehouseId)
+      )
+      .innerJoin(
+        productsTable,
+        eq(warehouseItemsTable.productId, productsTable.id)
+      )
+      .where(eq(warehousesTable.businessId, businessId));
+    return { data: items, error: null };
+  } catch (error) {
+    console.error("Error getting warehouse items:", error);
+    return { data: null, error: ErrorCode.FAILED_REQUEST };
+  }
+}
+
+export async function get_by_id(warehouseItemId: string) {
   try {
     const warehouseItem = await db.query.warehouseItemsTable.findFirst({
       where: and(eq(warehouseItemsTable.id, warehouseItemId)),
@@ -54,7 +83,7 @@ export async function getById(warehouseItemId: string) {
 
 export const getByIdCached = async (warehouseItemId: string) =>
   unstable_cache(
-    async () => await getById(warehouseItemId),
+    async () => await get_by_id(warehouseItemId),
     ["warehouseItems", warehouseItemId],
     {
       revalidate: 300,
@@ -194,7 +223,7 @@ export async function remove(
   }
 }
 
-export async function createMany(warehouseItems: InsertWarehouseItem[]) {
+export async function create_many(warehouseItems: InsertWarehouseItem[]) {
   if (!warehouseItems.length)
     return { data: null, error: ErrorCode.MISSING_INPUT };
 

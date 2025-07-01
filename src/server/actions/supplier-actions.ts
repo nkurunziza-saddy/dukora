@@ -69,7 +69,6 @@ export async function createSupplier(
     const supplier: InsertSupplier = {
       ...supplierData,
       businessId: currentUser.businessId!,
-      id: `prod-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     };
 
     const res = await createSupplierRepo(

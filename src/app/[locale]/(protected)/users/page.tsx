@@ -24,6 +24,16 @@ import { InvitationColumn } from "@/utils/columns/invitation-column";
 import StatCard from "@/components/shared/stat-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getTranslations } from "next-intl/server";
+import { RolePermissions } from "@/server/helpers/role-permissions";
+import { Permission } from "@/server/constants/permissions";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from "@/components/ui/table";
 
 export default async function users() {
   const users = await getUsers();
@@ -129,6 +139,54 @@ export default async function users() {
               </CardContent>
             </Card>
           )}
+        </TabsContent>
+        <TabsContent value="permissions">
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("tabs.permissions")}</CardTitle>
+              <CardDescription>{t("permissions.description")}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div>
+                <Table className="min-w-full text-sm border">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="px-4 py-2 border">
+                        {t("permissions.permission")}
+                      </TableHead>
+                      <TableHead className="px-4 py-2 border">Owner</TableHead>
+                      <TableHead className="px-4 py-2 border">Admin</TableHead>
+                      <TableHead className="px-4 py-2 border">Member</TableHead>
+                      <TableHead className="px-4 py-2 border">
+                        View Only
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {Object.values(Permission).map((perm) => (
+                      <TableRow key={perm}>
+                        <TableCell className="px-4 py-2 border font-mono">
+                          {perm}
+                        </TableCell>
+                        <TableCell className="px-4 py-2 border text-center">
+                          {RolePermissions.OWNER.includes(perm) ? "✔️" : ""}
+                        </TableCell>
+                        <TableCell className="px-4 py-2 border text-center">
+                          {RolePermissions.ADMIN.includes(perm) ? "✔️" : ""}
+                        </TableCell>
+                        <TableCell className="px-4 py-2 border text-center">
+                          {RolePermissions.MEMBER.includes(perm) ? "✔️" : ""}
+                        </TableCell>
+                        <TableCell className="px-4 py-2 border text-center">
+                          {RolePermissions.VIEW_ONLY.includes(perm) ? "✔️" : ""}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

@@ -45,6 +45,7 @@ const data = {
           title: "Inventory Overview",
           url: "/inventory",
           icon: Warehouse,
+          disabled: true,
         },
         {
           title: "Product Catalog",
@@ -72,7 +73,7 @@ const data = {
           icon: ShoppingCart,
         },
         {
-          title: "Analytics & AI",
+          title: "Analytics",
           url: "/analytics",
           icon: BarChart3,
         },
@@ -80,6 +81,7 @@ const data = {
           title: "Payments & Invoices",
           url: "/payments",
           icon: CreditCard,
+          disabled: true,
         },
       ],
     },
@@ -101,6 +103,7 @@ const data = {
           title: "E-commerce Sync",
           url: "/commerce",
           icon: Store,
+          disabled: true,
         },
       ],
     },
@@ -111,6 +114,18 @@ const data = {
           title: "AI Chat",
           url: "/chat",
           icon: Bot,
+          disabled: true,
+        },
+      ],
+    },
+    {
+      title: "Helpers",
+      items: [
+        {
+          title: "Financial calculator",
+          url: "/financial-calculator",
+          icon: Bot,
+          disabled: true,
         },
       ],
     },
@@ -139,9 +154,9 @@ export function AppSidebar() {
                   const url = item.url.slice(1);
                   return (
                     <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton asChild>
+                      <SidebarMenuButton asChild disabled={item.disabled}>
                         <Link href={item.url}>
-                          {/* <item.icon className="h-4 w-4" /> */}
+                          <item.icon className="h-4 w-4" />
                           <span>{t(url)}</span>
                         </Link>
                       </SidebarMenuButton>

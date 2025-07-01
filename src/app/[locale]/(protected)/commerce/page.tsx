@@ -1,7 +1,13 @@
 import React from "react";
+import OnTopBlurOverlay from "@/components/on-top-blur";
 
 const commerce = () => {
-  return <div>commerce page with syncing stores and many more</div>;
+  return (
+    <div>
+      <OnTopBlurOverlay />
+      commerce page with syncing stores and many more
+    </div>
+  );
 };
 
 export default commerce;

@@ -87,7 +87,6 @@ export async function createProduct(
     const product: InsertProduct = {
       ...productData,
       businessId: currentUser.businessId!,
-      id: `prod-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     };
     const { data: resData, error: resError } = await createProductRepo(
       product,

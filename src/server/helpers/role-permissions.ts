@@ -71,7 +71,6 @@ export function getPermissionsForRole(role: UserRole): Permission[] {
   return RolePermissions[role] || [];
 }
 
-// Helper function to check if role has permission
 export function roleHasPermission(
   role: UserRole,
   permission: Permission
@@ -79,7 +78,6 @@ export function roleHasPermission(
   return RolePermissions[role]?.includes(permission) || false;
 }
 
-// Helper function to check multiple permissions
 export function roleHasAllPermissions(
   role: UserRole,
   permissions: Permission[]
@@ -90,7 +88,6 @@ export function roleHasAllPermissions(
   );
 }
 
-// Helper function to check if role has any of the permissions
 export function roleHasAnyPermission(
   role: UserRole,
   permissions: Permission[]

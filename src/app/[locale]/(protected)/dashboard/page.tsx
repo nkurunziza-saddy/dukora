@@ -13,7 +13,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -35,6 +34,7 @@ import StatCard from "@/components/shared/stat-card";
 import { getSchedulesOverview } from "@/server/actions/schedule-actions";
 import { getLogsOverview } from "@/server/actions/logs-actions";
 import { getLowStockAlertProducts } from "@/server/actions/product-items-actions";
+import {formatCurrency, formatNumber} from "@/lib/utils";
 
 export default async function InventoryDashboard() {
   const [totalSKUs, totalWarehouses, lowStockCount, inventoryValue] =
@@ -47,7 +47,7 @@ export default async function InventoryDashboard() {
 
   const inventoryItems = (await getOverviewProducts(6)).data;
   const schedules = (await getSchedulesOverview()).data;
-  const logs = (await getLogsOverview()).data;
+  const logsData = (await getLogsOverview()).data;
   const lowStockItems = (await getLowStockAlertProducts()).data;
   const t = await getTranslations("inventory");
   const t_com = await getTranslations("common");
@@ -55,26 +55,26 @@ export default async function InventoryDashboard() {
   const inventoryStats = [
     {
       title: t("totalSKUs"),
-      subText: t("fromLastMonth"),
-      value: totalSKUs.data ?? 0,
+      subText: t("totalSku"),
+      value: formatNumber(totalSKUs.data ?? 0),
       icon: Package,
     },
     {
       title: t("warehouse"),
       subText: t("activeLocations"),
-      value: totalWarehouses.data ?? 0,
+      value: formatNumber(totalWarehouses.data ?? 0),
       icon: Warehouse,
     },
     {
       title: t("lowStockAlerts"),
       subText: (lowStockCount.data ?? 0) > 0 ? t("requiringAttention") : "",
-      value: lowStockCount.data ?? 0,
+      value: formatNumber(lowStockCount.data ?? 0),
       icon: AlertTriangle,
     },
     {
       title: t("totalValue"),
       subText: t("fromLastMonthValue"),
-      value: inventoryValue.data ?? 0,
+      value: formatCurrency(inventoryValue.data ?? 0),
       icon: TrendingUp,
     },
   ];
@@ -145,7 +145,7 @@ export default async function InventoryDashboard() {
                     <TableHead className="text-right">
                       {t("unitPrice")}
                     </TableHead>
-                    <TableHead>{t_com("status")}</TableHead>
+                    <TableHead className="text-right">{t_com("status")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -157,20 +157,20 @@ export default async function InventoryDashboard() {
                       <TableCell>{item.products.name}</TableCell>
                       <TableCell>
                         <Badge variant="secondary">
-                          {item.products.categoryId}
+                          {item.categories.name}
                         </Badge>
                       </TableCell>
                       <TableCell>{item.warehouses.name}</TableCell>
                       <TableCell className="text-right">
-                        {item.warehouse_items.quantity}
+                        {formatNumber(item.warehouse_items.quantity)}
                       </TableCell>
                       <TableCell className="text-right">
                         {item.products.reorderPoint}
                       </TableCell>
                       <TableCell className="text-right">
-                        ${item.products.price}
+                        {formatCurrency(item.products.price)}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-right">
                         {item.warehouse_items.quantity <
                         item.products.reorderPoint ? (
                           <Badge variant="destructive">{t("lowStock")}</Badge>
@@ -215,9 +215,9 @@ export default async function InventoryDashboard() {
                 <TableBody>
                   {schedules.map((schedule) => (
                     <TableRow key={schedule.id}>
-                      <TableCell>
+                      <TableCell className="flex items-center">
                         <span
-                          className="inline-block w-2 h-2 rounded-full mr-2 align-middle"
+                          className="inline-block w-2 opacity-60 h-2 rounded-md mr-2 align-middle"
                           style={{ backgroundColor: schedule.color }}
                         />
                         {schedule.title}
@@ -251,14 +251,14 @@ export default async function InventoryDashboard() {
           </Card>
         )}
 
-        {logs && logs.length > 0 && (
+        {logsData && (
           <Card>
             <CardHeader>
               <CardTitle>{t("logs")}</CardTitle>
               <CardDescription>
                 {t("showingItems", {
-                  count: logs.length,
-                  total: logs.length,
+                  count: logsData.length,
+                  total: logsData.length,
                 })}
               </CardDescription>
             </CardHeader>
@@ -274,17 +274,17 @@ export default async function InventoryDashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {logs.map((log) => (
-                    <TableRow key={log.id}>
-                      <TableCell>{log.model}</TableCell>
-                      <TableCell>{log.recordId}</TableCell>
+                  {logsData?.map((log) => (
+                    <TableRow key={log.audit_logs.id}>
+                      <TableCell>{log.audit_logs.model}</TableCell>
+                      <TableCell>{log.audit_logs.recordId}</TableCell>
                       <TableCell>
-                        <Badge variant="outline">{log.action}</Badge>
+                        <Badge variant="outline">{log.audit_logs.action}</Badge>
                       </TableCell>
-                      <TableCell>{log.performedBy}</TableCell>
+                      <TableCell>{log.users.name}</TableCell>
                       <TableCell>
-                        {log.performedAt
-                          ? new Date(log.performedAt).toLocaleString()
+                        {log.audit_logs.performedAt
+                          ? new Date(log.audit_logs.performedAt).toLocaleString()
                           : "-"}
                       </TableCell>
                     </TableRow>

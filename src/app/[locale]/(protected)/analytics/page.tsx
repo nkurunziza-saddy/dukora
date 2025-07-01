@@ -24,10 +24,10 @@ import {
   BarChart3,
   Calculator,
   Wallet,
-  ArrowUpRight,
 } from "lucide-react";
 import StatCard from "@/components/shared/stat-card";
 import { getTranslations } from "next-intl/server";
+import { formatCurrency, formatNumber } from "@/lib/utils";
 
 const analytics = async (props: {
   searchParams: Promise<{ [key: string]: string | undefined }>;
@@ -37,19 +37,6 @@ const analytics = async (props: {
   const { date, monthName, year } = getMonthData(Number(time_range));
   const metrics = await calculateAndSyncMonthlyMetrics(date);
   const t = await getTranslations("analytics");
-
-  const formatCurrency = (value: number | null | undefined) => {
-    if (!value) return "$0.00";
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(value);
-  };
-
-  const formatNumber = (value: number | null | undefined) => {
-    if (!value) return "0";
-    return new Intl.NumberFormat("en-US").format(value);
-  };
 
   const revenueMetrics = [
     {
@@ -79,16 +66,6 @@ const analytics = async (props: {
       title: t("operatingIncome"),
       value: formatCurrency(metrics.data?.operatingIncome),
       icon: Calculator,
-    },
-    {
-      title: t("operatingCashFlow"),
-      value: formatCurrency(metrics.data?.operatingCashFlow),
-      icon: ArrowUpRight,
-    },
-    {
-      title: t("freeCashFlow"),
-      value: formatCurrency(metrics.data?.freeCashFlow),
-      icon: TrendingUp,
     },
   ];
 
@@ -143,11 +120,11 @@ const analytics = async (props: {
       value: formatNumber(metrics.data?.daysOnHand),
       category: t("ratiosCategory"),
     },
-    {
-      label: t("totalExpenses"),
-      value: formatCurrency(metrics.data?.totalExpenses),
-      category: t("expensesCategory"),
-    },
+    // {
+    //   label: t("totalExpenses"),
+    //   value: formatCurrency(metrics.data?.),
+    //   category: t("expensesCategory"),
+    // },
     {
       label: t("operatingExpenses"),
       value: formatCurrency(metrics.data?.operatingExpenses),

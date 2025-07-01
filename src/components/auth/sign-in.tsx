@@ -17,6 +17,8 @@ import { signIn } from "@/lib/auth-client";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function SignIn() {
   const t = useTranslations("auth");
@@ -24,9 +26,10 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-
+  const router = useRouter()
+  
   return (
-    <Card className="max-w-md">
+    <Card className="">
       <CardHeader>
         <CardTitle className="text-lg md:text-xl">
           {t("signIn.title")}
@@ -78,7 +81,7 @@ export default function SignIn() {
             />
             <Label htmlFor="remember">{t("signIn.rememberMe")}</Label>
           </div>
-
+         
           <Button
             type="submit"
             className="w-full"
@@ -90,11 +93,17 @@ export default function SignIn() {
                   password,
                 },
                 {
-                  onRequest: () => {
+                  onRequest: (ctx) => {
                     setLoading(true);
                   },
-                  onResponse: () => {
+                  onResponse: (ctx) => {
                     setLoading(false);
+                  },
+                  onError: (ctx) => {
+                    toast.error(ctx.error.message);
+                  },
+                  onSuccess: async () => {
+                    router.push("/dashboard");
                   },
                 }
               );
@@ -106,7 +115,11 @@ export default function SignIn() {
               <p>{t("signIn.loginButton")}</p>
             )}
           </Button>
-
+          <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+            <span className="bg-card text-muted-foreground relative z-10 px-2">
+              Or continue with
+            </span>
+          </div>
           <div
             className={cn(
               "w-full gap-2 flex items-center",
@@ -124,12 +137,15 @@ export default function SignIn() {
                     callbackURL: "/dashboard",
                   },
                   {
-                    onRequest: () => {
+                    onRequest: (ctx) => {
                       setLoading(true);
                     },
-                    onResponse: () => {
+                    onResponse: (ctx) => {
                       setLoading(false);
                     },
+                    onError: (ctx) => {
+                      toast.error(ctx.error.message);
+                    }
                   }
                 );
               }}
@@ -170,11 +186,14 @@ export default function SignIn() {
                     callbackURL: "/dashboard",
                   },
                   {
-                    onRequest: () => {
+                    onRequest: (ctx) => {
                       setLoading(true);
                     },
-                    onResponse: () => {
+                    onResponse: (ctx) => {
                       setLoading(false);
+                    },
+                    onError: (ctx) => {
+                      toast.error(ctx.error.message);
                     },
                   }
                 );
