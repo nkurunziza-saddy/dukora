@@ -3,7 +3,7 @@ import * as categoryService from "@/server/actions/category-actions";
 
 export async function GET() {
   try {
-    const categories = await categoryService.fetchCategories();
+    const categories = await categoryService.fetchCategories({});
     return NextResponse.json(categories.data);
   } catch (error) {
     console.error(error);
@@ -25,10 +25,10 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const { category, categoryId } = await request.json();
-    const updatedCategory = await categoryService.updateCategory(
+    const updatedCategory = await categoryService.updateCategory({
       categoryId,
-      category
-    );
+      updates: category,
+    });
     return NextResponse.json(updatedCategory.data);
   } catch (error) {
     console.error(error);

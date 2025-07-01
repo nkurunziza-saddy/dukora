@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
+  CardFooter,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,8 +27,8 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const router = useRouter()
-  
+  const router = useRouter();
+
   return (
     <Card className="">
       <CardHeader>
@@ -81,7 +82,7 @@ export default function SignIn() {
             />
             <Label htmlFor="remember">{t("signIn.rememberMe")}</Label>
           </div>
-         
+
           <Button
             type="submit"
             className="w-full"
@@ -93,10 +94,10 @@ export default function SignIn() {
                   password,
                 },
                 {
-                  onRequest: (ctx) => {
+                  onRequest: () => {
                     setLoading(true);
                   },
-                  onResponse: (ctx) => {
+                  onResponse: () => {
                     setLoading(false);
                   },
                   onError: (ctx) => {
@@ -137,15 +138,15 @@ export default function SignIn() {
                     callbackURL: "/dashboard",
                   },
                   {
-                    onRequest: (ctx) => {
+                    onRequest: () => {
                       setLoading(true);
                     },
-                    onResponse: (ctx) => {
+                    onResponse: () => {
                       setLoading(false);
                     },
                     onError: (ctx) => {
                       toast.error(ctx.error.message);
-                    }
+                    },
                   }
                 );
               }}
@@ -186,10 +187,10 @@ export default function SignIn() {
                     callbackURL: "/dashboard",
                   },
                   {
-                    onRequest: (ctx) => {
+                    onRequest: () => {
                       setLoading(true);
                     },
-                    onResponse: (ctx) => {
+                    onResponse: () => {
                       setLoading(false);
                     },
                     onError: (ctx) => {
@@ -215,6 +216,15 @@ export default function SignIn() {
           </div>
         </div>
       </CardContent>
+      <CardFooter className="flex flex-col items-center">
+        <p className="text-xs text-muted-foreground">{t("signIn.noAccount")}</p>
+        <Link
+          href="/auth/sign-up"
+          className="text-sm text-primary-foreground underline"
+        >
+          {t("signIn.signUpLink")}
+        </Link>
+      </CardFooter>
     </Card>
   );
 }

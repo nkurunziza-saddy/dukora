@@ -34,21 +34,21 @@ import StatCard from "@/components/shared/stat-card";
 import { getSchedulesOverview } from "@/server/actions/schedule-actions";
 import { getLogsOverview } from "@/server/actions/logs-actions";
 import { getLowStockAlertProducts } from "@/server/actions/product-items-actions";
-import {formatCurrency, formatNumber} from "@/lib/utils";
+import { formatCurrency, formatNumber } from "@/lib/utils";
 
 export default async function InventoryDashboard() {
   const [totalSKUs, totalWarehouses, lowStockCount, inventoryValue] =
     await Promise.all([
-      getTotalSKUCount(),
-      getTotalWarehousesCount(),
-      getLowStockProductsCount(),
-      getCurrentInventoryValue(),
+      getTotalSKUCount({}),
+      getTotalWarehousesCount({}),
+      getLowStockProductsCount({}),
+      getCurrentInventoryValue({}),
     ]);
 
   const inventoryItems = (await getOverviewProducts(6)).data;
-  const schedules = (await getSchedulesOverview()).data;
-  const logsData = (await getLogsOverview()).data;
-  const lowStockItems = (await getLowStockAlertProducts()).data;
+  const schedules = (await getSchedulesOverview(6)).data;
+  const logsData = (await getLogsOverview(6)).data;
+  const lowStockItems = (await getLowStockAlertProducts({})).data;
   const t = await getTranslations("inventory");
   const t_com = await getTranslations("common");
 
@@ -145,7 +145,9 @@ export default async function InventoryDashboard() {
                     <TableHead className="text-right">
                       {t("unitPrice")}
                     </TableHead>
-                    <TableHead className="text-right">{t_com("status")}</TableHead>
+                    <TableHead className="text-right">
+                      {t_com("status")}
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -284,7 +286,9 @@ export default async function InventoryDashboard() {
                       <TableCell>{log.users.name}</TableCell>
                       <TableCell>
                         {log.audit_logs.performedAt
-                          ? new Date(log.audit_logs.performedAt).toLocaleString()
+                          ? new Date(
+                              log.audit_logs.performedAt
+                            ).toLocaleString()
                           : "-"}
                       </TableCell>
                     </TableRow>

@@ -6,7 +6,6 @@ import {
   Bot,
   Calendar,
   CreditCard,
-  Frame,
   Layers,
   Package,
   ShoppingCart,
@@ -30,6 +29,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+import SessionCard from "./session-card";
 
 const data = {
   navMain: [
@@ -137,12 +137,7 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="offcanvas">
       <SidebarHeader>
-        <div className="flex items-center gap-2 p-2">
-          <div className="p-1 round bg-primary text-primary-foreground">
-            <Frame className="size-3" />
-          </div>
-          <span className="font-semibold text-base">quantura</span>
-        </div>
+        <SessionCard />
       </SidebarHeader>
       <SidebarContent>
         {data.navMain.map((group) => (
@@ -154,12 +149,19 @@ export function AppSidebar() {
                   const url = item.url.slice(1);
                   return (
                     <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton asChild disabled={item.disabled}>
-                        <Link href={item.url}>
-                          <item.icon className="h-4 w-4" />
-                          <span>{t(url)}</span>
-                        </Link>
-                      </SidebarMenuButton>
+                      {item.disabled ? (
+                        <SidebarMenuButton disabled>
+                          {/* <item.icon className="h-4 w-4" /> */}
+                          <span className="opacity-50">{t(url)}</span>
+                        </SidebarMenuButton>
+                      ) : (
+                        <SidebarMenuButton asChild>
+                          <Link href={item.url}>
+                            {/* <item.icon className="h-4 w-4" /> */}
+                            <span>{t(url)}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      )}
                     </SidebarMenuItem>
                   );
                 })}

@@ -7,7 +7,7 @@ import {
 } from "@/server/actions/schedule-actions";
 import { InsertSchedule } from "@/lib/schema/schema-types";
 export default async function page() {
-  const schedules = await getSchedules();
+  const schedules = await getSchedules({});
   if (!schedules.data) return null;
 
   const createSchedule = async (
@@ -21,7 +21,7 @@ export default async function page() {
     event: Partial<Omit<InsertSchedule, "userId" | "businessId">>
   ) => {
     "use server";
-    await _updateSchedule(id, event);
+    await _updateSchedule({ scheduleId: id, updates: event });
   };
   const deleteSchedule = async (eventId: string) => {
     "use server";

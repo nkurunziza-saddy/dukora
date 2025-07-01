@@ -1,10 +1,10 @@
 "use server";
 
 import type { InsertBusinessSetting } from "@/lib/schema/schema-types";
-import { getUserIfHasPermission } from "@/server/actions/auth/permission-middleware";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
 import { revalidateTag } from "next/cache";
+import { createProtectedAction } from "@/server/helpers/action-factory";
 import {
   getAll as getAllBusinessSettingsRepo,
   getById as getBusinessSettingByIdRepo,
@@ -14,190 +14,125 @@ import {
   createMany as createManyBusinessSettingsRepo,
 } from "../repos/business-settings-repo";
 
-export async function getBusinessSettings() {
-  const currentUser = await getUserIfHasPermission(
-    Permission.BUSINESS_SETTINGS_VIEW
-  );
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  try {
-    const settings = await getAllBusinessSettingsRepo(currentUser.businessId!);
+export const getBusinessSettings = createProtectedAction(
+  Permission.BUSINESS_SETTINGS_VIEW,
+  async (user) => {
+    const settings = await getAllBusinessSettingsRepo(user.businessId!);
     if (settings.error) {
       return { data: null, error: settings.error };
     }
     return { data: settings.data, error: null };
-  } catch (error) {
-    console.error("Error getting business settings:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+);
 
-export async function getBusinessSettingById(settingId: string) {
-  const currentUser = await getUserIfHasPermission(
-    Permission.BUSINESS_SETTINGS_VIEW
-  );
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  if (!settingId?.trim()) {
-    return { data: null, error: ErrorCode.MISSING_INPUT };
-  }
-
-  try {
-    const setting = await getBusinessSettingByIdRepo(
-      settingId,
-      currentUser.businessId!
-    );
-
+export const getBusinessSettingById = createProtectedAction(
+  Permission.BUSINESS_SETTINGS_VIEW,
+  async (user, settingId: string) => {
+    if (!settingId?.trim()) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
+    }
+    const setting = await getBusinessSettingByIdRepo(settingId, user.businessId!);
     if (setting.error) {
       return { data: null, error: setting.error };
     }
-
     return { data: setting.data, error: null };
-  } catch (error) {
-    console.error("Error getting business setting:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+);
 
-export async function createBusinessSetting(
-  settingData: Omit<InsertBusinessSetting, "businessId" | "id">
-) {
-  const currentUser = await getUserIfHasPermission(
-    Permission.BUSINESS_SETTINGS_CREATE
-  );
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  if (!settingData.key?.trim()) {
-    return { data: null, error: ErrorCode.MISSING_INPUT };
-  }
-
-  try {
+export const createBusinessSetting = createProtectedAction(
+  Permission.BUSINESS_SETTINGS_CREATE,
+  async (
+    user,
+    settingData: Omit<InsertBusinessSetting, "businessId" | "id">
+  ) => {
+    if (!settingData.key?.trim()) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
+    }
     const setting: InsertBusinessSetting = {
       ...settingData,
-      businessId: currentUser.businessId!,
+      businessId: user.businessId!,
     };
-
     const res = await createBusinessSettingRepo(
-      currentUser.businessId!,
-      currentUser.id,
+      user.businessId!,
+      user.id,
       setting
     );
     if (res.error) {
       return { data: null, error: res.error };
     }
-    revalidateTag(`business-settings-${currentUser.businessId!}`);
-
+    revalidateTag(`business-settings-${user.businessId!}`);
     return { data: res.data, error: null };
-  } catch (error) {
-    console.error("Error creating business setting:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+);
 
-export async function updateBusinessSetting(
-  settingId: string,
-  updates: Partial<Omit<InsertBusinessSetting, "id" | "businessId">>
-) {
-  const currentUser = await getUserIfHasPermission(
-    Permission.BUSINESS_SETTINGS_UPDATE
-  );
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  if (!settingId?.trim()) {
-    return { data: null, error: ErrorCode.MISSING_INPUT };
-  }
-
-  try {
+export const updateBusinessSetting = createProtectedAction(
+  Permission.BUSINESS_SETTINGS_UPDATE,
+  async (
+    user,
+    { 
+      settingId,
+      updates,
+    }: {
+      settingId: string;
+      updates: Partial<Omit<InsertBusinessSetting, "id" | "businessId">>;
+    }
+  ) => {
+    if (!settingId?.trim()) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
+    }
     const updatedSetting = await updateBusinessSettingRepo(
       settingId,
-      currentUser.businessId!,
-      currentUser.id,
+      user.businessId!,
+      user.id,
       updates
     );
     if (updatedSetting.error) {
       return { data: null, error: updatedSetting.error };
     }
-
-    revalidateTag(`business-settings-${currentUser.businessId!}`);
+    revalidateTag(`business-settings-${user.businessId!}`);
     revalidateTag(`business-setting-${settingId}`);
-
     return { data: updatedSetting.data, error: null };
-  } catch (error) {
-    console.error("Error updating business setting:", error);
+  }
+);
 
-    if (error instanceof Error && error.message.includes("not found")) {
-      return { data: null, error: ErrorCode.NOT_FOUND };
+export const deleteBusinessSetting = createProtectedAction(
+  Permission.BUSINESS_SETTINGS_DELETE,
+  async (user, settingId: string) => {
+    if (!settingId?.trim()) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
-  }
-}
-
-export async function deleteBusinessSetting(settingId: string) {
-  const currentUser = await getUserIfHasPermission(
-    Permission.BUSINESS_SETTINGS_DELETE
-  );
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  if (!settingId?.trim()) {
-    return { data: null, error: ErrorCode.MISSING_INPUT };
-  }
-
-  try {
     const res = await removeBusinessSettingRepo(
       settingId,
-      currentUser.businessId!,
-      currentUser.id
+      user.businessId!,
+      user.id
     );
-
     if (res.error) {
       return { data: null, error: res.error };
     }
-
-    revalidateTag(`business-settings-${currentUser.businessId!}`);
+    revalidateTag(`business-settings-${user.businessId!}`);
     revalidateTag(`business-setting-${settingId}`);
-
     return { data: { success: true }, error: null };
-  } catch (error) {
-    console.error("Error deleting business setting:", error);
+  }
+);
 
-    if (error instanceof Error && error.message.includes("not found")) {
-      return { data: null, error: ErrorCode.NOT_FOUND };
+export const createManyBusinessSettings = createProtectedAction(
+  Permission.BUSINESS_SETTINGS_CREATE,
+  async (
+    user,
+    settingsData: Omit<InsertBusinessSetting, "businessId" | "id">[]
+  ) => {
+    if (settingsData === null) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
-  }
-}
-
-export async function createManyBusinessSettings(
-  settingsData: Omit<InsertBusinessSetting, "businessId" | "id">[]
-) {
-  const currentUser = await getUserIfHasPermission(
-    Permission.BUSINESS_SETTINGS_CREATE
-  );
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  if (settingsData === null) {
-    return { data: null, error: ErrorCode.MISSING_INPUT };
-  }
-
-  try {
     const settings: InsertBusinessSetting[] = settingsData.map((setting) => ({
       ...setting,
-      businessId: currentUser.businessId!,
+      businessId: user.businessId!,
     }));
-
     const createdSettings = await createManyBusinessSettingsRepo(settings);
-
     if (createdSettings.error) {
       return { data: null, error: createdSettings.error };
     }
-
-    revalidateTag(`business-settings-${currentUser.businessId!}`);
-
+    revalidateTag(`business-settings-${user.businessId!}`);
     return { data: createdSettings.data, error: null };
-  } catch (error) {
-    console.error("Error creating business settings:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+);

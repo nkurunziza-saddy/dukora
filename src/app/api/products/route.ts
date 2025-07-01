@@ -3,7 +3,7 @@ import * as productService from "@/server/actions/product-actions";
 
 export async function GET() {
   try {
-    const products = await productService.getProducts();
+    const products = await productService.getProducts({});
     return NextResponse.json(products.data);
   } catch (error) {
     console.error(error);
@@ -25,10 +25,10 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const { product, productId } = await request.json();
-    const updatedProduct = await productService.updateProduct(
-      productId,
-      product
-    );
+    const updatedProduct = await productService.updateProduct({
+      productId: productId,
+      updates: product,
+    });
     return NextResponse.json(updatedProduct);
   } catch (error) {
     console.error(error);

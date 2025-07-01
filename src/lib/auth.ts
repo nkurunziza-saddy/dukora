@@ -58,6 +58,8 @@ export const auth = betterAuth({
   },
 });
 
+export type SessionUSer = typeof auth.$Infer.Session.user;
+
 export const getCurrentSession = async () => {
   "use server";
   const session = await auth.api.getSession({

@@ -232,17 +232,16 @@ const analytics = async (props: {
                     </TableCell>
                     <TableCell>
                       <Badge
-                        variant="outline"
-                        className={
+                        variant={
                           metric.category === t("salesCategory")
-                            ? "border-green-600 bg-green-900/40 text-green-400"
+                            ? "green"
                             : metric.category === t("inventoryCategory")
-                            ? "border-blue-600 bg-blue-900/40 text-blue-400"
+                            ? "blue"
                             : metric.category === t("expensesCategory")
-                            ? "border-red-600 bg-red-900/40 text-red-400"
+                            ? "redStrong"
                             : metric.category === t("marginsCategory")
-                            ? "border-purple-600 bg-purple-900/40 text-purple-400"
-                            : "border-gray-600 bg-gray-900/40 text-gray-400"
+                            ? "purple"
+                            : "orange"
                         }
                       >
                         {metric.category}

@@ -1,88 +1,61 @@
 "use server";
 
-import { getUserIfHasPermission } from "@/server/actions/auth/permission-middleware";
 import { Permission } from "@/server/constants/permissions";
-import { ErrorCode } from "@/server/constants/errors";
+import { createProtectedAction } from "@/server/helpers/action-factory";
 import {
   getProductsWithStockAlert,
   get_by_quantity as getStockWarehouseItemsByQuantity,
   get_negative_item as getNegativeStockWarehouseItems,
 } from "@/server/repos/statistics/stock-stat-repo";
 
-export async function getLowStockAlertProducts() {
-  const currentUser = await getUserIfHasPermission(Permission.PRODUCT_VIEW);
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  try {
-    const productsResult = await getProductsWithStockAlert(
-      currentUser.businessId!
-    );
+export const getLowStockAlertProducts = createProtectedAction(
+  Permission.PRODUCT_VIEW,
+  async (user) => {
+    const productsResult = await getProductsWithStockAlert(user.businessId!);
     if (productsResult.error) {
       return { data: null, error: productsResult.error };
     }
     return { data: productsResult.data, error: null };
-  } catch (error) {
-    console.error("Error getting low stock products:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+);
 
-export async function getOutOfStockProducts() {
-  const currentUser = await getUserIfHasPermission(
-    Permission.WAREHOUSE_ITEM_VIEW
-  );
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  try {
+export const getOutOfStockProducts = createProtectedAction(
+  Permission.WAREHOUSE_ITEM_VIEW,
+  async (user) => {
     const productsResult = await getStockWarehouseItemsByQuantity(
-      currentUser.businessId!,
+      user.businessId!,
       0
     );
     if (productsResult.error) {
       return { data: null, error: productsResult.error };
     }
     return { data: productsResult.data, error: null };
-  } catch (error) {
-    console.error("Error getting low stock warehouse items:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+);
 
-export async function getStockItemsByQuantity(quantity: number) {
-  const currentUser = await getUserIfHasPermission(
-    Permission.WAREHOUSE_ITEM_VIEW
-  );
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  try {
+export const getStockItemsByQuantity = createProtectedAction(
+  Permission.WAREHOUSE_ITEM_VIEW,
+  async (user, quantity: number) => {
     const productsResult = await getStockWarehouseItemsByQuantity(
-      currentUser.businessId!,
+      user.businessId!,
       quantity
     );
     if (productsResult.error) {
       return { data: null, error: productsResult.error };
     }
     return { data: productsResult.data, error: null };
-  } catch (error) {
-    console.error("Error getting low stock warehouse items:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+);
 
-export async function getNegativeStockProducts() {
-  const currentUser = await getUserIfHasPermission(Permission.PRODUCT_VIEW);
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  try {
+export const getNegativeStockProducts = createProtectedAction(
+  Permission.PRODUCT_VIEW,
+  async (user) => {
     const productsResult = await getNegativeStockWarehouseItems(
-      currentUser.businessId!
+      user.businessId!
     );
     if (productsResult.error) {
       return { data: null, error: productsResult.error };
     }
     return { data: productsResult.data, error: null };
-  } catch (error) {
-    console.error("Error getting negative stock products:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+);

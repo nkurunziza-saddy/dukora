@@ -29,6 +29,7 @@ import { Button } from "./ui/button";
 import SaleTransactionForm from "./forms/sale-transaction-form";
 import { StateDialog } from "./shared/reusable-form-dialog";
 import ExpenseTransactionForm from "./forms/expense-transaction-form";
+import AnyTransactionForm from "./forms/create-any-transaction-form";
 
 export default function QuickActions() {
   const [open, setOpen] = React.useState(false);
@@ -39,6 +40,8 @@ export default function QuickActions() {
   const [supplierDialogOpen, setSupplierDialogOpen] = React.useState(false);
   const [purchaseDialogOpen, setPurchaseDialogOpen] = React.useState(false);
   const [expenseDialogOpen, setExpenseDialogOpen] = React.useState(false);
+  const [transactionDialogOpen, setTransactionDialogOpen] =
+    React.useState(false);
   const [saleDialogOpen, setSaleDialogOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -96,6 +99,9 @@ export default function QuickActions() {
       case "record-expense":
         setExpenseDialogOpen(true);
         break;
+      case "record-transaction":
+        setTransactionDialogOpen(true);
+        break;
     }
   };
 
@@ -142,9 +148,16 @@ export default function QuickActions() {
               <span>{t("recordPurchaseTransaction")}</span>
               <CommandShortcut className="justify-center">⇧⌘B</CommandShortcut>
             </CommandItem>
-            <CommandItem onSelect={() => handleDialogAction("record=expense")}>
+            <CommandItem onSelect={() => handleDialogAction("record-expense")}>
               <Plus size={16} className="opacity-60" aria-hidden="true" />
               <span>{t("recordExpenseTransaction")}</span>
+              <CommandShortcut className="justify-center">⇧⌘B</CommandShortcut>
+            </CommandItem>
+            <CommandItem
+              onSelect={() => handleDialogAction("record-transaction")}
+            >
+              <Plus size={16} className="opacity-60" aria-hidden="true" />
+              <span>{t("recordAnyTransaction")}</span>
               <CommandShortcut className="justify-center">⇧⌘B</CommandShortcut>
             </CommandItem>
           </CommandGroup>
@@ -210,6 +223,15 @@ export default function QuickActions() {
         setIsDialogOpen={setExpenseDialogOpen}
       >
         <ExpenseTransactionForm />
+      </StateDialog>
+      <StateDialog
+        className="sm:max-w-2xl max-h-[90vh]"
+        title={t("recordTransaction")}
+        description={t("recordTransactionDescription")}
+        isDialogOpen={transactionDialogOpen}
+        setIsDialogOpen={setTransactionDialogOpen}
+      >
+        <AnyTransactionForm />
       </StateDialog>
     </>
   );

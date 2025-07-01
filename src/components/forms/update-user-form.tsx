@@ -52,7 +52,7 @@ export function UpdateUserForm({ user }: { user: SelectUser }) {
   });
   const isSelf = user.id === session.data?.user.id;
   const onSubmit = async (values: updateUserFormData) => {
-    const req = await updateUser(user.id, values);
+    const req = await updateUser({ userId: user.id, userData: values });
     if (req.data) {
       form.reset();
       toast.success(t("userUpdated"), {

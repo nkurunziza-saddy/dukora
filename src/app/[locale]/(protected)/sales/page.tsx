@@ -16,11 +16,11 @@ import { subDays } from "date-fns";
 
 export default async function SalesTracking() {
   const t = await getTranslations("sales");
-  const statData = await getTodayTransactions();
-  const transactions = await getTransactionsByTimeInterval(
-    subDays(new Date(), 7),
-    new Date()
-  );
+  const statData = await getTodayTransactions({});
+  const transactions = await getTransactionsByTimeInterval({
+    startDate: subDays(new Date(), 7),
+    endDate: new Date(),
+  });
 
   const salesStatsData = [
     {

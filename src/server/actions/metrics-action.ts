@@ -54,7 +54,9 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
     );
     const openingStockValue = parseFloat(openingStockMetric.data?.value ?? "0");
 
-    const warehouseItemsReq = await getWarehouseItemsByBusiness();
+    const warehouseItemsReq = await getWarehouseItemsByBusiness(
+      currentUser.businessId!
+    );
     if (warehouseItemsReq.error) {
       return { data: null, error: warehouseItemsReq.error };
     }
@@ -62,7 +64,10 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
       warehouseItemsReq.data ?? []
     );
 
-    const expenses = await getExpensesByTimeInterval(dateFrom, dateTo);
+    const expenses = await getExpensesByTimeInterval({
+      startDate: dateFrom,
+      endDate: dateTo,
+    });
     if (expenses.error) {
       return { data: null, error: expenses.error };
     }

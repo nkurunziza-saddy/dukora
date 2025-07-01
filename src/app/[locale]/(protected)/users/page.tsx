@@ -36,8 +36,8 @@ import {
 } from "@/components/ui/table";
 
 export default async function users() {
-  const users = await getUsers();
-  const invitations = await getInvitations();
+  const users = await getUsers({});
+  const invitations = await getInvitations({});
   if (!users.data) return null;
   const t = await getTranslations("users");
   const statData = [

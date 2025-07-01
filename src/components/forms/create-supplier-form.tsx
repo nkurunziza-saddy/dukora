@@ -63,7 +63,7 @@ export default function SupplierForm({
 
   const onSubmit = async (data: SupplierFormData) => {
     const req = supplier
-      ? await updateSupplier(supplier.id, data)
+      ? await updateSupplier({ supplierId: supplier.id, updates: data })
       : await createSupplier(data);
     if (req.data) {
       form.reset();

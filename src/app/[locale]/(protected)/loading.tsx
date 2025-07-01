@@ -4,7 +4,7 @@ import React from "react";
 const loading = () => {
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+      <div className="grid auto-rows-min gap-4 md:grid-cols-4">
         <Skeleton className="aspect-video" />
         <Skeleton className="aspect-video" />
         <Skeleton className="aspect-video" />

@@ -3,7 +3,7 @@ import * as warehouseService from "@/server/actions/warehouse-actions";
 
 export async function GET() {
   try {
-    const warehouses = await warehouseService.getWarehouses();
+    const warehouses = await warehouseService.getWarehouses({});
     return NextResponse.json(warehouses.data);
   } catch (error) {
     console.error(error);
@@ -25,10 +25,10 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const { warehouse, warehouseId } = await request.json();
-    const updatedWarehouse = await warehouseService.updateWarehouse(
+    const updatedWarehouse = await warehouseService.updateWarehouse({
       warehouseId,
-      warehouse
-    );
+      updates: warehouse,
+    });
     return NextResponse.json(updatedWarehouse);
   } catch (error) {
     console.error(error);

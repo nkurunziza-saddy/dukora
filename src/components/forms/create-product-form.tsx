@@ -113,7 +113,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
       // weight: Number.parseFloat(values.weight ?? ""),
     };
     const req = product
-      ? await updateProduct(product.id, productData)
+      ? await updateProduct({ productId: product.id, updates: productData })
       : await createProduct(productData);
     if (req.data) {
       form.reset();

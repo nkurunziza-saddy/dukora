@@ -23,6 +23,7 @@
     "previous": "Previous",
     "confirm": "Confirm",
     "actions": "Actions",
+    "record": "Record",
     "date": "Date",
     "total": "Total",
     "subtotal": "Subtotal",
@@ -37,7 +38,9 @@
     "price": "Price",
     "costPrice": "Cost price",
     "unit": "Unit",
+    "error": "Error",
     "quantity": "Quantity",
+    "amount": "Amount",
     "notes": "Notes",
     "reference": "Reference",
     "reorderPoint": "Reorder point",
@@ -60,7 +63,21 @@
     "deleteUser": "Delete user",
     "areYouSureYouWantToDeleteThisUser": "Are you sure you want to delete this user?",
     "editUser": "Edit user",
-    "updateTheDetailsOfTheSelectedUser": "Update the details of the selected user"
+    "updateTheDetailsOfTheSelectedUser": "Update the details of the selected user",
+    "productName": "Product",
+    "weight": "weight",
+    "errorLoading": "Error loading",
+    "categoryId": "Category",
+    "redirecting": "redirecting ...",
+    "barcode": "Barcode",
+    "barcodePlaceholder": "Enter barcode",
+    "SKUDescription": "Enter unique SKU",
+    "description": "Description",
+    "enterProductDescription": "Enter product description ...",
+    "enterProductName": "Enter product name",
+    "unitPieces": "Pieces",
+    "unitKilograms": "Kilograms",
+    "unitPounds": "Pounds"
   },
   "schedule": {
     "today": "Today",
@@ -99,6 +116,8 @@
     "barcodePlaceholder": "Enter barcode",
     "price": "Price",
     "costPrice": "Cost Price",
+    "enterQuantity": "Enter Quantity",
+    "amountPositive": "Amount has to be positive",
     "categoryId": "Category",
     "reorderPoint": "Reorder Point",
     "maxStock": "Max Stock",
@@ -108,12 +127,14 @@
     "supplier": "Supplier",
     "email": "Email",
     "phone": "Phone",
+    "type": "Type",
     "address": "Address",
     "note": "Note",
     "contactName": "Contact Name",
     "role": "Role",
     "quantity": "Quantity",
     "reference": "Reference",
+    "enterAmount": "Enter amount",
     "warehouseId": "Warehouse",
     "loading": "Loading",
     "errorLoading": "Error loading. Please try again.",
@@ -140,6 +161,8 @@
     "resetForm": "Reset Form",
     "recordPurchase": "Record Purchase",
     "recordPurchaseTransaction": "Record Purchase Transaction",
+    "recordTransaction": "Record Transaction",
+    "recordTransactionDescription": "Enter details for transaction you want to record",
     "recordPurchaseDescription": "Add new inventory by recording a purchase transaction.",
     "createSupplier": "Create Supplier",
     "updateSupplier": "Update Supplier",
@@ -206,6 +229,7 @@
     "transactions": "Business Transactions",
     "scheduler": "Scheduler",
     "chat": "AI Assistant",
+    "financial-calculator": "Financial Calculator",
     "commerce": "E-commerce Sync"
   },
   "inventory": {
@@ -222,6 +246,7 @@
     "productName": "Product Name",
     "category": "Category",
     "location": "Location",
+    "type": "Type",
     "start": "Start",
     "action": "Action",
     "performedBy": "Performed by",
@@ -247,7 +272,18 @@
     "searchPlaceholder": "Search by SKU or product name...",
     "selectWarehouse": "Select warehouse",
     "allWarehouses": "All Warehouses",
-    "itemsList": "Items: {items}"
+    "itemsList": "Items: {items}",
+    "resetForm": "Reset Form",
+    "updating": "Updating",
+    "amountPositive": "Amount has to be positive",
+    "expenseRecorded": "Expense recorded",
+    "transactionAddFailed": "Failed adding transaction",
+    "recordFailed": "Error recording",
+    "enterAmount": "Enter amount",
+    "notePlaceholder": "Enter note",
+    "recording": "Recording",
+    "update": "Update",
+    "record": "Record"
   },
   "products": {
     "title": "Product Catalog",
@@ -538,6 +574,9 @@
     "noResultsFound": "No results found.",
     "quickActionsGroup": "Quick Actions",
     "managementGroup": "Management",
+    "recordTransaction": "Record Transaction",
+    "recordTransactionDescription": "Enter details for transaction you want to record",
+    "recordAnyTransaction": "Record Any Transaction",
     "createNewProduct": "Create New Product",
     "createNewProductDesc": "Fill in the details of the new product you want to add.",
     "createNewSupplier": "Create New Supplier",
@@ -548,7 +587,9 @@
     "recordPurchaseTransactionDesc": "Fill in the details of the transaction you want to record.",
     "productCategories": "Product Categories",
     "supplierManagement": "Supplier Management",
-    "systemSettings": "System Settings"
+    "systemSettings": "System Settings",
+    "recordExpenseTransaction": "Record Expense",
+    "recordExpenseTransactionDesc": "Fill in the the details to record expense"
   },
   "users": {
     "loading": "Loading users...",
@@ -572,6 +613,14 @@
     "listDescription": "Manage users with access to your business.",
     "invitations": {
       "listDescription": "Pending invitations to join your business."
+    },
+    "users": {
+      "listDescription": "Current users in business"
+    },
+    "invitationsDescription": "Invited users",
+    "permissions": {
+      "description": "Business permissions distributions",
+      "permission": "Permission"
     }
   },
   "errorDeletingUser": "Error deleting user",
@@ -581,7 +630,10 @@
     "signUp": {
       "title": "Create your account",
       "description": "Fill in your details to create a new account.",
-      "createAccountButton": "Create Account"
+      "createAccountButton": "Create Account",
+
+      "signedIn": "Already signed in ?",
+      "signInLink": "Sign in here"
     },
     "signIn": {
       "title": "Sign in to your account",
@@ -590,7 +642,9 @@
       "rememberMe": "Remember me",
       "loginButton": "Sign In",
       "googleButton": "Sign in with Google",
-      "githubButton": "Sign in with GitHub"
+      "githubButton": "Sign in with GitHub",
+      "noAccount": "No account ?",
+      "signUpLink": "Sign up here"
     },
     "fields": {
       "firstName": "First Name",
@@ -626,36 +680,5 @@
     "deleteDialogDescription": "Are you sure you want to delete this supplier? This action cannot be undone.",
     "editDialogTitle": "Edit Supplier",
     "editDialogDescription": "Update the details of the selected supplier."
-  },
-  "quickActions.recordExpenseTransaction": "Record Expense",
-  "quickActions.recordExpenseTransactionDesc": "Fill in the the details to record expense",
-  "inventory.resetForm": "Reset Form",
-  "inventory.updating": "Updating",
-  "inventory.amountPositive": "Amount has to be positive",
-  "inventory.expenseRecorded": "Expense recorded",
-  "inventory.transactionAddFailed": "Failed adding transaction",
-  "inventory.recordFailed": "Error recording",
-  "inventory.enterAmount": "Enter amount",
-  "inventory.notePlaceholder": "Enter note",
-  "inventory.recording": "Recording",
-  "inventory.update": "Update",
-  "inventory.record": "Record",
-  "forms.recordExpenseTransaction": "Record Expense",
-  "users.users.listDescription": "Current users in business",
-  "users.invitationsDescription": "Invited users",
-  "users.permissions.description": "Business permissions distributions",
-  "users.permissions.permission": "Permission",
-  "common.productName": "Product",
-  "common.weight": "weight",
-  "common.errorLoading": "Error loading",
-  "common.categoryId": "Category",
-  "common.barcode": "Barcode",
-  "common.barcodePlaceholder": "Enter barcode",
-  "common.SKUDescription": "Enter unique SKU",
-  "common.description": "Description",
-  "common.enterProductDescription": "Enter product description ...",
-  "common.enterProductName": "Enter product name",
-  "common.unitPieces": "Pieces",
-  "common.unitKilograms": "Kilograms",
-  "common.unitPounds": "Pounds"
+  }
 }

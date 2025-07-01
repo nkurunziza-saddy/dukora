@@ -54,6 +54,7 @@ import { userRolesObject } from "@/utils/constants";
 import { USER_ROLES } from "@/lib/schema/models/enums";
 import { businessInitialization } from "@/server/actions/onboarding-actions";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 
 const onboardingSchema = z.object({
   businessName: z.string().min(1, "Business name is required"),
@@ -125,7 +126,7 @@ const steps = [
 
 export default function OnboardingFlow() {
   const t = useTranslations("onboarding");
-
+  const tCommon = useTranslations("common");
   const businessTypes = [
     { value: "retail", label: t("businessTypeRetail") },
     { value: "wholesale", label: t("businessTypeWholesale") },
@@ -292,10 +293,21 @@ export default function OnboardingFlow() {
   };
 
   const onSubmit = async (data: OnboardingFormData) => {
+    if (currentStep < steps.length) {
+      return;
+    }
     setIsSubmitting(true);
     try {
       const req = await businessInitialization(data);
       console.log(req);
+      if (req.data) {
+        form.reset();
+        toast.success(tCommon("redirecting"), {});
+      } else {
+        toast.error(tCommon("error"), {
+          description: req.error?.split("_").join(" ").toLowerCase(),
+        });
+      }
     } catch (error) {
       console.error("Onboarding error:", error);
     } finally {

@@ -5,10 +5,10 @@ import type {
   SelectProduct,
   SelectWarehouseItem,
 } from "@/lib/schema/schema-types";
-import { getUserIfHasPermission } from "@/server/actions/auth/permission-middleware";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
 import { revalidateTag } from "next/cache";
+import { createProtectedAction } from "@/server/helpers/action-factory";
 import {
   get_all as getAllWarehouseItemsRepo,
   get_by_id as getWarehouseItemByIdRepo,
@@ -19,34 +19,22 @@ import {
   get_all_by_business_id as getAllWarehouseItemsByBusinessIdRepo,
 } from "@/server/repos/warehouse-item-repo";
 
-export async function getWarehouseItems() {
-  const currentUser = await getUserIfHasPermission(
-    Permission.WAREHOUSE_ITEM_VIEW
-  );
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  try {
-    const warehouseItems = await getAllWarehouseItemsRepo(
-      currentUser.businessId!
-    );
+export const getWarehouseItems = createProtectedAction(
+  Permission.WAREHOUSE_ITEM_VIEW,
+  async (user) => {
+    const warehouseItems = await getAllWarehouseItemsRepo(user.businessId!);
     if (warehouseItems.error) {
       return { data: null, error: warehouseItems.error };
     }
     return { data: warehouseItems.data, error: null };
-  } catch (error) {
-    console.error("Error getting warehouseItems:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
-export async function getWarehouseItemsByBusiness() {
-  const currentUser = await getUserIfHasPermission(
-    Permission.WAREHOUSE_ITEM_VIEW
-  );
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
+);
 
-  try {
+export const getWarehouseItemsByBusiness = createProtectedAction(
+  Permission.WAREHOUSE_ITEM_VIEW,
+  async (user) => {
     const warehouseItemsResult = await getAllWarehouseItemsByBusinessIdRepo(
-      currentUser.businessId!
+      user.businessId!
     );
     if (warehouseItemsResult.error) {
       return { data: null, error: warehouseItemsResult.error };
@@ -60,171 +48,105 @@ export async function getWarehouseItemsByBusiness() {
         product: item.product,
       })
     );
-
     return { data: warehouseItems, error: null };
-  } catch (error) {
-    console.error("Error getting warehouseItems:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+);
 
-export async function getWarehouseItemById(warehouseItemId: string) {
-  const currentUser = await getUserIfHasPermission(
-    Permission.WAREHOUSE_ITEM_VIEW
-  );
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  if (!warehouseItemId?.trim()) {
-    return { data: null, error: ErrorCode.MISSING_INPUT };
-  }
-
-  try {
+export const getWarehouseItemById = createProtectedAction(
+  Permission.WAREHOUSE_ITEM_VIEW,
+  async (user, warehouseItemId: string) => {
+    if (!warehouseItemId?.trim()) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
+    }
     const warehouseItem = await getWarehouseItemByIdRepo(warehouseItemId);
-
     if (warehouseItem.error) {
       return { data: null, error: warehouseItem.error };
     }
-
     return { data: warehouseItem, error: null };
-  } catch (error) {
-    console.error("Error getting warehouseItem:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+);
 
-export async function createWarehouseItem(
-  warehouseItemData: Omit<InsertWarehouseItem, "businessId" | "id">
-) {
-  const currentUser = await getUserIfHasPermission(
-    Permission.WAREHOUSE_ITEM_CREATE
-  );
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  try {
+export const createWarehouseItem = createProtectedAction(
+  Permission.WAREHOUSE_ITEM_CREATE,
+  async (user, warehouseItemData: Omit<InsertWarehouseItem, "businessId" | "id">) => {
     const warehouseItem: InsertWarehouseItem = {
       ...warehouseItemData,
     };
-
     const res = await createWarehouseItemRepo(
-      currentUser.businessId!,
-      currentUser.id,
+      user.businessId!,
+      user.id,
       warehouseItem
     );
     if (res.error) {
       return { data: null, error: res.error };
     }
-    revalidateTag(`warehouseItems-${currentUser.businessId!}`);
-
+    revalidateTag(`warehouseItems-${user.businessId!}`);
     return { data: res.data, error: null };
-  } catch (error) {
-    console.error("Error creating warehouseItem:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+);
 
-export async function updateWarehouseItem(
-  warehouseItemId: string,
-  updates: Partial<Omit<InsertWarehouseItem, "id" | "businessId">>
-) {
-  const currentUser = await getUserIfHasPermission(
-    Permission.WAREHOUSE_ITEM_UPDATE
-  );
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  if (!warehouseItemId?.trim()) {
-    return { data: null, error: ErrorCode.MISSING_INPUT };
-  }
-
-  try {
-    const updatedWarehouseItem = await updateWarehouseItemRepo(
-      currentUser.businessId!,
+export const updateWarehouseItem = createProtectedAction(
+  Permission.WAREHOUSE_ITEM_UPDATE,
+  async (
+    user,
+    { 
       warehouseItemId,
-      currentUser.id,
+      updates,
+    }: {
+      warehouseItemId: string;
+      updates: Partial<Omit<InsertWarehouseItem, "id" | "businessId">>;
+    }
+  ) => {
+    if (!warehouseItemId?.trim()) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
+    }
+    const updatedWarehouseItem = await updateWarehouseItemRepo(
+      user.businessId!,
+      warehouseItemId,
+      user.id,
       updates
     );
     if (updatedWarehouseItem.error) {
       return { data: null, error: updatedWarehouseItem.error };
     }
-
-    revalidateTag(`warehouseItems-${currentUser.businessId!}`);
+    revalidateTag(`warehouseItems-${user.businessId!}`);
     revalidateTag(`warehouseItem-${warehouseItemId}`);
-
     return { data: updatedWarehouseItem.data, error: null };
-  } catch (error) {
-    console.error("Error updating warehouseItem:", error);
+  }
+);
 
-    if (error instanceof Error && error.message.includes("not found")) {
-      return { data: null, error: ErrorCode.NOT_FOUND };
+export const deleteWarehouseItem = createProtectedAction(
+  Permission.WAREHOUSE_ITEM_DELETE,
+  async (user, warehouseItemId: string) => {
+    if (!warehouseItemId?.trim()) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
-  }
-}
-
-export async function deleteWarehouseItem(warehouseItemId: string) {
-  const currentUser = await getUserIfHasPermission(
-    Permission.WAREHOUSE_ITEM_DELETE
-  );
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  if (!warehouseItemId?.trim()) {
-    return { data: null, error: ErrorCode.MISSING_INPUT };
-  }
-
-  try {
-    await removeWarehouseItemRepo(
-      warehouseItemId,
-      currentUser.businessId!,
-      currentUser.id
-    );
-
-    revalidateTag(`warehouseItems-${currentUser.businessId!}`);
+    await removeWarehouseItemRepo(warehouseItemId, user.businessId!, user.id);
+    revalidateTag(`warehouseItems-${user.businessId!}`);
     revalidateTag(`warehouseItem-${warehouseItemId}`);
-
     return { data: { success: true }, error: null };
-  } catch (error) {
-    console.error("Error deleting warehouseItem:", error);
+  }
+);
 
-    if (error instanceof Error && error.message.includes("not found")) {
-      return { data: null, error: ErrorCode.NOT_FOUND };
+export const createManyWarehouseItems = createProtectedAction(
+  Permission.WAREHOUSE_ITEM_CREATE,
+  async (
+    user,
+    warehouseItemsData: Omit<InsertWarehouseItem, "businessId" | "id">[]
+  ) => {
+    if (!warehouseItemsData?.length) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
-  }
-}
-
-export async function createManyWarehouseItems(
-  warehouseItemsData: Omit<InsertWarehouseItem, "businessId" | "id">[]
-) {
-  const currentUser = await getUserIfHasPermission(
-    Permission.WAREHOUSE_ITEM_CREATE
-  );
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  if (!warehouseItemsData?.length) {
-    return { data: null, error: ErrorCode.MISSING_INPUT };
-  }
-
-  try {
     const warehouseItems: InsertWarehouseItem[] = warehouseItemsData.map(
-      (warehouseItem, index) => ({
+      (warehouseItem) => ({
         ...warehouseItem,
-        businessId: currentUser.businessId!,
-        id: `prod-${Date.now()}-${index}-${Math.random()
-          .toString(36)
-          .substr(2, 9)}`,
+        businessId: user.businessId!,
       })
     );
-
     const createdWarehouseItems = await createManyWarehouseItemsRepo(
       warehouseItems
     );
-
-    revalidateTag(`warehouseItems-${currentUser.businessId!}`);
-
+    revalidateTag(`warehouseItems-${user.businessId!}`);
     return { data: createdWarehouseItems, error: null };
-  } catch (error) {
-    console.error("Error creating warehouseItems:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+);

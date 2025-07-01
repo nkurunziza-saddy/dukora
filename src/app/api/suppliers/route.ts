@@ -3,7 +3,7 @@ import * as supplierService from "@/server/actions/supplier-actions";
 
 export async function GET() {
   try {
-    const suppliers = await supplierService.getSuppliers();
+    const suppliers = await supplierService.getSuppliers({});
     return NextResponse.json(suppliers);
   } catch (error) {
     console.error(error);
@@ -25,10 +25,10 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const { supplier, supplierId } = await request.json();
-    const updatedSupplier = await supplierService.updateSupplier(
-      supplierId,
-      supplier
-    );
+    const updatedSupplier = await supplierService.updateSupplier({
+      supplierId: supplierId,
+      updates: supplier,
+    });
     return NextResponse.json(updatedSupplier);
   } catch (error) {
     console.error(error);

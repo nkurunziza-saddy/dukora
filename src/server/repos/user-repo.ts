@@ -32,23 +32,22 @@ export async function getById(userId: string, businessId: string) {
   }
 
   try {
-    const user = await db
-      .select()
-      .from(usersTable)
-      .where(
-        and(
-          eq(usersTable.id, userId),
-          eq(usersTable.businessId, businessId),
-          isNull(usersTable.deletedAt)
-        )
-      )
-      .limit(1);
+    const user = await db.query.usersTable.findFirst({
+      where: and(
+        eq(usersTable.id, userId),
+        eq(usersTable.businessId, businessId),
+        isNull(usersTable.deletedAt)
+      ),
+      with: {
+        business: true,
+      },
+    });
 
-    if (user.length === 0) {
+    if (!user) {
       return { data: null, error: ErrorCode.USER_NOT_FOUND };
     }
 
-    return { data: user[0], error: null };
+    return { data: user, error: null };
   } catch (error) {
     console.error("Failed to get user:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };

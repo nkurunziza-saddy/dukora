@@ -4,45 +4,35 @@ import type {
   InsertTransaction,
   TransactionType,
 } from "@/lib/schema/schema-types";
-import { getUserIfHasPermission } from "@/server/actions/auth/permission-middleware";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
 import { revalidateTag } from "next/cache";
+import { createProtectedAction } from "@/server/helpers/action-factory";
 import {
   getAll as getAllTransactionsRepo,
   getById as getTransactionByIdRepo,
   create_with_warehouse_item as createWithWarehouseItem,
   create as createTransactionRepo,
   getByType as getTransactionsByTypeRepo,
+  getByTimeIntervalWithWith,
 } from "../repos/transaction-repo";
-import { getByTimeIntervalWithWith } from "@/server/repos/transaction-repo";
 
-export async function getTransactions() {
-  const currentUser = await getUserIfHasPermission(Permission.FINANCIAL_VIEW);
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  try {
-    const transactions = await getAllTransactionsRepo(currentUser.businessId!);
+export const getTransactions = createProtectedAction(
+  Permission.FINANCIAL_VIEW,
+  async (user) => {
+    const transactions = await getAllTransactionsRepo(user.businessId!);
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  } catch (error) {
-    console.error("Error getting transactions:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+);
 
-export async function getTransactionsByTimeInterval(
-  startDate: Date,
-  endDate: Date
-) {
-  const currentUser = await getUserIfHasPermission(Permission.FINANCIAL_VIEW);
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  try {
+export const getTransactionsByTimeInterval = createProtectedAction(
+  Permission.FINANCIAL_VIEW,
+  async (user, { startDate, endDate }: { startDate: Date; endDate: Date }) => {
     const transactions = await getByTimeIntervalWithWith(
-      currentUser.businessId!,
+      user.businessId!,
       startDate,
       endDate
     );
@@ -50,59 +40,44 @@ export async function getTransactionsByTimeInterval(
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  } catch (error) {
-    console.error("Error getting transactions:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+);
 
-export async function getTransactionById(transactionId: string) {
-  const currentUser = await getUserIfHasPermission(Permission.FINANCIAL_VIEW);
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  if (!transactionId?.trim()) {
-    return { data: null, error: ErrorCode.MISSING_INPUT };
-  }
-
-  try {
+export const getTransactionById = createProtectedAction(
+  Permission.FINANCIAL_VIEW,
+  async (user, transactionId: string) => {
+    if (!transactionId?.trim()) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
+    }
     const transaction = await getTransactionByIdRepo(
       transactionId,
-      currentUser.businessId!
+      user.businessId!
     );
-
     if (transaction.error) {
       return { data: null, error: transaction.error };
     }
-
     return { data: transaction.data, error: null };
-  } catch (error) {
-    console.error("Error getting transaction:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+);
 
-export async function createTransaction(
-  transactionData: Omit<InsertTransaction, "businessId" | "id" | "createdBy">
-) {
-  const currentUser = await getUserIfHasPermission(
-    Permission.TRANSACTION_PURCHASE_CREATE
-  );
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  if (
-    !transactionData.productId?.trim() ||
-    !transactionData.warehouseItemId?.trim() ||
-    !transactionData.type ||
-    typeof transactionData.quantity !== "number"
-  ) {
-    return { data: null, error: ErrorCode.MISSING_INPUT };
-  }
-
-  try {
+export const createTransaction = createProtectedAction(
+  Permission.TRANSACTION_PURCHASE_CREATE,
+  async (
+    user,
+    transactionData: Omit<InsertTransaction, "businessId" | "id" | "createdBy">
+  ) => {
+    if (
+      !transactionData.productId?.trim() ||
+      !transactionData.warehouseItemId?.trim() ||
+      !transactionData.type ||
+      typeof transactionData.quantity !== "number"
+    ) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
+    }
     const transaction: InsertTransaction = {
       ...transactionData,
-      businessId: currentUser.businessId!,
-      createdBy: currentUser.id,
+      businessId: user.businessId!,
+      createdBy: user.id,
     };
     const { data: resData, error: resError } = await createTransactionRepo(
       transaction
@@ -110,41 +85,32 @@ export async function createTransaction(
     if (resError) {
       return { data: null, error: resError };
     }
-
-    revalidateTag(`transactions-${currentUser.businessId!}`);
-    revalidateTag(`warehouse-items-${currentUser.businessId!}`);
-
+    revalidateTag(`transactions-${user.businessId!}`);
+    revalidateTag(`warehouse-items-${user.businessId!}`);
     return { data: resData, error: null };
-  } catch (error) {
-    console.error("Error creating transaction:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+);
 
-export async function createTransactionAndWarehouseItem(
-  transactionData: Omit<
-    InsertTransaction,
-    "businessId" | "id" | "createdBy" | "warehouseItemId"
-  >
-) {
-  const currentUser = await getUserIfHasPermission(
-    Permission.TRANSACTION_PURCHASE_CREATE
-  );
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  if (
-    !transactionData.productId?.trim() ||
-    !transactionData.type ||
-    typeof transactionData.quantity !== "number"
-  ) {
-    return { data: null, error: ErrorCode.MISSING_INPUT };
-  }
-
-  try {
+export const createTransactionAndWarehouseItem = createProtectedAction(
+  Permission.TRANSACTION_PURCHASE_CREATE,
+  async (
+    user,
+    transactionData: Omit<
+      InsertTransaction,
+      "businessId" | "id" | "createdBy" | "warehouseItemId"
+    >
+  ) => {
+    if (
+      !transactionData.productId?.trim() ||
+      !transactionData.type ||
+      typeof transactionData.quantity !== "number"
+    ) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
+    }
     const transaction = {
       ...transactionData,
-      businessId: currentUser.businessId!,
-      createdBy: currentUser.id,
+      businessId: user.businessId!,
+      createdBy: user.id,
     };
     const { data: resData, error: resError } = await createWithWarehouseItem(
       transaction
@@ -152,36 +118,22 @@ export async function createTransactionAndWarehouseItem(
     if (resError) {
       return { data: null, error: resError };
     }
-
-    revalidateTag(`transactions-${currentUser.businessId!}`);
-    revalidateTag(`warehouse-items-${currentUser.businessId!}`);
-
+    revalidateTag(`transactions-${user.businessId!}`);
+    revalidateTag(`warehouse-items-${user.businessId!}`);
     return { data: resData, error: null };
-  } catch (error) {
-    console.error("Error creating transaction:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+);
 
-export async function getTransactionsByType(type: TransactionType) {
-  const currentUser = await getUserIfHasPermission(Permission.FINANCIAL_VIEW);
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
-
-  if (!type) {
-    return { data: null, error: ErrorCode.MISSING_INPUT };
-  }
-
-  try {
-    const transactions = await getTransactionsByTypeRepo(
-      currentUser.businessId!,
-      type
-    );
+export const getTransactionsByType = createProtectedAction(
+  Permission.FINANCIAL_VIEW,
+  async (user, type: TransactionType) => {
+    if (!type) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
+    }
+    const transactions = await getTransactionsByTypeRepo(user.businessId!, type);
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  } catch (error) {
-    console.error("Error getting transactions by type:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+);
