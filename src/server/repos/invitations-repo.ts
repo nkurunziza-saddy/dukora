@@ -10,6 +10,9 @@ import type {
   InsertInvitation,
 } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
+import { generateRandomCode } from "@/lib/utils/generate-random-code";
+import { addDays } from "date-fns";
+import { usersTable } from "@/lib/schema";
 
 export async function getAll(businessId: string) {
   if (!businessId) {
@@ -77,20 +80,42 @@ export const getByIdCached = async (invitationId: string, businessId: string) =>
     }
   );
 
+
+
 export async function create(
   businessId: string,
   userId: string,
-  invitation: InsertInvitation
+  invitation: Omit<InsertInvitation, "code" | "expiresAt" | "isAccepted" | "invitedBy" | "businessId">
 ) {
-  if (!invitation.email || !invitation.businessId) {
+  if (!invitation.email) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
 
   try {
+    const existingUser = await db.query.usersTable.findFirst({
+      where: and(eq(usersTable.email, invitation.email), eq(usersTable.businessId, businessId)),
+    });
+
+    if (existingUser) {
+      return { data: null, error: ErrorCode.USER_ALREADY_EXISTS };
+    }
+
+    const code = generateRandomCode();
+    const expiresAt = addDays(new Date(), 7);
+
+    const newInvitationData: InsertInvitation = {
+      ...invitation,
+      businessId,
+      invitedBy: userId,
+      code,
+      expiresAt,
+      isAccepted: false,
+    };
+
     const result = await db.transaction(async (tx) => {
       const [newInvitation] = await tx
         .insert(invitationsTable)
-        .values(invitation)
+        .values(newInvitationData)
         .returning();
 
       const auditData: InsertAuditLog = {
@@ -98,7 +123,7 @@ export async function create(
         model: "invitation",
         recordId: newInvitation.id,
         action: "create-invitation",
-        changes: JSON.stringify(invitation),
+        changes: JSON.stringify(newInvitationData),
         performedBy: userId,
         performedAt: new Date(),
       };
@@ -108,7 +133,7 @@ export async function create(
     });
 
     revalidateTag("invitations");
-    revalidateTag(`invitations-${invitation.businessId}`);
+    revalidateTag(`invitations-${businessId}`);
 
     return { data: result, error: null };
   } catch (error) {

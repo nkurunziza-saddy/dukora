@@ -1,16 +1,16 @@
 "use server";
 
-import type { InsertBusinessSetting } from "@/lib/schema/schema-types";
+import type { InsertUserSetting } from "@/lib/schema/schema-types";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
 import { revalidateTag } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as businessSettingsRepo from "../repos/business-settings-repo";
+import * as userSettingsRepo from "../repos/user-settings-repo";
 
-export const getBusinessSettings = createProtectedAction(
-  Permission.BUSINESS_SETTINGS_VIEW,
+export const getUserSettings = createProtectedAction(
+  Permission.USER_VIEW,
   async (user) => {
-    const settings = await businessSettingsRepo.getAll(user.businessId!);
+    const settings = await userSettingsRepo.getAll(user.id);
     if (settings.error) {
       return { data: null, error: settings.error };
     }
@@ -18,28 +18,22 @@ export const getBusinessSettings = createProtectedAction(
   }
 );
 
-export const upsertBusinessSettings = createProtectedAction(
-  Permission.BUSINESS_SETTINGS_UPDATE,
-  async (
-    user,
-    settingsData: Partial<Omit<InsertBusinessSetting, "id" | "businessId">>[]
-  ) => {
+export const upsertUserSettings = createProtectedAction(
+  Permission.USER_UPDATE,
+  async (user, settingsData: Partial<Omit<InsertUserSetting, "id" | "userId">>[]) => {
     if (!settingsData?.length) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
 
     const promises = settingsData.map((setting) => {
-      const newSetting: InsertBusinessSetting = {
+      const newSetting: InsertUserSetting = {
         ...setting,
         key: setting.key as string,
         value: setting.value as string,
-        businessId: user.businessId!,
+        userId: user.id,
+        updatedAt: new Date()
       };
-      return businessSettingsRepo.upsert(
-        user.businessId!,
-        user.id,
-        newSetting
-      );
+      return userSettingsRepo.upsert(user.id, user.businessId!, newSetting);
     });
 
     const results = await Promise.all(promises);
@@ -49,7 +43,7 @@ export const upsertBusinessSettings = createProtectedAction(
       return { data: null, error: ErrorCode.FAILED_REQUEST, errors };
     }
 
-    revalidateTag(`business-settings-${user.businessId!}`);
+    revalidateTag(`user-settings-${user.id}`);
     return { data: { success: true }, error: null };
   }
 );

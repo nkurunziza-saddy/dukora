@@ -87,9 +87,8 @@ export async function getById(productId: string, businessId: string) {
       with: {
         category: true,
         productVariants: true,
-        // productSuppliers: true,
-        // productPriceHistory: true,
         transactions: true,
+        productSuppliers: true,
         warehouseItems: {
           with: {
             warehouse: true,

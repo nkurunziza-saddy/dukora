@@ -65,6 +65,10 @@ export enum ErrorCode {
   INVALID_INPUT = "INVALID_INPUT",
   INPUT_TOO_SHORT = "INPUT_TOO_SHORT",
   INPUT_TOO_LONG = "INPUT_TOO_LONG",
+
+  // Invitation errors
+  INVITATION_NOT_FOUND = "INVITATION_NOT_FOUND",
+  INVITATION_EXPIRED = "INVITATION_EXPIRED",
 }
 
 export const ERROR_CODE_STATUS_MAP: Record<ErrorCode, number> = {
@@ -134,4 +138,8 @@ export const ERROR_CODE_STATUS_MAP: Record<ErrorCode, number> = {
   [ErrorCode.INVALID_INPUT]: 400,
   [ErrorCode.INPUT_TOO_SHORT]: 400,
   [ErrorCode.INPUT_TOO_LONG]: 400,
+
+  // Invitation errors
+  [ErrorCode.INVITATION_NOT_FOUND]: 404,
+  [ErrorCode.INVITATION_EXPIRED]: 400,
 };
