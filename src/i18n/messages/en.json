@@ -510,6 +510,71 @@
     "autoSync": "Auto Sync",
     "overallSyncHealth": "Overall Sync Health"
   },
+  "FinancialCalculator": {
+    "meta_title": "Financial Calculator",
+    "simple_calculator": {
+      "title": "Simple Interest Calculator",
+      "description": "Calculate simple interest based on principal, interest rate, and time.",
+      "principal_label": "Principal Amount",
+      "interest_rate_label": "Annual Interest Rate (%)",
+      "time_label": "Time (Years)",
+      "result_label": "Final Amount"
+    },
+    "loan_calculator": {
+      "title": "Loan Calculator",
+      "description": "Calculate your monthly loan payments.",
+      "loan_amount_label": "Loan Amount",
+      "interest_rate_label": "Annual Interest Rate (%)",
+      "loan_term_label": "Loan Term (Years)",
+      "monthly_payment_label": "Monthly Payment"
+    },
+    "compound_calculator": {
+      "title": "Compound Interest Calculator",
+      "description": "Calculate the future value of an investment with compound interest.",
+      "principal_label": "Principal Amount",
+      "annual_rate_label": "Annual Interest Rate (%)",
+      "compounding_frequency_label": "Compounding Frequency (per year)",
+      "time_label": "Time (Years)",
+      "future_value_label": "Future Value"
+    },
+    "savings_calculator": {
+      "title": "Savings Goal Calculator",
+      "description": "Calculate how many years it will take to reach your savings goal.",
+      "target_amount_label": "Target Amount",
+      "current_savings_label": "Current Savings",
+      "annual_contribution_label": "Annual Contribution",
+      "years_to_goal_label": "Years to Goal"
+    },
+    "tax_calculator": {
+      "pit_tab": "Income Tax (PIT)",
+      "paye_tab": "PAYE",
+      "vat_tab": "VAT"
+    },
+    "income_tax_calculator": {
+      "title": "Income Tax (Personal Income Tax – PIT)",
+      "description": "Calculate your annual and monthly income tax based on Rwandan progressive brackets.",
+      "annual_income_label": "Annual Taxable Income (RWF)",
+      "annual_tax_label": "Total Annual Tax (RWF)",
+      "monthly_tax_label": "Monthly Tax (RWF)"
+    },
+    "paye_calculator": {
+      "title": "PAYE (Pay As You Earn) Calculator",
+      "description": "Calculate your monthly PAYE based on employee type and income.",
+      "monthly_income_label": "Monthly Taxable Income (RWF)",
+      "employee_type_label": "Employee Type",
+      "select_employee_type": "Select employee type",
+      "permanent_employee": "Permanent Employee",
+      "casual_laborer": "Casual Laborer",
+      "paye_label": "Monthly PAYE (RWF)"
+    },
+    "vat_calculator": {
+      "title": "VAT (Value Added Tax) Calculator",
+      "description": "Calculate your monthly VAT due based on sales and purchases.",
+      "sales_amount_label": "Total Sales Amount (RWF)",
+      "purchases_amount_label": "Total Purchases Amount (RWF)",
+      "vat_due_label": "Monthly VAT Due (RWF)"
+    }
+  },
   "invite-user-form": {
     "invitationSent": "Invitation sent",
     "error": "Error",

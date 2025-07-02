@@ -12,6 +12,7 @@ import {
   Store,
   Truck,
   Users,
+  Calculator
   // Warehouse,
 } from "lucide-react";
 import {
@@ -119,9 +120,8 @@ export const data = {
         },
         {
           title: "Financial calculator",
-          url: "/calculator",
-          icon: Bot,
-          disabled: true,
+          url: "/financial-calculator",
+          icon: Calculator,
         },
       ],
     },
