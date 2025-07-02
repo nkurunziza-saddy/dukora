@@ -6,11 +6,13 @@ import {
   warehouseItemsTable,
   auditLogsTable,
   productsTable,
+  productSuppliersTable,
 } from "@/lib/schema";
 import {
   InsertTransaction,
   TransactionType,
   InsertAuditLog,
+  InsertProductSupplier,
 } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
 import { create as createWarehouseItem } from "@/server/repos/warehouse-item-repo";
@@ -204,6 +206,14 @@ export async function create_with_warehouse_item(
           warehouseItemId: newWarehouseItem.data?.id ?? "",
         })
         .returning();
+const productSupplierData: InsertProductSupplier = {
+  productId: transaction.productId,
+  supplierId: transaction.supplierId ?? "",
+  businessId: transaction.businessId,
+  note: transaction.note,
+  supplierProductCode: newWarehouseItem.data?.id ?? "",
+}
+      await tx.insert(productSuppliersTable).values(productSupplierData);
 
       return newTransaction;
     });

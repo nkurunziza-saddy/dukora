@@ -51,6 +51,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { transactionTypesObject } from "@/utils/constants";
+import { useMemo } from "react";
 
 if (typeof window !== "undefined") {
   preload("/api/products", fetcher);
@@ -78,7 +79,12 @@ export default function AnyTransactionForm({
     data: productsData,
     error: productsError,
     isLoading: isProductsLoading,
-  } = useSwr<SelectProduct[]>("/api/products", fetcher);
+  } = useSwr<SelectProduct[]>("/api/products", fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      dedupingInterval: 60000,
+    });
 
   const form = useForm<SaleTransactionFormData>({
     resolver: zodResolver(saleTransactionSchema),
@@ -92,8 +98,13 @@ export default function AnyTransactionForm({
     },
   });
 
-  const productId = form.watch("productId");
-  const selectedProduct = productsData?.find((p) => p.id === productId);
+  const formValues = form.watch(['productId', 'warehouseItemId']);
+
+  const [productId, warehouseItemId] = formValues;
+  const selectedProduct = useMemo(
+  () => productsData?.find((p) => p.id === productId),
+  [productsData, productId]
+);
 
   const {
     data: productDetailsData,
@@ -101,11 +112,19 @@ export default function AnyTransactionForm({
     isLoading: isProductDetailsLoading,
   } = useSwr<ExtendedProductPayload>(
     productId ? `/api/products/${productId}` : null,
-    fetcher
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      dedupingInterval: 60000,
+    }
   );
 
-  const selectedWarehouseItem = productDetailsData?.warehouseItems.find(
-    (item) => item.id === form.watch("warehouseItemId")
+  const selectedWarehouseItem = useMemo(
+    () => productDetailsData?.warehouseItems.find(
+      (item) => item.id === warehouseItemId
+    ),
+    [productDetailsData, warehouseItemId]
   );
 
   const onSubmit = async (data: SaleTransactionFormData) => {

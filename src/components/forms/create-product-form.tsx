@@ -71,7 +71,11 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
       return !isNaN(num) && num > 0;
     }, t("maxStockPositive")),
     unit: z.string(),
-    weight: z.string().optional(),
+    weight: z.string().optional().refine((val) => {
+      if (val === undefined || val === "") return true;
+      const num = Number.parseFloat(val);
+      return !isNaN(num);
+    }, t("weightMustBeNumber")),
   });
 
   const units = [
@@ -110,7 +114,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
           : null,
       reorderPoint: Number.parseInt(values.reorderPoint, 10),
       maxStock: Number.parseInt(values.maxStock, 10),
-      // weight: Number.parseFloat(values.weight ?? ""),
+      weight: values.weight && values.weight.trim() !== "" ? values.weight : null,
     };
     const req = product
       ? await updateProduct({ productId: product.id, updates: productData })

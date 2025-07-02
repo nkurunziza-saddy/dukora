@@ -25,6 +25,7 @@ import type {
   SelectProduct,
   InsertTransaction,
   SelectWarehouse,
+  SelectSupplier,
 } from "@/lib/schema/schema-types";
 import { fetcher, cn } from "@/lib/utils";
 import useSwr from "swr";
@@ -42,9 +43,11 @@ import { toast } from "sonner";
 import { createTransactionAndWarehouseItem } from "@/server/actions/transaction-actions";
 import { format } from "date-fns";
 import { useTranslations } from "next-intl";
+import { useMemo } from "react";
 
 if (typeof window !== "undefined") {
   preload("/api/products", fetcher);
+  preload("/api/suppliers", fetcher);
 }
 
 export default function PurchaseTransactionForm({
@@ -57,6 +60,7 @@ export default function PurchaseTransactionForm({
   const tInventory = useTranslations("inventory");
   const purchaseTransactionSchema = z.object({
     productId: z.string().min(1, t("productRequired")),
+    supplierId: z.string().min(1, t("supplierRequired")),
     warehouseId: z.string().min(1, t("warehouseRequired")),
     quantity: z.coerce.number().positive(t("quantityPositive")),
     note: z.string().optional(),
@@ -68,12 +72,29 @@ export default function PurchaseTransactionForm({
     data: productsData,
     error: productsError,
     isLoading: isProductsLoading,
-  } = useSwr<SelectProduct[]>("/api/products", fetcher);
+  } = useSwr<SelectProduct[]>("/api/products", fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      dedupingInterval: 60000,
+    });
+
+  const {
+    data: suppliersData,
+    error: suppliersError,
+    isLoading: issuppliersLoading,
+  } = useSwr<SelectSupplier[]>("/api/suppliers", fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      dedupingInterval: 60000,
+    });
 
   const form = useForm<PurchaseTransactionFormData>({
     resolver: zodResolver(purchaseTransactionSchema),
     defaultValues: {
       productId: purchaseTransaction ? purchaseTransaction.productId : "",
+      supplierId: purchaseTransaction ? (purchaseTransaction.supplierId ?? ""): "",
       warehouseId: purchaseTransaction ? purchaseTransaction.warehouseId : "",
       quantity: purchaseTransaction
         ? Math.abs(purchaseTransaction.quantity)
@@ -83,14 +104,24 @@ export default function PurchaseTransactionForm({
     },
   });
 
-  const productId = form.watch("productId");
-  const selectedProduct = productsData?.find((p) => p.id === productId);
+  const formValues = form.watch(['productId', 'warehouseId', 'quantity']);
 
+  const [productId] = formValues;
+  const selectedProduct = useMemo(
+  () => productsData?.find((p) => p.id === productId),
+  [productsData, productId]
+);
+  
   const {
     data: warehousesData,
     error: warehousesError,
     isLoading: isWarehousesLoading,
-  } = useSwr<SelectWarehouse[]>(`/api/warehouse`, fetcher);
+  } = useSwr<SelectWarehouse[]>(`/api/warehouse`, fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      dedupingInterval: 60000,
+    });
 
   const onSubmit = async (data: PurchaseTransactionFormData) => {
     try {
@@ -99,6 +130,7 @@ export default function PurchaseTransactionForm({
         "id" | "businessId" | "createdBy" | "warehouseItemId"
       > = {
         productId: data.productId,
+        supplierId: data.supplierId,
         quantity: data.quantity,
         type: "PURCHASE",
         warehouseId: data.warehouseId,
@@ -131,6 +163,15 @@ export default function PurchaseTransactionForm({
       <Alert variant="destructive">
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>{t("failedToLoadProducts")}</AlertDescription>
+      </Alert>
+    );
+  }
+
+  if (suppliersError) {
+    return (
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>{t("failedToLoadSuppliers")}</AlertDescription>
       </Alert>
     );
   }
@@ -319,6 +360,86 @@ export default function PurchaseTransactionForm({
               )}
             />
           )}
+
+<FormField
+            control={form.control}
+            name="supplierId"
+            render={({ field }) => (
+              <FormItem className="flex flex-col space-y-2">
+                <FormLabel>{tInventory("supplierName")} *</FormLabel>
+                {issuppliersLoading ? (
+                  <div className="flex items-center space-x-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span className="text-sm text-muted-foreground">
+                      {t("loadingsuppliers")}
+                    </span>
+                  </div>
+                ) : suppliersData ? (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            <div className="flex items-center gap-2">
+                              <span>{suppliersData?.find((p) => p.id === field.value)?.name}</span>
+                              <Badge variant="secondary" className="text-xs">
+                                {suppliersData?.find((p) => p.id === field.value)?.contactName}
+                              </Badge>
+                            </div>
+                          ) : (
+                            t("selectsupplier")
+                          )}
+                          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full p-0" align="start">
+                      <Command>
+                        <CommandInput placeholder={t("searchsuppliers")} />
+                        <CommandList>
+                          <CommandEmpty>{t("nosuppliersFound")}</CommandEmpty>
+                          <CommandGroup>
+                            {suppliersData.map((supplier) => (
+                              <CommandItem
+                                key={supplier.id}
+                                onSelect={() => {
+                                  form.setValue("supplierId", supplier.id);
+                                }}
+                              >
+                                <div className="flex items-center justify-between w-full">
+                                  <div className="flex flex-col">
+                                    <span className="font-medium">
+                                      {supplier.name}
+                                    </span>
+                                  </div>
+                                  <CheckIcon
+                                    className={cn(
+                                      "h-4 w-4",
+                                      supplier.id === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                </div>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                ) : null}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormField
             control={form.control}

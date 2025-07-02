@@ -4,7 +4,7 @@ import * as supplierService from "@/server/actions/supplier-actions";
 export async function GET() {
   try {
     const suppliers = await supplierService.getSuppliers({});
-    return NextResponse.json(suppliers);
+    return NextResponse.json(suppliers.data);
   } catch (error) {
     console.error(error);
     return NextResponse.json("Failed to get suppliers", { status: 500 });

@@ -3,6 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import { CheckCircle, BarChart, Database, ShieldCheck } from "lucide-react";
 import { getCurrentSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { Link } from "@/i18n/navigation";
 
 export default async function LandingPage() {
   const session = await getCurrentSession();
@@ -29,9 +30,13 @@ export default async function LandingPage() {
                 management and real-time business analytics.
               </p>
               <div className="mt-8 flex justify-center gap-4">
-                <Button size="lg">Get Started</Button>
-                <Button size="lg" variant="outline">
-                  View on GitHub
+                <Button size="lg" asChild>
+                  <Link href="https://github.com/nkurunziza-saddy/quantra">
+                    Get Started
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" asChild>
+                  <Link href="/auth/sign-up">View on GitHub</Link>
                 </Button>
               </div>
             </header>

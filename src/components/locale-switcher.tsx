@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter, usePathname } from "next/navigation";
+// import { useRouter, usePathname } from "@/i18n/navigation";
 import { localeNames, locales } from "@/i18n/config";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Globe } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function LocaleSwitcher() {
   const locale = useLocale();

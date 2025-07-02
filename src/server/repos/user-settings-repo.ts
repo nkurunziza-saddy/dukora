@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { unstable_cache } from "next/cache";
@@ -29,16 +29,16 @@ export async function getAll(userId: string) {
 }
 
 export const getAllCached = async (userId: string) =>
-  unstable_cache(
-    async () => await getAll(userId),
-    ["user-settings", userId],
-    {
-      revalidate: 300,
-      tags: [`user-settings-${userId}`],
-    }
-  );
+  unstable_cache(async () => await getAll(userId), ["user-settings", userId], {
+    revalidate: 300,
+    tags: [`user-settings-${userId}`],
+  });
 
-export async function upsert(businessId: string, userId: string, setting: InsertUserSetting) {
+export async function upsert(
+  businessId: string,
+  userId: string,
+  setting: InsertUserSetting
+) {
   if (!setting.key) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }

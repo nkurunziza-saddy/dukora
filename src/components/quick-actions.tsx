@@ -9,6 +9,7 @@ import {
   Users,
   Settings,
   FileText,
+  Zap,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -108,14 +109,15 @@ export default function QuickActions() {
   return (
     <>
       <Button size="sm" variant={"secondary"} onClick={() => setOpen(true)}>
-        <span className="flex grow items-center">
+        <span className="hidden sm:flex grow items-center">
           <span className="text-muted-foreground/70 font-normal group-hover:text-foreground transition-colors">
             {t("quickActions")}
           </span>
         </span>
-        <kbd className="bg-background text-muted-foreground/70 ms-8 -me-1 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
+        <kbd className="hidden bg-background text-muted-foreground/70 ms-8 -me-1 sm:inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
           ⌘K
         </kbd>
+        <Zap className="size-3 sm:hidden" />
       </Button>
 
       <CommandDialog open={open} onOpenChange={setOpen}>

@@ -35,11 +35,7 @@ export const upsertBusinessSettings = createProtectedAction(
         value: setting.value as string,
         businessId: user.businessId!,
       };
-      return businessSettingsRepo.upsert(
-        user.businessId!,
-        user.id,
-        newSetting
-      );
+      return businessSettingsRepo.upsert(user.businessId!, user.id, newSetting);
     });
 
     const results = await Promise.all(promises);
@@ -51,5 +47,30 @@ export const upsertBusinessSettings = createProtectedAction(
 
     revalidateTag(`business-settings-${user.businessId!}`);
     return { data: { success: true }, error: null };
+  }
+);
+
+export const upsertManyBusinessSettings = createProtectedAction(
+  Permission.BUSINESS_SETTINGS_CREATE,
+  async (
+    user,
+    settingsData: Omit<InsertBusinessSetting, "businessId" | "id">[]
+  ) => {
+    if (settingsData === null) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
+    }
+    const settings: InsertBusinessSetting[] = settingsData.map((setting) => ({
+      ...setting,
+      businessId: user.businessId!,
+    }));
+    const createdSettings = await businessSettingsRepo.upsertMany(
+      user.id,
+      settings
+    );
+    if (createdSettings.error) {
+      return { data: null, error: createdSettings.error };
+    }
+    revalidateTag(`business-settings-${user.businessId!}`);
+    return { data: createdSettings.data, error: null };
   }
 );

@@ -35,3 +35,22 @@ export function createProtectedAction<TInput, TOutput>(
     }
   };
 }
+export function createPublicAction<TInput, TOutput>(
+  handler: (
+    input: TInput
+  ) => Promise<ServiceResponse<TOutput>>
+) {
+  return async (input: TInput): Promise<ServiceResponse<TOutput>> => {
+    try {
+      return await handler(input);
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        Object.values(ErrorCode).includes(error.message as ErrorCode)
+      ) {
+        return { data: null, error: error.message as ErrorCode };
+      }
+      return { data: null, error: ErrorCode.FAILED_REQUEST };
+    }
+  };
+}

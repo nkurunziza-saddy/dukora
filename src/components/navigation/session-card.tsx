@@ -14,19 +14,22 @@ type UserPayload = SelectUser & {
 };
 
 const SessionCardSkeleton = memo(() => (
-  <div className="flex items-center justify-between">
+  <div className="flex h-16 items-center justify-between">
     <div className="flex items-center gap-2 p-2">
       <Skeleton className="h-5 w-5 rounded" />
-      <Skeleton className="h-4 w-24" />
+      <div className="flex flex-col">
+        <Skeleton className="h-4 w-24" />
+        <Skeleton className="h-2 w-20" />
+      </div>
     </div>
-    <Skeleton className="h-8 w-8 rounded-lg" />
+    <Skeleton className="size-6 rounded-lg" />
   </div>
 ));
 
 SessionCardSkeleton.displayName = "SessionCardSkeleton";
 
 const SessionCardError = memo(() => (
-  <div className="flex items-center justify-between opacity-50">
+  <div className="flex h-16 items-center justify-between opacity-50">
     <div className="flex items-center gap-2 p-2">
       <div className="p-1 rounded bg-muted">
         <Frame className="size-3" />
@@ -35,7 +38,7 @@ const SessionCardError = memo(() => (
     </div>
     <Avatar className="rounded-lg">
       <AvatarFallback>
-        <User className="size-4" />
+        <User className="size-3" />
       </AvatarFallback>
     </Avatar>
   </div>
@@ -78,6 +81,7 @@ const SessionCard = memo(() => {
 
     return {
       businessName: business?.name || "Personal Account",
+      businessType: business?.businessType || "Other",
       userName: user.name || user.email || "User",
       userImage: user.image || user.image,
       userInitials: (user.name || user.email || "U")
@@ -98,20 +102,26 @@ const SessionCard = memo(() => {
   }
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-2 p-2">
+    <div className="border border-border/40 bg-muted/40 h-16 flex items-center justify-between p-1 rounded-md">
+      <div className="flex items-center-safe gap-2 p-2">
         <div className="p-1 rounded bg-primary text-primary-foreground">
-          <Frame className="size-3" />
+          <Frame className="size-3.5" />
         </div>
-        <span className="font-semibold text-base truncate max-w-32">
-          {computedData.businessName}
-        </span>
+        <div className="flex flex-col">
+          <span className="font-semibold text-sm truncate max-w-32">
+            {computedData.businessName}
+          </span>
+          <span className="text-xs text-muted-foreground capitalize">
+            {computedData.businessType}
+          </span>
+        </div>
       </div>
 
       <Avatar className="rounded-lg">
         <AvatarImage
           src={computedData.userImage || "/placeholder.svg"}
           alt={`${computedData.userName} avatar`}
+          className="size-6"
           loading="lazy"
         />
         <AvatarFallback className="text-xs">

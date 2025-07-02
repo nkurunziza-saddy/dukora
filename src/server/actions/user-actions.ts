@@ -13,14 +13,21 @@ import {
   remove as removeUserRepo,
   toggleActive as toggleActiveRepo,
 } from "../repos/user-repo";
+import { db } from "@/lib/db";
+import { usersTable } from "@/lib/schema";
+import { eq } from "drizzle-orm";
+import { auth } from "@/lib/auth";
 
-export const getUsers = createProtectedAction(Permission.USER_VIEW, async (user) => {
-  const users = await getAllUsersRepo(user.businessId!);
-  if (users.error) {
-    return { data: null, error: users.error };
+export const getUsers = createProtectedAction(
+  Permission.USER_VIEW,
+  async (user) => {
+    const users = await getAllUsersRepo(user.businessId!);
+    if (users.error) {
+      return { data: null, error: users.error };
+    }
+    return { data: users.data, error: null };
   }
-  return { data: users.data, error: null };
-});
+);
 
 export const getUserById = createProtectedAction(
   Permission.USER_VIEW,
@@ -56,11 +63,18 @@ export const createUser = createProtectedAction(
 
 export const updateUser = createProtectedAction(
   Permission.USER_UPDATE,
-  async (user, { userId, userData }: { userId: string, userData: Partial<InsertUser> }) => {
+  async (
+    user,
+    { userId, userData }: { userId: string; userData: Partial<InsertUser> }
+  ) => {
     if (!userId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const updatedUser = await updateUserRepo(userId, userData, user.businessId!);
+    const updatedUser = await updateUserRepo(
+      userId,
+      userData,
+      user.businessId!
+    );
     if (updatedUser.error) {
       return { data: null, error: updatedUser.error };
     }
@@ -107,15 +121,48 @@ export const toggleUserStatus = createProtectedAction(
 
 export const assignRole = createProtectedAction(
   Permission.USER_ASSIGN_ROLES,
-  async (user, { userId, role }: { userId: string, role: UserRole }) => {
+  async (user, { userId, role }: { userId: string; role: UserRole }) => {
     if (!userId?.trim() || !role?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const updatedUser = await updateUserRepo(userId, { role }, user.businessId!);
+    const updatedUser = await updateUserRepo(
+      userId,
+      { role },
+      user.businessId!
+    );
     if (updatedUser.error) {
       return { data: null, error: updatedUser.error };
     }
     revalidateTag(`users-${user.businessId!}`);
     return { data: updatedUser.data, error: null };
+  }
+);
+
+export const changeUserPassword = createProtectedAction(
+  Permission.USER_CREATE,
+  async (user, { password }: { password: string }) => {
+    const existingUser = await db.query.usersTable.findFirst({
+      where: eq(usersTable.id, user.id),
+    });
+
+    if (!existingUser) {
+      return { data: null, error: ErrorCode.USER_NOT_FOUND };
+    }
+    if (!existingUser.password) {
+      return { data: null, error: ErrorCode.BAD_REQUEST };
+    }
+    const updateResult = await auth.api.changePassword({
+      body: {
+        newPassword: password,
+        currentPassword: existingUser.password!,
+        revokeOtherSessions: true,
+      },
+    });
+
+    if (!updateResult.user) {
+      return { data: null, error: ErrorCode.FAILED_REQUEST };
+    }
+
+    return { data: updateResult, error: null };
   }
 );

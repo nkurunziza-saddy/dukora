@@ -164,7 +164,7 @@ export function DataTable<TData, TValue>({
       {renderToolbar()}
       <div className="">
         <Table className="[&_td]:border-border [&_th]:border-border border-separate border-spacing-0 [&_tfoot_td]:border-t [&_th]:border-b [&_tr]:border-none [&_tr:not(:last-child)_td]:border-b">
-          <TableHeader className="bg-background/90 sticky top-0 z-10 backdrop-blur-xs">
+          <TableHeader className="bg-muted/40 sticky top-0 z-10 backdrop-blur-xs">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="bg-transparent">
                 {headerGroup.headers.map((header) => {
@@ -193,7 +193,7 @@ export function DataTable<TData, TValue>({
                 <React.Fragment key={row.id}>
                   <TableRow
                     data-state={row.getIsSelected() && "selected"}
-                    className="odd:bg-muted/50 odd:hover:bg-muted/50 border-none hover:bg-transparent"
+                    className="odd:bg-muted/20 odd:hover:bg-muted/10 border-none hover:bg-transparent"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell

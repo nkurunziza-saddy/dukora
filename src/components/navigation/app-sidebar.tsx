@@ -12,7 +12,7 @@ import {
   Store,
   Truck,
   Users,
-  Warehouse,
+  // Warehouse,
 } from "lucide-react";
 import {
   Sidebar,
@@ -28,10 +28,11 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { Link } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import SessionCard from "./session-card";
+import { usePathname } from "next/navigation";
 
-const data = {
+export const data = {
   navMain: [
     {
       title: "Dashboard",
@@ -41,12 +42,12 @@ const data = {
           url: "/dashboard",
           icon: Layers,
         },
-        {
-          title: "Inventory Overview",
-          url: "/inventory",
-          icon: Warehouse,
-          disabled: true,
-        },
+        // {
+        //   title: "Inventory Overview",
+        //   url: "/inventory",
+        //   icon: Warehouse,
+        //   disabled: true,
+        // },
         {
           title: "Product Catalog",
           url: "/products",
@@ -108,7 +109,7 @@ const data = {
       ],
     },
     {
-      title: "Assistant",
+      title: "Tools",
       items: [
         {
           title: "AI Chat",
@@ -116,14 +117,9 @@ const data = {
           icon: Bot,
           disabled: true,
         },
-      ],
-    },
-    {
-      title: "Helpers",
-      items: [
         {
           title: "Financial calculator",
-          url: "/financial-calculator",
+          url: "/calculator",
           icon: Bot,
           disabled: true,
         },
@@ -134,6 +130,8 @@ const data = {
 
 export function AppSidebar() {
   const t = useTranslations("navigation");
+  const pathname = usePathname();
+  const locale = useLocale();
   return (
     <Sidebar collapsible="offcanvas">
       <SidebarHeader>
@@ -147,6 +145,7 @@ export function AppSidebar() {
               <SidebarMenu>
                 {group.items.map((item) => {
                   const url = item.url.slice(1);
+                  const isActive = pathname === `/${locale}${item.url}`;
                   return (
                     <SidebarMenuItem key={item.title}>
                       {item.disabled ? (
@@ -155,12 +154,15 @@ export function AppSidebar() {
                           <span className="opacity-50">{t(url)}</span>
                         </SidebarMenuButton>
                       ) : (
-                        <SidebarMenuButton asChild>
-                          <Link href={item.url}>
+                        <Link href={item.url}>
+                          <SidebarMenuButton
+                            asChild
+                            variant={isActive ? "active" : undefined}
+                          >
                             {/* <item.icon className="h-4 w-4" /> */}
                             <span>{t(url)}</span>
-                          </Link>
-                        </SidebarMenuButton>
+                          </SidebarMenuButton>
+                        </Link>
                       )}
                     </SidebarMenuItem>
                   );

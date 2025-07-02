@@ -7,7 +7,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import localFont from "next/font/local";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-
+import { Analytics } from "@vercel/analytics/next";
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
   variable: "--font-geist",
@@ -57,6 +57,7 @@ export default async function RootLayout({
             </ClientBody>
           </ThemeProvider>
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   );

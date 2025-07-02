@@ -13,6 +13,8 @@ export const RolePermissions = {
 
     ...PermissionGroups.CATEGORIES,
 
+    ...PermissionGroups.INVITATIONS,
+
     Permission.USER_VIEW,
     Permission.USER_CREATE,
     Permission.USER_UPDATE,

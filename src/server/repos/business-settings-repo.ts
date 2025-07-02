@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { unstable_cache } from "next/cache";
@@ -77,6 +77,59 @@ export async function upsert(
     return { data: result, error: null };
   } catch (error) {
     console.error("Failed to upsert business setting:", error);
+    return { data: null, error: ErrorCode.FAILED_REQUEST };
+  }
+}
+
+export async function upsertMany(
+  userId: string,
+  settings: InsertBusinessSetting[]
+) {
+  if (!Array.isArray(settings) || settings.length === 0) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
+
+  try {
+    const result = await db.transaction(async (tx) => {
+      const upsertedSettings = [];
+
+      for (const setting of settings) {
+        if (!setting.key) continue;
+
+        const [newSetting] = await tx
+          .insert(businessSettingsTable)
+          .values(setting)
+          .onConflictDoUpdate({
+            target: [
+              businessSettingsTable.businessId,
+              businessSettingsTable.key,
+            ],
+            set: { value: setting.value },
+          })
+          .returning();
+
+        const auditData: InsertAuditLog = {
+          businessId: newSetting.businessId,
+          model: "business-setting",
+          recordId: newSetting.id,
+          action: "upsert-business-setting",
+          changes: JSON.stringify(setting),
+          performedBy: userId,
+          performedAt: new Date(),
+        };
+
+        await tx.insert(auditLogsTable).values(auditData);
+        upsertedSettings.push(newSetting);
+      }
+
+      return upsertedSettings;
+    });
+
+    revalidateTag(`business-settings-${settings[0].businessId}`);
+
+    return { data: result, error: null };
+  } catch (error) {
+    console.error("Failed to upsert many business settings:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
 }

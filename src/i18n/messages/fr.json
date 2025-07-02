@@ -623,5 +623,29 @@
     "deleteDialogDescription": "Êtes-vous sûr de vouloir supprimer ce fournisseur ? Cette action est irréversible.",
     "editDialogTitle": "Modifier le fournisseur",
     "editDialogDescription": "Mettre à jour les détails du fournisseur sélectionné."
+  },
+  "settings": {
+    "title": "Paramètres",
+    "business": "Entreprise",
+    "user": "Utilisateur",
+    "businessName": "Nom de l'entreprise",
+    "enterBusinessName": "Entrez le nom de votre entreprise",
+    "domain": "Domaine",
+    "enterDomain": "Entrez le domaine de votre entreprise",
+    "businessType": "Type d'entreprise",
+    "enterBusinessType": "ex. Vente au détail, Vente en gros",
+    "logoUrl": "URL du logo",
+    "enterLogoUrl": "Entrez l'URL du logo de votre entreprise",
+    "registrationNumber": "Numéro d'enregistrement",
+    "enterRegistrationNumber": "Entrez le numéro d'enregistrement de votre entreprise",
+    "businessSettingsUpdated": "Paramètres de l'entreprise mis à jour",
+    "businessSettingsUpdateFailed": "Échec de la mise à jour des paramètres de l'entreprise",
+    "userSettingsUpdated": "Paramètres utilisateur mis à jour",
+    "userSettingsUpdateFailed": "Échec de la mise à jour des paramètres utilisateur",
+    "language": "Langue",
+    "theme": "Thème",
+    "saving": "Enregistrement",
+    "saveChanges": "Enregistrer les modifications",
+    "businessNameRequired": "Le nom de l'entreprise est requis"
   }
 }

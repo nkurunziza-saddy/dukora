@@ -71,7 +71,7 @@ export default async function SalesTracking() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>{t("dailySalesRevenue")}</CardTitle>
+              <CardTitle>{t("weeklySalesRevenue")}</CardTitle>
               <CardDescription>{t("revenueTrends7Days")}</CardDescription>
             </div>
           </div>

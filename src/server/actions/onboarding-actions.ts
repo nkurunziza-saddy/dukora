@@ -7,8 +7,8 @@ import { getUserIfHasPermission } from "./auth/permission-middleware";
 import { createManyInvitations } from "@/server/actions/invitation-actions";
 import { createManyWarehouses } from "./warehouse-actions";
 import { createBusiness } from "./business-action";
-import { createManyBusinessSettings } from "./business-settings-actions";
 import { createManyCategories } from "./category-actions";
+import { upsertManyBusinessSettings } from "./business-settings-actions";
 
 export async function businessInitialization(data: OnboardingFormData) {
   const currentUser = await getUserIfHasPermission(Permission.PRODUCT_VIEW);
@@ -45,7 +45,7 @@ export async function businessInitialization(data: OnboardingFormData) {
       createManyInvitations(teamMembers),
       createManyWarehouses(warehouses),
       createManyCategories(categories),
-      createManyBusinessSettings(businessSettingsRecordArray),
+      upsertManyBusinessSettings(businessSettingsRecordArray),
     ]);
     if (invitation.error) {
       return {

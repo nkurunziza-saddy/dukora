@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, and } from "drizzle-orm";
+import { eq, and, inArray } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { unstable_cache } from "next/cache";
@@ -13,6 +13,7 @@ import { ErrorCode } from "@/server/constants/errors";
 import { generateRandomCode } from "@/lib/utils/generate-random-code";
 import { addDays } from "date-fns";
 import { usersTable } from "@/lib/schema";
+import { auth } from "@/lib/auth";
 
 export async function getAll(businessId: string) {
   if (!businessId) {
@@ -80,12 +81,77 @@ export const getByIdCached = async (invitationId: string, businessId: string) =>
     }
   );
 
+export const accept_invitation = async (
+  code: string,
+  action: "accept" | "decline"
+) => {
+  if (!code) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
+  if (action !== "accept" && action !== "decline") {
+    return { data: null, error: ErrorCode.INVALID_INPUT };
+  }
+  const invitation = await db.query.invitationsTable.findFirst({
+    where: and(
+      eq(invitationsTable.code, code),
+      eq(invitationsTable.isAccepted, false)
+    ),
+  });
 
+  if (!invitation) {
+    return { data: null, error: ErrorCode.INVITATION_NOT_FOUND };
+  }
+
+  if (invitation.expiresAt && new Date() > new Date(invitation.expiresAt)) {
+    return { data: null, error: ErrorCode.INVITATION_EXPIRED };
+  }
+  try {
+    if (action === "accept") {
+      const existingUser = await db.query.usersTable.findFirst({
+        where: eq(usersTable.email, invitation.email),
+      });
+
+      if (existingUser) {
+        await db
+          .update(usersTable)
+          .set({ businessId: invitation.businessId, role: invitation.role })
+          .where(eq(usersTable.id, existingUser.id));
+
+        await db
+          .update(invitationsTable)
+          .set({ isAccepted: true })
+          .where(eq(invitationsTable.id, invitation.id));
+
+        return { data: { redirect: "/dashboard" }, error: null };
+      } else {
+        return {
+          data: {
+            redirect: `/auth/set-password?email=${invitation.email}&invitationCode=${invitation.code}`,
+          },
+          error: null,
+        };
+      }
+    } else if (action === "decline") {
+      await db
+        .update(invitationsTable)
+        .set({ isAccepted: false })
+        .where(eq(invitationsTable.id, invitation.id));
+
+      return { data: { redirect: "/auth/sign-up" }, error: null };
+    }
+  } catch (error) {
+    console.error("Failed to accept invitation:", error);
+    return { data: null, error: ErrorCode.FAILED_REQUEST };
+  }
+};
 
 export async function create(
   businessId: string,
   userId: string,
-  invitation: Omit<InsertInvitation, "code" | "expiresAt" | "isAccepted" | "invitedBy" | "businessId">
+  invitation: Omit<
+    InsertInvitation,
+    "code" | "expiresAt" | "isAccepted" | "invitedBy" | "businessId"
+  >
 ) {
   if (!invitation.email) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -93,7 +159,10 @@ export async function create(
 
   try {
     const existingUser = await db.query.usersTable.findFirst({
-      where: and(eq(usersTable.email, invitation.email), eq(usersTable.businessId, businessId)),
+      where: and(
+        eq(usersTable.email, invitation.email),
+        eq(usersTable.businessId, businessId)
+      ),
     });
 
     if (existingUser) {
@@ -254,8 +323,13 @@ export async function remove(
   }
 }
 
-export async function createMany(invitations: InsertInvitation[]) {
-  if (invitations === null) {
+export async function createMany(
+  invitations: Omit<
+    InsertInvitation,
+    "id" | "code" | "expiresAt" | "isAccepted" | "invitedBy"
+  >[]
+) {
+  if (!invitations || invitations.length === 0) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
 
@@ -265,10 +339,48 @@ export async function createMany(invitations: InsertInvitation[]) {
   }
 
   try {
-    const result = await db
-      .insert(invitationsTable)
-      .values(invitations)
-      .returning();
+    const emails = invitations.map((inv) => inv.email);
+    const existingUsers = await db.query.usersTable.findMany({
+      where: and(
+        inArray(usersTable.email, emails),
+        eq(usersTable.businessId, businessId)
+      ),
+    });
+
+    if (existingUsers.length > 0) {
+      return { data: null, error: ErrorCode.USER_ALREADY_EXISTS };
+    }
+
+    const newInvitationsData: InsertInvitation[] = invitations.map((inv) => {
+      const code = generateRandomCode();
+      const expiresAt = addDays(new Date(), 7);
+      return {
+        ...inv,
+        code,
+        expiresAt,
+        isAccepted: false,
+      };
+    });
+
+    const result = await db.transaction(async (tx) => {
+      const insertedInvitations = await tx
+        .insert(invitationsTable)
+        .values(newInvitationsData)
+        .returning();
+
+      const auditLogs: InsertAuditLog[] = insertedInvitations.map((inv) => ({
+        businessId: businessId,
+        model: "invitation",
+        recordId: inv.id,
+        action: "create-invitation",
+        changes: JSON.stringify(inv),
+        performedBy: inv.invitedBy ?? "",
+        performedAt: new Date(),
+      }));
+
+      await tx.insert(auditLogsTable).values(auditLogs);
+      return insertedInvitations;
+    });
 
     revalidateTag(`invitations-${businessId}`);
 
@@ -278,3 +390,59 @@ export async function createMany(invitations: InsertInvitation[]) {
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
 }
+
+export const setPasswordForInvitation = async (
+  email: string,
+  invitationCode: string,
+  password: string
+) => {
+  if (!email || !invitationCode || !password) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
+
+  try {
+    const invitation = await db.query.invitationsTable.findFirst({
+      where: and(
+        eq(invitationsTable.code, invitationCode),
+        eq(invitationsTable.email, email),
+        eq(invitationsTable.isAccepted, false)
+      ),
+    });
+
+    if (!invitation) {
+      return { data: null, error: ErrorCode.INVITATION_NOT_FOUND };
+    }
+
+    if (invitation.expiresAt && new Date() > new Date(invitation.expiresAt)) {
+      return { data: null, error: ErrorCode.INVITATION_EXPIRED };
+    }
+
+    const signUpResult = await auth.api.signUpEmail({
+      body: {
+        email: email,
+        password: password,
+        name: invitation.name ?? "",
+        lang: "fr",
+      },
+    });
+
+    if (!signUpResult.user) {
+      return { data: null, error: ErrorCode.FAILED_REQUEST };
+    }
+
+    await db
+      .update(usersTable)
+      .set({ businessId: invitation.businessId, role: invitation.role })
+      .where(eq(usersTable.id, signUpResult.user.id));
+
+    await db
+      .update(invitationsTable)
+      .set({ isAccepted: true })
+      .where(eq(invitationsTable.id, invitation.id));
+
+    return { data: { redirect: "/dashboard" }, error: null };
+  } catch (error) {
+    console.error("Failed to set password for invitation:", error);
+    return { data: null, error: ErrorCode.FAILED_REQUEST };
+  }
+};

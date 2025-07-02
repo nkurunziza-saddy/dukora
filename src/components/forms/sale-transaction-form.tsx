@@ -42,6 +42,7 @@ import { toast } from "sonner";
 import { createTransaction } from "@/server/actions/transaction-actions";
 import { format } from "date-fns";
 import { useTranslations } from "next-intl";
+import { useMemo } from "react";
 
 if (typeof window !== "undefined") {
   preload("/api/products", fetcher);
@@ -68,7 +69,12 @@ export default function SaleTransactionForm({
     data: productsData,
     error: productsError,
     isLoading: isProductsLoading,
-  } = useSwr<SelectProduct[]>("/api/products", fetcher);
+  } = useSwr<SelectProduct[]>("/api/products", fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      dedupingInterval: 60000,
+    });
 
   const form = useForm<SaleTransactionFormData>({
     resolver: zodResolver(saleTransactionSchema),
@@ -81,8 +87,13 @@ export default function SaleTransactionForm({
     },
   });
 
-  const productId = form.watch("productId");
-  const selectedProduct = productsData?.find((p) => p.id === productId);
+  const formValues = form.watch(['productId', 'warehouseItemId', 'quantity']);
+
+  const [productId, warehouseItemId, quantity] = formValues;
+  const selectedProduct = useMemo(
+  () => productsData?.find((p) => p.id === productId),
+  [productsData, productId]
+);
 
   const {
     data: productDetailsData,
@@ -90,15 +101,24 @@ export default function SaleTransactionForm({
     isLoading: isProductDetailsLoading,
   } = useSwr<ExtendedProductPayload>(
     productId ? `/api/products/${productId}` : null,
-    fetcher
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      dedupingInterval: 60000,
+    }
   );
 
-  const selectedWarehouseItem = productDetailsData?.warehouseItems.find(
-    (item) => item.id === form.watch("warehouseItemId")
+  const selectedWarehouseItem = useMemo(
+    () => productDetailsData?.warehouseItems.find((item) => item.id === warehouseItemId),
+    [productDetailsData?.warehouseItems, warehouseItemId]
   );
-  const quantity = form.watch("quantity");
-  const hasInsufficientStock =
-    selectedWarehouseItem && quantity > selectedWarehouseItem.quantity;
+
+  const hasInsufficientStock = useMemo(
+    () => selectedWarehouseItem && quantity > selectedWarehouseItem.quantity,
+    [selectedWarehouseItem, quantity]
+  );
+
   const onSubmit = async (data: SaleTransactionFormData) => {
     try {
       const formData: Omit<
@@ -367,7 +387,7 @@ export default function SaleTransactionForm({
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>
                       {t("insufficientStock", {
-                        count: selectedWarehouseItem?.quantity,
+                        count: selectedWarehouseItem?.quantity || 0,
                       })}
                     </AlertDescription>
                   </Alert>
