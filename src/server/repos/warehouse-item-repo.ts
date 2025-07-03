@@ -1,7 +1,7 @@
 "use server";
 import { eq, and } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { revalidateTag, unstable_cache } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import {
   auditLogsTable,
   productsTable,
@@ -117,7 +117,7 @@ export async function create(
       return newWarehouseItem;
     });
 
-    revalidateTag(`warehouseItems-${warehouseItem.warehouseId}`);
+    revalidatePath("/", "layout");
     return { data: result, error: null };
   } catch (error) {
     console.error("Error creating warehouseItem:", error);
@@ -168,7 +168,7 @@ export async function update(
       });
       warehouseId = item?.warehouseId;
     }
-    if (warehouseId) revalidateTag(`warehouseItems-${warehouseId}`);
+    if (warehouseId) revalidatePath("/", "layout");
 
     return { data: result, error: null };
   } catch (error) {
@@ -215,7 +215,7 @@ export async function remove(
       return { data: null, error: ErrorCode.NOT_FOUND };
     }
 
-    revalidateTag(`warehouseItems-${item?.warehouseId ?? null}`);
+    revalidatePath("/", "layout");
     return { data: result, error: null };
   } catch (error) {
     console.error("Error deleting warehouseItem:", error);
@@ -241,7 +241,7 @@ export async function create_many(warehouseItems: InsertWarehouseItem[]) {
       .values(warehouseItems)
       .returning();
 
-    revalidateTag(`warehouseItems-${warehouseId}`);
+    revalidatePath("/", "layout");
 
     return { data: result, error: null };
   } catch (error) {

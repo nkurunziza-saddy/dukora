@@ -3,7 +3,7 @@
 import type { InsertInvitation } from "@/lib/schema/schema-types";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import {
   createProtectedAction,
   createPublicAction,
@@ -103,7 +103,7 @@ export const createInvitation = createProtectedAction(
       console.error("Failed to send invitation email:", emailError);
       return { data: null, error: ErrorCode.FAILED_REQUEST };
     }
-    revalidateTag(`invitations-${user.businessId!}`);
+    revalidatePath("users");
     return { data: res.data, error: null };
   }
 );
@@ -132,8 +132,7 @@ export const updateInvitation = createProtectedAction(
     if (updatedInvitation.error) {
       return { data: null, error: updatedInvitation.error };
     }
-    revalidateTag(`invitations-${user.businessId!}`);
-    revalidateTag(`invitation-${invitationId}`);
+    revalidatePath("users");
     return { data: updatedInvitation.data, error: null };
   }
 );
@@ -152,8 +151,7 @@ export const deleteInvitation = createProtectedAction(
     if (res.error) {
       return { data: null, error: res.error };
     }
-    revalidateTag(`invitations-${user.businessId!}`);
-    revalidateTag(`invitation-${invitationId}`);
+    revalidatePath("users");
     return { data: { success: true }, error: null };
   }
 );
@@ -212,7 +210,7 @@ export const createManyInvitations = createProtectedAction(
         );
       }
     }
-    revalidateTag(`invitations-${user.businessId!}`);
+    revalidatePath("users");
     return { data: createdInvitations.data, error: null };
   }
 );
@@ -226,6 +224,7 @@ export const acceptInvitation = createPublicAction(
     if (res.error) {
       redirect("/");
     }
+    revalidatePath("/", "layout");
     redirect(res.data.redirect || "/");
   }
 );
@@ -251,6 +250,7 @@ export const setPasswordForInvitation = createPublicAction(
     if (res.error) {
       redirect("/");
     }
+    revalidatePath("/", "layout");
     redirect(res.data.redirect || "/");
   }
 );

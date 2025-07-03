@@ -3,10 +3,10 @@
 import type { InsertProduct } from "@/lib/schema/schema-types";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
-import { revalidateTag } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 
 import * as productRepo from "../repos/product-repo";
+import { revalidatePath } from "next/cache";
 
 export const getProducts = createProtectedAction(
   Permission.PRODUCT_VIEW,
@@ -58,7 +58,7 @@ export const createProduct = createProtectedAction(
     if (res.error) {
       return { data: null, error: res.error };
     }
-    revalidateTag(`products-${user.businessId!}`);
+    revalidatePath("/", "layout");
     return { data: res.data, error: null };
   }
 );
@@ -87,8 +87,7 @@ export const updateProduct = createProtectedAction(
     if (updatedProduct.error) {
       return { data: null, error: updatedProduct.error };
     }
-    revalidateTag(`products-${user.businessId!}`);
-    revalidateTag(`product-${productId}`);
+    revalidatePath("/", "layout");
     return { data: updatedProduct.data, error: null };
   }
 );
@@ -103,8 +102,7 @@ export const deleteProduct = createProtectedAction(
     if (res.error) {
       return { data: null, error: res.error };
     }
-    revalidateTag(`products-${user.businessId!}`);
-    revalidateTag(`product-${productId}`);
+    revalidatePath("/", "layout");
     return { data: { success: true }, error: null };
   }
 );
@@ -123,7 +121,7 @@ export const createManyProducts = createProtectedAction(
     if (createdProducts.error) {
       return { data: null, error: createdProducts.error };
     }
-    revalidateTag(`products-${user.businessId!}`);
+    revalidatePath("/", "layout");
     return { data: createdProducts.data, error: null };
   }
 );

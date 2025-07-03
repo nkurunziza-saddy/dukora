@@ -10,9 +10,9 @@ import {
   remove as removeBusinessRepo,
   createMany as createManyBusinessesRepo,
 } from "../repos/business-repo";
-import { revalidateTag } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import { getCurrentSession } from "@/server/actions/auth-actions";
+import { revalidatePath } from "next/cache";
 
 export const getBusinesses = createProtectedAction(
   Permission.BUSINESS_VIEW,
@@ -56,8 +56,7 @@ export const createBusiness = async (
   if (res.error) {
     return { data: null, error: res.error };
   }
-  revalidateTag("businesses");
-  revalidateTag(`business-${res.data.id}`);
+  revalidatePath("/", "layout");
   return { data: res.data, error: null };
 };
 
@@ -84,8 +83,7 @@ export const updateBusiness = createProtectedAction(
     if (updatedBusiness.error) {
       return { data: null, error: updatedBusiness.error };
     }
-    revalidateTag("businesses");
-    revalidateTag(`business-${businessId}`);
+    revalidatePath("/", "layout");
     return { data: updatedBusiness.data, error: null };
   }
 );
@@ -100,8 +98,7 @@ export const deleteBusiness = createProtectedAction(
     if (res.error) {
       return { data: null, error: res.error };
     }
-    revalidateTag("businesses");
-    revalidateTag(`business-${businessId}`);
+    revalidatePath("/", "layout");
     return { data: { success: true }, error: null };
   }
 );
@@ -117,7 +114,7 @@ export const createManyBusinesses = createProtectedAction(
     if (createdBusinesses.error) {
       return { data: null, error: createdBusinesses.error };
     }
-    revalidateTag("businesses");
+    revalidatePath("/", "layout");
     return { data: createdBusinesses.data, error: null };
   }
 );

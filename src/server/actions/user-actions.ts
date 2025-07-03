@@ -3,7 +3,7 @@
 import type { InsertUser, UserRole } from "@/lib/schema/schema-types";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import {
   create as createUserRepo,
@@ -56,7 +56,7 @@ export const createUser = createProtectedAction(
     if (newUser.error) {
       return { data: null, error: newUser.error };
     }
-    revalidateTag(`users-${user.businessId!}`);
+    revalidatePath("/dashboard/users");
     return { data: newUser.data, error: null };
   }
 );
@@ -78,7 +78,7 @@ export const updateUser = createProtectedAction(
     if (updatedUser.error) {
       return { data: null, error: updatedUser.error };
     }
-    revalidateTag(`users-${user.businessId!}`);
+    revalidatePath("/dashboard/users");
     return { data: updatedUser.data, error: null };
   }
 );
@@ -96,7 +96,7 @@ export const deleteUser = createProtectedAction(
     if (deletedUser.error) {
       return { data: null, error: deletedUser.error };
     }
-    revalidateTag(`users-${user.businessId!}`);
+    revalidatePath("/dashboard/users");
     return { data: { success: true }, error: null };
   }
 );
@@ -114,7 +114,7 @@ export const toggleUserStatus = createProtectedAction(
     if (updatedUser.error) {
       return { data: null, error: updatedUser.error };
     }
-    revalidateTag(`users-${user.businessId!}`);
+    revalidatePath("/dashboard/users");
     return { data: updatedUser.data, error: null };
   }
 );
@@ -133,7 +133,7 @@ export const assignRole = createProtectedAction(
     if (updatedUser.error) {
       return { data: null, error: updatedUser.error };
     }
-    revalidateTag(`users-${user.businessId!}`);
+    revalidatePath("/dashboard/users");
     return { data: updatedUser.data, error: null };
   }
 );

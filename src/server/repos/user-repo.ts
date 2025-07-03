@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { eq, and, isNull } from "drizzle-orm";
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { ErrorCode } from "@/server/constants/errors";
 import type { InsertUser } from "@/lib/schema/schema-types";
 import { usersTable } from "@/lib/schema";
@@ -74,7 +74,7 @@ export async function create(userData: Omit<InsertUser, "id">) {
       })
       .returning();
 
-    revalidateTag(`users-${userData.businessId}`);
+    revalidatePath(`/`, "layout");
     return { data: result[0], error: null };
   } catch (error) {
     console.error("Failed to create user:", error);
@@ -111,8 +111,7 @@ export async function update(
       return { data: null, error: ErrorCode.USER_NOT_FOUND };
     }
 
-    revalidateTag(`users-${businessId}`);
-    revalidateTag(`user-${userId}`);
+    revalidatePath(`/`, "layout");
     return { data: result[0], error: null };
   } catch (error) {
     console.error("Failed to update user:", error);
@@ -145,8 +144,7 @@ export async function remove(userId: string, businessId: string) {
       return { data: null, error: ErrorCode.USER_NOT_FOUND };
     }
 
-    revalidateTag(`users-${businessId}`);
-    revalidateTag(`user-${userId}`);
+    revalidatePath(`/`, "layout");
     return { data: result[0], error: null };
   } catch (error) {
     console.error("Failed to delete user:", error);
@@ -176,8 +174,7 @@ export async function toggleActive(userId: string, businessId: string) {
       )
       .returning();
 
-    revalidateTag(`users-${businessId}`);
-    revalidateTag(`user-${userId}`);
+    revalidatePath(`/`, "layout");
     return { data: result[0], error: null };
   } catch (error) {
     console.error("Failed to toggle user status:", error);

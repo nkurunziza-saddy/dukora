@@ -1,7 +1,7 @@
 "use server";
 
 import { eq, desc, and } from "drizzle-orm";
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { schedulesTable } from "@/lib/schema/models/schedules";
 import type { InsertSchedule } from "@/lib/schema/schema-types";
@@ -100,8 +100,8 @@ export async function create(
       .values(schedule)
       .returning();
 
-    revalidateTag("schedules");
-    revalidateTag(`schedules-${schedule.businessId}`);
+    revalidatePath("/scheduler");
+    revalidatePath("/dashboard");
 
     return { data: newSchedule, error: null };
   } catch (error) {
@@ -139,8 +139,8 @@ export async function update(
       };
     }
 
-    revalidateTag(`schedules-${businessId}`);
-    revalidateTag(`schedule-${scheduleId}`);
+    revalidatePath("/scheduler");
+    revalidatePath("/dashboard");
 
     return { data: updatedSchedule, error: null };
   } catch (error) {
@@ -178,8 +178,8 @@ export async function remove(scheduleId: string, businessId: string) {
       };
     }
 
-    revalidateTag(`schedules-${businessId}`);
-    revalidateTag(`schedule-${scheduleId}`);
+    revalidatePath("/scheduler");
+    revalidatePath("/dashboard");
 
     return { data: deletedSchedule, error: null };
   } catch (error) {
@@ -204,7 +204,8 @@ export async function create_many(schedules: InsertSchedule[]) {
       .values(schedules)
       .returning();
 
-    revalidateTag(`schedules-${businessId}`);
+    revalidatePath("/scheduler");
+    revalidatePath("/dashboard");
 
     return { data: result, error: null };
   } catch (error) {

@@ -3,7 +3,6 @@
 import type { InsertBusinessSetting } from "@/lib/schema/schema-types";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
-import { revalidateTag } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as businessSettingsRepo from "../repos/business-settings-repo";
 
@@ -45,7 +44,6 @@ export const upsertBusinessSettings = createProtectedAction(
       return { data: null, error: ErrorCode.FAILED_REQUEST, errors };
     }
 
-    revalidateTag(`business-settings-${user.businessId!}`);
     return { data: { success: true }, error: null };
   }
 );
@@ -70,7 +68,6 @@ export const upsertManyBusinessSettings = createProtectedAction(
     if (createdSettings.error) {
       return { data: null, error: createdSettings.error };
     }
-    revalidateTag(`business-settings-${user.businessId!}`);
     return { data: createdSettings.data, error: null };
   }
 );

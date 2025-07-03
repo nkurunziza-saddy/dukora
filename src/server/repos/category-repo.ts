@@ -1,7 +1,7 @@
 "use server";
 import { eq, desc, and } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { revalidateTag, unstable_cache } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { categoriesTable, auditLogsTable } from "@/lib/schema";
 import type { InsertCategory, InsertAuditLog } from "@/lib/schema/schema-types";
 import { ErrorCode } from "../constants/errors";
@@ -62,8 +62,7 @@ export const getByIdCached = async (categoryId: string, businessId: string) =>
     ["categories", categoryId, businessId],
     {
       revalidate: 300,
-      tags: [`categories-${businessId}`, `category-${categoryId}`],
-    }
+      }
   );
 
 export async function create(category: InsertCategory, userId: string) {
@@ -91,7 +90,7 @@ export async function create(category: InsertCategory, userId: string) {
       return newCategory;
     });
 
-    revalidateTag(`categories-${category.businessId}`);
+    revalidatePath("/dashboard/categories");
 
     return { data: result, error: null };
   } catch (error) {
@@ -144,8 +143,8 @@ export async function update(
       return { data: null, error: ErrorCode.NOT_FOUND };
     }
 
-    revalidateTag(`categories-${businessId}`);
-    revalidateTag(`category-${categoryId}`);
+    revalidatePath("/dashboard/categories");
+    revalidatePath(`/dashboard/categories/${categoryId}`);
 
     return { data: result, error: null };
   } catch (error) {
@@ -202,8 +201,8 @@ export async function remove(
       return { data: null, error: ErrorCode.NOT_FOUND };
     }
 
-    revalidateTag(`categories-${businessId}`);
-    revalidateTag(`category-${categoryId}`);
+    revalidatePath("/dashboard/categories");
+    revalidatePath(`/dashboard/categories/${categoryId}`);
 
     return { data: result, error: null };
   } catch (error) {
@@ -246,7 +245,7 @@ export async function createMany(categories: InsertCategory[], userId: string) {
       return inserted;
     });
 
-    revalidateTag(`categories-${businessId}`);
+    revalidatePath("/dashboard/categories");
 
     return { data: result, error: null };
   } catch (error) {

@@ -3,7 +3,6 @@
 import type { InsertExpense } from "@/lib/schema/schema-types";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
-import { revalidateTag } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import {
   getAll as getAllExpensesRepo,
@@ -11,6 +10,7 @@ import {
   create as createExpenseRepo,
   getByTimeInterval as getExpensesByTimeIntervalRepo,
 } from "../repos/expenses-repo";
+import { revalidatePath } from "next/cache";
 
 export const getExpenses = createProtectedAction(
   Permission.FINANCIAL_VIEW,
@@ -54,7 +54,10 @@ export const getExpenseById = createProtectedAction(
 
 export const createExpense = createProtectedAction(
   Permission.FINANCIAL_VIEW,
-  async (user, expenseData: Omit<InsertExpense, "businessId" | "id" | "createdBy">) => {
+  async (
+    user,
+    expenseData: Omit<InsertExpense, "businessId" | "id" | "createdBy">
+  ) => {
     if (!expenseData.amount) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
@@ -67,7 +70,7 @@ export const createExpense = createProtectedAction(
     if (resError) {
       return { data: null, error: resError };
     }
-    revalidateTag(`expenses-${user.businessId!}`);
+    revalidatePath("/transactions");
     return { data: resData, error: null };
   }
 );

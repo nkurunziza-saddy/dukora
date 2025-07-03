@@ -1,7 +1,7 @@
 "use server";
 
 import { eq, desc, and } from "drizzle-orm";
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import type { InsertAuditLog } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
@@ -97,8 +97,7 @@ export async function create(
       .values(auditLog)
       .returning();
 
-    revalidateTag("auditLogs");
-    revalidateTag(`auditLogs-${auditLog.businessId}`);
+    revalidatePath("/", "layout");
 
     return { data: newAuditLog, error: null };
   } catch (error) {
@@ -136,8 +135,7 @@ export async function remove(auditLogId: string, businessId: string) {
       };
     }
 
-    revalidateTag(`auditLogs-${businessId}`);
-    revalidateTag(`auditLog-${auditLogId}`);
+    revalidatePath("/", "layout");
 
     return { data: deletedAuditLog, error: null };
   } catch (error) {

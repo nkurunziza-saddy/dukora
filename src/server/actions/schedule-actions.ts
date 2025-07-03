@@ -3,7 +3,7 @@
 import type { InsertSchedule } from "@/lib/schema/schema-types";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import {
   get_all as getAllSchedulesRepo,
@@ -29,7 +29,11 @@ export const getSchedules = createProtectedAction(
 export const getSchedulesOverview = createProtectedAction(
   Permission.SCHEDULE_VIEW,
   async (user, limit?: number) => {
-    const schedules = await getOverviewSchedules(user.businessId!, user.id, limit);
+    const schedules = await getOverviewSchedules(
+      user.businessId!,
+      user.id,
+      limit
+    );
     if (schedules.error) {
       return { data: null, error: schedules.error };
     }
@@ -66,7 +70,8 @@ export const createSchedule = createProtectedAction(
     if (res.error) {
       return { data: null, error: res.error };
     }
-    revalidateTag(`schedules-${user.businessId!}`);
+    revalidatePath("/scheduler");
+    revalidatePath("/dashboard");
     return { data: res.data, error: null };
   }
 );
@@ -75,7 +80,7 @@ export const updateSchedule = createProtectedAction(
   Permission.SCHEDULE_UPDATE,
   async (
     user,
-    { 
+    {
       scheduleId,
       updates,
     }: {
@@ -95,8 +100,8 @@ export const updateSchedule = createProtectedAction(
     if (updatedSchedule.error) {
       return { data: null, error: updatedSchedule.error };
     }
-    revalidateTag(`schedules-${user.businessId!}`);
-    revalidateTag(`schedule-${scheduleId}`);
+    revalidatePath("/scheduler");
+    revalidatePath("/dashboard");
     return { data: updatedSchedule.data, error: null };
   }
 );
@@ -108,8 +113,8 @@ export const deleteSchedule = createProtectedAction(
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
     await removeScheduleRepo(scheduleId, user.businessId!);
-    revalidateTag(`schedules-${user.businessId!}`);
-    revalidateTag(`schedule-${scheduleId}`);
+    revalidatePath("/scheduler");
+    revalidatePath("/dashboard");
     return { data: { success: true }, error: null };
   }
 );
@@ -125,7 +130,8 @@ export const createManySchedules = createProtectedAction(
       businessId: user.businessId!,
     }));
     const createdSchedules = await createManySchedulesRepo(schedules);
-    revalidateTag(`schedules-${user.businessId!}`);
+    revalidatePath("/scheduler");
+    revalidatePath("/dashboard");
     return { data: createdSchedules, error: null };
   }
 );

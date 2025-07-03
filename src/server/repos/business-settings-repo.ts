@@ -1,9 +1,8 @@
 "use server";
 
 import { eq } from "drizzle-orm";
-import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
-import { unstable_cache } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { auditLogsTable, businessSettingsTable } from "@/lib/schema";
 import type {
   InsertAuditLog,
@@ -72,7 +71,7 @@ export async function upsert(
       return newSetting;
     });
 
-    revalidateTag(`business-settings-${businessId}`);
+    revalidatePath("/settings");
 
     return { data: result, error: null };
   } catch (error) {
@@ -125,7 +124,7 @@ export async function upsertMany(
       return upsertedSettings;
     });
 
-    revalidateTag(`business-settings-${settings[0].businessId}`);
+    revalidatePath("/settings");
 
     return { data: result, error: null };
   } catch (error) {

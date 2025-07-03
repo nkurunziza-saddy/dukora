@@ -3,7 +3,6 @@
 import type { InsertAuditLog } from "@/lib/schema/schema-types";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
-import { revalidateTag } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import {
   get_all as getAllLogsRepo,
@@ -13,13 +12,16 @@ import {
   remove as removeLogRepo,
 } from "../repos/logs-repo";
 
-export const getLogs = createProtectedAction(Permission.LOG_VIEW, async (user) => {
-  const logs = await getAllLogsRepo(user.businessId!, user.id);
-  if (logs.error) {
-    return { data: null, error: logs.error };
+export const getLogs = createProtectedAction(
+  Permission.LOG_VIEW,
+  async (user) => {
+    const logs = await getAllLogsRepo(user.businessId!, user.id);
+    if (logs.error) {
+      return { data: null, error: logs.error };
+    }
+    return { data: logs.data, error: null };
   }
-  return { data: logs.data, error: null };
-});
+);
 
 export const getLogsOverview = createProtectedAction(
   Permission.LOG_VIEW,
@@ -58,7 +60,6 @@ export const createLog = createProtectedAction(
     if (res.error) {
       return { data: null, error: res.error };
     }
-    revalidateTag(`auditLogs-${user.businessId!}`);
     return { data: res.data, error: null };
   }
 );
@@ -70,8 +71,6 @@ export const deleteLog = createProtectedAction(
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
     const res = await removeLogRepo(auditLogId, user.businessId!);
-    revalidateTag(`auditLogs-${user.businessId!}`);
-    revalidateTag(`auditLog-${auditLogId}`);
     if (res.error) {
       return { data: null, error: res.error };
     }

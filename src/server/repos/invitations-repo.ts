@@ -1,7 +1,7 @@
 "use server";
 
 import { eq, and, inArray, isNull } from "drizzle-orm";
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { unstable_cache } from "next/cache";
 import { auditLogsTable, invitationsTable } from "@/lib/schema";
@@ -80,7 +80,6 @@ export const getByIdCached = async (invitationId: string, businessId: string) =>
     ["invitations", invitationId, businessId],
     {
       revalidate: 300,
-      tags: [`invitations-${businessId}`, `invitation-${invitationId}`],
     }
   );
 
@@ -205,8 +204,7 @@ export async function create(
       return newInvitation;
     });
 
-    revalidateTag("invitations");
-    revalidateTag(`invitations-${businessId}`);
+    revalidatePath(`users`);
 
     return { data: result, error: null };
   } catch (error) {
@@ -260,8 +258,7 @@ export async function update(
       };
     }
 
-    revalidateTag(`invitations-${businessId}`);
-    revalidateTag(`invitation-${invitationId}`);
+    revalidatePath(`users`);
 
     return { data: result, error: null };
   } catch (error) {
@@ -318,8 +315,7 @@ export async function remove(
       };
     }
 
-    revalidateTag(`invitations-${businessId}`);
-    revalidateTag(`invitation-${invitationId}`);
+    revalidatePath(`users`);
 
     return { data: result, error: null };
   } catch (error) {
@@ -387,7 +383,7 @@ export async function createMany(
       return insertedInvitations;
     });
 
-    revalidateTag(`invitations-${businessId}`);
+    revalidatePath(`users`);
 
     return { data: result, error: null };
   } catch (error) {

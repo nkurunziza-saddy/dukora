@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { businessesTable, auditLogsTable, usersTable } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { ErrorCode } from "../constants/errors";
-import { unstable_cache } from "next/cache";
+import { unstable_cache, revalidatePath } from "next/cache";
 import type { InsertAuditLog, InsertBusiness } from "@/lib/schema/schema-types";
 
 export async function getAll() {
@@ -50,8 +50,7 @@ export const getByIdCached = async (businessId: string) =>
     ["business", businessId],
     {
       revalidate: 300,
-      tags: [`business-${businessId}`],
-    }
+      }
   );
 
 export async function create(userId: string, business: InsertBusiness) {
@@ -85,8 +84,8 @@ export async function create(userId: string, business: InsertBusiness) {
       return newBusiness;
     });
 
-    // revalidateTag("businesses");
-    // revalidateTag(`business-${result.id}`);
+    revalidatePath("/dashboard/businesses");
+    revalidatePath(`/dashboard/businesses/${result.id}`);
 
     return { data: result, error: null };
   } catch (error) {
@@ -130,8 +129,8 @@ export async function update(
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
     }
 
-    // revalidateTag("businesses");
-    // revalidateTag(`business-${businessId}`);
+    revalidatePath("/dashboard/businesses");
+    revalidatePath(`/dashboard/businesses/${businessId}`);
 
     return { data: result, error: null };
   } catch (error) {
@@ -176,8 +175,8 @@ export async function remove(businessId: string, userId: string) {
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
     }
 
-    // revalidateTag("businesses");
-    // revalidateTag(`business-${businessId}`);
+    revalidatePath("/dashboard/businesses");
+    revalidatePath(`/dashboard/businesses/${businessId}`);
 
     return { data: result, error: null };
   } catch (error) {
@@ -197,7 +196,8 @@ export async function createMany(businesses: InsertBusiness[]) {
       .values(businesses)
       .returning();
 
-    // revalidateTag("businesses");
+    revalidatePath("/dashboard/businesses");
+    revalidatePath(`/dashboard/businesses/${businessId}`);
 
     return { data: result, error: null };
   } catch (error) {

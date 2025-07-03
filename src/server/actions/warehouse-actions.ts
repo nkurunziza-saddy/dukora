@@ -3,7 +3,7 @@
 import type { InsertWarehouse } from "@/lib/schema/schema-types";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 
 import {
@@ -57,7 +57,8 @@ export const createWarehouse = createProtectedAction(
     if (resError) {
       return { data: null, error: resError };
     }
-    revalidateTag(`warehouses-${user.businessId!}`);
+    revalidatePath("/scheduler");
+    revalidatePath("/dashboard");
     return { data: resData, error: null };
   }
 );
@@ -66,7 +67,7 @@ export const updateWarehouse = createProtectedAction(
   Permission.WAREHOUSE_UPDATE,
   async (
     user,
-    { 
+    {
       warehouseId,
       updates,
     }: {
@@ -86,8 +87,7 @@ export const updateWarehouse = createProtectedAction(
     if (updatedWarehouse.error) {
       return { data: null, error: updatedWarehouse.error };
     }
-    revalidateTag(`warehouses-${user.businessId!}`);
-    revalidateTag(`warehouse-${warehouseId}`);
+    revalidatePath("/", "layout");
     return { data: updatedWarehouse.data, error: null };
   }
 );
@@ -99,8 +99,7 @@ export const deleteWarehouse = createProtectedAction(
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
     await removeWarehouseRepo(warehouseId, user.businessId!, user.id);
-    revalidateTag(`warehouses-${user.businessId!}`);
-    revalidateTag(`warehouse-${warehouseId}`);
+    revalidatePath("/", "layout");
     return { data: { success: true }, error: null };
   }
 );
@@ -123,7 +122,7 @@ export const createManyWarehouses = createProtectedAction(
       warehouses,
       user.id
     );
-    revalidateTag(`warehouses-${user.businessId!}`);
+    revalidatePath("/", "layout");
     return { data: createdWarehouses, error: null };
   }
 );

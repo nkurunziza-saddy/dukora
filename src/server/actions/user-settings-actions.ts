@@ -3,7 +3,6 @@
 import type { InsertUserSetting } from "@/lib/schema/schema-types";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
-import { revalidateTag } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as userSettingsRepo from "../repos/user-settings-repo";
 
@@ -20,7 +19,10 @@ export const getUserSettings = createProtectedAction(
 
 export const upsertUserSettings = createProtectedAction(
   Permission.USER_UPDATE,
-  async (user, settingsData: Partial<Omit<InsertUserSetting, "id" | "userId">>[]) => {
+  async (
+    user,
+    settingsData: Partial<Omit<InsertUserSetting, "id" | "userId">>[]
+  ) => {
     if (!settingsData?.length) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
@@ -31,7 +33,7 @@ export const upsertUserSettings = createProtectedAction(
         key: setting.key as string,
         value: setting.value as string,
         userId: user.id,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       };
       return userSettingsRepo.upsert(user.id, user.businessId!, newSetting);
     });
@@ -43,7 +45,6 @@ export const upsertUserSettings = createProtectedAction(
       return { data: null, error: ErrorCode.FAILED_REQUEST, errors };
     }
 
-    revalidateTag(`user-settings-${user.id}`);
     return { data: { success: true }, error: null };
   }
 );

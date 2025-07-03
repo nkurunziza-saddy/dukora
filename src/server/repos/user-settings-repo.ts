@@ -1,7 +1,7 @@
 "use server";
 
 import { eq } from "drizzle-orm";
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { unstable_cache } from "next/cache";
 import { auditLogsTable, userSettingsTable } from "@/lib/schema";
@@ -68,7 +68,7 @@ export async function upsert(
       return newSetting;
     });
 
-    revalidateTag(`user-settings-${userId}`);
+    revalidatePath(`/settings`);
 
     return { data: result, error: null };
   } catch (error) {

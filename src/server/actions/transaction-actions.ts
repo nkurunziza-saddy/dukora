@@ -6,7 +6,6 @@ import type {
 } from "@/lib/schema/schema-types";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
-import { revalidateTag } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import {
   getAll as getAllTransactionsRepo,
@@ -79,14 +78,12 @@ export const createTransaction = createProtectedAction(
       businessId: user.businessId!,
       createdBy: user.id,
     };
-    const { data: resData, error: resError } = await createTransactionRepo(
-      transaction
-    );
+    const { data: resData, error: resError } =
+      await createTransactionRepo(transaction);
     if (resError) {
       return { data: null, error: resError };
     }
-    revalidateTag(`transactions-${user.businessId!}`);
-    revalidateTag(`warehouse-items-${user.businessId!}`);
+
     return { data: resData, error: null };
   }
 );
@@ -112,14 +109,11 @@ export const createTransactionAndWarehouseItem = createProtectedAction(
       businessId: user.businessId!,
       createdBy: user.id,
     };
-    const { data: resData, error: resError } = await createWithWarehouseItem(
-      transaction
-    );
+    const { data: resData, error: resError } =
+      await createWithWarehouseItem(transaction);
     if (resError) {
       return { data: null, error: resError };
     }
-    revalidateTag(`transactions-${user.businessId!}`);
-    revalidateTag(`warehouse-items-${user.businessId!}`);
     return { data: resData, error: null };
   }
 );
@@ -130,7 +124,10 @@ export const getTransactionsByType = createProtectedAction(
     if (!type) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const transactions = await getTransactionsByTypeRepo(user.businessId!, type);
+    const transactions = await getTransactionsByTypeRepo(
+      user.businessId!,
+      type
+    );
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }

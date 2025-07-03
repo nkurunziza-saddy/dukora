@@ -1,7 +1,7 @@
 "use server";
 
 import { eq, desc, and, isNull } from "drizzle-orm";
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { unstable_cache } from "next/cache";
 import { auditLogsTable, suppliersTable } from "@/lib/schema";
@@ -110,9 +110,7 @@ export async function create(
       await tx.insert(auditLogsTable).values(auditData);
       return newSupplier;
     });
-
-    revalidateTag("suppliers");
-    revalidateTag(`suppliers-${supplier.businessId}`);
+    revalidatePath("/", "layout");
 
     return { data: result, error: null };
   } catch (error) {
@@ -166,8 +164,7 @@ export async function update(
       };
     }
 
-    revalidateTag(`suppliers-${businessId}`);
-    revalidateTag(`supplier-${supplierId}`);
+    revalidatePath("/", "layout");
 
     return { data: result, error: null };
   } catch (error) {
@@ -224,9 +221,7 @@ export async function remove(
         error: ErrorCode.SUPPLIER_NOT_FOUND ?? ErrorCode.PRODUCT_NOT_FOUND,
       };
     }
-
-    revalidateTag(`suppliers-${businessId}`);
-    revalidateTag(`supplier-${supplierId}`);
+    revalidatePath("/", "layout");
 
     return { data: result, error: null };
   } catch (error) {
@@ -251,7 +246,7 @@ export async function createMany(suppliers: InsertSupplier[]) {
       .values(suppliers)
       .returning();
 
-    revalidateTag(`suppliers-${businessId}`);
+    revalidatePath("/", "layout");
 
     return { data: result, error: null };
   } catch (error) {

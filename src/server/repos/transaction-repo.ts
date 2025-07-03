@@ -1,5 +1,5 @@
 import { eq, desc, and, sql, gte, lte } from "drizzle-orm";
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import {
   transactionsTable,
@@ -169,8 +169,8 @@ export async function create(transaction: InsertTransaction) {
       return newTransaction;
     });
 
-    revalidateTag(`transactions-${transaction.businessId}`);
-    revalidateTag(`warehouse-items-${transaction.businessId}`);
+    revalidatePath("/transactions");
+    revalidatePath("/sales");
 
     return { data: result, error: null };
   } catch (error) {
@@ -206,20 +206,20 @@ export async function create_with_warehouse_item(
           warehouseItemId: newWarehouseItem.data?.id ?? "",
         })
         .returning();
-const productSupplierData: InsertProductSupplier = {
-  productId: transaction.productId,
-  supplierId: transaction.supplierId ?? "",
-  businessId: transaction.businessId,
-  note: transaction.note,
-  supplierProductCode: newWarehouseItem.data?.id ?? "",
-}
+      const productSupplierData: InsertProductSupplier = {
+        productId: transaction.productId,
+        supplierId: transaction.supplierId ?? "",
+        businessId: transaction.businessId,
+        note: transaction.note,
+        supplierProductCode: newWarehouseItem.data?.id ?? "",
+      };
       await tx.insert(productSuppliersTable).values(productSupplierData);
 
       return newTransaction;
     });
 
-    revalidateTag(`transactions-${transaction.businessId}`);
-    revalidateTag(`warehouse-items-${transaction.businessId}`);
+    revalidatePath("/transactions");
+    revalidatePath("/sales");
 
     return { data: result, error: null };
   } catch (error) {

@@ -1,7 +1,7 @@
 "use server";
 import { eq, desc, and } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { revalidateTag, unstable_cache } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { warehousesTable, auditLogsTable } from "@/lib/schema";
 import type { InsertWarehouse } from "@/lib/schema/schema-types";
 import type { InsertAuditLog } from "@/lib/schema/schema-types";
@@ -96,7 +96,7 @@ export async function create(warehouse: InsertWarehouse, userId: string) {
       return newWarehouse;
     });
 
-    revalidateTag(`warehouses-${warehouse.businessId}`);
+    revalidatePath("/", "layout");
 
     return { data: result, error: null };
   } catch (error) {
@@ -149,8 +149,7 @@ export async function update(
       return { data: null, error: ErrorCode.NOT_FOUND };
     }
 
-    revalidateTag(`warehouses-${businessId}`);
-    revalidateTag(`warehouse-${warehouseId}`);
+    revalidatePath("/", "layout");
 
     return { data: result, error: null };
   } catch (error) {
@@ -207,8 +206,7 @@ export async function remove(
       return { data: null, error: ErrorCode.NOT_FOUND };
     }
 
-    revalidateTag(`warehouses-${businessId}`);
-    revalidateTag(`warehouse-${warehouseId}`);
+    revalidatePath("/", "layout");
 
     return { data: result, error: null };
   } catch (error) {
@@ -252,7 +250,7 @@ export async function createMany(
       return inserted;
     });
 
-    revalidateTag(`warehouses-${businessId}`);
+    revalidatePath("/", "layout");
 
     return { data: result, error: null };
   } catch (error) {

@@ -2,9 +2,9 @@
 import type { InsertCategory } from "@/lib/schema/schema-types";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
-import { revalidateTag } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as categoryRepo from "../repos/category-repo";
+import { revalidatePath } from "next/cache";
 
 export const fetchCategories = createProtectedAction(
   Permission.CATEGORY_VIEW,
@@ -48,7 +48,7 @@ export const createCategory = createProtectedAction(
     if (resError) {
       return { data: null, error: resError };
     }
-    revalidateTag(`categories-${user.businessId!}`);
+    revalidatePath("/", "layout");
     return { data: resData, error: null };
   }
 );
@@ -57,7 +57,7 @@ export const updateCategory = createProtectedAction(
   Permission.CATEGORY_UPDATE,
   async (
     user,
-    { 
+    {
       categoryId,
       updates,
     }: {
@@ -77,8 +77,7 @@ export const updateCategory = createProtectedAction(
     if (updatedCategory.error) {
       return { data: null, error: updatedCategory.error };
     }
-    revalidateTag(`categories-${user.businessId!}`);
-    revalidateTag(`category-${categoryId}`);
+    revalidatePath("/", "layout");
     return { data: updatedCategory.data, error: null };
   }
 );
@@ -90,18 +89,14 @@ export const deleteCategory = createProtectedAction(
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
     await categoryRepo.remove(categoryId, user.businessId!, user.id);
-    revalidateTag(`categories-${user.businessId!}`);
-    revalidateTag(`category-${categoryId}`);
+    revalidatePath("/", "layout");
     return { data: { success: true }, error: null };
   }
 );
 
 export const createManyCategories = createProtectedAction(
   Permission.CATEGORY_CREATE,
-  async (
-    user,
-    categoriesData: Omit<InsertCategory, "businessId" | "id">[]
-  ) => {
+  async (user, categoriesData: Omit<InsertCategory, "businessId" | "id">[]) => {
     if (categoriesData === null) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
@@ -109,8 +104,11 @@ export const createManyCategories = createProtectedAction(
       ...category,
       businessId: user.businessId!,
     }));
-    const createdCategories = await categoryRepo.createMany(categories, user.id);
-    revalidateTag(`categories-${user.businessId!}`);
+    const createdCategories = await categoryRepo.createMany(
+      categories,
+      user.id
+    );
+    revalidatePath("/", "layout");
     return { data: createdCategories, error: null };
   }
 );

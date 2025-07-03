@@ -3,7 +3,7 @@
 import type { InsertSupplier } from "@/lib/schema/schema-types";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import {
   getAll as getAllSuppliersRepo,
@@ -53,7 +53,7 @@ export const createSupplier = createProtectedAction(
     if (res.error) {
       return { data: null, error: res.error };
     }
-    revalidateTag(`suppliers-${user.businessId!}`);
+    revalidatePath("");
     return { data: res.data, error: null };
   }
 );
@@ -82,8 +82,7 @@ export const updateSupplier = createProtectedAction(
     if (updatedSupplier.error) {
       return { data: null, error: updatedSupplier.error };
     }
-    revalidateTag(`suppliers-${user.businessId!}`);
-    revalidateTag(`supplier-${supplierId}`);
+    revalidatePath("");
     return { data: updatedSupplier.data, error: null };
   }
 );
@@ -98,8 +97,7 @@ export const deleteSupplier = createProtectedAction(
     if (res.error) {
       return { data: null, error: res.error };
     }
-    revalidateTag(`suppliers-${user.businessId!}`);
-    revalidateTag(`supplier-${supplierId}`);
+    revalidatePath("");
     return { data: { success: true }, error: null };
   }
 );
@@ -118,7 +116,7 @@ export const createManySuppliers = createProtectedAction(
     if (createdSuppliers.error) {
       return { data: null, error: createdSuppliers.error };
     }
-    revalidateTag(`suppliers-${user.businessId!}`);
+    revalidatePath("");
     return { data: createdSuppliers.data, error: null };
   }
 );

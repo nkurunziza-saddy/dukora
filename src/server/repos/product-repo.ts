@@ -1,5 +1,5 @@
 import { eq, desc, and, isNull } from "drizzle-orm";
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { unstable_cache } from "next/cache";
 import {
@@ -78,7 +78,6 @@ export const getAllCached = async (businessId: string) => {
     ["products", businessId],
     {
       revalidate: 300,
-      tags: [`products-${businessId}`],
     }
   );
 };
@@ -124,7 +123,6 @@ export const getByIdCached = async (productId: string, businessId: string) =>
     ["products", productId, businessId],
     {
       revalidate: 300,
-      tags: [`products-${businessId}`, `product-${productId}`],
     }
   );
 
@@ -154,8 +152,7 @@ export async function create(product: InsertProduct, userId: string) {
       return newProduct;
     });
 
-    revalidateTag("products");
-    revalidateTag(`products-${product.businessId}`);
+    revalidatePath("/", "layout");
 
     return { data: result, error: null };
   } catch (error) {
@@ -207,8 +204,7 @@ export async function update(
       return { data: null, error: ErrorCode.PRODUCT_NOT_FOUND };
     }
 
-    revalidateTag(`products-${businessId}`);
-    revalidateTag(`product-${productId}`);
+    revalidatePath("/", "layout");
 
     return { data: result, error: null };
   } catch (error) {
@@ -264,9 +260,7 @@ export async function remove(
     if (!result) {
       return { data: null, error: ErrorCode.PRODUCT_NOT_FOUND };
     }
-
-    revalidateTag(`products-${businessId}`);
-    revalidateTag(`product-${productId}`);
+    revalidatePath("/", "layout");
 
     return { data: result, error: null };
   } catch (error) {
@@ -288,7 +282,7 @@ export async function createMany(products: InsertProduct[]) {
   try {
     const result = await db.insert(productsTable).values(products).returning();
 
-    revalidateTag(`products-${businessId}`);
+    revalidatePath("/", "layout");
 
     return { data: result, error: null };
   } catch (error) {

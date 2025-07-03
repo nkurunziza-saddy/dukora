@@ -7,7 +7,6 @@ import type {
 } from "@/lib/schema/schema-types";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
-import { revalidateTag } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import {
   get_all as getAllWarehouseItemsRepo,
@@ -68,7 +67,10 @@ export const getWarehouseItemById = createProtectedAction(
 
 export const createWarehouseItem = createProtectedAction(
   Permission.WAREHOUSE_ITEM_CREATE,
-  async (user, warehouseItemData: Omit<InsertWarehouseItem, "businessId" | "id">) => {
+  async (
+    user,
+    warehouseItemData: Omit<InsertWarehouseItem, "businessId" | "id">
+  ) => {
     const warehouseItem: InsertWarehouseItem = {
       ...warehouseItemData,
     };
@@ -80,7 +82,7 @@ export const createWarehouseItem = createProtectedAction(
     if (res.error) {
       return { data: null, error: res.error };
     }
-    revalidateTag(`warehouseItems-${user.businessId!}`);
+
     return { data: res.data, error: null };
   }
 );
@@ -89,7 +91,7 @@ export const updateWarehouseItem = createProtectedAction(
   Permission.WAREHOUSE_ITEM_UPDATE,
   async (
     user,
-    { 
+    {
       warehouseItemId,
       updates,
     }: {
@@ -109,8 +111,7 @@ export const updateWarehouseItem = createProtectedAction(
     if (updatedWarehouseItem.error) {
       return { data: null, error: updatedWarehouseItem.error };
     }
-    revalidateTag(`warehouseItems-${user.businessId!}`);
-    revalidateTag(`warehouseItem-${warehouseItemId}`);
+
     return { data: updatedWarehouseItem.data, error: null };
   }
 );
@@ -122,8 +123,7 @@ export const deleteWarehouseItem = createProtectedAction(
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
     await removeWarehouseItemRepo(warehouseItemId, user.businessId!, user.id);
-    revalidateTag(`warehouseItems-${user.businessId!}`);
-    revalidateTag(`warehouseItem-${warehouseItemId}`);
+
     return { data: { success: true }, error: null };
   }
 );
@@ -143,10 +143,9 @@ export const createManyWarehouseItems = createProtectedAction(
         businessId: user.businessId!,
       })
     );
-    const createdWarehouseItems = await createManyWarehouseItemsRepo(
-      warehouseItems
-    );
-    revalidateTag(`warehouseItems-${user.businessId!}`);
+    const createdWarehouseItems =
+      await createManyWarehouseItemsRepo(warehouseItems);
+
     return { data: createdWarehouseItems, error: null };
   }
 );

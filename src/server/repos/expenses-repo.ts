@@ -1,9 +1,9 @@
 import { eq, desc, and, gte, lte } from "drizzle-orm";
-import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { expensesTable, auditLogsTable } from "@/lib/schema";
 import { InsertExpense, InsertAuditLog } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
+import { revalidatePath } from "next/cache";
 
 export async function getAll(businessId: string) {
   if (!businessId) {
@@ -106,7 +106,8 @@ export async function create(expense: InsertExpense) {
       return newExpense;
     });
 
-    revalidateTag(`expenses-${expense.businessId}`);
+    revalidatePath("/transactions");
+    revalidatePath("/sales");
 
     return { data: result, error: null };
   } catch (error) {
