@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Card,
@@ -6,14 +6,14 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
 
 export function VATCalculator() {
-  const t = useTranslations('FinancialCalculator');
+  const t = useTranslations("FinancialCalculator");
 
   const [salesAmount, setSalesAmount] = useState(0);
   const [purchasesAmount, setPurchasesAmount] = useState(0);
@@ -26,14 +26,16 @@ export function VATCalculator() {
   };
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-4xl">
       <CardHeader>
-        <CardTitle>{t('vat_calculator.title')}</CardTitle>
-        <CardDescription>{t('vat_calculator.description')}</CardDescription>
+        <CardTitle>{t("vat_calculator.title")}</CardTitle>
+        <CardDescription>{t("vat_calculator.description")}</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
         <div className="grid gap-2">
-          <Label htmlFor="salesAmount">{t('vat_calculator.sales_amount_label')}</Label>
+          <Label htmlFor="salesAmount">
+            {t("vat_calculator.sales_amount_label")}
+          </Label>
           <Input
             id="salesAmount"
             type="number"
@@ -43,7 +45,9 @@ export function VATCalculator() {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="purchasesAmount">{t('vat_calculator.purchases_amount_label')}</Label>
+          <Label htmlFor="purchasesAmount">
+            {t("vat_calculator.purchases_amount_label")}
+          </Label>
           <Input
             id="purchasesAmount"
             type="number"
@@ -53,7 +57,7 @@ export function VATCalculator() {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="vatDue">{t('vat_calculator.vat_due_label')}</Label>
+          <Label htmlFor="vatDue">{t("vat_calculator.vat_due_label")}</Label>
           <Input id="vatDue" type="number" value={vatDue.toFixed(2)} readOnly />
         </div>
       </CardContent>

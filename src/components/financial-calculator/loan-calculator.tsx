@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Card,
@@ -6,14 +6,14 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
 
 export function LoanCalculator() {
-  const t = useTranslations('FinancialCalculator');
+  const t = useTranslations("FinancialCalculator");
 
   const [loanAmount, setLoanAmount] = useState(0);
   const [interestRate, setInterestRate] = useState(0);
@@ -23,7 +23,8 @@ export function LoanCalculator() {
   const calculateMonthlyPayment = () => {
     const monthlyInterestRate = interestRate / 100 / 12;
     const numberOfPayments = loanTerm * 12;
-    const denominator = (1 - Math.pow(1 + monthlyInterestRate, -numberOfPayments));
+    const denominator =
+      1 - Math.pow(1 + monthlyInterestRate, -numberOfPayments);
     if (denominator === 0) {
       setMonthlyPayment(0);
       return;
@@ -32,14 +33,16 @@ export function LoanCalculator() {
   };
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-4xl">
       <CardHeader>
-        <CardTitle>{t('loan_calculator.title')}</CardTitle>
-        <CardDescription>{t('loan_calculator.description')}</CardDescription>
+        <CardTitle>{t("loan_calculator.title")}</CardTitle>
+        <CardDescription>{t("loan_calculator.description")}</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
         <div className="grid gap-2">
-          <Label htmlFor="loanAmount">{t('loan_calculator.loan_amount_label')}</Label>
+          <Label htmlFor="loanAmount">
+            {t("loan_calculator.loan_amount_label")}
+          </Label>
           <Input
             id="loanAmount"
             type="number"
@@ -49,7 +52,9 @@ export function LoanCalculator() {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="interestRate">{t('loan_calculator.interest_rate_label')}</Label>
+          <Label htmlFor="interestRate">
+            {t("loan_calculator.interest_rate_label")}
+          </Label>
           <Input
             id="interestRate"
             type="number"
@@ -59,7 +64,9 @@ export function LoanCalculator() {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="loanTerm">{t('loan_calculator.loan_term_label')}</Label>
+          <Label htmlFor="loanTerm">
+            {t("loan_calculator.loan_term_label")}
+          </Label>
           <Input
             id="loanTerm"
             type="number"
@@ -69,8 +76,15 @@ export function LoanCalculator() {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="monthlyPayment">{t('loan_calculator.monthly_payment_label')}</Label>
-          <Input id="monthlyPayment" type="number" value={monthlyPayment.toFixed(2)} readOnly />
+          <Label htmlFor="monthlyPayment">
+            {t("loan_calculator.monthly_payment_label")}
+          </Label>
+          <Input
+            id="monthlyPayment"
+            type="number"
+            value={monthlyPayment.toFixed(2)}
+            readOnly
+          />
         </div>
       </CardContent>
     </Card>

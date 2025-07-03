@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Card,
@@ -6,14 +6,14 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
 
 export function SavingsGoalCalculator() {
-  const t = useTranslations('FinancialCalculator');
+  const t = useTranslations("FinancialCalculator");
 
   const [targetAmount, setTargetAmount] = useState(0);
   const [currentSavings, setCurrentSavings] = useState(0);
@@ -29,14 +29,16 @@ export function SavingsGoalCalculator() {
   };
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-4xl">
       <CardHeader>
-        <CardTitle>{t('savings_calculator.title')}</CardTitle>
-        <CardDescription>{t('savings_calculator.description')}</CardDescription>
+        <CardTitle>{t("savings_calculator.title")}</CardTitle>
+        <CardDescription>{t("savings_calculator.description")}</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
         <div className="grid gap-2">
-          <Label htmlFor="targetAmount">{t('savings_calculator.target_amount_label')}</Label>
+          <Label htmlFor="targetAmount">
+            {t("savings_calculator.target_amount_label")}
+          </Label>
           <Input
             id="targetAmount"
             type="number"
@@ -46,7 +48,9 @@ export function SavingsGoalCalculator() {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="currentSavings">{t('savings_calculator.current_savings_label')}</Label>
+          <Label htmlFor="currentSavings">
+            {t("savings_calculator.current_savings_label")}
+          </Label>
           <Input
             id="currentSavings"
             type="number"
@@ -56,7 +60,9 @@ export function SavingsGoalCalculator() {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="annualContribution">{t('savings_calculator.annual_contribution_label')}</Label>
+          <Label htmlFor="annualContribution">
+            {t("savings_calculator.annual_contribution_label")}
+          </Label>
           <Input
             id="annualContribution"
             type="number"
@@ -66,8 +72,15 @@ export function SavingsGoalCalculator() {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="yearsToGoal">{t('savings_calculator.years_to_goal_label')}</Label>
-          <Input id="yearsToGoal" type="number" value={yearsToGoal.toFixed(2)} readOnly />
+          <Label htmlFor="yearsToGoal">
+            {t("savings_calculator.years_to_goal_label")}
+          </Label>
+          <Input
+            id="yearsToGoal"
+            type="number"
+            value={yearsToGoal.toFixed(2)}
+            readOnly
+          />
         </div>
       </CardContent>
     </Card>

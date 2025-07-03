@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Card,
@@ -6,14 +6,14 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
 
 export function CompoundInterestCalculator() {
-  const t = useTranslations('FinancialCalculator');
+  const t = useTranslations("FinancialCalculator");
 
   const [principal, setPrincipal] = useState(0);
   const [annualRate, setAnnualRate] = useState(0);
@@ -29,14 +29,18 @@ export function CompoundInterestCalculator() {
   };
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-4xl">
       <CardHeader>
-        <CardTitle>{t('compound_calculator.title')}</CardTitle>
-        <CardDescription>{t('compound_calculator.description')}</CardDescription>
+        <CardTitle>{t("compound_calculator.title")}</CardTitle>
+        <CardDescription>
+          {t("compound_calculator.description")}
+        </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
         <div className="grid gap-2">
-          <Label htmlFor="principal">{t('compound_calculator.principal_label')}</Label>
+          <Label htmlFor="principal">
+            {t("compound_calculator.principal_label")}
+          </Label>
           <Input
             id="principal"
             type="number"
@@ -46,7 +50,9 @@ export function CompoundInterestCalculator() {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="annualRate">{t('compound_calculator.annual_rate_label')}</Label>
+          <Label htmlFor="annualRate">
+            {t("compound_calculator.annual_rate_label")}
+          </Label>
           <Input
             id="annualRate"
             type="number"
@@ -56,17 +62,21 @@ export function CompoundInterestCalculator() {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="compoundingFrequency">{t('compound_calculator.compounding_frequency_label')}</Label>
+          <Label htmlFor="compoundingFrequency">
+            {t("compound_calculator.compounding_frequency_label")}
+          </Label>
           <Input
             id="compoundingFrequency"
             type="number"
             value={compoundingFrequency}
-            onChange={(e) => setCompoundingFrequency(parseFloat(e.target.value))}
+            onChange={(e) =>
+              setCompoundingFrequency(parseFloat(e.target.value))
+            }
             onBlur={calculateCompoundInterest}
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="time">{t('compound_calculator.time_label')}</Label>
+          <Label htmlFor="time">{t("compound_calculator.time_label")}</Label>
           <Input
             id="time"
             type="number"
@@ -76,8 +86,15 @@ export function CompoundInterestCalculator() {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="futureValue">{t('compound_calculator.future_value_label')}</Label>
-          <Input id="futureValue" type="number" value={futureValue.toFixed(2)} readOnly />
+          <Label htmlFor="futureValue">
+            {t("compound_calculator.future_value_label")}
+          </Label>
+          <Input
+            id="futureValue"
+            type="number"
+            value={futureValue.toFixed(2)}
+            readOnly
+          />
         </div>
       </CardContent>
     </Card>
