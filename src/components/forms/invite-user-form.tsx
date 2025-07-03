@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-// import { inviteUser } from "@/server/actions/users";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,12 +21,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import { userRolesObject } from "@/utils/constants";
 import { format } from "date-fns";
 import { createInvitation } from "@/server/actions/invitation-actions";
 import { USER_ROLES } from "@/lib/schema/models/enums";
 import { useTranslations } from "next-intl";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export function InviteUserForm() {
   const t = useTranslations("forms");
@@ -64,6 +64,10 @@ export function InviteUserForm() {
   const { isSubmitting } = form.formState;
   return (
     <Form {...form}>
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>{t("emailVerificationDown")}</AlertDescription>
+      </Alert>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-4">
           <FormField

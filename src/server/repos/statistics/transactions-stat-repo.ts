@@ -1,9 +1,9 @@
 import { db } from "@/lib/db";
 import {
+  expensesTable,
   productsTable,
   transactionsTable,
   usersTable,
-  //   warehousesTable,
 } from "@/lib/schema";
 import { TransactionType } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
@@ -19,6 +19,7 @@ export async function getTransactionMetricsForInterval(
       .select({
         type: transactionsTable.type,
         quantity: transactionsTable.quantity,
+        price: productsTable.price,
       })
       .from(transactionsTable)
       .where(
@@ -27,19 +28,41 @@ export async function getTransactionMetricsForInterval(
           gte(transactionsTable.createdAt, dateFrom),
           lte(transactionsTable.createdAt, dateTo)
         )
+      )
+      .innerJoin(
+        productsTable,
+        eq(transactionsTable.productId, productsTable.id)
+      );
+    const expenseReq = await db
+      .select({
+        amount: expensesTable.amount,
+        note: expensesTable.note,
+      })
+      .from(expensesTable)
+      .where(
+        and(
+          eq(expensesTable.businessId, businessId),
+          gte(expensesTable.createdAt, dateFrom),
+          lte(expensesTable.createdAt, dateTo)
+        )
       );
 
     let totalSales = 0;
     let totalExpenses = 0;
-    const transactionCount = result.length;
+    const transactionCount = result.length + expenseReq.length;
 
     result.forEach((transaction) => {
-      const amount = Math.abs(transaction.quantity);
+      const amount =
+        Math.abs(transaction.quantity) * parseFloat(transaction.price);
       if (transaction.type === "SALE") {
         totalSales += amount;
       } else if (transaction.type === "PURCHASE") {
         totalExpenses += amount;
       }
+    });
+    expenseReq.forEach((expense) => {
+      const amount = parseFloat(expense.amount);
+      totalExpenses += amount;
     });
 
     const netProfit = totalSales - totalExpenses;

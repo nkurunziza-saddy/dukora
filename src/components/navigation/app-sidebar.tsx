@@ -30,8 +30,8 @@ import {
 } from "@/components/ui/sidebar";
 import { Link } from "@/i18n/navigation";
 import { useTranslations, useLocale } from "next-intl";
-import SessionCard from "./session-card";
 import { usePathname } from "next/navigation";
+import SessionCard from "./session-card";
 
 export const data = {
   navMain: [
@@ -138,7 +138,7 @@ export function AppSidebar() {
       <SidebarContent>
         {data.navMain.map((group) => (
           <SidebarGroup key={group.title}>
-            <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
+            <SidebarGroupLabel>{t(group.title)}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {group.items.map((item) => {

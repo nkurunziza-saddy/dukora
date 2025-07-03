@@ -73,7 +73,7 @@ export default async function InventoryDashboard() {
     },
     {
       title: t("totalValue"),
-      subText: t("fromLastMonthValue"),
+      subText: t("currentStockValue"),
       value: formatCurrency(inventoryValue.data ?? 0),
       icon: TrendingUp,
     },

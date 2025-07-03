@@ -13,16 +13,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import Image from "next/image";
-import { Loader2, X } from "lucide-react";
+import { AlertCircle, Loader2, X } from "lucide-react";
 import { signIn, signUp } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { Alert, AlertDescription } from "../ui/alert";
 
 export default function SignUp() {
   const t = useTranslations("auth");
+  const t_form = useTranslations("forms");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -47,6 +49,10 @@ export default function SignUp() {
 
   return (
     <Card className="">
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>{t_form("emailVerificationDown")}</AlertDescription>
+      </Alert>
       <CardHeader>
         <CardTitle className="text-lg md:text-xl">
           {t("signUp.title")}

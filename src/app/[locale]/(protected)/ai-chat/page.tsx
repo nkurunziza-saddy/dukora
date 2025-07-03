@@ -305,14 +305,14 @@ const markdownComponents = {
       {children}
     </a>
   ),
-  img: ({ alt, src, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => (
-    <img
-      alt={alt}
-      src={src || "/placeholder.svg"}
-      className="max-w-full h-auto rounded-md my-4"
-      {...props}
-    />
-  ),
+  // img: ({ alt, src, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => (
+  //   <img
+  //     alt={alt}
+  //     src={src || "/placeholder.svg"}
+  //     className="max-w-full h-auto rounded-md my-4"
+  //     {...props}
+  //   />
+  // ),
   hr: (props: React.HTMLAttributes<HTMLHRElement>) => (
     <hr className="my-6 border-t border-border" {...props} />
   ),

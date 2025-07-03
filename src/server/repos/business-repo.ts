@@ -50,7 +50,7 @@ export const getByIdCached = async (businessId: string) =>
     ["business", businessId],
     {
       revalidate: 300,
-      }
+    }
   );
 
 export async function create(userId: string, business: InsertBusiness) {
@@ -84,7 +84,7 @@ export async function create(userId: string, business: InsertBusiness) {
       return newBusiness;
     });
 
-    revalidatePath("/dashboard/businesses");
+    revalidatePath("/", "layout");
     revalidatePath(`/dashboard/businesses/${result.id}`);
 
     return { data: result, error: null };
@@ -129,8 +129,7 @@ export async function update(
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
     }
 
-    revalidatePath("/dashboard/businesses");
-    revalidatePath(`/dashboard/businesses/${businessId}`);
+    revalidatePath("/", "layout");
 
     return { data: result, error: null };
   } catch (error) {
@@ -175,8 +174,7 @@ export async function remove(businessId: string, userId: string) {
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
     }
 
-    revalidatePath("/dashboard/businesses");
-    revalidatePath(`/dashboard/businesses/${businessId}`);
+    revalidatePath("/", "layout");
 
     return { data: result, error: null };
   } catch (error) {
@@ -196,8 +194,7 @@ export async function createMany(businesses: InsertBusiness[]) {
       .values(businesses)
       .returning();
 
-    revalidatePath("/dashboard/businesses");
-    revalidatePath(`/dashboard/businesses/${businessId}`);
+    revalidatePath("/", "layout");
 
     return { data: result, error: null };
   } catch (error) {

@@ -17,6 +17,9 @@
     "close": "Close",
     "back": "Back",
     "role": "Role",
+    "profile": "Profile",
+    "settings": "Settings",
+    "signOut": "Sign out",
     "noDataYet": "No data yet",
     "helpStarting": "Want help starting",
     "next": "Next",
@@ -113,6 +116,7 @@
     "description": "Description",
     "enterProductDescription": "Enter product description",
     "SKU": "SKU",
+    "emailVerificationDown": "Email verification is not fully implemented due to domain restrictions.",
     "SKUDescription": "Stock Keeping Unit (unique identifier)",
     "enterProductName": "Enter product name",
     "barcode": "Barcode",
@@ -244,6 +248,7 @@
     "language": "Language",
     "theme": "Theme",
     "saving": "Saving",
+    "expenseRecorded": "Expense recorded",
     "saveChanges": "Save Changes",
     "failedToLoadBusinesses": "Failed to load businesses",
     "businessNameRequired": "Business name is required",
@@ -265,6 +270,10 @@
     "payments": "Payments & Invoices",
     "users": "Users & Permissions",
     "transactions": "Business Transactions",
+    "Dashboard": "Dashboard",
+    "Operations": "Operations",
+    "Management": "Management",
+    "Tools": "Tools",
     "scheduler": "Scheduler",
     "ai-chat": "AI Chat",
     "financial-calculator": "Financial Calculator",
@@ -284,6 +293,7 @@
     "sku": "SKU",
     "productName": "Product Name",
     "category": "Category",
+    "currentStockValue": "Current Stock Value",
     "location": "Location",
     "type": "Type",
     "start": "Start",
@@ -608,23 +618,6 @@
       "purchases_amount_label": "Total Purchases Amount (RWF)",
       "vat_due_label": "Monthly VAT Due (RWF)"
     }
-  },
-  "invite-user-form": {
-    "invitationSent": "Invitation sent",
-    "error": "Error",
-    "userName": "User Name",
-    "userEmail": "User Email",
-    "enterUserName": "Enter user name",
-    "enterUserEmail": "Enter user email",
-    "sending": "Sending",
-    "send": "Send"
-  },
-  "update-user-form": {
-    "userUpdated": "User updated",
-    "updating": "Updating",
-    "update": "Update",
-    "enterUserName": "Enter user name",
-    "updateUser": "Update User"
   },
   "table": {
     "wait": "Wait...",

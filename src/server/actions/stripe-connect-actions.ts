@@ -1,3 +1,4 @@
+"use server";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";

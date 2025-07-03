@@ -13,16 +13,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import { signIn } from "@/lib/auth-client";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function SignIn() {
   const t = useTranslations("auth");
+  const t_form = useTranslations("forms");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -31,6 +33,10 @@ export default function SignIn() {
 
   return (
     <Card className="">
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>{t_form("emailVerificationDown")}</AlertDescription>
+      </Alert>
       <CardHeader>
         <CardTitle className="text-lg md:text-xl">
           {t("signIn.title")}

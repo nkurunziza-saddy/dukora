@@ -4,17 +4,16 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { format } from "date-fns";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
-import type { ExtendedTransactionPayload } from "@/lib/schema/schema-types";
+import {
+  ExtendedTransactionPayload,
+  TransactionType,
+} from "@/lib/schema/schema-types";
 import {
   ArrowDown,
   ArrowUp,
   XCircle,
-  Repeat,
-  ArrowLeftRight,
   Undo2,
   Redo2,
-  PackagePlus,
-  PackageCheck,
   ChevronUpIcon,
   ChevronDownIcon,
 } from "lucide-react";
@@ -165,63 +164,33 @@ export function TransactionColumn(
 
 export const transactionStatuses = [
   {
-    value: "PURCHASE",
+    value: TransactionType.PURCHASE,
     label: "Purchase",
     variant: "outline" as "secondary" | "destructive" | "outline",
     icon: ArrowDown,
   },
   {
-    value: "SALE",
+    value: TransactionType.SALE,
     label: "Sale",
     variant: "secondary" as "secondary" | "destructive" | "outline",
     icon: ArrowUp,
   },
   {
-    value: "DAMAGE",
+    value: TransactionType.DAMAGE,
     label: "Damage",
     variant: "destructive" as "secondary" | "destructive" | "outline",
     icon: XCircle,
   },
   {
-    value: "STOCK_ADJUSTMENT",
-    label: "Stock Adjustment",
-    variant: "outline" as "secondary" | "destructive" | "outline",
-    icon: Repeat,
-  },
-  {
-    value: "TRANSFER_IN",
-    label: "Transfer In",
-    variant: "outline" as "secondary" | "destructive" | "outline",
-    icon: ArrowLeftRight,
-  },
-  {
-    value: "TRANSFER_OUT",
-    label: "Transfer Out",
-    variant: "outline" as "secondary" | "destructive" | "outline",
-    icon: ArrowLeftRight,
-  },
-  {
-    value: "RETURN_SALE",
+    value: TransactionType.RETURN_SALE,
     label: "Return Sale",
     variant: "secondary" as "secondary" | "destructive" | "outline",
     icon: Undo2,
   },
   {
-    value: "RETURN_PURCHASE",
+    value: TransactionType.RETURN_PURCHASE,
     label: "Return Purchase",
     variant: "secondary" as "secondary" | "destructive" | "outline",
     icon: Redo2,
-  },
-  {
-    value: "PRODUCTION_INPUT",
-    label: "Production Input",
-    variant: "outline" as "secondary" | "destructive" | "outline",
-    icon: PackagePlus,
-  },
-  {
-    value: "PRODUCTION_OUTPUT",
-    label: "Production Output",
-    variant: "outline" as "secondary" | "destructive" | "outline",
-    icon: PackageCheck,
   },
 ];
