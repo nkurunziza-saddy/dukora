@@ -43,6 +43,7 @@ next-env.d.ts
 # specific files
 todo.md
 test.ts
+GEMINI.md
 seed.ts
 seed-data.ts
 /_bin/**

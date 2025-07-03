@@ -1,5 +1,5 @@
 {
-  "cSpell.words": ["quantura"],
+  "cSpell.words": ["deepseek", "openrouter", "quantura", "qwen"],
   "i18n-ally.localesPaths": ["src/i18n", "src/i18n/messages"],
   "i18n-ally.keystyle": "flat",
   "i18n-ally.sourceLanguage": "en"

@@ -258,8 +258,8 @@
     "users": "Users & Permissions",
     "transactions": "Business Transactions",
     "scheduler": "Scheduler",
-    "chat": "AI Assistant",
-    "calculator": "Financial Calculator",
+    "ai-chat": "AI Chat",
+    "financial-calculator": "Financial Calculator",
     "commerce": "E-commerce Sync"
   },
   "inventory": {
@@ -363,15 +363,20 @@
     "weeklySalesRevenue": "Weekly sales revenue",
     "revenueTrends7Days": "Revenue trends over last 7 days"
   },
-  "chat": {
-    "title": "AI Assistant",
+  "ai-chat": {
+    "title": "AI Chat",
     "description": "Get instant help and insights for your inventory management",
     "quickActions": "Quick Actions",
     "commonTasks": "Common tasks and queries",
     "aiAssistantChat": "AI Assistant Chat",
     "askQuestions": "Ask questions about your inventory and get instant insights",
     "askAnythingPlaceholder": "Ask me anything about your inventory...",
-    "pressEnterOrQuickActions": "Press Enter to send or click the quick actions for common queries"
+    "pressEnterOrQuickActions": "Press Enter to send or click the quick actions for common queries",
+    "thinking": "Thinking",
+    "errorOccurred": "An error occurred.",
+    "retry": "Retry",
+    "stop": "Stop",
+    "regenerate": "Regenerate"
   },
   "analytics": {
     "title": "Analytics & AI Insights",

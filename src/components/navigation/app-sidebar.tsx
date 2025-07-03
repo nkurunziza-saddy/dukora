@@ -12,7 +12,7 @@ import {
   Store,
   Truck,
   Users,
-  Calculator
+  Calculator,
   // Warehouse,
 } from "lucide-react";
 import {
@@ -114,9 +114,8 @@ export const data = {
       items: [
         {
           title: "AI Chat",
-          url: "/chat",
+          url: "/ai-chat",
           icon: Bot,
-          disabled: true,
         },
         {
           title: "Financial calculator",
@@ -173,7 +172,9 @@ export function AppSidebar() {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <div className="p-4 text-xs text-muted-foreground">© 2025 quantura</div>
+        <div className="p-4 text-xs text-muted-foreground">
+          © 2025 quantura
+        </div>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
