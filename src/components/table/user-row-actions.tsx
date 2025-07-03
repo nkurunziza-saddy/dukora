@@ -28,7 +28,7 @@ const UserRowActions: FC<UserRowActionsProps> = ({ user }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const t = useTranslations("user");
+  const t = useTranslations("users");
   const t_common = useTranslations("common");
 
   const handleDeleteConfirm = async () => {
@@ -39,23 +39,31 @@ const UserRowActions: FC<UserRowActionsProps> = ({ user }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: user.id }),
       });
-      if (resp.status !== 204) {
-        const message = await resp.json().catch(() => ({}));
-        setIsLoading(false);
-        return toast.error(t("errorDeletingUser"), {
-          description: `${message}`,
+      const r = await resp.json();
+      console.log(r);
+      if (r.success) {
+        setIsDeleteDialogOpen(false);
+        toast.success(t("userDeletedSuccessfully"), {
+          description: `${format(new Date(), "PPP")}`,
         });
+        return;
       }
-      setIsDeleteDialogOpen(false);
-      return toast.success(t("userDeletedSuccessfully"), {
-        description: `${format(new Date(), "PPP")}`,
+
+      const message = await resp.json().catch(() => ({}));
+      setIsLoading(false);
+      toast.error(t("errorDeletingUser"), {
+        description: `${message}`,
       });
+      return;
     } catch (err) {
       console.error(err);
-      return toast.error(t("errorDeletingUser"), {
+      toast.error(t("errorDeletingUser"), {
         description:
-          err instanceof Error ? err.message : t("unexpectedErrorOccurred"),
+          err instanceof Error
+            ? err.message
+            : t_common("unexpectedErrorOccurred"),
       });
+      return;
     } finally {
       setIsLoading(false);
     }

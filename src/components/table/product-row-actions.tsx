@@ -39,22 +39,26 @@ const ProductRowActions: FC<ProductRowActionsProps> = ({ product }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: product.id }),
       });
-      if (resp.status !== 204) {
-        const message = await resp.json().catch(() => ({}));
-        setIsLoading(false);
-        return toast.error(t("product.deleteError"), {
-          description: `${message}`,
+      const r = await resp.json();
+      if (r.success) {
+        setIsDeleteDialogOpen(false);
+        toast.success(t("product.deleteSuccess"), {
+          description: `${format(new Date(), "PPP")}`,
         });
+        return;
       }
-      setIsDeleteDialogOpen(false);
-      return toast.success(t("product.deleteSuccess"), {
-        description: `${format(new Date(), "PPP")}`,
+
+      setIsLoading(false);
+      toast.error(t("product.deleteError"), {
+        description: `${t}`,
       });
     } catch (err) {
       console.error(err);
       return toast.error(t("product.deleteError"), {
         description:
-          err instanceof Error ? err.message : t_common("unexpectedErrorOccurred"),
+          err instanceof Error
+            ? err.message
+            : t_common("unexpectedErrorOccurred"),
       });
     } finally {
       setIsLoading(false);

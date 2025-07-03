@@ -39,23 +39,30 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: supplier.id }),
       });
-      if (resp.status !== 204) {
-        const message = await resp.json().catch(() => ({}));
-        setIsLoading(false);
-        return toast.error(t("supplier.deleteError"), {
-          description: `${message}`,
+      const r = await resp.json();
+      if (r.success) {
+        setIsDeleteDialogOpen(false);
+        toast.success(t("supplier.deleteSuccess"), {
+          description: `${format(new Date(), "PPP")}`,
         });
+        return;
       }
-      setIsDeleteDialogOpen(false);
-      return toast.success(t("supplier.deleteSuccess"), {
-        description: `${format(new Date(), "PPP")}`,
+
+      const message = await resp.json().catch(() => ({}));
+      setIsLoading(false);
+      toast.error(t("supplier.deleteError"), {
+        description: `${message}`,
       });
+      return;
     } catch (err) {
       console.error(err);
-      return toast.error(t("supplier.deleteError"), {
+      toast.error(t("supplier.deleteError"), {
         description:
-          err instanceof Error ? err.message : t_common("unexpectedErrorOccurred"),
+          err instanceof Error
+            ? err.message
+            : t_common("unexpectedErrorOccurred"),
       });
+      return;
     } finally {
       setIsLoading(false);
     }

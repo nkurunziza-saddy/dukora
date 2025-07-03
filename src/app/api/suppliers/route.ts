@@ -40,7 +40,10 @@ export async function DELETE(request: NextRequest) {
   try {
     const { id } = await request.json();
     const r = await supplierService.deleteSupplier(id);
-    return NextResponse.json(r);
+    if (r.error) {
+      return NextResponse.json(r.error);
+    }
+    return NextResponse.json(r.data);
   } catch (error) {
     console.error("Error deleting supplier:", error);
     return NextResponse.json("Failed to delete supplier", { status: 500 });

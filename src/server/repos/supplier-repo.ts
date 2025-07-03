@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, isNull } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { unstable_cache } from "next/cache";
@@ -17,7 +17,12 @@ export async function getAll(businessId: string) {
     const suppliers = await db
       .select()
       .from(suppliersTable)
-      .where(eq(suppliersTable.businessId, businessId))
+      .where(
+        and(
+          eq(suppliersTable.businessId, businessId),
+          isNull(suppliersTable.deletedAt)
+        )
+      )
       .orderBy(desc(suppliersTable.createdAt));
     return { data: suppliers, error: null };
   } catch (error) {
@@ -134,7 +139,8 @@ export async function update(
         .where(
           and(
             eq(suppliersTable.id, supplierId),
-            eq(suppliersTable.businessId, businessId)
+            eq(suppliersTable.businessId, businessId),
+            isNull(suppliersTable.deletedAt)
           )
         )
         .returning();

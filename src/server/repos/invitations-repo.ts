@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, and, inArray } from "drizzle-orm";
+import { eq, and, inArray, isNull } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { unstable_cache } from "next/cache";
@@ -22,7 +22,10 @@ export async function getAll(businessId: string) {
 
   try {
     const invitations = await db.query.invitationsTable.findMany({
-      where: eq(invitationsTable.businessId, businessId),
+      where: and(
+        eq(invitationsTable.businessId, businessId),
+        isNull(invitationsTable.deletedAt)
+      ),
       with: {
         invitedByUser: true,
       },
@@ -94,7 +97,8 @@ export const accept_invitation = async (
   const invitation = await db.query.invitationsTable.findFirst({
     where: and(
       eq(invitationsTable.code, code),
-      eq(invitationsTable.isAccepted, false)
+      eq(invitationsTable.isAccepted, false),
+      isNull(invitationsTable.deletedAt)
     ),
   });
 
@@ -229,7 +233,8 @@ export async function update(
         .where(
           and(
             eq(invitationsTable.id, invitationId),
-            eq(invitationsTable.businessId, businessId)
+            eq(invitationsTable.businessId, businessId),
+            isNull(invitationsTable.deletedAt)
           )
         )
         .returning();

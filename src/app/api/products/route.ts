@@ -40,7 +40,10 @@ export async function DELETE(request: NextRequest) {
   try {
     const { id } = await request.json();
     const r = await productService.deleteProduct(id);
-    return NextResponse.json(r);
+    if (r.error) {
+      return NextResponse.json(r.error);
+    }
+    return NextResponse.json(r.data);
   } catch (error) {
     console.error("Error deleting product:", error);
     return NextResponse.json("Failed to delete product", { status: 500 });

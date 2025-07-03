@@ -42,24 +42,24 @@ export default async function users() {
   const t = await getTranslations("users");
   const statData = [
     {
-      title: t("stat.totalUsers"),
+      title: t("totalUsers"),
       value: users.data ? users.data.length : 0,
       icon: Users,
     },
     {
-      title: t("stat.activeUsers"),
+      title: t("activeUsers"),
       value: users.data ? users.data.filter((user) => user.isActive).length : 0,
       icon: Users,
     },
     {
-      title: t("stat.admins"),
+      title: t("admins"),
       value: users.data
         ? users.data.filter((user) => user.role === "ADMIN").length
         : 0,
       icon: Users,
     },
     {
-      title: t("stat.pending"),
+      title: t("pending"),
       value: invitations.data ? invitations.data.length : 0,
       icon: Users,
     },
@@ -74,14 +74,14 @@ export default async function users() {
             <DialogTrigger asChild>
               <Button>
                 <Plus className="mr-2 h-4 w-4" />
-                {t("inviteUser.button")}
+                {t("inviteUserButton")}
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>{t("inviteUser.title")}</DialogTitle>
+                <DialogTitle>{t("inviteUserTitle")}</DialogTitle>
                 <DialogDescription>
-                  {t("inviteUser.description")}
+                  {t("inviteUserDescription")}
                 </DialogDescription>
               </DialogHeader>
               <InviteUserForm />
@@ -102,15 +102,15 @@ export default async function users() {
       </div>
       <Tabs defaultValue="users">
         <TabsList>
-          <TabsTrigger value="users">{t("tabs.users")}</TabsTrigger>
-          <TabsTrigger value="invitations">{t("tabs.invitations")}</TabsTrigger>
-          <TabsTrigger value="permissions">{t("tabs.permissions")}</TabsTrigger>
+          <TabsTrigger value="users">{t("tabsUsers")}</TabsTrigger>
+          <TabsTrigger value="invitations">{t("tabsInvitations")}</TabsTrigger>
+          <TabsTrigger value="permissions">{t("tabsPermissions")}</TabsTrigger>
         </TabsList>
         <TabsContent value="users">
           <Card>
             <CardHeader>
-              <CardTitle>{t("tabs.users")}</CardTitle>
-              <CardDescription>{t("users.listDescription")}</CardDescription>
+              <CardTitle>{t("tabsUsers")}</CardTitle>
+              <CardDescription>{t("usersListDescription")}</CardDescription>
             </CardHeader>
             <CardContent>
               <ColumnWrapper
@@ -125,9 +125,9 @@ export default async function users() {
           {invitations.data && (
             <Card>
               <CardHeader>
-                <CardTitle>{t("tabs.invitations")}</CardTitle>
+                <CardTitle>{t("tabsInvitations")}</CardTitle>
                 <CardDescription>
-                  {t("invitations.listDescription")}
+                  {t("invitationsListDescription")}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -143,8 +143,8 @@ export default async function users() {
         <TabsContent value="permissions">
           <Card>
             <CardHeader>
-              <CardTitle>{t("tabs.permissions")}</CardTitle>
-              <CardDescription>{t("permissions.description")}</CardDescription>
+              <CardTitle>{t("tabsPermissions")}</CardTitle>
+              <CardDescription>{t("permissionsDescription")}</CardDescription>
             </CardHeader>
             <CardContent>
               <div>
@@ -152,7 +152,7 @@ export default async function users() {
                   <TableHeader>
                     <TableRow>
                       <TableHead className="px-4 py-2 border">
-                        {t("permissions.permission")}
+                        {t("permissionsPermission")}
                       </TableHead>
                       <TableHead className="px-4 py-2 border">Owner</TableHead>
                       <TableHead className="px-4 py-2 border">Admin</TableHead>

@@ -26,33 +26,41 @@ const InvitationRowActions: FC<InvitationRowActionsProps> = ({
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const t = useTranslations("table");
+  const t_invitation = useTranslations("invitation");
   const t_common = useTranslations("common");
 
   const handleDeleteConfirm = async () => {
     setIsLoading(true);
     try {
-      const resp = await fetch("/api/invitations", {
+      const resp = await fetch("/api/schedules", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: invitation.id }),
       });
-      if (resp.status !== 204) {
-        const message = await resp.json().catch(() => ({}));
-        setIsLoading(false);
-        return toast.error(t("invitationDeleteError"), {
-          description: `${message}`,
+      const r = await resp.json();
+      if (r.success) {
+        setIsDeleteDialogOpen(false);
+        toast.success(t_invitation("deleteSuccess"), {
+          description: `${format(new Date(), "PPP")}`,
         });
+        return;
       }
-      setIsDeleteDialogOpen(false);
-      return toast.success(t("invitationDeleteSuccess"), {
-        description: `${format(new Date(), "PPP")}`,
+
+      const message = await resp.json().catch(() => ({}));
+      setIsLoading(false);
+      toast.error(t_invitation("deleteError"), {
+        description: `${message}`,
       });
+      return;
     } catch (err) {
       console.error(err);
-      return toast.error(t("invitationDeleteError"), {
+      toast.error(t_invitation("deleteError"), {
         description:
-          err instanceof Error ? err.message : t_common("unexpectedErrorOccurred"),
+          err instanceof Error
+            ? err.message
+            : t_common("unexpectedErrorOccurred"),
       });
+      return;
     } finally {
       setIsLoading(false);
     }
@@ -63,7 +71,7 @@ const InvitationRowActions: FC<InvitationRowActionsProps> = ({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{t_common("openMenu")}</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>

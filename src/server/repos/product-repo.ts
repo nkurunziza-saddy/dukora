@@ -1,4 +1,4 @@
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, isNull } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { db } from "@/lib/db";
 import { unstable_cache } from "next/cache";
@@ -21,7 +21,12 @@ export async function getAll(businessId: string) {
     const products = await db
       .select()
       .from(productsTable)
-      .where(eq(productsTable.businessId, businessId))
+      .where(
+        and(
+          eq(productsTable.businessId, businessId),
+          isNull(productsTable.deletedAt)
+        )
+      )
       .orderBy(desc(productsTable.createdAt));
 
     return { data: products, error: null };
@@ -39,7 +44,12 @@ export async function getOverview(businessId: string, limit?: number) {
     const query = db
       .select()
       .from(productsTable)
-      .where(eq(productsTable.businessId, businessId))
+      .where(
+        and(
+          eq(productsTable.businessId, businessId),
+          isNull(productsTable.deletedAt)
+        )
+      )
       .orderBy(desc(productsTable.createdAt))
       .innerJoin(
         warehouseItemsTable,
@@ -171,7 +181,8 @@ export async function update(
         .where(
           and(
             eq(productsTable.id, productId),
-            eq(productsTable.businessId, businessId)
+            eq(productsTable.businessId, businessId),
+            isNull(productsTable.deletedAt)
           )
         )
         .returning();

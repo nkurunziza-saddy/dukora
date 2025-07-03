@@ -97,7 +97,7 @@ export const deleteUser = createProtectedAction(
       return { data: null, error: deletedUser.error };
     }
     revalidateTag(`users-${user.businessId!}`);
-    return { data: deletedUser.data, error: null };
+    return { data: { success: true }, error: null };
   }
 );
 
