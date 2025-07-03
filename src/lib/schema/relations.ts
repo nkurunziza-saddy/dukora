@@ -25,6 +25,7 @@ import {
   schedulesTable,
   invitationsTable,
   expensesTable,
+  interBusinessPaymentsTable,
 } from "./models";
 
 export const businessesTableRelations = relations(
@@ -45,6 +46,7 @@ export const businessesTableRelations = relations(
     schedules: many(schedulesTable),
     invitations: many(invitationsTable),
     expenses: many(expensesTable),
+    payments: many(interBusinessPaymentsTable),
   })
 );
 
@@ -57,6 +59,8 @@ export const usersTableRelations = relations(usersTable, ({ one, many }) => ({
   auditLogs: many(auditLogsTable),
   schedules: many(schedulesTable),
   invitations: many(invitationsTable),
+  transactions: many(transactionsTable),
+  expenses: many(expensesTable),
 }));
 
 export const categoriesTableRelations = relations(
@@ -285,6 +289,19 @@ export const expensesRelations = relations(expensesTable, ({ one }) => ({
     references: [usersTable.id],
   }),
 }));
+export const interBusinessPaymentsRelations = relations(
+  interBusinessPaymentsTable,
+  ({ one }) => ({
+    payer: one(businessesTable, {
+      fields: [interBusinessPaymentsTable.payerBusinessId],
+      references: [businessesTable.id],
+    }),
+    receiver: one(businessesTable, {
+      fields: [interBusinessPaymentsTable.receiverBusinessId],
+      references: [businessesTable.id],
+    }),
+  })
+);
 
 export const productAttributesTableRelations = relations(
   productAttributesTable,

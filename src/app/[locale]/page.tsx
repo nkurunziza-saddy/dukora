@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { CheckCircle, BarChart, Database, ShieldCheck } from "lucide-react";
-import { getCurrentSession } from "@/lib/auth";
+import { getCurrentSession } from "@/server/actions/auth-actions";
 import { redirect } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 

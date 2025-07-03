@@ -1,4 +1,4 @@
-import { getCurrentSession } from "@/lib/auth";
+import { getCurrentSession } from "@/server/actions/auth-actions";
 import type { Permission } from "@/server/constants/permissions";
 import { roleHasPermission } from "@/server/helpers/role-permissions";
 

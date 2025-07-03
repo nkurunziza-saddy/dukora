@@ -6,20 +6,12 @@ import { ErrorCode } from "@/server/constants/errors";
 import { revalidateTag } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 
-import {
-  create as createProductRepo,
-  getById as getProductByIdRepo,
-  update as updateProductRepo,
-  getAll as getAllProductsRepo,
-  remove as removeProductRepo,
-  createMany as createManyProductsRepo,
-  getOverview as getOverviewRepo,
-} from "../repos/product-repo";
+import * as productRepo from "../repos/product-repo";
 
 export const getProducts = createProtectedAction(
   Permission.PRODUCT_VIEW,
   async (user) => {
-    const products = await getAllProductsRepo(user.businessId!);
+    const products = await productRepo.getAll(user.businessId!);
     if (products.error) {
       return { data: null, error: products.error };
     }
@@ -30,7 +22,7 @@ export const getProducts = createProtectedAction(
 export const getOverviewProducts = createProtectedAction(
   Permission.PRODUCT_VIEW,
   async (user, limit: number) => {
-    const products = await getOverviewRepo(user.businessId!, limit);
+    const products = await productRepo.getOverview(user.businessId!, limit);
     if (products.error) {
       return { data: null, error: products.error };
     }
@@ -44,7 +36,7 @@ export const getProductById = createProtectedAction(
     if (!productId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const product = await getProductByIdRepo(productId, user.businessId!);
+    const product = await productRepo.getById(productId, user.businessId!);
     if (product.error) {
       return { data: null, error: product.error };
     }
@@ -62,7 +54,7 @@ export const createProduct = createProtectedAction(
       ...productData,
       businessId: user.businessId!,
     };
-    const res = await createProductRepo(product, user.id);
+    const res = await productRepo.create(product, user.id);
     if (res.error) {
       return { data: null, error: res.error };
     }
@@ -86,7 +78,7 @@ export const updateProduct = createProtectedAction(
     if (!productId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const updatedProduct = await updateProductRepo(
+    const updatedProduct = await productRepo.update(
       productId,
       user.businessId!,
       user.id,
@@ -107,7 +99,7 @@ export const deleteProduct = createProtectedAction(
     if (!productId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const res = await removeProductRepo(productId, user.businessId!, user.id);
+    const res = await productRepo.remove(productId, user.businessId!, user.id);
     if (res.error) {
       return { data: null, error: res.error };
     }
@@ -127,7 +119,7 @@ export const createManyProducts = createProtectedAction(
       ...product,
       businessId: user.businessId!,
     }));
-    const createdProducts = await createManyProductsRepo(products);
+    const createdProducts = await productRepo.createMany(products);
     if (createdProducts.error) {
       return { data: null, error: createdProducts.error };
     }

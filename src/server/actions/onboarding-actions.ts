@@ -6,7 +6,7 @@ import { Permission } from "../constants/permissions";
 import { getUserIfHasPermission } from "./auth/permission-middleware";
 import { createManyInvitations } from "@/server/actions/invitation-actions";
 import { createManyWarehouses } from "./warehouse-actions";
-import { createBusiness } from "./business-action";
+import { createBusiness } from "./business-actions";
 import { createManyCategories } from "./category-actions";
 import { upsertManyBusinessSettings } from "./business-settings-actions";
 

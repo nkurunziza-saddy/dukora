@@ -153,10 +153,24 @@ export enum Permission {
   // Audit permissions
   AUDIT_VIEW = "audit:view",
   AUDIT_EXPORT = "audit:export",
+
+  // Stripe Connect permissions
+  STRIPE_CONNECT_MANAGE = "stripe_connect:manage",
+
+  // Inter-Business Payments permissions
+  INTER_BUSINESS_PAYMENT_INITIATE = "inter_business_payment:initiate",
+  INTER_BUSINESS_PAYMENT_VIEW = "inter_business_payment:view",
 }
 
 // Group permissions by feature for easier management
 export const PermissionGroups = {
+  STRIPE_CONNECT: [
+    Permission.STRIPE_CONNECT_MANAGE,
+  ],
+  INTER_BUSINESS_PAYMENTS: [
+    Permission.INTER_BUSINESS_PAYMENT_INITIATE,
+    Permission.INTER_BUSINESS_PAYMENT_VIEW,
+  ],
   BUSINESS: [
     Permission.BUSINESS_VIEW,
     Permission.BUSINESS_CREATE,

@@ -38,6 +38,7 @@ export type SelectTransaction = typeof schema.transactionsTable.$inferSelect;
 export type SelectExpense = typeof schema.expensesTable.$inferSelect;
 export type SelectProductPriceHistory =
   typeof schema.productPriceHistoryTable.$inferSelect;
+export type SelectInterBusinessPayment = typeof schema.interBusinessPaymentsTable.$inferSelect;
 
 export type InsertBusiness = typeof schema.businessesTable.$inferInsert;
 export type InsertBusinessSetting =
@@ -77,6 +78,7 @@ export type InsertTransaction = typeof schema.transactionsTable.$inferInsert;
 export type InsertExpense = typeof schema.expensesTable.$inferInsert;
 export type InsertProductPriceHistory =
   typeof schema.productPriceHistoryTable.$inferInsert;
+export type InsertInterBusinessPayment = typeof schema.interBusinessPaymentsTable.$inferInsert;
 
 export const UserRole = schema.USER_ROLES.reduce((acc, role) => {
   acc[role] = role;

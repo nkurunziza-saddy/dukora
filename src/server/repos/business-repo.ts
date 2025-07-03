@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { businessesTable, auditLogsTable, usersTable } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { ErrorCode } from "../constants/errors";
-import { revalidateTag, unstable_cache } from "next/cache";
+import { unstable_cache } from "next/cache";
 import type { InsertAuditLog, InsertBusiness } from "@/lib/schema/schema-types";
 
 export async function getAll() {
@@ -85,8 +85,8 @@ export async function create(userId: string, business: InsertBusiness) {
       return newBusiness;
     });
 
-    revalidateTag("businesses");
-    revalidateTag(`business-${result.id}`);
+    // revalidateTag("businesses");
+    // revalidateTag(`business-${result.id}`);
 
     return { data: result, error: null };
   } catch (error) {
@@ -130,8 +130,8 @@ export async function update(
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
     }
 
-    revalidateTag("businesses");
-    revalidateTag(`business-${businessId}`);
+    // revalidateTag("businesses");
+    // revalidateTag(`business-${businessId}`);
 
     return { data: result, error: null };
   } catch (error) {
@@ -176,8 +176,8 @@ export async function remove(businessId: string, userId: string) {
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
     }
 
-    revalidateTag("businesses");
-    revalidateTag(`business-${businessId}`);
+    // revalidateTag("businesses");
+    // revalidateTag(`business-${businessId}`);
 
     return { data: result, error: null };
   } catch (error) {
@@ -197,7 +197,7 @@ export async function createMany(businesses: InsertBusiness[]) {
       .values(businesses)
       .returning();
 
-    revalidateTag("businesses");
+    // revalidateTag("businesses");
 
     return { data: result, error: null };
   } catch (error) {

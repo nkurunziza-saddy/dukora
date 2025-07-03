@@ -42,6 +42,7 @@
     "error": "Error",
     "quantity": "Quantity",
     "amount": "Amount",
+    "submitting": "Submitting",
     "notes": "Notes",
     "reference": "Reference",
     "reorderPoint": "Reorder point",
@@ -238,6 +239,7 @@
     "theme": "Theme",
     "saving": "Saving",
     "saveChanges": "Save Changes",
+    "failedToLoadBusinesses": "Failed to load businesses",
     "businessNameRequired": "Business name is required",
     "currency": "Currency",
     "timezone": "Timezone",
@@ -426,6 +428,7 @@
     "totalRevenue": "Total Revenue",
     "thisMonth": "This month",
     "successRate": "Success Rate",
+    "searchBusinesses": "Search businesses",
     "paymentSuccessRate": "Payment success rate",
     "avgTransaction": "Avg Transaction",
     "averageValue": "Average value",
@@ -461,7 +464,26 @@
     "dateLabel": "Date: {date}",
     "invoiceLabel": "INVOICE {invoice}",
     "enable": "Enable",
-    "disable": "Disable"
+    "disable": "Disable",
+    "receiverBusiness": "Receiver Business",
+    "selectReceiverBusiness": "Select receiver business",
+    "noOtherBusinesses": "No other businesses found",
+    "enterAmount": "Enter amount",
+    "currency": "Currency",
+    "selectCurrency": "Select currency",
+    "applicationFee": "Application Fee",
+    "enterApplicationFee": "Enter application fee",
+    "initiatePayment": "Initiate Payment",
+    "paymentInitiated": "Payment initiated successfully",
+    "paymentInitiatedDescription": "The payment has been successfully initiated.",
+    "paymentInitiationFailed": "Failed to initiate payment",
+    "transactionId": "Transaction ID",
+    "stripeChargeId": "Stripe Charge ID",
+    "stripePaymentIntentId": "Stripe Payment Intent ID",
+    "initiateNewPayment": "Initiate New Payment",
+    "initiateNewPaymentDescription": "Fill in the details to send a payment to another business.",
+    "paymentHistory": "Payment History",
+    "paymentHistoryDescription": "View and manage your inter-business payment history."
   },
   "commerce": {
     "title": "E-commerce Sync",
@@ -625,142 +647,9 @@
     "actions": "Actions",
     "delete": "Delete",
     "deleteInvitation": "Delete invitation",
-    "deleteInvitationDesc": "Are you sure you want to delete this invitation? This action cannot be undone."
-  },
-  "timeRange": {
-    "selectTimeRange": "Select time range",
-    "lastMonth": "Last month",
-    "last2Months": "2 months",
-    "last3Months": "3 months"
-  },
-  "onboarding": {
-    "businessTypeRetail": "Retail",
-    "businessTypeWholesale": "Wholesale",
-    "businessTypeRestaurant": "Restaurant",
-    "businessTypeManufacturing": "Manufacturing",
-    "businessTypeService": "Service",
-    "businessTypeOther": "Other",
-    "currencyRWF": "Rwandan Franc (RWF)",
-    "currencyUSD": "US Dollar (USD)",
-    "currencyEUR": "Euro (EUR)",
-    "currencyGBP": "British Pound (GBP)",
-    "countryRW": "Rwanda",
-    "countryUS": "United States",
-    "countryGB": "United Kingdom",
-    "countryDE": "Germany",
-    "monthJanuary": "January",
-    "monthFebruary": "February",
-    "monthMarch": "March",
-    "monthApril": "April",
-    "monthMay": "May",
-    "monthJune": "June",
-    "monthJuly": "July",
-    "monthAugust": "August",
-    "monthSeptember": "September",
-    "monthOctober": "October",
-    "monthNovember": "November",
-    "monthDecember": "December",
-    "categoryElectronics": "Electronics",
-    "categoryClothing": "Clothing",
-    "categoryFood": "Food & Beverages",
-    "categoryHealth": "Health & Beauty",
-    "categoryHome": "Home & Garden",
-    "categorySports": "Sports & Recreation",
-    "categoryBooks": "Books & Media",
-    "categoryOffice": "Office Supplies"
-  },
-  "quickActions": {
-    "quickActions": "Quick Actions",
-    "searchActionsPlaceholder": "Search for actions or navigate to pages...",
-    "noResultsFound": "No results found.",
-    "quickActionsGroup": "Quick Actions",
-    "managementGroup": "Management",
-    "recordTransaction": "Record Transaction",
-    "recordTransactionDescription": "Enter details for transaction you want to record",
-    "recordAnyTransaction": "Record Any Transaction",
-    "createNewProduct": "Create New Product",
-    "createNewProductDesc": "Fill in the details of the new product you want to add.",
-    "createNewSupplier": "Create New Supplier",
-    "createNewSupplierDesc": "Fill in the details of the new supplier you want to add.",
-    "recordSaleTransaction": "Record Sale Transaction",
-    "recordSaleTransactionDesc": "Fill in the details of the transaction you want to record.",
-    "recordPurchaseTransaction": "Record Purchase Transaction",
-    "recordPurchaseTransactionDesc": "Fill in the details of the transaction you want to record.",
-    "productCategories": "Product Categories",
-    "supplierManagement": "Supplier Management",
-    "systemSettings": "System Settings",
-    "recordExpenseTransaction": "Record Expense",
-    "recordExpenseTransactionDesc": "Fill in the the details to record expense"
-  },
-  "users": {
-    "loading": "Loading users...",
-    "error": "Failed to load users.",
-    "stat": {
-      "totalUsers": "Total Users",
-      "activeUsers": "Active Users",
-      "admins": "Admins",
-      "pending": "Pending Invitations"
-    },
-    "inviteUser": {
-      "button": "Invite User",
-      "title": "Invite a New User",
-      "description": "Send an invitation to a new user to join your business."
-    },
-    "tabs": {
-      "users": "Users",
-      "invitations": "Invitations",
-      "permissions": "Permissions"
-    },
-    "listDescription": "Manage users with access to your business.",
-    "invitations": {
-      "listDescription": "Pending invitations to join your business."
-    },
-    "users": {
-      "listDescription": "Current users in business"
-    },
-    "invitationsDescription": "Invited users",
-    "permissions": {
-      "description": "Business permissions distributions",
-      "permission": "Permission"
-    }
-  },
-  "errorDeletingUser": "Error deleting user",
-  "userDeletedSuccessfully": "User deleted successfully",
-  "unexpectedErrorOccurred": "An unexpected error occurred",
-  "auth": {
-    "signUp": {
-      "title": "Create your account",
-      "description": "Fill in your details to create a new account.",
-      "createAccountButton": "Create Account",
-
-      "signedIn": "Already signed in ?",
-      "signInLink": "Sign in here"
-    },
-    "signIn": {
-      "title": "Sign in to your account",
-      "description": "Enter your email and password to access your account.",
-      "forgotPassword": "Forgot password?",
-      "rememberMe": "Remember me",
-      "loginButton": "Sign In",
-      "googleButton": "Sign in with Google",
-      "githubButton": "Sign in with GitHub",
-      "noAccount": "No account ?",
-      "signUpLink": "Sign up here"
-    },
-    "fields": {
-      "firstName": "First Name",
-      "firstNamePlaceholder": "Enter your first name",
-      "lastName": "Last Name",
-      "lastNamePlaceholder": "Enter your last name",
-      "email": "Email",
-      "emailPlaceholder": "Enter your email",
-      "password": "Password",
-      "passwordPlaceholder": "Enter your password",
-      "confirmPassword": "Confirm Password",
-      "confirmPasswordPlaceholder": "Re-enter your password",
-      "profileImage": "Profile Image",
-      "profileImagePreviewAlt": "Profile image preview"
-    }
+    "deleteInvitationDesc": "Are you sure you want to delete this invitation? This action cannot be undone.",
+    "invitationDeleteError": "Error deleting invitation",
+    "invitationDeleteSuccess": "Invitation deleted successfully."
   },
   "product": {
     "copyId": "Copy product ID",
@@ -798,7 +687,17 @@
     "deleteDialogTitle": "Delete Supplier",
     "deleteDialogDescription": "Are you sure you want to delete this supplier? This action cannot be undone.",
     "editDialogTitle": "Edit Supplier",
-    "editDialogDescription": "Update the details of the selected supplier."
+    "editDialogDescription": "Update the details of the selected supplier.",
+    "summary": "Summary",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "contactPerson": "Contact Person",
+    "products": "Products",
+    "productCode": "Product Code",
+    "price": "Price",
+    "leadTime": "Lead Time",
+    "isPreferred": "Is Preferred"
   },
   "settings": {
     "title": "Settings",
@@ -842,5 +741,43 @@
     "INVITATION_NOT_FOUND": "Invitation not found or already accepted.",
     "INVITATION_EXPIRED": "Invitation has expired.",
     "USER_ALREADY_EXISTS": "User with this email already exists in this business."
+  },
+  "stripe": {
+    "stripeIntegration": "Stripe Integration",
+    "stripeIntegrationDescription": "Connect your Stripe account to enable inter-business payments.",
+    "businessIdMissing": "Business ID is missing. Cannot connect Stripe account.",
+    "failedToCreateStripeAccount": "Failed to create Stripe account.",
+    "failedToCreateAccountLink": "Failed to create Stripe account link.",
+    "stripeConnectError": "An error occurred during Stripe Connect.",
+    "stripeAccountConnected": "Stripe Account Connected",
+    "connectStripeAccount": "Connect Stripe Account"
+  },
+  "quickActions": {
+    "quickActions": "Quick Actions",
+    "searchActionsPlaceholder": "Type a command or search...",
+    "noResultsFound": "No results found.",
+    "quickActionsGroup": "Quick Actions",
+    "createNewProduct": "Create new product",
+    "createNewSupplier": "Create new supplier",
+    "recordSaleTransaction": "Record sale transaction",
+    "recordPurchaseTransaction": "Record purchase transaction",
+    "recordExpenseTransaction": "Record expense transaction",
+    "recordAnyTransaction": "Record any transaction",
+    "managementGroup": "Management",
+    "productCategories": "Product Categories",
+    "supplierManagement": "Supplier Management",
+    "systemSettings": "System Settings",
+    "createNewProductDesc": "Fill in the details to create a new product.",
+    "createNewSupplierDesc": "Fill in the details to create a new supplier.",
+    "recordSaleTransactionDesc": "Record a sale transaction.",
+    "recordPurchaseTransactionDesc": "Record a purchase transaction.",
+    "recordExpenseTransactionDesc": "Record an expense transaction.",
+    "recordTransaction": "Record Transaction",
+    "recordTransactionDescription": "Record any type of transaction."
+  },
+  "user": {
+    "errorDeletingUser": "Error deleting user",
+    "userDeletedSuccessfully": "User deleted successfully",
+    "unexpectedErrorOccurred": "An unexpected error occurred"
   }
 }

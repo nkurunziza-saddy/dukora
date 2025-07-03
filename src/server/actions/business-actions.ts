@@ -12,7 +12,7 @@ import {
 } from "../repos/business-repo";
 import { revalidateTag } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import { getCurrentSession } from "@/lib/auth";
+import { getCurrentSession } from "@/server/actions/auth-actions";
 
 export const getBusinesses = createProtectedAction(
   Permission.BUSINESS_VIEW,

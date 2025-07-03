@@ -26,6 +26,7 @@ const InvitationRowActions: FC<InvitationRowActionsProps> = ({
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const t = useTranslations("table");
+  const t_common = useTranslations("common");
 
   const handleDeleteConfirm = async () => {
     setIsLoading(true);
@@ -38,19 +39,19 @@ const InvitationRowActions: FC<InvitationRowActionsProps> = ({
       if (resp.status !== 204) {
         const message = await resp.json().catch(() => ({}));
         setIsLoading(false);
-        return toast.error("Error deleting invitation", {
+        return toast.error(t("invitationDeleteError"), {
           description: `${message}`,
         });
       }
       setIsDeleteDialogOpen(false);
-      return toast.success("Invitation deleted successfully.", {
+      return toast.success(t("invitationDeleteSuccess"), {
         description: `${format(new Date(), "PPP")}`,
       });
     } catch (err) {
       console.error(err);
-      return toast.error("Error deleting invitation", {
+      return toast.error(t("invitationDeleteError"), {
         description:
-          err instanceof Error ? err.message : "An unexpected error occurred",
+          err instanceof Error ? err.message : t_common("unexpectedErrorOccurred"),
       });
     } finally {
       setIsLoading(false);

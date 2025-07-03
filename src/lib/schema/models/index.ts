@@ -14,3 +14,4 @@ export * from "./transactions";
 export * from "./schedules";
 export * from "./invitations";
 export * from "./enums";
+export * from "./inter-business-payments";

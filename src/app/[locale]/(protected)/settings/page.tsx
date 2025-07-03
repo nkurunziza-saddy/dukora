@@ -1,6 +1,6 @@
 import { getBusinessSettings } from "@/server/actions/business-settings-actions";
 import { getUserSettings } from "@/server/actions/user-settings-actions";
-import { getBusinessById } from "@/server/actions/business-action";
+import { getBusinessById } from "@/server/actions/business-actions";
 import { getUserById } from "@/server/actions/user-actions";
 import BusinessProfileForm from "@/components/forms/business-profile-form";
 import BusinessSettingsForm from "@/components/forms/business-settings-form";
@@ -8,7 +8,7 @@ import UserProfileForm from "@/components/forms/user-profile-form";
 import UserSettingsForm from "@/components/forms/user-settings-form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getTranslations } from "next-intl/server";
-import { getCurrentSession } from "@/lib/auth";
+import { getCurrentSession } from "@/server/actions/auth-actions";
 
 export default async function SettingsPage() {
   const session = await getCurrentSession();
@@ -19,13 +19,14 @@ export default async function SettingsPage() {
     return <div>Business or user not found</div>;
   }
 
-  const [businessRes, businessSettingsRes, userRes, userSettingsRes, t] = await Promise.all([
-    getBusinessById(businessId),
-    getBusinessSettings({}),
-    getUserById(userId),
-    getUserSettings({}),
-    getTranslations("settings"),
-  ]);
+  const [businessRes, businessSettingsRes, userRes, userSettingsRes, t] =
+    await Promise.all([
+      getBusinessById(businessId),
+      getBusinessSettings({}),
+      getUserById(userId),
+      getUserSettings({}),
+      getTranslations("settings"),
+    ]);
 
   const business = businessRes.data;
   const businessSettings = businessSettingsRes.data;

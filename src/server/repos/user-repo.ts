@@ -40,6 +40,10 @@ export async function getById(userId: string, businessId: string) {
       ),
       with: {
         business: true,
+        schedules: true,
+        auditLogs: true,
+        expenses: true,
+        transactions: true,
       },
     });
 

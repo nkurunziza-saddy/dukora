@@ -25,7 +25,8 @@ export interface SupplierRowActionsProps {
 }
 
 const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
-  const t = useTranslations("table");
+  const t = useTranslations();
+  const t_common = useTranslations("common");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -53,7 +54,7 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
       console.error(err);
       return toast.error(t("supplier.deleteError"), {
         description:
-          err instanceof Error ? err.message : t("common.unexpectedError"),
+          err instanceof Error ? err.message : t_common("unexpectedErrorOccurred"),
       });
     } finally {
       setIsLoading(false);
@@ -65,12 +66,12 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">{t("common.openMenu")}</span>
+            <span className="sr-only">{t_common("openMenu")}</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>{t("common.actions")}</DropdownMenuLabel>
+          <DropdownMenuLabel>{t_common("actions")}</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={() => navigator.clipboard.writeText(supplier.id)}
           >
@@ -88,7 +89,7 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
             className="cursor-pointer"
           >
             <Edit className="mr-2 h-4 w-4" />
-            {t("common.edit")}
+            {t_common("edit")}
           </DropdownMenuItem>
           <DropdownMenuItem
             variant="destructive"
@@ -96,7 +97,7 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
             className="cursor-pointer"
           >
             <Trash className="mr-2 h-4 w-4" />
-            {t("common.delete")}
+            {t_common("delete")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

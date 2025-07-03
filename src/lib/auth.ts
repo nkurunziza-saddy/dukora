@@ -1,4 +1,3 @@
-import { headers } from "next/headers";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "./db";
@@ -59,11 +58,3 @@ export const auth = betterAuth({
 });
 
 export type SessionUSer = typeof auth.$Infer.Session.user;
-
-export const getCurrentSession = async () => {
-  "use server";
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  return session;
-};

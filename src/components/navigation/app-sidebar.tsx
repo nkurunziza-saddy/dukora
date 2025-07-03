@@ -83,7 +83,6 @@ export const data = {
           title: "Payments & Invoices",
           url: "/payments",
           icon: CreditCard,
-          disabled: true,
         },
       ],
     },

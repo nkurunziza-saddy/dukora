@@ -1,4 +1,4 @@
-import { getCurrentSession } from "@/lib/auth";
+import { getCurrentSession } from "@/server/actions/auth-actions";
 import { redirect } from "next/navigation";
 import SidebarContainer from "@/components/providers/sidebar-container";
 

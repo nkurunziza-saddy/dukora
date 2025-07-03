@@ -1,4 +1,5 @@
-import { getCurrentSession, type SessionUSer } from "@/lib/auth";
+import { type SessionUSer } from "@/lib/auth";
+import { getCurrentSession } from "@/server/actions/auth-actions";
 import { Permission } from "@/server/constants/permissions";
 import { roleHasPermission } from "@/server/helpers/role-permissions";
 import { ErrorCode } from "@/server/constants/errors";

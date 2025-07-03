@@ -35,7 +35,7 @@ export const getSupplierById = createProtectedAction(
     if (supplier.error) {
       return { data: null, error: supplier.error };
     }
-    return { data: supplier, error: null };
+    return { data: supplier.data, error: null };
   }
 );
 

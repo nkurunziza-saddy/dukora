@@ -28,7 +28,8 @@ const UserRowActions: FC<UserRowActionsProps> = ({ user }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const t = useTranslations();
+  const t = useTranslations("user");
+  const t_common = useTranslations("common");
 
   const handleDeleteConfirm = async () => {
     setIsLoading(true);
@@ -65,21 +66,21 @@ const UserRowActions: FC<UserRowActionsProps> = ({ user }) => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">{t("common.openMenu")}</span>
+            <span className="sr-only">{t_common("openMenu")}</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>{t("common.actions")}</DropdownMenuLabel>
+          <DropdownMenuLabel>{t_common("actions")}</DropdownMenuLabel>
           <DropdownMenuItem
             onClick={() => navigator.clipboard.writeText(user.id)}
           >
-            {t("common.copyUserId")}
+            {t_common("copyUserId")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link href={`/users/${user.id}`} prefetch>
-              {t("common.viewUserDetails")}
+              {t_common("viewUserDetails")}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
@@ -88,7 +89,7 @@ const UserRowActions: FC<UserRowActionsProps> = ({ user }) => {
             className="cursor-pointer"
           >
             <Edit className="mr-2 h-4 w-4" />
-            {t("common.edit")}
+            {t_common("edit")}
           </DropdownMenuItem>
           <DropdownMenuItem
             variant="destructive"
@@ -96,7 +97,7 @@ const UserRowActions: FC<UserRowActionsProps> = ({ user }) => {
             className="cursor-pointer"
           >
             <Trash className="mr-2 h-4 w-4" />
-            {t("common.delete")}
+            {t_common("delete")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -106,12 +107,12 @@ const UserRowActions: FC<UserRowActionsProps> = ({ user }) => {
         setIsDialogOpen={setIsDeleteDialogOpen}
         handleConfirm={handleDeleteConfirm}
         isLoading={isLoading}
-        title={t("common.deleteUser")}
-        description={t("common.areYouSureYouWantToDeleteThisUser")}
+        title={t_common("deleteUser")}
+        description={t_common("areYouSureYouWantToDeleteThisUser")}
       />
       <StateDialog
-        title={t("common.editUser")}
-        description={t("common.updateTheDetailsOfTheSelectedUser")}
+        title={t_common("editUser")}
+        description={t_common("updateTheDetailsOfTheSelectedUser")}
         isDialogOpen={isUpdateDialogOpen}
         setIsDialogOpen={setIsUpdateDialogOpen}
       >

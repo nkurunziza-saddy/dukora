@@ -22,6 +22,7 @@ export const businessesTable = pgTable(
     businessType: text("business_type"),
     logoUrl: text("logo_url"),
     registrationNumber: text("registration_number").unique(),
+    stripeAccountId: text("stripe_account_id"),
     isActive: boolean("is_active").notNull().default(true),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
