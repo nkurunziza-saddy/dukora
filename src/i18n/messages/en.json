@@ -651,6 +651,12 @@
     "invitationDeleteError": "Error deleting invitation",
     "invitationDeleteSuccess": "Invitation deleted successfully."
   },
+  "timeRange": {
+    "selectTimeRange": "Select time range",
+    "lastMonth": "Last month",
+    "last2Months": "Last 2 months",
+    "last3Months": "Last 3 months"
+  },
   "product": {
     "copyId": "Copy product ID",
     "viewDetails": "View product details",
