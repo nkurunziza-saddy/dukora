@@ -1,4 +1,4 @@
-import { eq, desc, and, sql, gte, lte } from "drizzle-orm";
+import { eq, desc, and, sql, gte, lte, getTableColumns } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import {
@@ -7,6 +7,7 @@ import {
   auditLogsTable,
   productsTable,
   productSuppliersTable,
+  usersTable,
 } from "@/lib/schema";
 import {
   InsertTransaction,
@@ -24,15 +25,22 @@ export const get_all = cache(async (businessId: string) => {
   }
 
   try {
-    const transactions = await db.query.transactionsTable.findMany({
-      where: eq(transactionsTable.businessId, businessId),
-      orderBy: desc(transactionsTable.createdAt),
-      with: {
-        product: true,
-        createdByUser: true,
-      },
-      limit: 50,
-    });
+    const transactionColumns = getTableColumns(transactionsTable);
+    const transactions = await db
+      .select({
+        ...transactionColumns,
+        product: productsTable,
+        createdByUser: usersTable,
+      })
+      .from(transactionsTable)
+      .innerJoin(
+        productsTable,
+        eq(productsTable.id, transactionsTable.productId)
+      )
+      .innerJoin(usersTable, eq(usersTable.id, transactionsTable.createdBy))
+      .where(eq(transactionsTable.businessId, businessId))
+      .orderBy(desc(transactionsTable.createdAt))
+      .limit(50);
 
     return { data: transactions, error: null };
   } catch (error) {

@@ -1,6 +1,6 @@
-import { eq, desc, and, gte, lte } from "drizzle-orm";
+import { eq, desc, and, gte, lte, getTableColumns } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { expensesTable, auditLogsTable } from "@/lib/schema";
+import { expensesTable, auditLogsTable, usersTable } from "@/lib/schema";
 import { InsertExpense, InsertAuditLog } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
 import { revalidatePath } from "next/cache";
@@ -11,13 +11,16 @@ export async function getAll(businessId: string) {
   }
 
   try {
-    const expenses = await db.query.expensesTable.findMany({
-      where: eq(expensesTable.businessId, businessId),
-      orderBy: desc(expensesTable.createdAt),
-      with: {
-        createdByUser: true,
-      },
-    });
+    const expenseColumns = getTableColumns(expensesTable);
+    const expenses = await db
+      .select({
+        ...expenseColumns,
+        createdByUser: usersTable,
+      })
+      .from(expensesTable)
+      .innerJoin(usersTable, eq(usersTable.id, expensesTable.createdBy))
+      .where(eq(expensesTable.businessId, businessId))
+      .orderBy(desc(expensesTable.createdAt));
 
     return { data: expenses, error: null };
   } catch (error) {

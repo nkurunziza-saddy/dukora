@@ -7,9 +7,10 @@ import type { InsertAuditLog, InsertBusiness } from "@/lib/schema/schema-types";
 
 export async function getAll() {
   try {
-    const res = await db.query.businessesTable.findMany({
-      where: eq(businessesTable.isActive, true),
-    });
+    const res = await db
+      .select()
+      .from(businessesTable)
+      .where(eq(businessesTable.isActive, true));
     return { data: res, error: null };
   } catch (error) {
     console.error(error);

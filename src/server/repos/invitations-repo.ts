@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, and, inArray, isNull } from "drizzle-orm";
+import { eq, and, inArray, isNull, getTableColumns } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { unstable_cache } from "next/cache";
@@ -21,15 +21,20 @@ export async function getAll(businessId: string) {
   }
 
   try {
-    const invitations = await db.query.invitationsTable.findMany({
-      where: and(
-        eq(invitationsTable.businessId, businessId),
-        isNull(invitationsTable.deletedAt)
-      ),
-      with: {
-        invitedByUser: true,
-      },
-    });
+    const invitationColumns = getTableColumns(invitationsTable);
+    const invitations = await db
+      .select({
+        ...invitationColumns,
+        invitedByUser: usersTable,
+      })
+      .from(invitationsTable)
+      .innerJoin(usersTable, eq(usersTable.id, invitationsTable.invitedBy))
+      .where(
+        and(
+          eq(invitationsTable.businessId, businessId),
+          isNull(invitationsTable.deletedAt)
+        )
+      );
     return { data: invitations, error: null };
   } catch (error) {
     console.error("Failed to fetch invitations:", error);
