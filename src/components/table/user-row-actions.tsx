@@ -40,7 +40,6 @@ const UserRowActions: FC<UserRowActionsProps> = ({ user }) => {
         body: JSON.stringify({ id: user.id }),
       });
       const r = await resp.json();
-      console.log(r);
       if (r.success) {
         setIsDeleteDialogOpen(false);
         toast.success(t("userDeletedSuccessfully"), {

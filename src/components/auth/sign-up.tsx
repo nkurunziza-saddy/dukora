@@ -12,8 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import Image from "next/image";
-import { AlertCircle, Loader2, X } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
 import { signIn, signUp } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -30,38 +29,27 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const [image, setImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   return (
     <Card className="">
-      <Alert variant="destructive">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>{t_form("emailVerificationDown")}</AlertDescription>
-      </Alert>
       <CardHeader>
-        <CardTitle className="text-lg md:text-xl">
-          {t("signUp.title")}
-        </CardTitle>
-        <CardDescription className="text-xs md:text-sm">
-          {t("signUp.description")}
-        </CardDescription>
+        <CardTitle>{t("signUp.title")}</CardTitle>
+        <CardDescription>{t("signUp.description")}</CardDescription>
       </CardHeader>
       <CardContent>
+        <div className="mb-6">
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              {t_form("emailVerificationDown", {
+                moreContent:
+                  "Please use verified providers like Google or GitHub to sign up for now.",
+              })}
+            </AlertDescription>
+          </Alert>
+        </div>
         <div className="grid gap-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
@@ -70,6 +58,7 @@ export default function SignUp() {
                 id="first-name"
                 placeholder={t("fields.firstNamePlaceholder")}
                 required
+                disabled
                 onChange={(e) => {
                   setFirstName(e.target.value);
                 }}
@@ -82,6 +71,7 @@ export default function SignUp() {
                 id="last-name"
                 placeholder={t("fields.lastNamePlaceholder")}
                 required
+                disabled
                 onChange={(e) => {
                   setLastName(e.target.value);
                 }}
@@ -96,6 +86,7 @@ export default function SignUp() {
               type="email"
               placeholder={t("fields.emailPlaceholder")}
               required
+              disabled
               onChange={(e) => {
                 setEmail(e.target.value);
               }}
@@ -108,6 +99,7 @@ export default function SignUp() {
               id="password"
               type="password"
               value={password}
+              disabled
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="new-password"
               placeholder={t("fields.passwordPlaceholder")}
@@ -119,54 +111,21 @@ export default function SignUp() {
               id="password_confirmation"
               type="password"
               value={passwordConfirmation}
+              disabled
               onChange={(e) => setPasswordConfirmation(e.target.value)}
               autoComplete="new-password"
               placeholder={t("fields.confirmPasswordPlaceholder")}
             />
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="image">{t("fields.profileImage")}</Label>
-            <div className="flex items-end gap-4">
-              {imagePreview && (
-                <div className="relative w-16 h-16 rounded-sm overflow-hidden">
-                  <Image
-                    src={imagePreview}
-                    alt={t("fields.profileImagePreviewAlt")}
-                    layout="fill"
-                    objectFit="cover"
-                  />
-                </div>
-              )}
-              <div className="flex items-center gap-2 w-full">
-                <Input
-                  id="image"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="w-full"
-                />
-                {imagePreview && (
-                  <X
-                    className="cursor-pointer"
-                    onClick={() => {
-                      setImage(null);
-                      setImagePreview(null);
-                    }}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
           <Button
             type="submit"
             className="w-full"
-            disabled={loading}
+            disabled
             onClick={async () => {
               await signUp.email({
                 email,
                 password,
                 name: `${firstName} ${lastName}`,
-                image: image ? await convertImageToBase64(image) : "",
                 callbackURL: "/onboarding",
                 fetchOptions: {
                   onResponse: () => {
@@ -193,7 +152,7 @@ export default function SignUp() {
           </Button>
           <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
             <span className="bg-card text-muted-foreground relative z-10 px-2">
-              {t("auth.orContinueWith")}
+              {t("orContinueWith")}
             </span>
           </div>
           <div
@@ -291,24 +250,12 @@ export default function SignUp() {
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex flex-col items-center">
+      <CardFooter className="flex gap-1 items-center">
         <p className="text-xs text-muted-foreground">{t("signUp.signedIn")}</p>
-        <Link
-          href="/auth/sign-in"
-          className="text-sm text-primary-foreground underline"
-        >
+        <Link href="/auth/sign-in" className="text-xs text-primary underline">
           {t("signUp.signInLink")}
         </Link>
       </CardFooter>
     </Card>
   );
-}
-
-async function convertImageToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
 }

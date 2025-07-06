@@ -231,3 +231,25 @@
 .markdown-content > *:last-child {
   margin-bottom: 0;
 }
+
+.scrollbar {
+  overflow-y: scroll;
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-muted-foreground rounded-md;
+}
+
+.scrollbar-hidden {
+  overflow: hidden;
+  scrollbar-width: none;
+  scrollbar-color: transparent transparent;
+}

@@ -1,17 +1,13 @@
-import { ColumnDef } from "@tanstack/react-table";
-import { DataTable } from "./data-table";
-import { SelectInterBusinessPayment } from "@/lib/schema/schema-types";
-import { useTranslations } from "next-intl";
+"use client";
+
+import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
+import type { SelectInterBusinessPayment } from "@/lib/schema/schema-types";
 
-export const InterBusinessPaymentsDataTable = ({
-  data,
-}: {
-  data: SelectInterBusinessPayment[];
-}) => {
-  const t = useTranslations("payments");
-
-  const columns: ColumnDef<SelectInterBusinessPayment>[] = [
+export function PaymentColumn(
+  t: (key: string) => string
+): ColumnDef<SelectInterBusinessPayment>[] {
+  return [
     {
       accessorKey: "id",
       header: t("transactionId"),
@@ -57,6 +53,4 @@ export const InterBusinessPaymentsDataTable = ({
       header: t("stripePaymentIntentId"),
     },
   ];
-
-  return <DataTable columns={columns} data={data} />;
-};
+}

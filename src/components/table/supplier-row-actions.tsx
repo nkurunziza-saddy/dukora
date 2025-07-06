@@ -79,12 +79,6 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>{t_common("actions")}</DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={() => navigator.clipboard.writeText(supplier.id)}
-          >
-            {t("supplier.copyId")}
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link href={`/suppliers/${supplier.id}`} prefetch>
               {t("supplier.viewDetails")}

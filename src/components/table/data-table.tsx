@@ -47,7 +47,13 @@ export interface RowExpansionConfig<TData> {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  tag?: "products" | "suppliers" | "transactions" | "users" | "invitations";
+  tag?:
+    | "products"
+    | "suppliers"
+    | "transactions"
+    | "users"
+    | "invitations"
+    | "payments";
   expansion?: RowExpansionConfig<TData>;
 }
 

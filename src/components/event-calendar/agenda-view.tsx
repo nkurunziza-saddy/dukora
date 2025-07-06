@@ -24,7 +24,6 @@ export function AgendaView({
   onEventSelect,
 }: AgendaViewProps) {
   const days = useMemo(() => {
-    console.log("Agenda view updating with date:", currentDate.toISOString());
     return Array.from({ length: AgendaDaysToShow }, (_, i) =>
       addDays(new Date(currentDate), i)
     );
@@ -32,7 +31,6 @@ export function AgendaView({
   const t = useTranslations("schedule");
   const handleEventClick = (event: CalendarEvent, e: React.MouseEvent) => {
     e.stopPropagation();
-    console.log("Agenda view event clicked:", event);
     onEventSelect(event);
   };
 

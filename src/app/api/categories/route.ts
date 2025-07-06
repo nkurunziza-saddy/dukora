@@ -14,7 +14,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const category = await request.json();
-    const newCategory = await categoryService.createCategory(category);
+    const newCategory = await categoryService.upsertCategory(category);
     return NextResponse.json(newCategory.data);
   } catch (error) {
     console.error(error);

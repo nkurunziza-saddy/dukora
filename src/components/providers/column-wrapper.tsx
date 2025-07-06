@@ -7,7 +7,13 @@ import type { ColumnDef } from "@tanstack/react-table";
 type ColumnWrapperProps<T> = {
   column: (t: (key: string) => string) => ColumnDef<T>[];
   data: T[];
-  tag: "products" | "suppliers" | "transactions" | "users" | "invitations";
+  tag:
+    | "products"
+    | "suppliers"
+    | "transactions"
+    | "users"
+    | "invitations"
+    | "payments";
 };
 
 const ColumnWrapper = <T,>({ column, data, tag }: ColumnWrapperProps<T>) => {

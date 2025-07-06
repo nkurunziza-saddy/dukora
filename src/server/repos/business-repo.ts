@@ -31,6 +31,11 @@ export async function getById(businessId: string) {
   try {
     const business = await db.query.businessesTable.findFirst({
       where: eq(businessesTable.id, businessId),
+      with: {
+        categories: true,
+        businessSettings: true,
+        warehouses: true,
+      },
     });
 
     if (!business) {

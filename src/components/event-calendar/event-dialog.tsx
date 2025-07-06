@@ -71,10 +71,6 @@ export function EventDialog({
   const [endDateOpen, setEndDateOpen] = useState(false);
 
   useEffect(() => {
-    console.log("EventDialog received event:", event);
-  }, [event]);
-
-  useEffect(() => {
     if (event) {
       setTitle(event.title || "");
       setCategory(event.category || "");

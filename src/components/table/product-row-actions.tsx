@@ -76,12 +76,6 @@ const ProductRowActions: FC<ProductRowActionsProps> = ({ product }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>{t_common("actions")}</DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={() => navigator.clipboard.writeText(product.id)}
-          >
-            {t("product.copyId")}
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link href={`/products/${product.id}`} prefetch>
               {t("product.viewDetails")}

@@ -1,5 +1,16 @@
 {
-  "cSpell.words": ["deepseek", "openrouter", "quantura", "qwen"],
+  "cSpell.words": [
+    "deepseek",
+    "Kinyarwanda",
+    "langpair",
+    "libretranslate",
+    "mymemory",
+    "openrouter",
+    "quantura",
+    "qwen",
+    "Syncer",
+    "upserted"
+  ],
   "i18n-ally.localesPaths": ["src/i18n", "src/i18n/messages"],
   "i18n-ally.keystyle": "flat",
   "i18n-ally.sourceLanguage": "en"

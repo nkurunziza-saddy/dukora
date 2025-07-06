@@ -1,0 +1,557 @@
+"use client";
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
+
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { countries, currencies, months } from "@/utils/constants";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
+import { AlertCircle, Settings } from "lucide-react";
+import type { SelectBusinessSetting } from "@/lib/schema/schema-types";
+import { toast } from "sonner";
+import { upsertBusinessSettings } from "@/server/actions/business-settings-actions";
+import { format } from "date-fns";
+
+// Business settings limits
+const LIMITS = {
+  VAT_RATE_MIN: 0,
+  VAT_RATE_MAX: 100,
+  BUSINESS_NAME_MAX: 100,
+  DESCRIPTION_MAX: 500,
+};
+
+const formSchema = z.object({
+  currency: z.string().min(1, "Currency is required"),
+  country: z.string().min(1, "Country is required"),
+  timezone: z.string().min(1, "Timezone is required"),
+  fiscalStartMonth: z.string().min(1, "Fiscal start month is required"),
+  pricesIncludeTax: z.boolean(),
+  defaultVatRate: z
+    .number()
+    .min(
+      LIMITS.VAT_RATE_MIN,
+      `VAT rate must be at least ${LIMITS.VAT_RATE_MIN}%`
+    )
+    .max(LIMITS.VAT_RATE_MAX, `VAT rate cannot exceed ${LIMITS.VAT_RATE_MAX}%`),
+  businessName: z
+    .string()
+    .min(1, "Business name is required")
+    .max(
+      LIMITS.BUSINESS_NAME_MAX,
+      `Business name cannot exceed ${LIMITS.BUSINESS_NAME_MAX} characters`
+    )
+    .optional(),
+  businessDescription: z
+    .string()
+    .max(
+      LIMITS.DESCRIPTION_MAX,
+      `Description cannot exceed ${LIMITS.DESCRIPTION_MAX} characters`
+    )
+    .optional(),
+  invoicePrefix: z
+    .string()
+    .max(10, "Invoice prefix cannot exceed 10 characters")
+    .optional(),
+  invoiceNumberStart: z
+    .number()
+    .min(1, "Invoice number must start from 1")
+    .optional(),
+});
+
+export function EditBusinessSettings({
+  settings,
+}: {
+  settings: SelectBusinessSetting[];
+}) {
+  const t = useTranslations("forms");
+  const tCommon = useTranslations("common");
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      currency:
+        (settings.find((s) => s.key === "currency")?.value as string) || "",
+      country:
+        (settings.find((s) => s.key === "country")?.value as string) || "",
+      timezone:
+        (settings.find((s) => s.key === "timezone")?.value as string) || "",
+      fiscalStartMonth:
+        (settings.find((s) => s.key === "fiscalStartMonth")?.value as string) ||
+        "",
+      pricesIncludeTax:
+        (settings.find((s) => s.key === "pricesIncludeTax")
+          ?.value as boolean) || false,
+      defaultVatRate:
+        (settings.find((s) => s.key === "defaultVatRate")?.value as number) ||
+        0,
+      businessName:
+        (settings.find((s) => s.key === "businessName")?.value as string) || "",
+      businessDescription:
+        (settings.find((s) => s.key === "businessDescription")
+          ?.value as string) || "",
+      invoicePrefix:
+        (settings.find((s) => s.key === "invoicePrefix")?.value as string) ||
+        "",
+      invoiceNumberStart:
+        (settings.find((s) => s.key === "invoiceNumberStart")
+          ?.value as number) || 1,
+    },
+  });
+
+  const {
+    watch,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = form;
+
+  const vatRate = watch("defaultVatRate") || 0;
+  const businessName = watch("businessName") || "";
+  const businessDescription = watch("businessDescription") || "";
+  const invoicePrefix = watch("invoicePrefix") || "";
+
+  const isVatRateAtLimit = vatRate >= LIMITS.VAT_RATE_MAX;
+  const businessNameLength = businessName.length;
+  const descriptionLength = businessDescription.length;
+  const invoicePrefixLength = invoicePrefix.length;
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const settingsToUpdate = Object.entries(values).map(([key, value]) => ({
+      key,
+      value,
+    }));
+
+    const req = await upsertBusinessSettings(settingsToUpdate);
+    if (req.data?.success) {
+      toast.success(t("businessSettingsUpdated"), {
+        description: format(new Date(), "MMM dd, yyyy"),
+      });
+    } else {
+      toast.error(tCommon("error"), {
+        description: t("businessSettingsUpdateFailed"),
+      });
+    }
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="space-y-6">
+          {/* Settings Overview */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-medium flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                {t("businessSettings")}
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                {t("businessSettingsDescription")}
+              </p>
+            </div>
+          </div>
+
+          {/* Limits Overview */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="p-3 border rounded-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium">VAT Rate</span>
+                <Badge
+                  variant={isVatRateAtLimit ? "destructive" : "secondary"}
+                  className="text-xs"
+                >
+                  {vatRate}%/{LIMITS.VAT_RATE_MAX}%
+                </Badge>
+              </div>
+            </div>
+            <div className="p-3 border rounded-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium">Business Name</span>
+                <Badge
+                  variant={
+                    businessNameLength > LIMITS.BUSINESS_NAME_MAX * 0.8
+                      ? "destructive"
+                      : "secondary"
+                  }
+                  className="text-xs"
+                >
+                  {businessNameLength}/{LIMITS.BUSINESS_NAME_MAX}
+                </Badge>
+              </div>
+            </div>
+            <div className="p-3 border rounded-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium">Description</span>
+                <Badge
+                  variant={
+                    descriptionLength > LIMITS.DESCRIPTION_MAX * 0.8
+                      ? "destructive"
+                      : "secondary"
+                  }
+                  className="text-xs"
+                >
+                  {descriptionLength}/{LIMITS.DESCRIPTION_MAX}
+                </Badge>
+              </div>
+            </div>
+            <div className="p-3 border rounded-lg">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium">Invoice Prefix</span>
+                <Badge
+                  variant={
+                    invoicePrefixLength > 8 ? "destructive" : "secondary"
+                  }
+                  className="text-xs"
+                >
+                  {invoicePrefixLength}/10
+                </Badge>
+              </div>
+            </div>
+          </div>
+
+          {/* VAT Rate Warning */}
+          {isVatRateAtLimit && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                VAT rate has reached the maximum limit of {LIMITS.VAT_RATE_MAX}
+                %. Please verify this rate is correct.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Form Validation Errors */}
+          {Object.keys(errors).length > 0 && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Please fix the errors below before submitting.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Business Information */}
+          <div>
+            <h4 className="font-medium mb-4">{t("businessInformation")}</h4>
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="businessName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("businessName")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t("enterBusinessName")}
+                        maxLength={LIMITS.BUSINESS_NAME_MAX}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {LIMITS.BUSINESS_NAME_MAX - businessNameLength} characters
+                      remaining
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="businessDescription"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("businessDescription")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t("enterBusinessDescription")}
+                        maxLength={LIMITS.DESCRIPTION_MAX}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {LIMITS.DESCRIPTION_MAX - descriptionLength} characters
+                      remaining
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+
+          {/* Regional Settings */}
+          <div>
+            <h4 className="font-medium mb-4">{t("regionalSettings")}</h4>
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="currency"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("currency")} *</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={t("selectCurrency")} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {currencies.map((currency) => (
+                          <SelectItem
+                            key={currency.value}
+                            value={currency.value}
+                          >
+                            {t(currency.label)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="country"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("country")} *</FormLabel>
+                    <Select
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        const country = countries.find(
+                          (c) => c.value === value
+                        );
+                        if (country) {
+                          setValue("timezone", country.timezone);
+                        }
+                      }}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={t("selectCountry")} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {countries.map((country) => (
+                          <SelectItem key={country.value} value={country.value}>
+                            {t(country.label)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-4">
+                <FormField
+                  control={form.control}
+                  name="timezone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("timezone")}</FormLabel>
+                      <FormControl>
+                        <Input {...field} disabled />
+                      </FormControl>
+                      <FormDescription>{t("timezoneAutoFill")}</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="fiscalStartMonth"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("fiscalStartMonth")} *</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder={t("selectMonth")} />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {months.map((month) => (
+                            <SelectItem key={month.value} value={month.value}>
+                              {t(month.label)}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Tax Settings */}
+          <div>
+            <h4 className="font-medium mb-4">{t("taxSettings")}</h4>
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="pricesIncludeTax"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">
+                        {t("pricesIncludeTax")}
+                      </FormLabel>
+                      <FormDescription>
+                        {t("pricesIncludeTaxDescription")}
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="defaultVatRate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("defaultVatRate")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        min={LIMITS.VAT_RATE_MIN}
+                        max={LIMITS.VAT_RATE_MAX}
+                        placeholder={t("vatRatePlaceholder")}
+                        {...field}
+                        onChange={(e) => {
+                          const value = Number.parseFloat(e.target.value);
+                          if (
+                            !Number.isNaN(value) &&
+                            value >= LIMITS.VAT_RATE_MIN &&
+                            value <= LIMITS.VAT_RATE_MAX
+                          ) {
+                            field.onChange(value);
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {t("defaultVatRateDescription")} (Range:{" "}
+                      {LIMITS.VAT_RATE_MIN}% - {LIMITS.VAT_RATE_MAX}%)
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+
+          {/* Invoice Settings */}
+          <div>
+            <h4 className="font-medium mb-4">{t("invoiceSettings")}</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="invoicePrefix"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("invoicePrefix")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t("invoicePrefixPlaceholder")}
+                        maxLength={10}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {10 - invoicePrefixLength} characters remaining
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="invoiceNumberStart"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("invoiceNumberStart")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min={1}
+                        placeholder="1"
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(Number.parseInt(e.target.value))
+                        }
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {t("invoiceNumberStartDescription")}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+
+          {/* Summary */}
+          {(businessName || watch("currency") || watch("country")) && (
+            <div className="p-4 bg-green-50 border border-green-200 rounded-lg dark:bg-green-950 dark:border-green-800">
+              <p className="text-sm text-green-800 dark:text-green-200">
+                <strong>{t("summary")}</strong>
+                {businessName && ` ${businessName}`}
+                {watch("currency") && ` • ${watch("currency").toUpperCase()}`}
+                {watch("country") &&
+                  ` • ${countries.find((c) => c.value === watch("country"))?.label}`}
+              </p>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-6">
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? t("saving") : t("saveSettings")}
+          </Button>
+        </div>
+      </form>
+    </Form>
+  );
+}

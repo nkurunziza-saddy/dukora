@@ -27,15 +27,16 @@ export async function get_all(warehouseId: string) {
   }
 }
 
-export const getAllCached = async (warehouseId: string) =>
-  unstable_cache(
-    async () => await get_all(warehouseId),
-    ["warehouseItems", warehouseId],
-    {
-      revalidate: 300,
-      tags: [`warehouseItems-${warehouseId}`],
-    }
-  );
+export const get_all_cached = unstable_cache(
+  async (warehouseId: string) => {
+    return await get_all(warehouseId);
+  },
+  ["warehouses", "warehouse-items"],
+  {
+    tags: ["warehouses", "warehouse-items"],
+    revalidate: 300,
+  }
+);
 
 export async function get_all_by_business_id(businessId: string) {
   try {
@@ -81,15 +82,16 @@ export async function get_by_id(warehouseItemId: string) {
   }
 }
 
-export const getByIdCached = async (warehouseItemId: string) =>
-  unstable_cache(
-    async () => await get_by_id(warehouseItemId),
-    ["warehouseItems", warehouseItemId],
-    {
-      revalidate: 300,
-      tags: [`warehouseItem-${warehouseItemId}`],
-    }
-  );
+export const get_by_id_cached = unstable_cache(
+  async (warehouseItemId: string) => {
+    return get_by_id(warehouseItemId);
+  },
+  ["warehouses", "warehouse-item"],
+  {
+    tags: [`warehouses`, "warehouse-item"],
+    revalidate: 300,
+  }
+);
 
 export async function create(
   businessId: string,

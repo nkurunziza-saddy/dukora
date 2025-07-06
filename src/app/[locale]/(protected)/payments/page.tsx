@@ -1,10 +1,11 @@
-import { InterBusinessPaymentsDataTable } from "@/components/table/inter-business-payments-data-table";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getInterBusinessPayments } from "@/server/actions/payment-actions";
 import { ErrorCode } from "@/server/constants/errors";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
+import ColumnWrapper from "@/components/providers/column-wrapper";
+import { PaymentColumn } from "@/utils/columns/payment-column";
 
 export default async function PaymentsHistoryPage() {
   const t = await getTranslations("payments");
@@ -22,7 +23,7 @@ export default async function PaymentsHistoryPage() {
           </p>
         </div>
         <Separator />
-        <div className="text-center text-red-500">
+        <div className="text-center text-destructive/80">
           {error === ErrorCode.UNAUTHORIZED
             ? tCommon("unauthorized")
             : tCommon("errorLoading")}
@@ -45,7 +46,7 @@ export default async function PaymentsHistoryPage() {
         </Button>
       </div>
       <Separator />
-      <InterBusinessPaymentsDataTable data={payments || []} />
+      <ColumnWrapper column={PaymentColumn} data={payments!} tag="payments" />
     </div>
   );
 }

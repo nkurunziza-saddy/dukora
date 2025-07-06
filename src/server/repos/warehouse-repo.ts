@@ -6,8 +6,9 @@ import { warehousesTable, auditLogsTable } from "@/lib/schema";
 import type { InsertWarehouse } from "@/lib/schema/schema-types";
 import type { InsertAuditLog } from "@/lib/schema/schema-types";
 import { ErrorCode } from "../constants/errors";
+import { cache } from "react";
 
-export async function getAll(businessId: string) {
+export const get_all = cache(async (businessId: string) => {
   if (!businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -22,54 +23,58 @@ export async function getAll(businessId: string) {
     console.error("Error getting warehouses:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+});
 
-export const getAllCached = async (businessId: string) =>
-  unstable_cache(
-    async () => await getAll(businessId),
-    ["warehouses", businessId],
-    {
-      revalidate: 300,
-      tags: [`warehouses-${businessId}`],
-    }
-  );
-
-export async function getById(warehouseId: string, businessId: string) {
-  if (!warehouseId || !businessId) {
-    return { data: null, error: ErrorCode.MISSING_INPUT };
+export const get_all_cached = unstable_cache(
+  async (businessId: string) => {
+    return get_all(businessId);
+  },
+  ["warehouses"],
+  {
+    tags: ["warehouses"],
+    revalidate: 300,
   }
-  try {
-    const warehouse = await db.query.warehousesTable.findFirst({
-      where: and(
-        eq(warehousesTable.id, warehouseId),
-        eq(warehousesTable.businessId, businessId)
-      ),
-      with: {
-        transactions: true,
-        warehouseItems: true,
-      },
-    });
+);
 
-    if (!warehouse) {
-      return { data: null, error: ErrorCode.NOT_FOUND };
+export const get_by_id = cache(
+  async (warehouseId: string, businessId: string) => {
+    if (!warehouseId || !businessId) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
     }
+    try {
+      const warehouse = await db.query.warehousesTable.findFirst({
+        where: and(
+          eq(warehousesTable.id, warehouseId),
+          eq(warehousesTable.businessId, businessId)
+        ),
+        with: {
+          transactions: true,
+          warehouseItems: true,
+        },
+      });
 
-    return { data: warehouse, error: null };
-  } catch (error) {
-    console.error("Error getting warehouse:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
+      if (!warehouse) {
+        return { data: null, error: ErrorCode.NOT_FOUND };
+      }
+
+      return { data: warehouse, error: null };
+    } catch (error) {
+      console.error("Error getting warehouse:", error);
+      return { data: null, error: ErrorCode.FAILED_REQUEST };
+    }
   }
-}
+);
 
-export const getByIdCached = async (warehouseId: string, businessId: string) =>
-  unstable_cache(
-    async () => await getById(warehouseId, businessId),
-    ["warehouses", warehouseId, businessId],
-    {
-      revalidate: 300,
-      tags: [`warehouses-${businessId}`, `warehouse-${warehouseId}`],
-    }
-  );
+export const get_by_id_cached = unstable_cache(
+  async (warehouseId: string, businessId: string) => {
+    return get_by_id(warehouseId, businessId);
+  },
+  ["warehouses"],
+  {
+    tags: [`warehouses`],
+    revalidate: 300,
+  }
+);
 
 export async function create(warehouse: InsertWarehouse, userId: string) {
   if (!warehouse.name || !warehouse.businessId) {
@@ -77,6 +82,14 @@ export async function create(warehouse: InsertWarehouse, userId: string) {
   }
   try {
     const result = await db.transaction(async (tx) => {
+      const existingWarehouse = await db.query.warehousesTable.findFirst({
+        where: and(
+          eq(warehousesTable.businessId, warehouse.businessId),
+          eq(warehousesTable.name, warehouse.name)
+        ),
+      });
+      if (existingWarehouse)
+        return { data: null, error: ErrorCode.ALREADY_EXISTS };
       const [newWarehouse] = await tx
         .insert(warehousesTable)
         .values(warehouse)
@@ -215,7 +228,7 @@ export async function remove(
   }
 }
 
-export async function createMany(
+export async function create_many(
   warehouses: InsertWarehouse[],
   userId: string
 ) {
@@ -228,26 +241,33 @@ export async function createMany(
   }
   try {
     const result = await db.transaction(async (tx) => {
-      const inserted = await tx
-        .insert(warehousesTable)
-        .values(warehouses)
-        .returning();
+      const createdWarehouses = [];
+      for (const warehouse of warehouses) {
+        const existingWarehouse = await db.query.warehousesTable.findFirst({
+          where: and(
+            eq(warehousesTable.businessId, warehouse.businessId),
+            eq(warehousesTable.name, warehouse.name)
+          ),
+        });
+        if (existingWarehouse) continue;
+        const [newWarehouse] = await tx
+          .insert(warehousesTable)
+          .values(warehouses)
+          .returning();
 
-      const auditLogs: InsertAuditLog[] = inserted.map((warehouse, idx) => ({
-        businessId: businessId,
-        model: "warehouse",
-        recordId: warehouse.id,
-        action: "create-warehouse",
-        changes: JSON.stringify(warehouses[idx]),
-        performedBy: userId,
-        performedAt: new Date(),
-      }));
-
-      if (auditLogs.length) {
-        await tx.insert(auditLogsTable).values(auditLogs);
+        const auditLog: InsertAuditLog = {
+          businessId: newWarehouse.businessId,
+          model: "warehouse",
+          recordId: newWarehouse.id,
+          action: "create-warehouse",
+          changes: JSON.stringify(newWarehouse),
+          performedBy: userId,
+          performedAt: new Date(),
+        };
+        await tx.insert(auditLogsTable).values(auditLog);
+        createdWarehouses.push(newWarehouse);
       }
-
-      return inserted;
+      return createdWarehouses;
     });
 
     revalidatePath("/", "layout");

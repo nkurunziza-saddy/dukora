@@ -23,7 +23,6 @@ export function getMonthData(monthsAgo: number): {
   year: string;
 } {
   const targetDate = startOfMonth(subMonths(new Date(), monthsAgo));
-  console.log(targetDate);
 
   const monthName = format(targetDate, "MMMM");
   const year = format(targetDate, "yyyy");

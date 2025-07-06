@@ -52,10 +52,6 @@ export const productsTable = pgTable(
   },
   (table) => [
     uniqueIndex("products_business_id_sku").on(table.businessId, table.sku),
-    uniqueIndex("products_business_id_barcode").on(
-      table.businessId,
-      table.barcode
-    ),
 
     check("price_positive", sql`${table.price} >= 0`),
     check("cost_price_positive", sql`${table.costPrice} >= 0`),

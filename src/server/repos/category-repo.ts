@@ -62,7 +62,7 @@ export const getByIdCached = async (categoryId: string, businessId: string) =>
     ["categories", categoryId, businessId],
     {
       revalidate: 300,
-      }
+    }
   );
 
 export async function create(category: InsertCategory, userId: string) {
@@ -74,12 +74,16 @@ export async function create(category: InsertCategory, userId: string) {
       const [newCategory] = await tx
         .insert(categoriesTable)
         .values(category)
+        .onConflictDoUpdate({
+          target: [categoriesTable.businessId, categoriesTable.name],
+          set: { value: categoriesTable.value, name: categoriesTable.name },
+        })
         .returning();
 
       const auditData: InsertAuditLog = {
         businessId: category.businessId,
         model: "category",
-        recordId: newCategory.id,
+        recordId: newCategory?.id ?? "",
         action: "create-category",
         changes: JSON.stringify(category),
         performedBy: userId,
@@ -211,7 +215,7 @@ export async function remove(
   }
 }
 
-export async function createMany(categories: InsertCategory[], userId: string) {
+export async function upsertMany(categories: InsertCategory[], userId: string) {
   if (categories === null) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -223,26 +227,34 @@ export async function createMany(categories: InsertCategory[], userId: string) {
 
   try {
     const result = await db.transaction(async (tx) => {
-      const inserted = await tx
-        .insert(categoriesTable)
-        .values(categories)
-        .returning();
+      const upsertedCategories = [];
 
-      const auditLogs: InsertAuditLog[] = inserted.map((cat, idx) => ({
-        businessId: businessId,
-        model: "category",
-        recordId: cat.id,
-        action: "create-category",
-        changes: JSON.stringify(categories[idx]),
-        performedBy: userId,
-        performedAt: new Date(),
-      }));
+      for (const category of categories) {
+        if (!category.name) continue;
+        const [newCategory] = await tx
+          .insert(categoriesTable)
+          .values(categories)
+          .onConflictDoUpdate({
+            target: [categoriesTable.businessId, categoriesTable.name],
+            set: { value: category.value, name: category.name },
+          })
+          .returning();
 
-      if (auditLogs.length) {
+        const auditLogs: InsertAuditLog = {
+          businessId: newCategory.businessId,
+          model: "category",
+          recordId: newCategory.id,
+          action: "create-category",
+          changes: JSON.stringify(newCategory),
+          performedBy: userId,
+          performedAt: new Date(),
+        };
+
         await tx.insert(auditLogsTable).values(auditLogs);
+        upsertedCategories.push(newCategory);
       }
 
-      return inserted;
+      return upsertedCategories;
     });
 
     revalidatePath("/dashboard/categories");

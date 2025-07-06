@@ -24,7 +24,7 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
   try {
     const businessCreatedAt = currentUser.createdAt;
 
-    const transactions = await transactionRepo.getByTimeInterval(
+    const transactions = await transactionRepo.get_by_time_interval(
       currentUser.businessId!,
       dateFrom,
       dateTo

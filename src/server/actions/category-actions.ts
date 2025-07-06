@@ -31,7 +31,7 @@ export const fetchCategoryById = createProtectedAction(
   }
 );
 
-export const createCategory = createProtectedAction(
+export const upsertCategory = createProtectedAction(
   Permission.CATEGORY_CREATE,
   async (user, categoryData: Omit<InsertCategory, "businessId" | "id">) => {
     if (!categoryData.name?.trim()) {
@@ -94,7 +94,7 @@ export const deleteCategory = createProtectedAction(
   }
 );
 
-export const createManyCategories = createProtectedAction(
+export const upsertManyCategories = createProtectedAction(
   Permission.CATEGORY_CREATE,
   async (user, categoriesData: Omit<InsertCategory, "businessId" | "id">[]) => {
     if (categoriesData === null) {
@@ -104,7 +104,7 @@ export const createManyCategories = createProtectedAction(
       ...category,
       businessId: user.businessId!,
     }));
-    const createdCategories = await categoryRepo.createMany(
+    const createdCategories = await categoryRepo.upsertMany(
       categories,
       user.id
     );

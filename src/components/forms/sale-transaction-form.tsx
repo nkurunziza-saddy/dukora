@@ -69,12 +69,11 @@ export default function SaleTransactionForm({
     data: productsData,
     error: productsError,
     isLoading: isProductsLoading,
-  } = useSwr<SelectProduct[]>("/api/products", fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      dedupingInterval: 60000,
-    });
+  } = useSwr<SelectProduct[]>("/api/products", fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    dedupingInterval: 60000,
+  });
 
   const form = useForm<SaleTransactionFormData>({
     resolver: zodResolver(saleTransactionSchema),
@@ -82,18 +81,18 @@ export default function SaleTransactionForm({
       productId: saleTransaction ? saleTransaction.productId : "",
       warehouseItemId: saleTransaction ? saleTransaction.warehouseItemId : "",
       quantity: saleTransaction ? Math.abs(saleTransaction.quantity) : 1,
-      note: saleTransaction ? saleTransaction.note ?? "" : "",
-      reference: saleTransaction ? saleTransaction.reference ?? "" : "",
+      note: saleTransaction ? (saleTransaction.note ?? "") : "",
+      reference: saleTransaction ? (saleTransaction.reference ?? "") : "",
     },
   });
 
-  const formValues = form.watch(['productId', 'warehouseItemId', 'quantity']);
+  const formValues = form.watch(["productId", "warehouseItemId", "quantity"]);
 
   const [productId, warehouseItemId, quantity] = formValues;
   const selectedProduct = useMemo(
-  () => productsData?.find((p) => p.id === productId),
-  [productsData, productId]
-);
+    () => productsData?.find((p) => p.id === productId),
+    [productsData, productId]
+  );
 
   const {
     data: productDetailsData,
@@ -110,7 +109,10 @@ export default function SaleTransactionForm({
   );
 
   const selectedWarehouseItem = useMemo(
-    () => productDetailsData?.warehouseItems.find((item) => item.id === warehouseItemId),
+    () =>
+      productDetailsData?.warehouseItems.find(
+        (item) => item.id === warehouseItemId
+      ),
     [productDetailsData?.warehouseItems, warehouseItemId]
   );
 
@@ -145,7 +147,7 @@ export default function SaleTransactionForm({
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error(tCommon("error"), {
         description: t("transactionAddFailed"),
       });
@@ -280,15 +282,9 @@ export default function SaleTransactionForm({
                             )}
                           >
                             {field.value ? (
-                              <div className="flex items-center gap-2">
-                                <span>
-                                  {selectedWarehouseItem?.warehouse.name}
-                                </span>
-                                <Badge variant="outline" className="text-xs">
-                                  {tInventory("onHand")}:{" "}
-                                  {selectedWarehouseItem?.quantity || 0}
-                                </Badge>
-                              </div>
+                              <span>
+                                {selectedWarehouseItem?.warehouse.name}
+                              </span>
                             ) : (
                               tInventory("selectWarehouse")
                             )}
@@ -364,7 +360,7 @@ export default function SaleTransactionForm({
                     min="1"
                     max={selectedWarehouseItem?.quantity || undefined}
                     step="1"
-                    className={hasInsufficientStock ? "border-red-500" : ""}
+                    className={hasInsufficientStock ? "border-destructive" : ""}
                   />
                 </FormControl>
                 <FormDescription className="flex items-center justify-between">
@@ -374,7 +370,7 @@ export default function SaleTransactionForm({
                       className={cn(
                         "text-sm font-medium",
                         hasInsufficientStock
-                          ? "text-red-500"
+                          ? "text-destructive"
                           : "text-muted-foreground"
                       )}
                     >

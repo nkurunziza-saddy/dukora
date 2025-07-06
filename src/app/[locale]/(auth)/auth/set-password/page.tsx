@@ -25,10 +25,14 @@ export default function SetPassword() {
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
   const invitationCode = searchParams.get("invitationCode") || "";
-
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [loading, setLoading] = useState(false);
+
+  if (!email || !invitationCode) {
+    router.push("/auth/sign-in");
+    return null;
+  }
 
   const handleSubmit = async () => {
     if (!email || !invitationCode) {
@@ -57,12 +61,8 @@ export default function SetPassword() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader>
-        <CardTitle className="text-lg md:text-xl">
-          {t("setPassword.title")}
-        </CardTitle>
-        <CardDescription className="text-xs md:text-sm">
-          {t("setPassword.description")}
-        </CardDescription>
+        <CardTitle>{t("setPassword.title")}</CardTitle>
+        <CardDescription>{t("setPassword.description")}</CardDescription>
       </CardHeader>
       <CardContent>
         <form
@@ -109,11 +109,15 @@ export default function SetPassword() {
           </Button>
         </form>
       </CardContent>
-      <CardFooter className="flex flex-col items-center">
+      <CardFooter className="flex items-center">
         <p className="text-xs text-muted-foreground">
           {t("setPassword.alreadyHaveAccount")}
         </p>
-        <Button variant="link" onClick={() => router.push("/auth/sign-in")}>
+        <Button
+          className="text-xs p-0 ml-1"
+          variant="link"
+          onClick={() => router.push("/auth/sign-in")}
+        >
           {t("setPassword.signInLink")}
         </Button>
       </CardFooter>

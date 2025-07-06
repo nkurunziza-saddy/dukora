@@ -1,85 +1,19 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "@/components/ui/checkbox";
 import { format } from "date-fns";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
 import {
   ExtendedTransactionPayload,
   TransactionType,
 } from "@/lib/schema/schema-types";
-import {
-  ArrowDown,
-  ArrowUp,
-  XCircle,
-  Undo2,
-  Redo2,
-  ChevronUpIcon,
-  ChevronDownIcon,
-} from "lucide-react";
+import { ArrowDown, ArrowUp, XCircle, Undo2, Redo2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 
 export function TransactionColumn(
   t: (key: string) => string
 ): ColumnDef<ExtendedTransactionPayload>[] {
   return [
-    {
-      id: "expander",
-      header: () => null,
-      cell: ({ row }) => {
-        return row.getCanExpand() ? (
-          <Button
-            {...{
-              className: "size-5 shadow-none text-muted-foreground",
-              onClick: row.getToggleExpandedHandler(),
-              "aria-expanded": row.getIsExpanded(),
-              "aria-label": row.getIsExpanded()
-                ? `Collapse details for ${row.original.note}`
-                : `Expand details for ${row.original.note}`,
-              size: "icon",
-              variant: "ghost",
-            }}
-          >
-            {row.getIsExpanded() ? (
-              <ChevronUpIcon
-                className="opacity-60"
-                size={16}
-                aria-hidden="true"
-              />
-            ) : (
-              <ChevronDownIcon
-                className="opacity-60"
-                size={16}
-                aria-hidden="true"
-              />
-            )}
-          </Button>
-        ) : undefined;
-      },
-    },
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
     {
       accessorKey: "product.name",
       header: ({ column }) => (

@@ -79,12 +79,11 @@ export default function AnyTransactionForm({
     data: productsData,
     error: productsError,
     isLoading: isProductsLoading,
-  } = useSwr<SelectProduct[]>("/api/products", fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      dedupingInterval: 60000,
-    });
+  } = useSwr<SelectProduct[]>("/api/products", fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    dedupingInterval: 60000,
+  });
 
   const form = useForm<SaleTransactionFormData>({
     resolver: zodResolver(saleTransactionSchema),
@@ -92,19 +91,19 @@ export default function AnyTransactionForm({
       productId: transaction ? transaction.productId : "",
       warehouseItemId: transaction ? transaction.warehouseItemId : "",
       quantity: transaction ? Math.abs(transaction.quantity) : 1,
-      note: transaction ? transaction.note ?? "" : "",
-      reference: transaction ? transaction.reference ?? "" : "",
+      note: transaction ? (transaction.note ?? "") : "",
+      reference: transaction ? (transaction.reference ?? "") : "",
       type: transaction ? transaction.type : "DAMAGE",
     },
   });
 
-  const formValues = form.watch(['productId', 'warehouseItemId']);
+  const formValues = form.watch(["productId", "warehouseItemId"]);
 
   const [productId, warehouseItemId] = formValues;
   const selectedProduct = useMemo(
-  () => productsData?.find((p) => p.id === productId),
-  [productsData, productId]
-);
+    () => productsData?.find((p) => p.id === productId),
+    [productsData, productId]
+  );
 
   const {
     data: productDetailsData,
@@ -121,9 +120,10 @@ export default function AnyTransactionForm({
   );
 
   const selectedWarehouseItem = useMemo(
-    () => productDetailsData?.warehouseItems.find(
-      (item) => item.id === warehouseItemId
-    ),
+    () =>
+      productDetailsData?.warehouseItems.find(
+        (item) => item.id === warehouseItemId
+      ),
     [productDetailsData, warehouseItemId]
   );
 
@@ -153,7 +153,7 @@ export default function AnyTransactionForm({
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error(tCommon("error"), {
         description: t("transactionAddFailed"),
       });

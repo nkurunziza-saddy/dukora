@@ -6,19 +6,12 @@ import { ErrorCode } from "@/server/constants/errors";
 import { revalidatePath } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 
-import {
-  create as createWarehouseRepo,
-  getById as getWarehouseByIdRepo,
-  update as updateWarehouseRepo,
-  getAll as getAllWarehousesRepo,
-  remove as removeWarehouseRepo,
-  createMany as createManyWarehousesRepo,
-} from "../repos/warehouse-repo";
+import * as warehouseRepo from "../repos/warehouse-repo";
 
 export const getWarehouses = createProtectedAction(
   Permission.WAREHOUSE_VIEW,
   async (user) => {
-    const warehouses = await getAllWarehousesRepo(user.businessId!);
+    const warehouses = await warehouseRepo.get_all_cached(user.businessId!);
     if (warehouses.error) {
       return { data: null, error: warehouses.error };
     }
@@ -32,7 +25,10 @@ export const getWarehouseById = createProtectedAction(
     if (!warehouseId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const warehouse = await getWarehouseByIdRepo(warehouseId, user.businessId!);
+    const warehouse = await warehouseRepo.get_by_id_cached(
+      warehouseId,
+      user.businessId!
+    );
     if (warehouse.error) {
       return { data: null, error: warehouse.error };
     }
@@ -50,7 +46,7 @@ export const createWarehouse = createProtectedAction(
       ...warehouseData,
       businessId: user.businessId!,
     };
-    const { data: resData, error: resError } = await createWarehouseRepo(
+    const { data: resData, error: resError } = await warehouseRepo.create(
       warehouse,
       user.id
     );
@@ -78,7 +74,7 @@ export const updateWarehouse = createProtectedAction(
     if (!warehouseId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const updatedWarehouse = await updateWarehouseRepo(
+    const updatedWarehouse = await warehouseRepo.update(
       warehouseId,
       user.businessId!,
       user.id,
@@ -98,7 +94,7 @@ export const deleteWarehouse = createProtectedAction(
     if (!warehouseId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    await removeWarehouseRepo(warehouseId, user.businessId!, user.id);
+    await warehouseRepo.remove(warehouseId, user.businessId!, user.id);
     revalidatePath("/", "layout");
     return { data: { success: true }, error: null };
   }
@@ -118,7 +114,7 @@ export const createManyWarehouses = createProtectedAction(
       businessId: user.businessId!,
       code: Math.random().toString(36).substr(2, 6).toUpperCase(),
     }));
-    const createdWarehouses = await createManyWarehousesRepo(
+    const createdWarehouses = await warehouseRepo.create_many(
       warehouses,
       user.id
     );

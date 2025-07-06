@@ -1,14 +1,12 @@
-import { getBusinessSettings } from "@/server/actions/business-settings-actions";
 import { getUserSettings } from "@/server/actions/user-settings-actions";
 import { getBusinessById } from "@/server/actions/business-actions";
 import { getUserById } from "@/server/actions/user-actions";
-import BusinessProfileForm from "@/components/forms/business-profile-form";
-import BusinessSettingsForm from "@/components/forms/business-settings-form";
 import UserProfileForm from "@/components/forms/user-profile-form";
 import UserSettingsForm from "@/components/forms/user-settings-form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getTranslations } from "next-intl/server";
 import { getCurrentSession } from "@/server/actions/auth-actions";
+import { BusinessSettingsForm } from "./_components/business-settings";
 
 export default async function SettingsPage() {
   const session = await getCurrentSession();
@@ -19,17 +17,16 @@ export default async function SettingsPage() {
     return <div>Business or user not found</div>;
   }
 
-  const [businessRes, businessSettingsRes, userRes, userSettingsRes, t] =
-    await Promise.all([
-      getBusinessById(businessId),
-      getBusinessSettings({}),
-      getUserById(userId),
-      getUserSettings({}),
-      getTranslations("settings"),
-    ]);
+  const [businessRes, userRes, userSettingsRes, t] = await Promise.all([
+    getBusinessById(businessId),
+    // getBusinessSettings({}),
+    getUserById(userId),
+    getUserSettings({}),
+    getTranslations("settings"),
+  ]);
 
   const business = businessRes.data;
-  const businessSettings = businessSettingsRes.data;
+  // const businessSettings = businessSettingsRes.data;
   const user = userRes.data;
   const userSettings = userSettingsRes.data;
 
@@ -42,8 +39,7 @@ export default async function SettingsPage() {
           <TabsTrigger value="user">{t("user")}</TabsTrigger>
         </TabsList>
         <TabsContent value="business" className="space-y-6">
-          <BusinessProfileForm business={business} />
-          <BusinessSettingsForm settings={businessSettings} />
+          <BusinessSettingsForm business={business!} />
         </TabsContent>
         <TabsContent value="user" className="space-y-6">
           <UserProfileForm user={user} />

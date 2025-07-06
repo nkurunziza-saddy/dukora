@@ -72,56 +72,57 @@ export default function PurchaseTransactionForm({
     data: productsData,
     error: productsError,
     isLoading: isProductsLoading,
-  } = useSwr<SelectProduct[]>("/api/products", fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      dedupingInterval: 60000,
-    });
+  } = useSwr<SelectProduct[]>("/api/products", fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    dedupingInterval: 60000,
+  });
 
   const {
     data: suppliersData,
     error: suppliersError,
     isLoading: issuppliersLoading,
-  } = useSwr<SelectSupplier[]>("/api/suppliers", fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      dedupingInterval: 60000,
-    });
+  } = useSwr<SelectSupplier[]>("/api/suppliers", fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    dedupingInterval: 60000,
+  });
 
   const form = useForm<PurchaseTransactionFormData>({
     resolver: zodResolver(purchaseTransactionSchema),
     defaultValues: {
       productId: purchaseTransaction ? purchaseTransaction.productId : "",
-      supplierId: purchaseTransaction ? (purchaseTransaction.supplierId ?? ""): "",
+      supplierId: purchaseTransaction
+        ? (purchaseTransaction.supplierId ?? "")
+        : "",
       warehouseId: purchaseTransaction ? purchaseTransaction.warehouseId : "",
       quantity: purchaseTransaction
         ? Math.abs(purchaseTransaction.quantity)
         : 1,
-      note: purchaseTransaction ? purchaseTransaction.note ?? "" : "",
-      reference: purchaseTransaction ? purchaseTransaction.reference ?? "" : "",
+      note: purchaseTransaction ? (purchaseTransaction.note ?? "") : "",
+      reference: purchaseTransaction
+        ? (purchaseTransaction.reference ?? "")
+        : "",
     },
   });
 
-  const formValues = form.watch(['productId', 'warehouseId', 'quantity']);
+  const formValues = form.watch(["productId", "warehouseId", "quantity"]);
 
   const [productId] = formValues;
   const selectedProduct = useMemo(
-  () => productsData?.find((p) => p.id === productId),
-  [productsData, productId]
-);
-  
+    () => productsData?.find((p) => p.id === productId),
+    [productsData, productId]
+  );
+
   const {
     data: warehousesData,
     error: warehousesError,
     isLoading: isWarehousesLoading,
-  } = useSwr<SelectWarehouse[]>(`/api/warehouse`, fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      dedupingInterval: 60000,
-    });
+  } = useSwr<SelectWarehouse[]>(`/api/warehouse`, fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    dedupingInterval: 60000,
+  });
 
   const onSubmit = async (data: PurchaseTransactionFormData) => {
     try {
@@ -149,7 +150,7 @@ export default function PurchaseTransactionForm({
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error(tCommon("error"), {
         description: t("transactionAddFailed"),
       });
@@ -361,7 +362,7 @@ export default function PurchaseTransactionForm({
             />
           )}
 
-<FormField
+          <FormField
             control={form.control}
             name="supplierId"
             render={({ field }) => (
@@ -388,9 +389,19 @@ export default function PurchaseTransactionForm({
                         >
                           {field.value ? (
                             <div className="flex items-center gap-2">
-                              <span>{suppliersData?.find((p) => p.id === field.value)?.name}</span>
+                              <span>
+                                {
+                                  suppliersData?.find(
+                                    (p) => p.id === field.value
+                                  )?.name
+                                }
+                              </span>
                               <Badge variant="secondary" className="text-xs">
-                                {suppliersData?.find((p) => p.id === field.value)?.contactName}
+                                {
+                                  suppliersData?.find(
+                                    (p) => p.id === field.value
+                                  )?.contactName
+                                }
                               </Badge>
                             </div>
                           ) : (

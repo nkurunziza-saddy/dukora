@@ -1,13 +1,13 @@
 "use server";
 
-import type { OnboardingFormData } from "@/components/onboarding";
+import type { OnboardingFormData } from "@/app/[locale]/(onboarding)/onboarding/_components/onboarding-form";
 import { ErrorCode } from "../constants/errors";
 import { Permission } from "../constants/permissions";
 import { getUserIfHasPermission } from "./auth/permission-middleware";
 import { createManyInvitations } from "@/server/actions/invitation-actions";
 import { createManyWarehouses } from "./warehouse-actions";
 import { createBusiness } from "./business-actions";
-import { createManyCategories } from "./category-actions";
+import { upsertManyCategories } from "./category-actions";
 import { upsertManyBusinessSettings } from "./business-settings-actions";
 
 export async function businessInitialization(data: OnboardingFormData) {
@@ -44,7 +44,7 @@ export async function businessInitialization(data: OnboardingFormData) {
     const [invitation, warehouse, category, settings] = await Promise.all([
       createManyInvitations(teamMembers),
       createManyWarehouses(warehouses),
-      createManyCategories(categories),
+      upsertManyCategories(categories),
       upsertManyBusinessSettings(businessSettingsRecordArray),
     ]);
     if (invitation.error) {

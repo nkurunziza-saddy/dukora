@@ -7,19 +7,12 @@ import type {
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import {
-  getAll as getAllTransactionsRepo,
-  getById as getTransactionByIdRepo,
-  create_with_warehouse_item as createWithWarehouseItem,
-  create as createTransactionRepo,
-  getByType as getTransactionsByTypeRepo,
-  getByTimeIntervalWithWith,
-} from "../repos/transaction-repo";
+import * as transactionRepo from "../repos/transaction-repo";
 
 export const getTransactions = createProtectedAction(
   Permission.FINANCIAL_VIEW,
   async (user) => {
-    const transactions = await getAllTransactionsRepo(user.businessId!);
+    const transactions = await transactionRepo.get_all(user.businessId!);
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
@@ -27,10 +20,36 @@ export const getTransactions = createProtectedAction(
   }
 );
 
+export const getTransactionsPaginated = createProtectedAction(
+  Permission.FINANCIAL_VIEW,
+  async (user, { page = 1, limit = 50 }: { page?: number; limit?: number }) => {
+    const result = await transactionRepo.get_paginated(
+      user.businessId!,
+      page,
+      limit
+    );
+
+    if (result.error) {
+      return { data: null, error: result.error, pagination: null };
+    }
+
+    return {
+      data: result.data,
+      error: null,
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        total: result.total,
+        totalPages: result.totalPages,
+      },
+    };
+  }
+);
+
 export const getTransactionsByTimeInterval = createProtectedAction(
   Permission.FINANCIAL_VIEW,
   async (user, { startDate, endDate }: { startDate: Date; endDate: Date }) => {
-    const transactions = await getByTimeIntervalWithWith(
+    const transactions = await transactionRepo.get_time_interval_with_with(
       user.businessId!,
       startDate,
       endDate
@@ -48,7 +67,7 @@ export const getTransactionById = createProtectedAction(
     if (!transactionId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const transaction = await getTransactionByIdRepo(
+    const transaction = await transactionRepo.get_by_id(
       transactionId,
       user.businessId!
     );
@@ -79,7 +98,7 @@ export const createTransaction = createProtectedAction(
       createdBy: user.id,
     };
     const { data: resData, error: resError } =
-      await createTransactionRepo(transaction);
+      await transactionRepo.create(transaction);
     if (resError) {
       return { data: null, error: resError };
     }
@@ -110,7 +129,7 @@ export const createTransactionAndWarehouseItem = createProtectedAction(
       createdBy: user.id,
     };
     const { data: resData, error: resError } =
-      await createWithWarehouseItem(transaction);
+      await transactionRepo.create_with_warehouse_item(transaction);
     if (resError) {
       return { data: null, error: resError };
     }
@@ -124,7 +143,7 @@ export const getTransactionsByType = createProtectedAction(
     if (!type) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const transactions = await getTransactionsByTypeRepo(
+    const transactions = await transactionRepo.get_by_type(
       user.businessId!,
       type
     );

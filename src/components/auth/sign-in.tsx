@@ -33,19 +33,22 @@ export default function SignIn() {
 
   return (
     <Card className="">
-      <Alert variant="destructive">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>{t_form("emailVerificationDown")}</AlertDescription>
-      </Alert>
       <CardHeader>
-        <CardTitle className="text-lg md:text-xl">
-          {t("signIn.title")}
-        </CardTitle>
-        <CardDescription className="text-xs md:text-sm">
-          {t("signIn.description")}
-        </CardDescription>
+        <CardTitle>{t("signIn.title")}</CardTitle>
+        <CardDescription>{t("signIn.description")}</CardDescription>
       </CardHeader>
       <CardContent>
+        <div className="mb-6">
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              {t_form("emailVerificationDown", {
+                moreContent:
+                  "Please use verified providers like Google or GitHub to sign in for now.",
+              })}
+            </AlertDescription>
+          </Alert>
+        </div>
         <div className="grid gap-4">
           <div className="grid gap-2">
             <Label htmlFor="email">{t("fields.email")}</Label>
@@ -54,6 +57,7 @@ export default function SignIn() {
               type="email"
               placeholder={t("fields.emailPlaceholder")}
               required
+              disabled
               onChange={(e) => {
                 setEmail(e.target.value);
               }}
@@ -64,7 +68,10 @@ export default function SignIn() {
           <div className="grid gap-2">
             <div className="flex items-center">
               <Label htmlFor="password">{t("fields.password")}</Label>
-              <Link href="#" className="ml-auto inline-block text-sm underline">
+              <Link
+                href="#"
+                className="ml-auto inline-block text-muted text-sm underline"
+              >
                 {t("signIn.forgotPassword")}
               </Link>
             </div>
@@ -74,6 +81,7 @@ export default function SignIn() {
               type="password"
               placeholder={t("fields.passwordPlaceholder")}
               autoComplete="password"
+              disabled
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -82,6 +90,7 @@ export default function SignIn() {
           <div className="flex items-center gap-2">
             <Checkbox
               id="remember"
+              disabled
               onClick={() => {
                 setRememberMe(!rememberMe);
               }}
@@ -92,7 +101,7 @@ export default function SignIn() {
           <Button
             type="submit"
             className="w-full"
-            disabled={loading}
+            disabled
             onClick={async () => {
               await signIn.email(
                 {
@@ -222,12 +231,9 @@ export default function SignIn() {
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex flex-col items-center">
+      <CardFooter className="flex gap-1 items-center">
         <p className="text-xs text-muted-foreground">{t("signIn.noAccount")}</p>
-        <Link
-          href="/auth/sign-up"
-          className="text-sm text-primary-foreground underline"
-        >
+        <Link href="/auth/sign-up" className="text-xs text-primary underline">
           {t("signIn.signUpLink")}
         </Link>
       </CardFooter>

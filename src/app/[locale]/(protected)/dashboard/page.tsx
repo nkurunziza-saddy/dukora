@@ -34,7 +34,7 @@ import StatCard from "@/components/shared/stat-card";
 import { getSchedulesOverview } from "@/server/actions/schedule-actions";
 import { getLogsOverview } from "@/server/actions/logs-actions";
 import { getLowStockAlertProducts } from "@/server/actions/product-items-actions";
-import { formatCurrency, formatNumber } from "@/lib/utils";
+import { formatCurrency, formatKeys, formatNumber } from "@/lib/utils";
 
 export default async function InventoryDashboard() {
   const [totalSKUs, totalWarehouses, lowStockCount, inventoryValue] =
@@ -276,23 +276,33 @@ export default async function InventoryDashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {logsData?.map((log) => (
-                    <TableRow key={log.audit_logs.id}>
-                      <TableCell>{log.audit_logs.model}</TableCell>
-                      <TableCell>{log.audit_logs.recordId}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{log.audit_logs.action}</Badge>
-                      </TableCell>
-                      <TableCell>{log.users.name}</TableCell>
-                      <TableCell>
-                        {log.audit_logs.performedAt
-                          ? new Date(
-                              log.audit_logs.performedAt
-                            ).toLocaleString()
-                          : "-"}
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {logsData?.map((log) => {
+                    const formattedString = log.audit_logs.action
+                      .split("-")
+                      .join(" ");
+                    return (
+                      <TableRow key={log.audit_logs.id}>
+                        <TableCell>
+                          {formatKeys(log.audit_logs.model)}
+                        </TableCell>
+                        <TableCell>{log.audit_logs.recordId}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">
+                            {formattedString.charAt(0).toUpperCase() +
+                              formattedString.slice(1)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{log.users.name}</TableCell>
+                        <TableCell>
+                          {log.audit_logs.performedAt
+                            ? new Date(
+                                log.audit_logs.performedAt
+                              ).toLocaleString()
+                            : "-"}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </CardContent>

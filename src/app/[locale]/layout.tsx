@@ -43,7 +43,7 @@ export default async function RootLayout({
       lang={locale}
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
-      <body suppressHydrationWarning className="antialiased">
+      <body suppressHydrationWarning className="scrollbar">
         <NextIntlClientProvider>
           <ThemeProvider
             attribute="class"

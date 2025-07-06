@@ -47,8 +47,8 @@ export default function ExpenseTransactionForm({
     resolver: zodResolver(expenseTransactionSchema),
     defaultValues: {
       amount: expenseTransaction ? expenseTransaction.amount : "",
-      note: expenseTransaction ? expenseTransaction.note ?? "" : "",
-      reference: expenseTransaction ? expenseTransaction.reference ?? "" : "",
+      note: expenseTransaction ? (expenseTransaction.note ?? "") : "",
+      reference: expenseTransaction ? (expenseTransaction.reference ?? "") : "",
     },
   });
 
@@ -71,7 +71,7 @@ export default function ExpenseTransactionForm({
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error(tCommon("error"), {
         description: t("recordFailed"),
       });

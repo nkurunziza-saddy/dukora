@@ -75,8 +75,8 @@ const onboardingSchema = z.object({
   ),
   categories: z.array(
     z.object({
-      name: z.string().min(1, "Warehouse name is required"),
-      value: z.string().min(1, "Warehouse name is required"),
+      name: z.string().min(1, "Category name is required"),
+      value: z.string().min(1, "Category value is required"),
     })
   ),
   warehouses: z
@@ -299,7 +299,6 @@ export default function OnboardingFlow() {
     setIsSubmitting(true);
     try {
       const req = await businessInitialization(data);
-      console.log(req);
       if (req.data) {
         form.reset();
         toast.success(tCommon("redirecting"), {});

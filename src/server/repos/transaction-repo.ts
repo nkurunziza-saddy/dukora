@@ -16,7 +16,9 @@ import {
 } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
 import { create as createWarehouseItem } from "@/server/repos/warehouse-item-repo";
-export async function getAll(businessId: string) {
+import { cache } from "react";
+
+export const get_all = cache(async (businessId: string) => {
   if (!businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -29,6 +31,7 @@ export async function getAll(businessId: string) {
         product: true,
         createdByUser: true,
       },
+      limit: 50,
     });
 
     return { data: transactions, error: null };
@@ -36,9 +39,49 @@ export async function getAll(businessId: string) {
     console.error("Failed to fetch transactions:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+});
 
-export async function getByTimeInterval(
+export const get_paginated = cache(
+  async (businessId: string, page = 1, limit = 50) => {
+    if (!businessId) {
+      return { data: null, error: ErrorCode.MISSING_INPUT, total: 0 };
+    }
+
+    try {
+      const offset = (page - 1) * limit;
+
+      const [totalResult] = await db
+        .select({ count: sql<number>`count(*)` })
+        .from(transactionsTable)
+        .where(eq(transactionsTable.businessId, businessId));
+
+      const transactions = await db.query.transactionsTable.findMany({
+        where: eq(transactionsTable.businessId, businessId),
+        orderBy: desc(transactionsTable.createdAt),
+        limit,
+        offset,
+        with: {
+          product: true,
+          createdByUser: true,
+        },
+      });
+
+      return {
+        data: transactions,
+        error: null,
+        total: totalResult.count,
+        page,
+        limit,
+        totalPages: Math.ceil(totalResult.count / limit),
+      };
+    } catch (error) {
+      console.error("Failed to fetch transactions:", error);
+      return { data: null, error: ErrorCode.FAILED_REQUEST, total: 0 };
+    }
+  }
+);
+
+export async function get_by_time_interval(
   businessId: string,
   dateFrom: Date,
   dateTo: Date
@@ -67,7 +110,7 @@ export async function getByTimeInterval(
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
 }
-export async function getByTimeIntervalWithWith(
+export async function get_time_interval_with_with(
   businessId: string,
   dateFrom: Date,
   dateTo: Date
@@ -95,7 +138,7 @@ export async function getByTimeIntervalWithWith(
   }
 }
 
-export async function getById(transactionId: string, businessId: string) {
+export async function get_by_id(transactionId: string, businessId: string) {
   if (!transactionId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -228,7 +271,7 @@ export async function create_with_warehouse_item(
   }
 }
 
-export async function getByType(businessId: string, type: TransactionType) {
+export async function get_by_type(businessId: string, type: TransactionType) {
   if (!businessId || !type) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
