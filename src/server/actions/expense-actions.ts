@@ -4,18 +4,13 @@ import type { InsertExpense } from "@/lib/schema/schema-types";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import {
-  getAll as getAllExpensesRepo,
-  getById as getExpenseByIdRepo,
-  create as createExpenseRepo,
-  getByTimeInterval as getExpensesByTimeIntervalRepo,
-} from "../repos/expenses-repo";
+import * as expenseRepo from "../repos/expenses-repo";
 import { revalidatePath } from "next/cache";
 
 export const getExpenses = createProtectedAction(
   Permission.FINANCIAL_VIEW,
   async (user) => {
-    const expenses = await getAllExpensesRepo(user.businessId!);
+    const expenses = await expenseRepo.get_all_cached(user.businessId!);
     if (expenses.error) {
       return { data: null, error: expenses.error };
     }
@@ -26,7 +21,7 @@ export const getExpenses = createProtectedAction(
 export const getExpensesByTimeInterval = createProtectedAction(
   Permission.FINANCIAL_VIEW,
   async (user, { startDate, endDate }: { startDate: Date; endDate: Date }) => {
-    const expenses = await getExpensesByTimeIntervalRepo(
+    const expenses = await expenseRepo.get_by_time_interval(
       user.businessId!,
       startDate,
       endDate
@@ -44,7 +39,7 @@ export const getExpenseById = createProtectedAction(
     if (!expenseId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const expense = await getExpenseByIdRepo(expenseId, user.businessId!);
+    const expense = await expenseRepo.get_by_id(expenseId, user.businessId!);
     if (expense.error) {
       return { data: null, error: expense.error };
     }
@@ -66,7 +61,8 @@ export const createExpense = createProtectedAction(
       businessId: user.businessId!,
       createdBy: user.id,
     };
-    const { data: resData, error: resError } = await createExpenseRepo(expense);
+    const { data: resData, error: resError } =
+      await expenseRepo.create(expense);
     if (resError) {
       return { data: null, error: resError };
     }

@@ -2,11 +2,11 @@
 
 import { db } from "@/lib/db";
 import { eq, and, desc } from "drizzle-orm";
+import { businessesTable, metricsTable } from "@/lib/schema";
 import type { InsertMetric } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
-import { businessesTable, metricsTable } from "@/lib/schema";
 
-export async function InsertMetric(
+export async function insert_metric(
   metric: Omit<InsertMetric, "id" | "createdAt">
 ) {
   try {
@@ -20,15 +20,14 @@ export async function InsertMetric(
       return { data: null, error: ErrorCode.ALREADY_EXISTS };
     }
     const result = await db.insert(metricsTable).values(metric).returning();
-
     return { data: result[0], error: null };
   } catch (error) {
-    console.error("Failed to upsert metric:", error);
+    console.error("Failed to insert metric:", error);
     return { data: null, error: ErrorCode.DATABASE_ERROR };
   }
 }
 
-export async function upsertMetric(
+export async function upsert_metric(
   metric: Omit<InsertMetric, "id" | "createdAt">
 ) {
   try {
@@ -48,7 +47,6 @@ export async function upsertMetric(
         },
       })
       .returning();
-
     return { data: result[0], error: null };
   } catch (error) {
     console.error("Failed to upsert metric:", error);
@@ -56,7 +54,7 @@ export async function upsertMetric(
   }
 }
 
-export async function getMetric(
+export async function get_metric(
   businessId: string,
   periodType: string,
   period: Date
@@ -73,7 +71,6 @@ export async function getMetric(
         )
       )
       .limit(1);
-
     return { data: result[0] || null, error: null };
   } catch (error) {
     console.error("Failed to get metric:", error);
@@ -81,7 +78,7 @@ export async function getMetric(
   }
 }
 
-export async function getMetricByName(
+export async function get_metric_by_name(
   businessId: string,
   name: string,
   periodType: string,
@@ -95,9 +92,6 @@ export async function getMetricByName(
     if (!currentBusiness) {
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
     }
-    // if (period < currentBusiness.createdAt) {
-    //   return { data: null, error: ErrorCode.BAD_REQUEST };
-    // }
 
     const result = await db
       .select()
@@ -111,6 +105,7 @@ export async function getMetricByName(
         )
       )
       .limit(1);
+
     if (!result || result.length <= 0) {
       return { data: null, error: ErrorCode.NOT_FOUND };
     }
@@ -122,7 +117,7 @@ export async function getMetricByName(
   }
 }
 
-export async function getMonthlyMetrics(businessId: string, date: Date) {
+export async function get_monthly_metrics(businessId: string, date: Date) {
   try {
     const result = await db
       .select()
@@ -135,10 +130,13 @@ export async function getMonthlyMetrics(businessId: string, date: Date) {
         )
       );
 
-    const metricsObject = result.reduce((acc, metric) => {
-      acc[metric.name] = Number(metric.value);
-      return acc;
-    }, {} as Record<string, number>);
+    const metricsObject = result.reduce(
+      (acc, metric) => {
+        acc[metric.name] = Number(metric.value);
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     return { data: metricsObject, error: null };
   } catch (error) {
@@ -147,7 +145,7 @@ export async function getMonthlyMetrics(businessId: string, date: Date) {
   }
 }
 
-export async function getMetricsHistory(
+export async function get_metrics_history(
   businessId: string,
   metricNames: string[],
   periodType = "monthly",
@@ -166,12 +164,15 @@ export async function getMetricsHistory(
       .orderBy(desc(metricsTable.period))
       .limit(limit * metricNames.length);
 
-    const groupedMetrics = result.reduce((acc, metric) => {
-      const period = metric.period.toISOString().slice(0, 7);
-      if (!acc[period]) acc[period] = {};
-      acc[period][metric.name] = Number(metric.value);
-      return acc;
-    }, {} as Record<string, Record<string, number>>);
+    const groupedMetrics = result.reduce(
+      (acc, metric) => {
+        const period = metric.period.toISOString().slice(0, 7);
+        if (!acc[period]) acc[period] = {};
+        acc[period][metric.name] = Number(metric.value);
+        return acc;
+      },
+      {} as Record<string, Record<string, number>>
+    );
 
     return { data: groupedMetrics, error: null };
   } catch (error) {
@@ -180,7 +181,7 @@ export async function getMetricsHistory(
   }
 }
 
-export async function deleteMetricsForPeriod(
+export async function delete_metrics_for_period(
   businessId: string,
   periodType: string,
   period: Date
@@ -195,7 +196,6 @@ export async function deleteMetricsForPeriod(
           eq(metricsTable.period, period)
         )
       );
-
     return { data: result, error: null };
   } catch (error) {
     console.error("Failed to delete metrics:", error);
@@ -203,7 +203,7 @@ export async function deleteMetricsForPeriod(
   }
 }
 
-export async function getLatestMetrics(
+export async function get_latest_metrics(
   businessId: string,
   metricNames: string[]
 ) {
@@ -215,13 +215,16 @@ export async function getLatestMetrics(
       .orderBy(desc(metricsTable.period))
       .limit(50);
 
-    const latestMetrics = metricNames.reduce((acc, metricName) => {
-      const metric = result.find((m) => m.name === metricName);
-      if (metric) {
-        acc[metricName] = Number(metric.value);
-      }
-      return acc;
-    }, {} as Record<string, number>);
+    const latestMetrics = metricNames.reduce(
+      (acc, metricName) => {
+        const metric = result.find((m) => m.name === metricName);
+        if (metric) {
+          acc[metricName] = Number(metric.value);
+        }
+        return acc;
+      },
+      {} as Record<string, number>
+    );
 
     return { data: latestMetrics, error: null };
   } catch (error) {
@@ -230,12 +233,11 @@ export async function getLatestMetrics(
   }
 }
 
-export async function bulkInsertMetrics(
+export async function bulk_insert_metrics(
   metrics: Omit<InsertMetric, "id" | "createdAt">[]
 ) {
   try {
     const result = await db.insert(metricsTable).values(metrics).returning();
-
     return { data: result, error: null };
   } catch (error) {
     console.error("Failed to bulk insert metrics:", error);

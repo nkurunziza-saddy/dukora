@@ -9,7 +9,7 @@ import { revalidatePath } from "next/cache";
 export const fetchCategories = createProtectedAction(
   Permission.CATEGORY_VIEW,
   async (user) => {
-    const categories = await categoryRepo.getAll(user.businessId!);
+    const categories = await categoryRepo.get_all_cached(user.businessId!);
     if (categories.error) {
       return { data: null, error: categories.error };
     }
@@ -23,7 +23,7 @@ export const fetchCategoryById = createProtectedAction(
     if (!categoryId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const category = await categoryRepo.getById(categoryId, user.businessId!);
+    const category = await categoryRepo.get_by_id(categoryId, user.businessId!);
     if (category.error) {
       return { data: null, error: category.error };
     }
@@ -104,7 +104,7 @@ export const upsertManyCategories = createProtectedAction(
       ...category,
       businessId: user.businessId!,
     }));
-    const createdCategories = await categoryRepo.upsertMany(
+    const createdCategories = await categoryRepo.upsert_many(
       categories,
       user.id
     );

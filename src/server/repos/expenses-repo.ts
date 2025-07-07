@@ -3,9 +3,10 @@ import { db } from "@/lib/db";
 import { expensesTable, auditLogsTable, usersTable } from "@/lib/schema";
 import { InsertExpense, InsertAuditLog } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
+import { cache } from "react";
 
-export async function getAll(businessId: string) {
+export const get_all = cache(async (businessId: string) => {
   if (!businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -27,9 +28,20 @@ export async function getAll(businessId: string) {
     console.error("Failed to fetch expenses:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+});
 
-export async function getByTimeInterval(
+export const get_all_cached = unstable_cache(
+  async (businessId: string) => {
+    return get_all(businessId);
+  },
+  ["expenses"],
+  {
+    tags: ["expenses"],
+    revalidate: 300,
+  }
+);
+
+export async function get_by_time_interval(
   businessId: string,
   dateFrom: Date,
   dateTo: Date
@@ -55,7 +67,7 @@ export async function getByTimeInterval(
   }
 }
 
-export async function getById(expenseId: string, businessId: string) {
+export async function get_by_id(expenseId: string, businessId: string) {
   if (!expenseId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }

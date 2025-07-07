@@ -125,7 +125,7 @@ const steps = [
 ];
 
 export default function OnboardingFlow() {
-  const t = useTranslations("onboarding");
+  const t = useTranslations("forms");
   const tCommon = useTranslations("common");
   const businessTypes = [
     { value: "retail", label: t("businessTypeRetail") },

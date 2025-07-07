@@ -4,7 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
 import {
-  ExtendedTransactionPayload,
+  CompressedTransactionPayload,
   TransactionType,
 } from "@/lib/schema/schema-types";
 import { ArrowDown, ArrowUp, XCircle, Undo2, Redo2 } from "lucide-react";
@@ -12,19 +12,19 @@ import { Badge } from "@/components/ui/badge";
 
 export function TransactionColumn(
   t: (key: string) => string
-): ColumnDef<ExtendedTransactionPayload>[] {
+): ColumnDef<CompressedTransactionPayload>[] {
   return [
     {
-      accessorKey: "product.name",
+      accessorKey: "product",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t("name")} />
       ),
-      cell: ({ row }) => row.original.product?.name ?? "",
+      cell: ({ row }) => row.original.product ?? "",
     },
     {
       accessorKey: "type",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title={t("status")} />
+        <DataTableColumnHeader column={column} title={t("type")} />
       ),
       cell: ({ row }) => {
         const status = transactionStatuses.find(
@@ -75,11 +75,11 @@ export function TransactionColumn(
       cell: ({ row }) => row.original.reference ?? "",
     },
     {
-      accessorKey: "createdByUser.name",
+      accessorKey: "createdByUser",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t("createdBy")} />
       ),
-      cell: ({ row }) => row.original.createdByUser.name ?? "",
+      cell: ({ row }) => row.original.createdBy ?? "",
     },
     {
       accessorKey: "createdAt",

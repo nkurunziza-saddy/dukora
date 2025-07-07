@@ -2,14 +2,7 @@
 import type { InsertBusiness } from "@/lib/schema/schema-types";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
-import {
-  getAll as getAllBusinessesRepo,
-  getById as getBusinessByIdRepo,
-  create as createBusinessRepo,
-  update as updateBusinessRepo,
-  remove as removeBusinessRepo,
-  createMany as createManyBusinessesRepo,
-} from "../repos/business-repo";
+import * as businessRepo from "../repos/business-repo";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import { getCurrentSession } from "@/server/actions/auth-actions";
 import { revalidatePath } from "next/cache";
@@ -17,7 +10,7 @@ import { revalidatePath } from "next/cache";
 export const getBusinesses = createProtectedAction(
   Permission.BUSINESS_VIEW,
   async () => {
-    const businesses = await getAllBusinessesRepo();
+    const businesses = await businessRepo.get_all();
     if (businesses.error) {
       return { data: null, error: businesses.error };
     }
@@ -31,7 +24,7 @@ export const getBusinessById = createProtectedAction(
     if (!businessId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const business = await getBusinessByIdRepo(businessId);
+    const business = await businessRepo.get_by_id_cached(businessId);
     if (business.error) {
       return { data: null, error: business.error };
     }
@@ -49,7 +42,7 @@ export const createBusiness = async (
   if (!businessData.name?.trim()) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
-  const res = await createBusinessRepo(
+  const res = await businessRepo.create(
     session.user.id,
     businessData as InsertBusiness
   );
@@ -75,7 +68,7 @@ export const updateBusiness = createProtectedAction(
     if (!businessId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const updatedBusiness = await updateBusinessRepo(
+    const updatedBusiness = await businessRepo.update(
       businessId,
       user.id,
       updates
@@ -94,7 +87,7 @@ export const deleteBusiness = createProtectedAction(
     if (!businessId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const res = await removeBusinessRepo(businessId, user.id);
+    const res = await businessRepo.remove(businessId, user.id);
     if (res.error) {
       return { data: null, error: res.error };
     }
@@ -110,7 +103,7 @@ export const createManyBusinesses = createProtectedAction(
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
     const businesses: InsertBusiness[] = businessesData as InsertBusiness[];
-    const createdBusinesses = await createManyBusinessesRepo(businesses);
+    const createdBusinesses = await businessRepo.create_many(businesses);
     if (createdBusinesses.error) {
       return { data: null, error: createdBusinesses.error };
     }

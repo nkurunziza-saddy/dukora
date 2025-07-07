@@ -1,11 +1,12 @@
+import { eq } from "drizzle-orm";
+import { unstable_cache, revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { businessesTable, auditLogsTable, usersTable } from "@/lib/schema";
-import { eq } from "drizzle-orm";
-import { ErrorCode } from "../constants/errors";
-import { unstable_cache, revalidatePath } from "next/cache";
 import type { InsertAuditLog, InsertBusiness } from "@/lib/schema/schema-types";
+import { ErrorCode } from "../constants/errors";
+import { cache } from "react";
 
-export async function getAll() {
+export const get_all = cache(async () => {
   try {
     const res = await db
       .select()
@@ -16,15 +17,18 @@ export async function getAll() {
     console.error(error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+});
 
-export const getAllCached = async () =>
-  unstable_cache(async () => await getAll(), ["businesses"], {
+export const get_all_cached = unstable_cache(
+  async () => get_all(),
+  ["businesses"],
+  {
     revalidate: 300,
     tags: ["businesses"],
-  });
+  }
+);
 
-export async function getById(businessId: string) {
+export async function get_by_id(businessId: string) {
   if (!businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -50,14 +54,14 @@ export async function getById(businessId: string) {
   }
 }
 
-export const getByIdCached = async (businessId: string) =>
-  unstable_cache(
-    async () => await getById(businessId),
-    ["business", businessId],
-    {
-      revalidate: 300,
-    }
-  );
+export const get_by_id_cached = unstable_cache(
+  async (businessId: string) => get_by_id(businessId),
+  ["businesses"],
+  {
+    revalidate: 300,
+    tags: ["businesses"],
+  }
+);
 
 export async function create(userId: string, business: InsertBusiness) {
   if (!business.name) {
@@ -189,7 +193,7 @@ export async function remove(businessId: string, userId: string) {
   }
 }
 
-export async function createMany(businesses: InsertBusiness[]) {
+export async function create_many(businesses: InsertBusiness[]) {
   if (!businesses.length) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }

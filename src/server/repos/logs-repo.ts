@@ -1,13 +1,14 @@
 "use server";
 
 import { eq, desc, and } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
 import type { InsertAuditLog } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
 import { auditLogsTable, usersTable } from "@/lib/schema";
+import { cache } from "react";
 
-export async function get_all(businessId: string, userId: string) {
+export const get_all = cache(async (businessId: string, userId: string) => {
   if (!businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -28,36 +29,45 @@ export async function get_all(businessId: string, userId: string) {
     console.error("Failed to fetch auditLogs:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+});
 
-export async function get_overview(
-  businessId: string,
-  userId: string,
-  limit?: number
-) {
-  if (!businessId) {
-    return { data: null, error: ErrorCode.MISSING_INPUT };
+export const get_all_cached = unstable_cache(
+  async (businessId: string, userId: string) => {
+    return get_all(businessId, userId);
+  },
+  ["logs"],
+  {
+    tags: ["logs"],
+    revalidate: 300,
   }
+);
 
-  try {
-    const auditLogs = await db
-      .select()
-      .from(auditLogsTable)
-      .where(
-        and(
-          eq(auditLogsTable.businessId, businessId),
-          eq(auditLogsTable.performedBy, userId)
+export const get_overview = cache(
+  async (businessId: string, userId: string, limit?: number) => {
+    if (!businessId) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
+    }
+
+    try {
+      const auditLogs = await db
+        .select()
+        .from(auditLogsTable)
+        .where(
+          and(
+            eq(auditLogsTable.businessId, businessId),
+            eq(auditLogsTable.performedBy, userId)
+          )
         )
-      )
-      .innerJoin(usersTable, eq(auditLogsTable.performedBy, usersTable.id))
-      .limit(limit ?? 5)
-      .orderBy(desc(auditLogsTable.performedAt));
-    return { data: auditLogs, error: null };
-  } catch (error) {
-    console.error("Failed to fetch auditLogs:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
+        .innerJoin(usersTable, eq(auditLogsTable.performedBy, usersTable.id))
+        .limit(limit ?? 5)
+        .orderBy(desc(auditLogsTable.performedAt));
+      return { data: auditLogs, error: null };
+    } catch (error) {
+      console.error("Failed to fetch auditLogs:", error);
+      return { data: null, error: ErrorCode.FAILED_REQUEST };
+    }
   }
-}
+);
 
 export async function get_by_id(auditLogId: string, businessId: string) {
   if (!auditLogId || !businessId) {

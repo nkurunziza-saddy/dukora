@@ -4,13 +4,14 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { revalidatePath, unstable_cache } from "next/cache";
 import { auditLogsTable, businessSettingsTable } from "@/lib/schema";
-import type {
+import {
   InsertAuditLog,
   InsertBusinessSetting,
 } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
+import { cache } from "react";
 
-export async function getAll(businessId: string) {
+export const get_all = cache(async (businessId: string) => {
   if (!businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -25,17 +26,18 @@ export async function getAll(businessId: string) {
     console.error("Failed to fetch business settings:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+});
 
-export const getAllCached = async (businessId: string) =>
-  unstable_cache(
-    async () => await getAll(businessId),
-    ["business-settings", businessId],
-    {
-      revalidate: 300,
-      tags: [`business-settings-${businessId}`],
-    }
-  );
+export const get_all_cached = unstable_cache(
+  async (businessId: string) => {
+    return get_all(businessId);
+  },
+  ["business-settings"],
+  {
+    revalidate: 300,
+    tags: ["business-settings"],
+  }
+);
 
 export async function upsert(
   businessId: string,
@@ -80,7 +82,7 @@ export async function upsert(
   }
 }
 
-export async function upsertMany(
+export async function upsert_many(
   userId: string,
   settings: InsertBusinessSetting[]
 ) {

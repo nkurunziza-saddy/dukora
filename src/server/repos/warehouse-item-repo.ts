@@ -13,8 +13,9 @@ import type {
   InsertWarehouseItem,
 } from "@/lib/schema/schema-types";
 import { ErrorCode } from "../constants/errors";
+import { cache } from "react";
 
-export async function get_all(warehouseId: string) {
+export const get_all = cache(async (warehouseId: string) => {
   try {
     const items = await db
       .select()
@@ -25,7 +26,7 @@ export async function get_all(warehouseId: string) {
     console.error("Error getting warehouse items:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+});
 
 export const get_all_cached = unstable_cache(
   async (warehouseId: string) => {

@@ -1,14 +1,14 @@
 "use server";
 
 import { eq, desc, and, isNull } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
-import { unstable_cache } from "next/cache";
 import { auditLogsTable, suppliersTable } from "@/lib/schema";
 import type { InsertAuditLog, InsertSupplier } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
+import { cache } from "react";
 
-export async function getAll(businessId: string) {
+export const get_all = cache(async (businessId: string) => {
   if (!businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -29,19 +29,20 @@ export async function getAll(businessId: string) {
     console.error("Failed to fetch suppliers:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+});
 
-export const getAllCached = async (businessId: string) =>
-  unstable_cache(
-    async () => await getAll(businessId),
-    ["suppliers", businessId],
-    {
-      revalidate: 300,
-      tags: [`suppliers-${businessId}`],
-    }
-  );
+export const get_all_cached = unstable_cache(
+  async (businessId: string) => {
+    return get_all(businessId);
+  },
+  ["suppliers"],
+  {
+    revalidate: 300,
+    tags: ["suppliers"],
+  }
+);
 
-export async function getById(supplierId: string, businessId: string) {
+export async function get_by_id(supplierId: string, businessId: string) {
   if (!supplierId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -71,15 +72,16 @@ export async function getById(supplierId: string, businessId: string) {
   }
 }
 
-export const getByIdCached = async (supplierId: string, businessId: string) =>
-  unstable_cache(
-    async () => await getById(supplierId, businessId),
-    ["suppliers", supplierId, businessId],
-    {
-      revalidate: 300,
-      tags: [`suppliers-${businessId}`, `supplier-${supplierId}`],
-    }
-  );
+export const get_by_id_cached = unstable_cache(
+  async (supplierId: string, businessId: string) => {
+    return get_by_id(supplierId, businessId);
+  },
+  ["suppliers", "by-id"],
+  {
+    revalidate: 300,
+    tags: ["suppliers", "supplier-by-id"],
+  }
+);
 
 export async function create(
   businessId: string,
@@ -230,7 +232,7 @@ export async function remove(
   }
 }
 
-export async function createMany(suppliers: InsertSupplier[]) {
+export async function create_many(suppliers: InsertSupplier[]) {
   if (!suppliers.length) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }

@@ -1,11 +1,12 @@
 "use server";
 
 import { eq, desc, and } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
 import { schedulesTable } from "@/lib/schema/models/schedules";
 import type { InsertSchedule } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
+import { cache } from "react";
 
 export async function get_all(businessId: string, userId: string) {
   if (!businessId) {
@@ -30,60 +31,71 @@ export async function get_all(businessId: string, userId: string) {
   }
 }
 
-export async function get_overview(
-  businessId: string,
-  userId: string,
-  limit?: number
-) {
-  if (!businessId) {
-    return { data: null, error: ErrorCode.MISSING_INPUT };
+export const get_all_cached = unstable_cache(
+  async (businessId: string, userId: string) => {
+    return get_all(businessId, userId);
+  },
+  ["suppliers"],
+  {
+    revalidate: 300,
+    tags: ["suppliers"],
   }
+);
 
-  try {
-    const schedules = await db
-      .select()
-      .from(schedulesTable)
-      .where(
-        and(
-          eq(schedulesTable.businessId, businessId),
-          eq(schedulesTable.userId, userId)
-        )
-      )
-      .limit(limit ?? 5)
-      .orderBy(desc(schedulesTable.created_at));
-    return { data: schedules, error: null };
-  } catch (error) {
-    console.error("Failed to fetch schedules:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
-  }
-}
-
-export async function get_by_id(scheduleId: string, businessId: string) {
-  if (!scheduleId || !businessId) {
-    return { data: null, error: ErrorCode.MISSING_INPUT };
-  }
-
-  try {
-    const schedule = await db.query.schedulesTable.findFirst({
-      where: and(
-        eq(schedulesTable.id, scheduleId),
-        eq(schedulesTable.businessId, businessId)
-      ),
-    });
-
-    if (!schedule) {
-      return {
-        data: null,
-        error: ErrorCode.NOT_FOUND,
-      };
+export const get_overview = cache(
+  async (businessId: string, userId: string, limit?: number) => {
+    if (!businessId) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
     }
 
-    return { data: schedule, error: null };
-  } catch (error) {
-    console.error("Failed to fetch schedule:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
+    try {
+      const schedules = await db
+        .select()
+        .from(schedulesTable)
+        .where(
+          and(
+            eq(schedulesTable.businessId, businessId),
+            eq(schedulesTable.userId, userId)
+          )
+        )
+        .limit(limit ?? 5)
+        .orderBy(desc(schedulesTable.created_at));
+      return { data: schedules, error: null };
+    } catch (error) {
+      console.error("Failed to fetch schedules:", error);
+      return { data: null, error: ErrorCode.FAILED_REQUEST };
+    }
   }
-}
+);
+
+export const get_by_id = cache(
+  async (scheduleId: string, businessId: string) => {
+    if (!scheduleId || !businessId) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
+    }
+
+    try {
+      const schedule = await db.query.schedulesTable.findFirst({
+        where: and(
+          eq(schedulesTable.id, scheduleId),
+          eq(schedulesTable.businessId, businessId)
+        ),
+      });
+
+      if (!schedule) {
+        return {
+          data: null,
+          error: ErrorCode.NOT_FOUND,
+        };
+      }
+
+      return { data: schedule, error: null };
+    } catch (error) {
+      console.error("Failed to fetch schedule:", error);
+      return { data: null, error: ErrorCode.FAILED_REQUEST };
+    }
+  }
+);
 
 export async function create(
   businessId: string,

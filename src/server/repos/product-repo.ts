@@ -1,7 +1,6 @@
 import { eq, desc, and, isNull } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
-import { unstable_cache } from "next/cache";
 import {
   auditLogsTable,
   categoriesTable,
@@ -11,8 +10,9 @@ import {
 } from "@/lib/schema";
 import { InsertAuditLog, InsertProduct } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
+import { cache } from "react";
 
-export async function getAll(businessId: string) {
+export const get_all = cache(async (businessId: string) => {
   if (!businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -34,55 +34,59 @@ export async function getAll(businessId: string) {
     console.error("Failed to fetch products:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
-export async function getOverview(businessId: string, limit?: number) {
-  if (!businessId) {
-    return { data: null, error: ErrorCode.MISSING_INPUT };
+});
+
+export const get_all_cached = unstable_cache(
+  async (businessId: string) => {
+    return get_all(businessId);
+  },
+  ["products"],
+  {
+    tags: ["products"],
+    revalidate: 300,
   }
+);
 
-  try {
-    const query = db
-      .select()
-      .from(productsTable)
-      .where(
-        and(
-          eq(productsTable.businessId, businessId),
-          isNull(productsTable.deletedAt)
-        )
-      )
-      .orderBy(desc(productsTable.createdAt))
-      .innerJoin(
-        warehouseItemsTable,
-        eq(productsTable.id, warehouseItemsTable.productId)
-      )
-      .innerJoin(
-        categoriesTable,
-        eq(productsTable.categoryId, categoriesTable.id)
-      )
-      .innerJoin(
-        warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
-      );
-
-    const products = await (limit ? query.limit(limit) : query);
-    return { data: products, error: null };
-  } catch (error) {
-    console.error("Failed to fetch products:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
-  }
-}
-
-export const getAllCached = async (businessId: string) => {
-  return unstable_cache(
-    async () => await getAll(businessId),
-    ["products", businessId],
-    {
-      revalidate: 300,
+export const get_overview = cache(
+  async (businessId: string, limit?: number) => {
+    if (!businessId) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-  );
-};
 
-export async function getById(productId: string, businessId: string) {
+    try {
+      const query = db
+        .select()
+        .from(productsTable)
+        .where(
+          and(
+            eq(productsTable.businessId, businessId),
+            isNull(productsTable.deletedAt)
+          )
+        )
+        .orderBy(desc(productsTable.createdAt))
+        .innerJoin(
+          warehouseItemsTable,
+          eq(productsTable.id, warehouseItemsTable.productId)
+        )
+        .innerJoin(
+          categoriesTable,
+          eq(productsTable.categoryId, categoriesTable.id)
+        )
+        .innerJoin(
+          warehousesTable,
+          eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        );
+
+      const products = await (limit ? query.limit(limit) : query);
+      return { data: products, error: null };
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+      return { data: null, error: ErrorCode.FAILED_REQUEST };
+    }
+  }
+);
+
+export async function get_by_id(productId: string, businessId: string) {
   if (!productId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -117,14 +121,16 @@ export async function getById(productId: string, businessId: string) {
   }
 }
 
-export const getByIdCached = async (productId: string, businessId: string) =>
-  unstable_cache(
-    async () => await getById(productId, businessId),
-    ["products", productId, businessId],
-    {
-      revalidate: 300,
-    }
-  );
+export const get_by_id_cached = unstable_cache(
+  async (productId: string, businessId: string) => {
+    return get_by_id(productId, businessId);
+  },
+  ["products", "byId"],
+  {
+    tags: ["products"],
+    revalidate: 300,
+  }
+);
 
 export async function create(product: InsertProduct, userId: string) {
   if (!product.name || !product.businessId) {
@@ -269,7 +275,7 @@ export async function remove(
   }
 }
 
-export async function createMany(products: InsertProduct[]) {
+export async function create_many(products: InsertProduct[]) {
   if (!products.length) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }

@@ -5,7 +5,7 @@ import * as transactionRepo from "@/server/repos/transaction-repo";
 import { getUserIfHasPermission } from "@/server/actions/auth/permission-middleware";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
-import { getAll as getAllBusinesses } from "../repos/business-repo";
+import { get_all_cached as getAllBusinesses } from "../repos/business-repo";
 import { calculateAllMetrics } from "../helpers/accounting-formulas";
 import { syncMetricsToDatabase } from "../helpers/db-functional-helpers";
 import { endOfMonth, startOfMonth, subMonths } from "date-fns";
@@ -46,7 +46,7 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
     }
 
     const prevMonth = subMonths(dateFrom, 1);
-    const openingStockMetric = await metricsRepo.getMetricByName(
+    const openingStockMetric = await metricsRepo.get_metric_by_name(
       currentUser.businessId!,
       "closingStock",
       "monthly",
@@ -97,7 +97,7 @@ export async function getMonthlyMetrics(date: Date) {
   if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
 
   try {
-    const metrics = await metricsRepo.getMonthlyMetrics(
+    const metrics = await metricsRepo.get_monthly_metrics(
       currentUser.businessId!,
       date
     );

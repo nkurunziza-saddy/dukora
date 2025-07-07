@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Plus, AlertCircle, Warehouse } from "lucide-react";
+import { Trash2, Plus, AlertCircle } from "lucide-react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -134,7 +134,6 @@ export function EditWarehouses({
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-medium flex items-center gap-2">
-                <Warehouse className="h-5 w-5" />
                 {t("warehousesAndBranches")}
               </h3>
               <p className="text-sm text-muted-foreground">
@@ -257,25 +256,6 @@ export function EditWarehouses({
               }
             )}
           </div>
-
-          {currentWarehouses.length > 0 && (
-            <div className="p-4 bg-green-50 border border-green-200 rounded-lg dark:bg-green-950 dark:border-green-800">
-              <p className="text-sm text-green-800 dark:text-green-200">
-                <strong>{t("summary")}</strong> {currentWarehouses.length}{" "}
-                {currentWarehouses.length === 1
-                  ? t("warehouse")
-                  : t("warehouses")}
-                {currentWarehouses.find((w) => w.isDefault) && (
-                  <span>
-                    {" "}
-                    • {t("defaultWarehouse")}:{" "}
-                    {currentWarehouses.find((w) => w.isDefault)?.name ||
-                      t("unnamed")}
-                  </span>
-                )}
-              </p>
-            </div>
-          )}
         </div>
 
         <div className="mt-6">

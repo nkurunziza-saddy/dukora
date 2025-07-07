@@ -6,8 +6,21 @@ import ProductSummaryCard from "./_components/product-summary-card";
 import ProductStockLevels from "./_components/product-stock-levels";
 import ProductTransactions from "./_components/product-transactions";
 import ProductSuppliers from "./_components/product-suppliers";
+import { db } from "@/lib/db";
 
-export default async function ProductDetailsPage({ params }: { params: Promise<{ id: string } >}) {
+export async function generateStaticParams() {
+  const res = await db.query.productsTable.findMany();
+  if (!res) return Array.from({ length: 2 }).map((i) => ({ id: i }));
+  return res.map((unit) => ({
+    id: unit.id,
+  }));
+}
+
+export default async function ProductDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { data: product, error } = await getProductById((await params).id);
 
   if (error || !product) {

@@ -5,7 +5,7 @@ import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import {
-  get_all as getAllLogsRepo,
+  get_all_cached as getAllLogsRepo,
   get_overview as getOverviewLogsRepo,
   get_by_id as getLogByIdRepo,
   create as createLogRepo,

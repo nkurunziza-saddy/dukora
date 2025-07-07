@@ -9,7 +9,9 @@ import * as businessSettingsRepo from "../repos/business-settings-repo";
 export const getBusinessSettings = createProtectedAction(
   Permission.BUSINESS_SETTINGS_VIEW,
   async (user) => {
-    const settings = await businessSettingsRepo.getAll(user.businessId!);
+    const settings = await businessSettingsRepo.get_all_cached(
+      user.businessId!
+    );
     if (settings.error) {
       return { data: null, error: settings.error };
     }
@@ -61,7 +63,7 @@ export const upsertManyBusinessSettings = createProtectedAction(
       ...setting,
       businessId: user.businessId!,
     }));
-    const createdSettings = await businessSettingsRepo.upsertMany(
+    const createdSettings = await businessSettingsRepo.upsert_many(
       user.id,
       settings
     );

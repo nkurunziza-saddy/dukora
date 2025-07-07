@@ -1,9 +1,10 @@
-import { db } from "@/lib/db";
-import { transactionsTable } from "@/lib/schema";
-import { ErrorCode } from "@/server/constants/errors";
 import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { transactionsTable, auditLogsTable } from "@/lib/schema";
+import { ErrorCode } from "@/server/constants/errors";
+import { cache } from "react";
 
-export async function getTransactions(businessId: string) {
+export const get_transactions = cache(async (businessId: string) => {
   if (!businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -20,16 +21,16 @@ export async function getTransactions(businessId: string) {
     console.error("Failed to fetch transactions:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+});
 
-export async function getAuditLogs(businessId: string) {
+export const get_audit_logs = cache(async (businessId: string) => {
   if (!businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
 
   try {
     const auditLogs = await db.query.auditLogsTable.findMany({
-      where: eq(transactionsTable.businessId, businessId),
+      where: eq(auditLogsTable.businessId, businessId),
       with: {
         performedBy: true,
       },
@@ -39,4 +40,4 @@ export async function getAuditLogs(businessId: string) {
     console.error("Failed to fetch audit logs:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+});

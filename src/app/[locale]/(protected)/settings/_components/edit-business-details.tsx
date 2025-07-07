@@ -23,7 +23,7 @@ import {
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Lock } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { SelectBusiness } from "@/lib/schema/schema-types";
 import { updateBusiness } from "@/server/actions/business-actions";
 import { toast } from "sonner";
@@ -172,7 +172,6 @@ export function EditBusinessDetails({
             </Alert>
           )}
 
-          {/* Basic Information */}
           <div>
             <h4 className="font-medium mb-4">{t("basicInformation")}</h4>
             <div className="space-y-4">
@@ -237,7 +236,7 @@ export function EditBusinessDetails({
                       <SelectContent>
                         {businessTypes.map((type) => (
                           <SelectItem key={type.value} value={type.value}>
-                            {t(type.label)}
+                            {type.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -276,7 +275,6 @@ export function EditBusinessDetails({
 
           <div>
             <h4 className="font-medium mb-4 flex items-center gap-2">
-              <Lock className="h-4 w-4 text-muted-foreground" />
               {t("systemInformation")}
             </h4>
             <div className="space-y-4">
@@ -304,7 +302,6 @@ export function EditBusinessDetails({
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 bg-muted/30">
                     <div className="space-y-0.5">
                       <FormLabel className="text-base flex items-center gap-2">
-                        <Lock className="h-4 w-4 text-muted-foreground" />
                         {t("accountStatus")}
                       </FormLabel>
                       <FormDescription>
@@ -321,17 +318,6 @@ export function EditBusinessDetails({
               />
             </div>
           </div>
-
-          {nameValue && (
-            <div className="p-4 bg-green-50 border border-green-200 rounded-lg dark:bg-green-950 dark:border-green-800">
-              <p className="text-sm text-green-800 dark:text-green-200">
-                <strong>{t("summary")}</strong> {nameValue}
-                {domainValue && ` • ${domainValue}`}
-                {watch("businessType") &&
-                  ` • ${businessTypes.find((bt) => bt.value === watch("businessType"))?.label}`}
-              </p>
-            </div>
-          )}
         </div>
 
         <div className="mt-6">

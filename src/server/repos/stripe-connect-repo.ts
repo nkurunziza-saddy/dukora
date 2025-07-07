@@ -1,14 +1,18 @@
+import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { businessesTable, auditLogsTable } from "@/lib/schema";
-import { eq } from "drizzle-orm";
 import { ErrorCode } from "@/server/constants/errors";
 import type { InsertAuditLog } from "@/lib/schema/schema-types";
 import { stripe } from "@/lib/stripe";
 
-export async function createConnectedAccount(
+export async function create_connected_account(
   userId: string,
   businessId: string
 ) {
+  if (!userId || !businessId) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
+
   try {
     const account = await stripe.accounts.create({
       type: "express",
@@ -31,7 +35,7 @@ export async function createConnectedAccount(
     }
 
     const auditData: InsertAuditLog = {
-      businessId: businessId,
+      businessId,
       model: "business",
       recordId: businessId,
       action: "create-stripe-connected-account",
@@ -49,11 +53,15 @@ export async function createConnectedAccount(
   }
 }
 
-export async function createAccountLink(
+export async function create_account_link(
   stripeAccountId: string,
   refreshUrl: string,
   returnUrl: string
 ) {
+  if (!stripeAccountId || !refreshUrl || !returnUrl) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
+
   try {
     const accountLink = await stripe.accountLinks.create({
       account: stripeAccountId,
@@ -68,7 +76,11 @@ export async function createAccountLink(
   }
 }
 
-export async function getAccount(stripeAccountId: string) {
+export async function get_account(stripeAccountId: string) {
+  if (!stripeAccountId) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
+
   try {
     const account = await stripe.accounts.retrieve(stripeAccountId);
     return { data: account, error: null };

@@ -134,7 +134,6 @@ export function EditCategories({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="space-y-6">
-          {/* Category Limit Info */}
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">
@@ -166,7 +165,7 @@ export function EditCategories({
           )}
 
           <div>
-            <h4 className="font-medium mb-4">{t("chooseDefaultCategories")}</h4>
+            <h4 className="font-medium mb-4">{t("chooseCategories")}</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {defaultCategories.map((category) => {
                 const isSelected = watch("categories").some(
@@ -179,7 +178,7 @@ export function EditCategories({
                     key={category.value}
                     className={`p-4 border rounded-lg transition-colors ${
                       isSelected
-                        ? "border-primary bg-muted/70"
+                        ? "border-input bg-muted/70"
                         : canSelect
                           ? "cursor-pointer hover:bg-muted/50"
                           : "opacity-50 cursor-not-allowed"
@@ -248,15 +247,6 @@ export function EditCategories({
               </div>
             )}
           </div>
-
-          {watch("categories").length > 0 && (
-            <div className="p-1 w-fit bg-green-800 border border-green-600 rounded-lg">
-              <p className="text-sm text-green-200">
-                <strong>{t("selected")}</strong> {watch("categories").length}{" "}
-                {t("categories")}
-              </p>
-            </div>
-          )}
         </div>
 
         <div className="mt-6">

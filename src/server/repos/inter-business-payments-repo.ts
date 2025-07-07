@@ -1,16 +1,55 @@
+import { eq, desc } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { interBusinessPaymentsTable, auditLogsTable } from "@/lib/schema";
-import { eq } from "drizzle-orm";
 import { ErrorCode } from "@/server/constants/errors";
 import type {
   InsertAuditLog,
   InsertInterBusinessPayment,
 } from "@/lib/schema/schema-types";
+import { cache } from "react";
 
-export async function createInterBusinessPayment(
+export const get_all = cache(async (businessId: string) => {
+  if (!businessId) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
+  try {
+    const payments = await db
+      .select()
+      .from(interBusinessPaymentsTable)
+      .where(eq(interBusinessPaymentsTable.payerBusinessId, businessId))
+      .orderBy(desc(interBusinessPaymentsTable.createdAt));
+    return { data: payments, error: null };
+  } catch (error) {
+    console.error("Failed to get inter-business payments for business:", error);
+    return { data: null, error: ErrorCode.FAILED_REQUEST };
+  }
+});
+
+export async function get_by_id(paymentId: string) {
+  if (!paymentId) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
+  try {
+    const payment = await db.query.interBusinessPaymentsTable.findFirst({
+      where: eq(interBusinessPaymentsTable.id, paymentId),
+    });
+    if (!payment) {
+      return { data: null, error: ErrorCode.NOT_FOUND };
+    }
+    return { data: payment, error: null };
+  } catch (error) {
+    console.error("Failed to get inter-business payment by ID:", error);
+    return { data: null, error: ErrorCode.FAILED_REQUEST };
+  }
+}
+
+export async function create(
   payment: InsertInterBusinessPayment,
   userId: string
 ) {
+  if (!payment || !userId) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
   try {
     const [newPayment] = await db
       .insert(interBusinessPaymentsTable)
@@ -18,7 +57,7 @@ export async function createInterBusinessPayment(
       .returning();
 
     const auditData: InsertAuditLog = {
-      businessId: payment.payerBusinessId, // Or receiverBusinessId
+      businessId: payment.payerBusinessId,
       model: "interBusinessPayment",
       recordId: newPayment.id,
       action: "create-inter-business-payment",
@@ -36,11 +75,14 @@ export async function createInterBusinessPayment(
   }
 }
 
-export async function updateInterBusinessPaymentStatus(
+export async function update_status(
   paymentId: string,
   status: string,
   userId: string
 ) {
+  if (!paymentId || !status || !userId) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
   try {
     const [updatedPayment] = await db
       .update(interBusinessPaymentsTable)
@@ -53,7 +95,7 @@ export async function updateInterBusinessPaymentStatus(
     }
 
     const auditData: InsertAuditLog = {
-      businessId: updatedPayment.payerBusinessId, // Or receiverBusinessId
+      businessId: updatedPayment.payerBusinessId,
       model: "interBusinessPayment",
       recordId: updatedPayment.id,
       action: "update-inter-business-payment-status",
@@ -67,33 +109,6 @@ export async function updateInterBusinessPaymentStatus(
     return { data: updatedPayment, error: null };
   } catch (error) {
     console.error("Failed to update inter-business payment status:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
-  }
-}
-
-export async function getInterBusinessPaymentById(paymentId: string) {
-  try {
-    const payment = await db.query.interBusinessPaymentsTable.findFirst({
-      where: eq(interBusinessPaymentsTable.id, paymentId),
-    });
-    if (!payment) {
-      return { data: null, error: ErrorCode.NOT_FOUND };
-    }
-    return { data: payment, error: null };
-  } catch (error) {
-    console.error("Failed to get inter-business payment by ID:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
-  }
-}
-
-export async function getInterBusinessPaymentsForBusiness(businessId: string) {
-  try {
-    const payments = await db.query.interBusinessPaymentsTable.findMany({
-      where: eq(interBusinessPaymentsTable.payerBusinessId, businessId),
-    });
-    return { data: payments, error: null };
-  } catch (error) {
-    console.error("Failed to get inter-business payments for business:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
 }

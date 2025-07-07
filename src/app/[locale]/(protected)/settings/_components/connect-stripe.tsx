@@ -1,7 +1,6 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -14,12 +13,7 @@ import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  AlertCircle,
-  CreditCard,
-  CheckCircle,
-  ExternalLink,
-} from "lucide-react";
+import { AlertCircle, CheckCircle } from "lucide-react";
 import {
   createStripeConnectedAccount,
   createStripeAccountLink,
@@ -36,7 +30,7 @@ export function ConnectStripe({
   stripeAccountId: string | undefined;
 }) {
   const tStripe = useTranslations("stripe");
-  const tCommon = useTranslations("error");
+  const tCommon = useTranslations("common");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -87,7 +81,6 @@ export function ConnectStripe({
         return;
       }
 
-      // Redirect to Stripe onboarding
       window.location.href = accountLinkRes.data.url;
     } catch (error) {
       console.error("Stripe Connect error:", error);
@@ -101,7 +94,6 @@ export function ConnectStripe({
     if (!stripeAccountId) return;
 
     try {
-      // Create login link for existing account
       const accountLinkRes = await createStripeAccountLink({
         stripeAccountId,
         refreshUrl: `${window.location.origin}/dashboard/settings/business`,
@@ -126,7 +118,6 @@ export function ConnectStripe({
   };
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Handle form submission if needed
     console.log("Stripe form submitted:", values);
   }
 
@@ -134,13 +125,9 @@ export function ConnectStripe({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="space-y-6">
-          <Separator />
-
-          {/* Header */}
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-medium flex items-center gap-2">
-                <CreditCard className="h-5 w-5" />
                 {tStripe("stripeIntegration")}
               </h3>
               <p className="text-sm text-muted-foreground">
@@ -165,7 +152,6 @@ export function ConnectStripe({
             </Badge>
           </div>
 
-          {/* Connection Status */}
           <div className="p-4 border rounded-lg">
             <FormItem>
               <FormLabel className="text-base">
@@ -177,7 +163,6 @@ export function ConnectStripe({
                   : tStripe("stripeNotConnectedDescription")}
               </FormDescription>
 
-              {/* Account ID Display */}
               {stripeAccountId && (
                 <div className="mt-2 p-2 bg-muted rounded text-xs font-mono">
                   <span className="text-muted-foreground">Account ID: </span>
@@ -187,7 +172,6 @@ export function ConnectStripe({
             </FormItem>
           </div>
 
-          {/* Connection Benefits */}
           {!isStripeConnected && (
             <Alert>
               <AlertCircle className="h-4 w-4" />
@@ -195,17 +179,20 @@ export function ConnectStripe({
                 <div className="space-y-2">
                   <p className="font-medium">{tStripe("stripeBenefits")}</p>
                   <ul className="text-sm space-y-1 ml-4">
-                    <li>• {tStripe("benefit1")}</li>
-                    <li>• {tStripe("benefit2")}</li>
-                    <li>• {tStripe("benefit3")}</li>
-                    <li>• {tStripe("benefit4")}</li>
+                    <li>• Accept payments directly in your app</li>
+                    <li>
+                      • Payouts to your bank account without leaving the
+                      platform
+                    </li>
+                    <li>• Secure and compliant payment processing</li>
+                    <li>• Manage refunds and disputes easily</li>
+                    <li>• Access to detailed transaction analytics</li>
                   </ul>
                 </div>
               </AlertDescription>
             </Alert>
           )}
 
-          {/* Action Buttons */}
           <div className="flex gap-3">
             {!isStripeConnected ? (
               <Button
@@ -214,7 +201,6 @@ export function ConnectStripe({
                 disabled={isSubmitting}
                 className="flex items-center gap-2"
               >
-                <CreditCard className="h-4 w-4" />
                 {isSubmitting
                   ? tStripe("connecting")
                   : tStripe("connectStripeAccount")}
@@ -227,7 +213,6 @@ export function ConnectStripe({
                   onClick={handleManageStripe}
                   className="flex items-center gap-2 bg-transparent"
                 >
-                  <ExternalLink className="h-4 w-4" />
                   {tStripe("manageStripeAccount")}
                 </Button>
                 <Button
@@ -236,22 +221,18 @@ export function ConnectStripe({
                   variant="outline"
                   className="flex items-center gap-2 bg-transparent"
                 >
-                  <CreditCard className="h-4 w-4" />
                   {tStripe("reconnectStripeAccount")}
                 </Button>
               </>
             )}
           </div>
 
-          {/* Summary */}
           {isStripeConnected && (
-            <div className="p-4 bg-green-50 border border-green-200 rounded-lg dark:bg-green-950 dark:border-green-800">
-              <p className="text-sm text-green-800 dark:text-green-200">
-                <strong>{tStripe("summary")}</strong>{" "}
-                {tStripe("stripeAccountActive")}
-                {stripeAccountId && ` • ID: ${stripeAccountId.slice(0, 12)}...`}
-              </p>
-            </div>
+            <Badge>
+              <strong>{tStripe("summary")}</strong>{" "}
+              {tStripe("stripeAccountActive")}
+              {stripeAccountId && ` • ID: ${stripeAccountId.slice(0, 12)}...`}
+            </Badge>
           )}
         </div>
       </form>

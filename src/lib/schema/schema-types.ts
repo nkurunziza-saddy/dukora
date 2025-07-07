@@ -38,7 +38,8 @@ export type SelectTransaction = typeof schema.transactionsTable.$inferSelect;
 export type SelectExpense = typeof schema.expensesTable.$inferSelect;
 export type SelectProductPriceHistory =
   typeof schema.productPriceHistoryTable.$inferSelect;
-export type SelectInterBusinessPayment = typeof schema.interBusinessPaymentsTable.$inferSelect;
+export type SelectInterBusinessPayment =
+  typeof schema.interBusinessPaymentsTable.$inferSelect;
 
 export type InsertBusiness = typeof schema.businessesTable.$inferInsert;
 export type InsertBusinessSetting =
@@ -78,30 +79,55 @@ export type InsertTransaction = typeof schema.transactionsTable.$inferInsert;
 export type InsertExpense = typeof schema.expensesTable.$inferInsert;
 export type InsertProductPriceHistory =
   typeof schema.productPriceHistoryTable.$inferInsert;
-export type InsertInterBusinessPayment = typeof schema.interBusinessPaymentsTable.$inferInsert;
+export type InsertInterBusinessPayment =
+  typeof schema.interBusinessPaymentsTable.$inferInsert;
 
-export const UserRole = schema.USER_ROLES.reduce((acc, role) => {
-  acc[role] = role;
-  return acc;
-}, {} as Record<(typeof schema.USER_ROLES)[number], (typeof schema.USER_ROLES)[number]>);
+export const UserRole = schema.USER_ROLES.reduce(
+  (acc, role) => {
+    acc[role] = role;
+    return acc;
+  },
+  {} as Record<
+    (typeof schema.USER_ROLES)[number],
+    (typeof schema.USER_ROLES)[number]
+  >
+);
 export type UserRole = (typeof UserRole)[keyof typeof UserRole];
 
-export const ProductStatus = schema.PRODUCT_STATUS.reduce((acc, role) => {
-  acc[role] = role;
-  return acc;
-}, {} as Record<(typeof schema.PRODUCT_STATUS)[number], (typeof schema.PRODUCT_STATUS)[number]>);
+export const ProductStatus = schema.PRODUCT_STATUS.reduce(
+  (acc, role) => {
+    acc[role] = role;
+    return acc;
+  },
+  {} as Record<
+    (typeof schema.PRODUCT_STATUS)[number],
+    (typeof schema.PRODUCT_STATUS)[number]
+  >
+);
 export type ProductStatus = (typeof ProductStatus)[keyof typeof ProductStatus];
 
-export const OrderStatus = schema.ORDER_STATUS.reduce((acc, role) => {
-  acc[role] = role;
-  return acc;
-}, {} as Record<(typeof schema.ORDER_STATUS)[number], (typeof schema.ORDER_STATUS)[number]>);
+export const OrderStatus = schema.ORDER_STATUS.reduce(
+  (acc, role) => {
+    acc[role] = role;
+    return acc;
+  },
+  {} as Record<
+    (typeof schema.ORDER_STATUS)[number],
+    (typeof schema.ORDER_STATUS)[number]
+  >
+);
 export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus];
 
-export const TransactionType = schema.TRANSACTION_TYPE.reduce((acc, role) => {
-  acc[role] = role;
-  return acc;
-}, {} as Record<(typeof schema.TRANSACTION_TYPE)[number], (typeof schema.TRANSACTION_TYPE)[number]>);
+export const TransactionType = schema.TRANSACTION_TYPE.reduce(
+  (acc, role) => {
+    acc[role] = role;
+    return acc;
+  },
+  {} as Record<
+    (typeof schema.TRANSACTION_TYPE)[number],
+    (typeof schema.TRANSACTION_TYPE)[number]
+  >
+);
 export type TransactionType =
   (typeof TransactionType)[keyof typeof TransactionType];
 
@@ -120,6 +146,15 @@ export type ExtendedProductPayload = SelectProduct & {
 export type ExtendedTransactionPayload = SelectTransaction & {
   product: SelectProduct;
   createdByUser: SelectUser;
+};
+export type CompressedTransactionPayload = {
+  quantity: number;
+  note: string | null;
+  type: TransactionType;
+  reference: string | null;
+  product: string;
+  createdBy: string;
+  createdAt: Date;
 };
 export type ExtendedInvitationPayload = SelectInvitation & {
   invitedByUser: SelectUser | null;

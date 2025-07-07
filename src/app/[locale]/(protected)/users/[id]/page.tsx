@@ -7,6 +7,15 @@ import UserSchedules from "./_components/user-schedules";
 import UserAuditLogs from "./_components/user-audit-logs";
 import UserExpenses from "./_components/user-expenses";
 import UserTransactions from "./_components/user-transactions";
+import { db } from "@/lib/db";
+
+export async function generateStaticParams() {
+  const res = await db.query.usersTable.findMany();
+  if (!res) return Array.from({ length: 2 }).map((i) => ({ id: i }));
+  return res.map((unit) => ({
+    id: unit.id,
+  }));
+}
 
 export default async function UserDetailsPage({
   params,

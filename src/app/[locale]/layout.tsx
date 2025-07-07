@@ -8,6 +8,7 @@ import { routing } from "@/i18n/routing";
 import localFont from "next/font/local";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Analytics } from "@vercel/analytics/next";
+import { locales } from "@/i18n/config";
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
   variable: "--font-geist",
@@ -26,6 +27,12 @@ export const metadata: Metadata = {
   title: "quantura",
   description: "inventory",
 };
+
+export async function generateStaticParams() {
+  return locales.map((locale) => ({
+    locale,
+  }));
+}
 
 export default async function RootLayout({
   children,

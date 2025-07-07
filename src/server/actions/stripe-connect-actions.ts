@@ -10,7 +10,7 @@ export const createStripeConnectedAccount = createProtectedAction(
     if (!user.businessId) {
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
     }
-    const result = await stripeConnectRepo.createConnectedAccount(
+    const result = await stripeConnectRepo.create_connected_account(
       user.id,
       user.businessId
     );
@@ -34,7 +34,7 @@ export const createStripeAccountLink = createProtectedAction(
     if (!user.businessId) {
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
     }
-    const result = await stripeConnectRepo.createAccountLink(
+    const result = await stripeConnectRepo.create_account_link(
       stripeAccountId,
       refreshUrl,
       returnUrl
@@ -52,7 +52,7 @@ export const getStripeAccount = createProtectedAction(
     if (!user.businessId) {
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
     }
-    const result = await stripeConnectRepo.getAccount(stripeAccountId);
+    const result = await stripeConnectRepo.get_account(stripeAccountId);
     if (result.error) {
       return { data: null, error: result.error };
     }

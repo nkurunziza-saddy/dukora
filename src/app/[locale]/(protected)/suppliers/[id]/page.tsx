@@ -4,6 +4,16 @@ import { getTranslations } from "next-intl/server";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SupplierSummaryCard from "./_components/supplier-summary-card";
 import SupplierProducts from "./_components/supplier-products";
+import { db } from "@/lib/db";
+
+export async function generateStaticParams() {
+  const res = await db.query.suppliersTable.findMany();
+  if (!res) return Array.from({ length: 2 }).map((i) => ({ id: i }));
+  return res.map((supplier) => ({
+    id: supplier.id,
+  }));
+}
+
 export default async function SupplierDetailsPage({
   params,
 }: {

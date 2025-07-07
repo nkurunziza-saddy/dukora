@@ -1,17 +1,17 @@
 "use server";
 
 import { eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
-import { unstable_cache } from "next/cache";
 import { auditLogsTable, userSettingsTable } from "@/lib/schema";
 import type {
   InsertAuditLog,
   InsertUserSetting,
 } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
+import { cache } from "react";
 
-export async function getAll(userId: string) {
+export const get_all = cache(async (userId: string) => {
   if (!userId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -26,13 +26,18 @@ export async function getAll(userId: string) {
     console.error("Failed to fetch user settings:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+});
 
-export const getAllCached = async (userId: string) =>
-  unstable_cache(async () => await getAll(userId), ["user-settings", userId], {
+export const get_all_cached = unstable_cache(
+  async (userId: string) => {
+    return get_all(userId);
+  },
+  ["user-settings"],
+  {
+    tags: ["user-settings"],
     revalidate: 300,
-    tags: [`user-settings-${userId}`],
-  });
+  }
+);
 
 export async function upsert(
   businessId: string,
@@ -68,7 +73,7 @@ export async function upsert(
       return newSetting;
     });
 
-    revalidatePath(`/settings`);
+    revalidatePath("/settings");
 
     return { data: result, error: null };
   } catch (error) {

@@ -1,5 +1,5 @@
-import { eq, desc, and, sql, gte, lte, getTableColumns } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { eq, desc, and, sql, gte, lte } from "drizzle-orm";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
 import {
   transactionsTable,
@@ -25,22 +25,24 @@ export const get_all = cache(async (businessId: string) => {
   }
 
   try {
-    const transactionColumns = getTableColumns(transactionsTable);
     const transactions = await db
       .select({
-        ...transactionColumns,
-        product: productsTable,
-        createdByUser: usersTable,
+        type: transactionsTable.type,
+        quantity: transactionsTable.quantity,
+        reference: transactionsTable.reference,
+        note: transactionsTable.note,
+        createdAt: transactionsTable.createdAt,
+        product: productsTable.name,
+        createdBy: usersTable.name,
       })
       .from(transactionsTable)
+      .where(eq(transactionsTable.businessId, businessId))
       .innerJoin(
         productsTable,
         eq(productsTable.id, transactionsTable.productId)
       )
       .innerJoin(usersTable, eq(usersTable.id, transactionsTable.createdBy))
-      .where(eq(transactionsTable.businessId, businessId))
-      .orderBy(desc(transactionsTable.createdAt))
-      .limit(50);
+      .orderBy(desc(transactionsTable.createdAt));
 
     return { data: transactions, error: null };
   } catch (error) {
@@ -48,6 +50,17 @@ export const get_all = cache(async (businessId: string) => {
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
 });
+
+export const get_all_cached = unstable_cache(
+  async (businessId: string) => {
+    return get_all(businessId);
+  },
+  ["transactions"],
+  {
+    tags: ["transactions"],
+    revalidate: 300,
+  }
+);
 
 export const get_paginated = cache(
   async (businessId: string, page = 1, limit = 50) => {
@@ -124,18 +137,31 @@ export async function get_time_interval_with_with(
   dateTo: Date
 ) {
   try {
-    const result = await db.query.transactionsTable.findMany({
-      where: and(
-        eq(transactionsTable.businessId, businessId),
-        gte(transactionsTable.createdAt, dateFrom),
-        lte(transactionsTable.createdAt, dateTo)
-      ),
-      orderBy: desc(transactionsTable.createdAt),
-      with: {
-        product: true,
-        createdByUser: true,
-      },
-    });
+    const result = await db
+      .select({
+        type: transactionsTable.type,
+        quantity: transactionsTable.quantity,
+        reference: transactionsTable.reference,
+        note: transactionsTable.note,
+        createdAt: transactionsTable.createdAt,
+        product: productsTable.name,
+        createdBy: usersTable.name,
+      })
+      .from(transactionsTable)
+      .where(
+        and(
+          eq(transactionsTable.businessId, businessId),
+          gte(transactionsTable.createdAt, dateFrom),
+          lte(transactionsTable.createdAt, dateTo)
+        )
+      )
+      .innerJoin(
+        productsTable,
+        eq(productsTable.id, transactionsTable.productId)
+      )
+      .innerJoin(usersTable, eq(usersTable.id, transactionsTable.createdBy))
+      .orderBy(desc(transactionsTable.createdAt));
+
     return {
       data: result,
       error: null,

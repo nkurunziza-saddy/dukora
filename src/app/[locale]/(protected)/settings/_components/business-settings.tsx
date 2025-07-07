@@ -7,14 +7,7 @@ import { ConnectStripe } from "./connect-stripe";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Building2,
-  Settings,
-  Tag,
-  Warehouse,
-  CreditCard,
-  AlertCircle,
-} from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import type {
   SelectBusiness,
   SelectBusinessSetting,
@@ -44,7 +37,6 @@ export function BusinessSettingsForm({ business }: BusinessSettingsProps) {
     );
   }
 
-  // Calculate completion status
   const completionStats = {
     details: business.name && business.businessType ? 1 : 0,
     settings: business.businessSettings.length > 0 ? 1 : 0,
@@ -64,15 +56,9 @@ export function BusinessSettingsForm({ business }: BusinessSettingsProps) {
 
   return (
     <div className="space-y-8">
-      {/* Header with Progress */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">Business Settings</h1>
-            <p className="text-muted-foreground">
-              Configure your business information and preferences
-            </p>
-          </div>
+          <div></div>
           <Badge
             variant={completionPercentage === 100 ? "default" : "secondary"}
             className="text-sm"
@@ -81,10 +67,8 @@ export function BusinessSettingsForm({ business }: BusinessSettingsProps) {
           </Badge>
         </div>
 
-        {/* Progress Overview */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           <div className="flex items-center gap-2 p-3 border rounded-lg">
-            <Building2 className="h-4 w-4" />
             <div>
               <p className="text-xs font-medium">Details</p>
               <Badge
@@ -97,7 +81,6 @@ export function BusinessSettingsForm({ business }: BusinessSettingsProps) {
           </div>
 
           <div className="flex items-center gap-2 p-3 border rounded-lg">
-            <Settings className="h-4 w-4" />
             <div>
               <p className="text-xs font-medium">Settings</p>
               <Badge
@@ -110,7 +93,6 @@ export function BusinessSettingsForm({ business }: BusinessSettingsProps) {
           </div>
 
           <div className="flex items-center gap-2 p-3 border rounded-lg">
-            <Tag className="h-4 w-4" />
             <div>
               <p className="text-xs font-medium">Categories</p>
               <Badge
@@ -123,7 +105,6 @@ export function BusinessSettingsForm({ business }: BusinessSettingsProps) {
           </div>
 
           <div className="flex items-center gap-2 p-3 border rounded-lg">
-            <Warehouse className="h-4 w-4" />
             <div>
               <p className="text-xs font-medium">Warehouses</p>
               <Badge
@@ -136,7 +117,6 @@ export function BusinessSettingsForm({ business }: BusinessSettingsProps) {
           </div>
 
           <div className="flex items-center gap-2 p-3 border rounded-lg">
-            <CreditCard className="h-4 w-4" />
             <div>
               <p className="text-xs font-medium">Stripe</p>
               <Badge
@@ -162,7 +142,6 @@ export function BusinessSettingsForm({ business }: BusinessSettingsProps) {
 
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <Building2 className="h-5 w-5" />
           <h2 className="text-xl font-semibold">Business Details</h2>
           <Badge variant={completionStats.details ? "default" : "secondary"}>
             {completionStats.details ? "Complete" : "Incomplete"}
@@ -193,7 +172,6 @@ export function BusinessSettingsForm({ business }: BusinessSettingsProps) {
 
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <Settings className="h-5 w-5" />
           <h2 className="text-xl font-semibold">Business Settings</h2>
           <Badge variant={completionStats.settings ? "default" : "secondary"}>
             {business.businessSettings.length} Settings
@@ -206,7 +184,6 @@ export function BusinessSettingsForm({ business }: BusinessSettingsProps) {
 
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <Tag className="h-5 w-5" />
           <h2 className="text-xl font-semibold">Categories</h2>
           <Badge variant={completionStats.categories ? "default" : "secondary"}>
             {business.categories.length} Categories
@@ -219,7 +196,6 @@ export function BusinessSettingsForm({ business }: BusinessSettingsProps) {
 
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <Warehouse className="h-5 w-5" />
           <h2 className="text-xl font-semibold">Warehouses & Locations</h2>
           <Badge variant={completionStats.warehouses ? "default" : "secondary"}>
             {business.warehouses.length} Locations
@@ -230,7 +206,6 @@ export function BusinessSettingsForm({ business }: BusinessSettingsProps) {
 
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <CreditCard className="h-5 w-5" />
           <h2 className="text-xl font-semibold">Payment Integration</h2>
           <Badge variant={completionStats.stripe ? "default" : "secondary"}>
             {completionStats.stripe ? "Connected" : "Not Connected"}
@@ -241,17 +216,17 @@ export function BusinessSettingsForm({ business }: BusinessSettingsProps) {
         />
       </div>
 
-      {completionPercentage === 100 && (
-        <div className="p-6 bg-green-50 border border-green-200 rounded-lg dark:bg-green-950 dark:border-green-800">
-          <div className="flex items-center gap-2 mb-2">
-            <Badge variant="default">🎉 Setup Complete</Badge>
-          </div>
-          <p className="text-sm text-green-800 dark:text-green-200">
-            Congratulations! Your business setup is complete. All systems are
-            configured and ready for use.
-          </p>
+      {/* {completionPercentage === 100 && ( */}
+      <div className="p-6 bg-green-50 border border-green-200 rounded-lg dark:bg-green-950 dark:border-green-800">
+        <div className="flex items-center gap-2 mb-2">
+          <Badge variant="default">🎉 Setup Complete</Badge>
         </div>
-      )}
+        <p className="text-sm text-green-800 dark:text-green-200">
+          Congratulations! Your business setup is complete. All systems are
+          configured and ready for use.
+        </p>
+      </div>
+      {/* )} */}
     </div>
   );
 }

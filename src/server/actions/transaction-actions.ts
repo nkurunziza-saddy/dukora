@@ -12,7 +12,7 @@ import * as transactionRepo from "../repos/transaction-repo";
 export const getTransactions = createProtectedAction(
   Permission.FINANCIAL_VIEW,
   async (user) => {
-    const transactions = await transactionRepo.get_all(user.businessId!);
+    const transactions = await transactionRepo.get_all_cached(user.businessId!);
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }

@@ -5,8 +5,9 @@ import { revalidatePath, unstable_cache } from "next/cache";
 import { categoriesTable, auditLogsTable } from "@/lib/schema";
 import type { InsertCategory, InsertAuditLog } from "@/lib/schema/schema-types";
 import { ErrorCode } from "../constants/errors";
+import { cache } from "react";
 
-export async function getAll(businessId: string) {
+export const get_all = cache(async (businessId: string) => {
   if (!businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -21,19 +22,18 @@ export async function getAll(businessId: string) {
     console.error("Failed to fetch categories:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+});
 
-export const getAllCached = async (businessId: string) =>
-  unstable_cache(
-    async () => await getAll(businessId),
-    ["categories", businessId],
-    {
-      revalidate: 300,
-      tags: [`categories-${businessId}`],
-    }
-  );
+export const get_all_cached = unstable_cache(
+  async (businessId: string) => get_all(businessId),
+  ["categories"],
+  {
+    revalidate: 300,
+    tags: ["categories"],
+  }
+);
 
-export async function getById(categoryId: string, businessId: string) {
+export async function get_by_id(categoryId: string, businessId: string) {
   if (!categoryId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -56,14 +56,14 @@ export async function getById(categoryId: string, businessId: string) {
   }
 }
 
-export const getByIdCached = async (categoryId: string, businessId: string) =>
-  unstable_cache(
-    async () => await getById(categoryId, businessId),
-    ["categories", categoryId, businessId],
-    {
-      revalidate: 300,
-    }
-  );
+export const get_by_id_cached = unstable_cache(
+  async (categoryId: string, businessId: string) =>
+    get_by_id(categoryId, businessId),
+  ["categories"],
+  {
+    revalidate: 300,
+  }
+);
 
 export async function create(category: InsertCategory, userId: string) {
   if (!category.name || !category.businessId) {
@@ -215,8 +215,11 @@ export async function remove(
   }
 }
 
-export async function upsertMany(categories: InsertCategory[], userId: string) {
-  if (categories === null) {
+export async function upsert_many(
+  categories: InsertCategory[],
+  userId: string
+) {
+  if (!categories) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
 
@@ -233,7 +236,7 @@ export async function upsertMany(categories: InsertCategory[], userId: string) {
         if (!category.name) continue;
         const [newCategory] = await tx
           .insert(categoriesTable)
-          .values(categories)
+          .values(category)
           .onConflictDoUpdate({
             target: [categoriesTable.businessId, categoriesTable.name],
             set: { value: category.value, name: category.name },

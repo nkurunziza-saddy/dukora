@@ -1,10 +1,10 @@
-'use server';
+"use server";
 
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
 import * as interBusinessPaymentsRepo from "@/server/repos/inter-business-payments-repo";
-import { getById as getBusinessByIdRepo } from "@/server/repos/business-repo";
+import { get_by_id as getBusinessByIdRepo } from "@/server/repos/business-repo";
 import { stripe } from "@/lib/stripe";
 
 export const initiateInterBusinessPayment = createProtectedAction(
@@ -52,20 +52,19 @@ export const initiateInterBusinessPayment = createProtectedAction(
         },
       });
 
-      const paymentRecord =
-        await interBusinessPaymentsRepo.createInterBusinessPayment(
-          {
-            payerBusinessId: user.businessId,
-            receiverBusinessId: receiverBusinessId,
-            amount: String(amount),
-            currency: currency,
-            stripePaymentIntentId: paymentIntent.id,
-            status: paymentIntent.status, // 'requires_payment_method', 'requires_confirmation', ...
-            applicationFeeAmount: String(applicationFeeAmount),
-            initiatedByUserId: user.id,
-          },
-          user.id
-        );
+      const paymentRecord = await interBusinessPaymentsRepo.create(
+        {
+          payerBusinessId: user.businessId,
+          receiverBusinessId: receiverBusinessId,
+          amount: String(amount),
+          currency: currency,
+          stripePaymentIntentId: paymentIntent.id,
+          status: paymentIntent.status, // 'requires_payment_method', 'requires_confirmation', ...
+          applicationFeeAmount: String(applicationFeeAmount),
+          initiatedByUserId: user.id,
+        },
+        user.id
+      );
 
       if (paymentRecord.error) {
         // Handle error, potentially cancel payment intent if it was created
@@ -89,10 +88,7 @@ export const getInterBusinessPayments = createProtectedAction(
     if (!user.businessId) {
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
     }
-    const payments =
-      await interBusinessPaymentsRepo.getInterBusinessPaymentsForBusiness(
-        user.businessId
-      );
+    const payments = await interBusinessPaymentsRepo.get_all(user.businessId);
     if (payments.error) {
       return { data: null, error: payments.error };
     }

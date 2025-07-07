@@ -1,10 +1,9 @@
 "use server";
 
 import { eq, and, inArray, isNull, getTableColumns } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
-import { unstable_cache } from "next/cache";
-import { auditLogsTable, invitationsTable } from "@/lib/schema";
+import { auditLogsTable, invitationsTable, usersTable } from "@/lib/schema";
 import type {
   InsertAuditLog,
   InsertInvitation,
@@ -12,10 +11,10 @@ import type {
 import { ErrorCode } from "@/server/constants/errors";
 import { generateRandomCode } from "@/lib/utils/generate-random-code";
 import { addDays } from "date-fns";
-import { usersTable } from "@/lib/schema";
 import { auth } from "@/lib/auth";
+import { cache } from "react";
 
-export async function getAll(businessId: string) {
+export const get_all = cache(async (businessId: string) => {
   if (!businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -40,19 +39,18 @@ export async function getAll(businessId: string) {
     console.error("Failed to fetch invitations:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-}
+});
 
-export const getAllCached = async (businessId: string) =>
-  unstable_cache(
-    async () => await getAll(businessId),
-    ["invitations", businessId],
-    {
-      revalidate: 300,
-      tags: [`invitations-${businessId}`],
-    }
-  );
+export const get_all_cached = unstable_cache(
+  async (businessId: string) => get_all(businessId),
+  ["invitations"],
+  {
+    revalidate: 300,
+    tags: ["invitations"],
+  }
+);
 
-export async function getById(invitationId: string, businessId: string) {
+export async function get_by_id(invitationId: string, businessId: string) {
   if (!invitationId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -68,7 +66,7 @@ export async function getById(invitationId: string, businessId: string) {
     if (!invitation) {
       return {
         data: null,
-        error: ErrorCode.NOT_FOUND ?? ErrorCode.FAILED_REQUEST,
+        error: ErrorCode.NOT_FOUND,
       };
     }
 
@@ -79,19 +77,19 @@ export async function getById(invitationId: string, businessId: string) {
   }
 }
 
-export const getByIdCached = async (invitationId: string, businessId: string) =>
-  unstable_cache(
-    async () => await getById(invitationId, businessId),
-    ["invitations", invitationId, businessId],
-    {
-      revalidate: 300,
-    }
-  );
+export const get_by_id_cached = unstable_cache(
+  async (invitationId: string, businessId: string) =>
+    get_by_id(invitationId, businessId),
+  ["invitations"],
+  {
+    revalidate: 300,
+  }
+);
 
-export const accept_invitation = async (
+export async function accept_invitation(
   code: string,
   action: "accept" | "decline"
-) => {
+) {
   if (!code) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -151,7 +149,7 @@ export const accept_invitation = async (
     console.error("Failed to accept invitation:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-};
+}
 
 export async function create(
   businessId: string,
@@ -209,7 +207,7 @@ export async function create(
       return newInvitation;
     });
 
-    revalidatePath(`users`);
+    revalidatePath("users");
 
     return { data: result, error: null };
   } catch (error) {
@@ -263,7 +261,7 @@ export async function update(
       };
     }
 
-    revalidatePath(`users`);
+    revalidatePath("users");
 
     return { data: result, error: null };
   } catch (error) {
@@ -320,7 +318,7 @@ export async function remove(
       };
     }
 
-    revalidatePath(`users`);
+    revalidatePath("users");
 
     return { data: result, error: null };
   } catch (error) {
@@ -329,7 +327,7 @@ export async function remove(
   }
 }
 
-export async function createMany(
+export async function create_many(
   invitations: Omit<
     InsertInvitation,
     "id" | "code" | "expiresAt" | "isAccepted" | "invitedBy"
@@ -388,7 +386,7 @@ export async function createMany(
       return insertedInvitations;
     });
 
-    revalidatePath(`users`);
+    revalidatePath("users");
 
     return { data: result, error: null };
   } catch (error) {
@@ -397,11 +395,11 @@ export async function createMany(
   }
 }
 
-export const setPasswordForInvitation = async (
+export async function set_password_for_invitation(
   email: string,
   invitationCode: string,
   password: string
-) => {
+) {
   if (!email || !invitationCode || !password) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -451,4 +449,4 @@ export const setPasswordForInvitation = async (
     console.error("Failed to set password for invitation:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
-};
+}

@@ -26,7 +26,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { AlertCircle, Settings } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import type { SelectBusinessSetting } from "@/lib/schema/schema-types";
 import { toast } from "sonner";
 import { upsertBusinessSettings } from "@/server/actions/business-settings-actions";
@@ -156,11 +156,9 @@ export function EditBusinessSettings({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="space-y-6">
-          {/* Settings Overview */}
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-medium flex items-center gap-2">
-                <Settings className="h-5 w-5" />
                 {t("businessSettings")}
               </h3>
               <p className="text-sm text-muted-foreground">
@@ -169,7 +167,6 @@ export function EditBusinessSettings({
             </div>
           </div>
 
-          {/* Limits Overview */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-3 border rounded-lg">
               <div className="flex items-center justify-between">
@@ -227,7 +224,6 @@ export function EditBusinessSettings({
             </div>
           </div>
 
-          {/* VAT Rate Warning */}
           {isVatRateAtLimit && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
@@ -238,7 +234,6 @@ export function EditBusinessSettings({
             </Alert>
           )}
 
-          {/* Form Validation Errors */}
           {Object.keys(errors).length > 0 && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
@@ -248,7 +243,6 @@ export function EditBusinessSettings({
             </Alert>
           )}
 
-          {/* Business Information */}
           <div>
             <h4 className="font-medium mb-4">{t("businessInformation")}</h4>
             <div className="space-y-4">
@@ -298,7 +292,6 @@ export function EditBusinessSettings({
             </div>
           </div>
 
-          {/* Regional Settings */}
           <div>
             <h4 className="font-medium mb-4">{t("regionalSettings")}</h4>
             <div className="space-y-4">
@@ -416,7 +409,6 @@ export function EditBusinessSettings({
             </div>
           </div>
 
-          {/* Tax Settings */}
           <div>
             <h4 className="font-medium mb-4">{t("taxSettings")}</h4>
             <div className="space-y-4">
@@ -480,7 +472,6 @@ export function EditBusinessSettings({
             </div>
           </div>
 
-          {/* Invoice Settings */}
           <div>
             <h4 className="font-medium mb-4">{t("invoiceSettings")}</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -531,19 +522,6 @@ export function EditBusinessSettings({
               />
             </div>
           </div>
-
-          {/* Summary */}
-          {(businessName || watch("currency") || watch("country")) && (
-            <div className="p-4 bg-green-50 border border-green-200 rounded-lg dark:bg-green-950 dark:border-green-800">
-              <p className="text-sm text-green-800 dark:text-green-200">
-                <strong>{t("summary")}</strong>
-                {businessName && ` ${businessName}`}
-                {watch("currency") && ` • ${watch("currency").toUpperCase()}`}
-                {watch("country") &&
-                  ` • ${countries.find((c) => c.value === watch("country"))?.label}`}
-              </p>
-            </div>
-          )}
         </div>
 
         <div className="mt-6">

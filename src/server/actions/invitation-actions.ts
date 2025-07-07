@@ -8,20 +8,12 @@ import {
   createProtectedAction,
   createPublicAction,
 } from "@/server/helpers/action-factory";
-import {
-  getAll as getAllInvitationsRepo,
-  getById as getInvitationByIdRepo,
-  create as createInvitationRepo,
-  update as updateInvitationRepo,
-  remove as removeInvitationRepo,
-  createMany as createManyInvitationsRepo,
-  setPasswordForInvitation as setPasswordForInvitationRepo,
-} from "../repos/invitations-repo";
+import * as invitationRepo from "../repos/invitations-repo";
 
 export const getInvitations = createProtectedAction(
   Permission.INVITATION_VIEW,
   async (user) => {
-    const invitations = await getAllInvitationsRepo(user.businessId!);
+    const invitations = await invitationRepo.get_all_cached(user.businessId!);
     if (invitations.error) {
       return { data: null, error: invitations.error };
     }
@@ -35,7 +27,7 @@ export const getInvitationById = createProtectedAction(
     if (!invitationId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const invitation = await getInvitationByIdRepo(
+    const invitation = await invitationRepo.get_by_id(
       invitationId,
       user.businessId!
     );
@@ -49,7 +41,7 @@ export const getInvitationById = createProtectedAction(
 import { resend } from "@/lib/email";
 import InvitationEmail from "@/components/emails/invitation-email";
 import { render } from "@react-email/render";
-import { getById as getBusinessByIdRepo } from "../repos/business-repo";
+import { get_by_id_cached as getBusinessByIdRepo } from "../repos/business-repo";
 import { accept_invitation as acceptInvitationRepo } from "../repos/invitations-repo";
 import { redirect } from "next/navigation";
 
@@ -66,7 +58,7 @@ export const createInvitation = createProtectedAction(
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
 
-    const res = await createInvitationRepo(
+    const res = await invitationRepo.create(
       user.businessId!,
       user.id,
       invitationData
@@ -123,7 +115,7 @@ export const updateInvitation = createProtectedAction(
     if (!invitationId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const updatedInvitation = await updateInvitationRepo(
+    const updatedInvitation = await invitationRepo.update(
       invitationId,
       user.businessId!,
       user.id,
@@ -143,7 +135,7 @@ export const deleteInvitation = createProtectedAction(
     if (!invitationId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const res = await removeInvitationRepo(
+    const res = await invitationRepo.remove(
       invitationId,
       user.businessId!,
       user.id
@@ -175,7 +167,7 @@ export const createManyInvitations = createProtectedAction(
       ...invitation,
       businessId: user.businessId!,
     }));
-    const createdInvitations = await createManyInvitationsRepo(invitations);
+    const createdInvitations = await invitationRepo.create_many(invitations);
     if (createdInvitations.error) {
       return { data: null, error: createdInvitations.error };
     }
@@ -239,7 +231,7 @@ export const setPasswordForInvitation = createPublicAction(
     invitationCode: string;
     password: string;
   }) => {
-    const res = await setPasswordForInvitationRepo(
+    const res = await invitationRepo.set_password_for_invitation(
       email,
       invitationCode,
       password

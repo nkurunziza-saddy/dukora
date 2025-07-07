@@ -9,7 +9,7 @@ import * as userSettingsRepo from "../repos/user-settings-repo";
 export const getUserSettings = createProtectedAction(
   Permission.USER_VIEW,
   async (user) => {
-    const settings = await userSettingsRepo.getAll(user.id);
+    const settings = await userSettingsRepo.get_all_cached(user.id);
     if (settings.error) {
       return { data: null, error: settings.error };
     }

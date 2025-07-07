@@ -17,7 +17,7 @@ type ColumnWrapperProps<T> = {
 };
 
 const ColumnWrapper = <T,>({ column, data, tag }: ColumnWrapperProps<T>) => {
-  const t = useTranslations("common");
+  const t = useTranslations(tag === "payments" ? "payments" : "common");
   return <DataTable columns={column(t)} data={data} tag={tag} />;
 };
 

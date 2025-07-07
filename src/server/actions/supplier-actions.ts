@@ -3,21 +3,13 @@
 import type { InsertSupplier } from "@/lib/schema/schema-types";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
-import { revalidatePath } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import {
-  getAll as getAllSuppliersRepo,
-  getById as getSupplierByIdRepo,
-  create as createSupplierRepo,
-  update as updateSupplierRepo,
-  remove as removeSupplierRepo,
-  createMany as createManySuppliersRepo,
-} from "../repos/supplier-repo";
+import * as supplierRepo from "../repos/supplier-repo";
 
 export const getSuppliers = createProtectedAction(
   Permission.SUPPLIER_VIEW,
   async (user) => {
-    const suppliers = await getAllSuppliersRepo(user.businessId!);
+    const suppliers = await supplierRepo.get_all_cached(user.businessId!);
     if (suppliers.error) {
       return { data: null, error: suppliers.error };
     }
@@ -31,7 +23,10 @@ export const getSupplierById = createProtectedAction(
     if (!supplierId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const supplier = await getSupplierByIdRepo(supplierId, user.businessId!);
+    const supplier = await supplierRepo.get_by_id_cached(
+      supplierId,
+      user.businessId!
+    );
     if (supplier.error) {
       return { data: null, error: supplier.error };
     }
@@ -49,11 +44,11 @@ export const createSupplier = createProtectedAction(
       ...supplierData,
       businessId: user.businessId!,
     };
-    const res = await createSupplierRepo(user.businessId!, user.id, supplier);
+    const res = await supplierRepo.create(user.businessId!, user.id, supplier);
     if (res.error) {
       return { data: null, error: res.error };
     }
-    revalidatePath("");
+
     return { data: res.data, error: null };
   }
 );
@@ -73,7 +68,7 @@ export const updateSupplier = createProtectedAction(
     if (!supplierId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const updatedSupplier = await updateSupplierRepo(
+    const updatedSupplier = await supplierRepo.update(
       supplierId,
       user.businessId!,
       user.id,
@@ -82,7 +77,7 @@ export const updateSupplier = createProtectedAction(
     if (updatedSupplier.error) {
       return { data: null, error: updatedSupplier.error };
     }
-    revalidatePath("");
+
     return { data: updatedSupplier.data, error: null };
   }
 );
@@ -93,11 +88,15 @@ export const deleteSupplier = createProtectedAction(
     if (!supplierId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const res = await removeSupplierRepo(supplierId, user.businessId!, user.id);
+    const res = await supplierRepo.remove(
+      supplierId,
+      user.businessId!,
+      user.id
+    );
     if (res.error) {
       return { data: null, error: res.error };
     }
-    revalidatePath("");
+
     return { data: { success: true }, error: null };
   }
 );
@@ -112,11 +111,11 @@ export const createManySuppliers = createProtectedAction(
       ...supplier,
       businessId: user.businessId!,
     }));
-    const createdSuppliers = await createManySuppliersRepo(suppliers);
+    const createdSuppliers = await supplierRepo.create_many(suppliers);
     if (createdSuppliers.error) {
       return { data: null, error: createdSuppliers.error };
     }
-    revalidatePath("");
+
     return { data: createdSuppliers.data, error: null };
   }
 );

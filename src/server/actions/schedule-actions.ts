@@ -6,7 +6,7 @@ import { ErrorCode } from "@/server/constants/errors";
 import { revalidatePath } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import {
-  get_all as getAllSchedulesRepo,
+  get_all_cached as getAllSchedulesRepo,
   get_overview as getOverviewSchedules,
   get_by_id as getScheduleByIdRepo,
   create as createScheduleRepo,

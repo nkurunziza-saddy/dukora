@@ -34,13 +34,8 @@ export default async function PaymentsHistoryPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex">
-        <div>
-          <h3 className="text-lg font-medium">{t("paymentHistory")}</h3>
-          <p className="text-sm text-muted-foreground">
-            {t("paymentHistoryDescription")}
-          </p>
-        </div>
+      <div className="flex justify-between">
+        <div></div>
         <Button asChild variant={"link"}>
           <Link href="/payments/send">New payment</Link>
         </Button>

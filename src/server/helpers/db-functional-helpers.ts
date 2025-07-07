@@ -11,7 +11,7 @@ export async function syncMetricsToDatabase(
     const results = [];
 
     for (const [metricName, value] of Object.entries(metrics)) {
-      const result = await metricsRepo.InsertMetric({
+      const result = await metricsRepo.insert_metric({
         businessId,
         name: metricName,
         periodType: "monthly",

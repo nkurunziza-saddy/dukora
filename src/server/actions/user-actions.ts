@@ -7,11 +7,11 @@ import { revalidatePath } from "next/cache";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import {
   create as createUserRepo,
-  getById as getUserByIdRepo,
+  get_by_id as getUserByIdRepo,
   update as updateUserRepo,
-  getAll as getAllUsersRepo,
+  get_all_cached as getAllUsersRepo,
   remove as removeUserRepo,
-  toggleActive as toggleActiveRepo,
+  toggle_active as toggleActiveRepo,
 } from "../repos/user-repo";
 import { db } from "@/lib/db";
 import { usersTable } from "@/lib/schema";
