@@ -31,6 +31,7 @@ import type { SelectBusinessSetting } from "@/lib/schema/schema-types";
 import { toast } from "sonner";
 import { upsertBusinessSettings } from "@/server/actions/business-settings-actions";
 import { format } from "date-fns";
+import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Business settings limits
 const LIMITS = {
@@ -156,16 +157,12 @@ export function EditBusinessSettings({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-medium flex items-center gap-2">
-                {t("businessSettings")}
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                {t("businessSettingsDescription")}
-              </p>
-            </div>
-          </div>
+          <CardHeader className="px-0">
+            <CardTitle>{t("businessSettings")}</CardTitle>
+            <CardDescription>
+              {t("businessSettingsDescription")}
+            </CardDescription>
+          </CardHeader>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-3 border rounded-lg">

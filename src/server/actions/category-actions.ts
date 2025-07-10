@@ -33,12 +33,12 @@ export const fetchCategoryById = createProtectedAction(
 
 export const upsertCategory = createProtectedAction(
   Permission.CATEGORY_CREATE,
-  async (user, categoryData: Omit<InsertCategory, "businessId" | "id">) => {
-    if (!categoryData.name?.trim()) {
+  async (user, categoryData: string) => {
+    if (!categoryData.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
     const category: InsertCategory = {
-      ...categoryData,
+      value: categoryData,
       businessId: user.businessId!,
     };
     const { data: resData, error: resError } = await categoryRepo.create(
@@ -96,12 +96,12 @@ export const deleteCategory = createProtectedAction(
 
 export const upsertManyCategories = createProtectedAction(
   Permission.CATEGORY_CREATE,
-  async (user, categoriesData: Omit<InsertCategory, "businessId" | "id">[]) => {
+  async (user, categoriesData: string[]) => {
     if (categoriesData === null) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
     const categories: InsertCategory[] = categoriesData.map((category) => ({
-      ...category,
+      value: category,
       businessId: user.businessId!,
     }));
     const createdCategories = await categoryRepo.upsert_many(

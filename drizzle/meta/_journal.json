@@ -15,6 +15,20 @@
       "when": 1751120994528,
       "tag": "0001_fantastic_crystal",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1752102804091,
+      "tag": "0002_smooth_vargas",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1752106683984,
+      "tag": "0003_friendly_lizard",
+      "breakpoints": true
     }
   ]
 }

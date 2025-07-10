@@ -50,12 +50,14 @@ import {
   StepperTitle,
   StepperTrigger,
 } from "@/components/ui/stepper";
-import { userRolesObject } from "@/utils/constants";
+import { defaultCategories, userRolesObject } from "@/utils/constants";
 import { USER_ROLES } from "@/lib/schema/models/enums";
 import { businessInitialization } from "@/server/actions/onboarding-actions";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-
+const CATEGORY_LIMIT = 10;
+const INVITATIONS_LIMIT = 5;
+const WAREHOUSES_LIMIT = 5;
 const onboardingSchema = z.object({
   businessName: z.string().min(1, "Business name is required"),
   businessType: z.string().min(1, "Business type is required"),
@@ -67,18 +69,18 @@ const onboardingSchema = z.object({
   pricesIncludeTax: z.boolean(),
   defaultVatRate: z.string().optional(),
 
-  teamMembers: z.array(
-    z.object({
-      email: z.string().email("Invalid email address"),
-      role: z.enum([...USER_ROLES]),
-    })
-  ),
-  categories: z.array(
-    z.object({
-      name: z.string().min(1, "Category name is required"),
-      value: z.string().min(1, "Category value is required"),
-    })
-  ),
+  teamMembers: z
+    .array(
+      z.object({
+        email: z.string().email("Invalid email address"),
+        role: z.enum([...USER_ROLES]),
+      })
+    )
+    .max(INVITATIONS_LIMIT, `Maximum inivtations is ${INVITATIONS_LIMIT}`),
+  categories: z
+    .array(z.string())
+    .max(CATEGORY_LIMIT, `You can select up to ${CATEGORY_LIMIT} categories`),
+
   warehouses: z
     .array(
       z.object({
@@ -86,7 +88,8 @@ const onboardingSchema = z.object({
         isDefault: z.boolean(),
       })
     )
-    .min(1, "At least one warehouse is required"),
+    .min(1, "At least one warehouse is required")
+    .max(WAREHOUSES_LIMIT, `Allowed warehouses up to ${WAREHOUSES_LIMIT}`),
 });
 
 export type OnboardingFormData = z.infer<typeof onboardingSchema>;
@@ -165,17 +168,6 @@ export default function OnboardingFlow() {
     { value: "12", label: t("monthDecember") },
   ];
 
-  const defaultCategories = [
-    { value: "electronics", name: t("categoryElectronics") },
-    { value: "clothing", name: t("categoryClothing") },
-    { value: "food", name: t("categoryFood") },
-    { value: "health", name: t("categoryHealth") },
-    { value: "home", name: t("categoryHome") },
-    { value: "sports", name: t("categorySports") },
-    { value: "books", name: t("categoryBooks") },
-    { value: "office", name: t("categoryOffice") },
-  ];
-
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -238,13 +230,6 @@ export default function OnboardingFlow() {
     setValue("warehouses", updatedWarehouses);
   };
 
-  //   const addCategory = () => {
-  //     const currentCategories = getValues("categories");
-  //   setValue("categories", [
-  //     ...currentCategories,
-  //     { name: "", value: "" },
-  //   ]);
-  // }
   const removeCategory = (index: number) => {
     const currentCategories = getValues("categories");
     setValue(
@@ -697,12 +682,12 @@ export default function OnboardingFlow() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {defaultCategories.map((category) => {
                           const isSelected = watch("categories").some(
-                            (cat) => cat.value === category.value
+                            (cat) => cat === category
                           );
 
                           return (
                             <div
-                              key={category.value}
+                              key={category}
                               className={`p-4 border rounded-lg cursor-pointer transition-colors ${
                                 isSelected ? "border bg-muted/70" : ""
                               }`}
@@ -713,16 +698,13 @@ export default function OnboardingFlow() {
                                   setValue(
                                     "categories",
                                     currentCategories.filter(
-                                      (cat) => cat.value !== category.value
+                                      (cat) => cat !== category
                                     )
                                   );
                                 } else {
                                   setValue("categories", [
                                     ...currentCategories,
-                                    {
-                                      name: category.name,
-                                      value: category.value,
-                                    },
+                                    category,
                                   ]);
                                 }
                               }}
@@ -730,7 +712,7 @@ export default function OnboardingFlow() {
                               <div className="flex items-start justify-between">
                                 <div className="flex-1">
                                   <h5 className="font-medium text-sm">
-                                    {category.name}
+                                    {category}
                                   </h5>
                                 </div>
                               </div>
@@ -759,20 +741,14 @@ export default function OnboardingFlow() {
                                   getValues("categories");
                                 const categoryExists = currentCategories.some(
                                   (cat) =>
-                                    cat.name.toLowerCase() ===
+                                    cat.toLowerCase() ===
                                     categoryName.toLowerCase()
                                 );
 
                                 if (!categoryExists) {
-                                  const categoryValue = categoryName
-                                    .toLowerCase()
-                                    .replace(/\s+/g, "-");
                                   setValue("categories", [
                                     ...currentCategories,
-                                    {
-                                      name: categoryName,
-                                      value: categoryValue,
-                                    },
+                                    categoryName,
                                   ]);
                                   input.value = "";
                                 }
@@ -793,17 +769,14 @@ export default function OnboardingFlow() {
                               const currentCategories = getValues("categories");
                               const categoryExists = currentCategories.some(
                                 (cat) =>
-                                  cat.name.toLowerCase() ===
+                                  cat.toLowerCase() ===
                                   categoryName.toLowerCase()
                               );
 
                               if (!categoryExists) {
-                                const categoryValue = categoryName
-                                  .toLowerCase()
-                                  .replace(/\s+/g, "-");
                                 setValue("categories", [
                                   ...currentCategories,
-                                  { name: categoryName, value: categoryValue },
+                                  categoryName,
                                 ]);
                                 input.value = "";
                               }
@@ -826,7 +799,7 @@ export default function OnboardingFlow() {
                                 variant="secondary"
                                 className="flex items-center"
                               >
-                                {category.name}
+                                {category}
                                 <Button
                                   type="button"
                                   variant={"ghost"}

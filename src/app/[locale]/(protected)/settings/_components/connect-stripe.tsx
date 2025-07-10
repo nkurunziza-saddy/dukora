@@ -18,6 +18,7 @@ import {
   createStripeConnectedAccount,
   createStripeAccountLink,
 } from "@/server/actions/stripe-connect-actions";
+import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const formSchema = z.object({
   stripeAccountId: z.string().optional(),
@@ -125,15 +126,13 @@ export function ConnectStripe({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-medium flex items-center gap-2">
-                {tStripe("stripeIntegration")}
-              </h3>
-              <p className="text-sm text-muted-foreground">
+          <div className="flex items-center gap-3 justify-between">
+            <CardHeader className="px-0 w-full">
+              <CardTitle> {tStripe("stripeIntegration")}</CardTitle>
+              <CardDescription>
                 {tStripe("stripeIntegrationDescription")}
-              </p>
-            </div>
+              </CardDescription>
+            </CardHeader>
             <Badge
               variant={isStripeConnected ? "default" : "secondary"}
               className="flex items-center gap-1"

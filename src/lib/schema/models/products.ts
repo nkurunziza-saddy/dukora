@@ -8,7 +8,6 @@ import {
   index,
   check,
   boolean,
-  AnyPgColumn,
   primaryKey,
 } from "drizzle-orm/pg-core";
 import { businessesTable } from "./businesses";
@@ -76,15 +75,11 @@ export const categoriesTable = pgTable(
       .primaryKey()
       .notNull()
       .default(sql`gen_random_uuid()`),
-    name: text("name").notNull(),
-    value: text("value").notNull(),
+    value: text("value").notNull().unique(),
     description: text("description"),
     businessId: text("business_id")
       .notNull()
       .references(() => businessesTable.id, { onDelete: "cascade" }),
-    parentId: text("parent_id").references(
-      (): AnyPgColumn => categoriesTable.id
-    ),
     isActive: boolean("is_active").notNull().default(true),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
@@ -94,9 +89,9 @@ export const categoriesTable = pgTable(
       .defaultNow(),
   },
   (table) => [
-    check("no_self_reference", sql`${table.id} != ${table.parentId}`),
     index("categories_business_id").on(table.businessId),
-    index("categories_parent_id").on(table.parentId),
+    index("categories_id").on(table.id),
+    index("categories_value").on(table.value),
   ]
 );
 

@@ -70,10 +70,6 @@ export const categoriesTableRelations = relations(
       fields: [categoriesTable.businessId],
       references: [businessesTable.id],
     }),
-    parent: one(categoriesTable, {
-      fields: [categoriesTable.parentId],
-      references: [categoriesTable.id],
-    }),
     products: many(productsTable),
   })
 );

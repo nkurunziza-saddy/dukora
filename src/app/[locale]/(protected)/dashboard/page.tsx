@@ -159,7 +159,7 @@ export default async function InventoryDashboard() {
                       <TableCell>{item.products.name}</TableCell>
                       <TableCell>
                         <Badge variant="secondary">
-                          {item.categories.name}
+                          {item.categories.value}
                         </Badge>
                       </TableCell>
                       <TableCell>{item.warehouses.name}</TableCell>

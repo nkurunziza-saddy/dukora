@@ -133,12 +133,6 @@ export function EditWarehouses({
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-medium flex items-center gap-2">
-                {t("warehousesAndBranches")}
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                {t("warehouseDescription")}
-              </p>
               <p className="text-xs text-muted-foreground mt-1">
                 {remainingSlots > 0
                   ? `${remainingSlots} ${remainingSlots === 1 ? "slot" : "slots"} remaining`

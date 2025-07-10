@@ -71,11 +71,14 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
       return !isNaN(num) && num > 0;
     }, t("maxStockPositive")),
     unit: z.string(),
-    weight: z.string().optional().refine((val) => {
-      if (val === undefined || val === "") return true;
-      const num = Number.parseFloat(val);
-      return !isNaN(num);
-    }, t("weightMustBeNumber")),
+    weight: z
+      .string()
+      .optional()
+      .refine((val) => {
+        if (val === undefined || val === "") return true;
+        const num = Number.parseFloat(val);
+        return !isNaN(num);
+      }, t("weightMustBeNumber")),
   });
 
   const units = [
@@ -92,16 +95,16 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: product ? product.name : "",
-      description: product ? product.description ?? "" : "",
+      description: product ? (product.description ?? "") : "",
       sku: product ? product.sku : "",
-      barcode: product ? product.barcode ?? "" : "",
+      barcode: product ? (product.barcode ?? "") : "",
       price: product ? product.price : "",
       costPrice: product ? product.costPrice : "",
-      categoryId: product ? product.categoryId ?? "" : "",
+      categoryId: product ? (product.categoryId ?? "") : "",
       reorderPoint: product ? product.reorderPoint.toString() : "10",
       maxStock: product ? product.maxStock.toString() : "1000",
       unit: product ? product.unit : "pcs",
-      weight: product ? product.weight ?? "" : "",
+      weight: product ? (product.weight ?? "") : "",
     },
   });
 
@@ -114,7 +117,8 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
           : null,
       reorderPoint: Number.parseInt(values.reorderPoint, 10),
       maxStock: Number.parseInt(values.maxStock, 10),
-      weight: values.weight && values.weight.trim() !== "" ? values.weight : null,
+      weight:
+        values.weight && values.weight.trim() !== "" ? values.weight : null,
     };
     const req = product
       ? await updateProduct({ productId: product.id, updates: productData })
@@ -230,7 +234,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
                         key={category.id}
                         disabled={!category.isActive}
                       >
-                        {category.name}
+                        {category.value}
                       </SelectItem>
                     ))}
                   </SelectContent>

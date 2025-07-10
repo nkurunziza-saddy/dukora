@@ -24,14 +24,14 @@ export const businessTypes = [
 ];
 
 export const defaultCategories = [
-  { value: "electronics", name: "categoryElectronics" },
-  { value: "clothing", name: "categoryClothing" },
-  { value: "food", name: "categoryFood" },
-  { value: "health", name: "categoryHealth" },
-  { value: "home", name: "categoryHome" },
-  { value: "sports", name: "categorySports" },
-  { value: "books", name: "categoryBooks" },
-  { value: "office", name: "categoryOffice" },
+  "Electronics",
+  "Clothing",
+  "Food",
+  "Health",
+  "Home",
+  "Sports",
+  "Books",
+  "Office",
 ];
 
 export const currencies = [

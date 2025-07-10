@@ -7,7 +7,6 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { CurrentPage } from "../navigation/current-page";
-import LocaleSwitcher from "@/components/locale-switcher";
 import QuickActions from "@/components/quick-actions";
 
 const SidebarContainer = ({ children }: { children: React.ReactNode }) => {
@@ -27,7 +26,6 @@ const SidebarContainer = ({ children }: { children: React.ReactNode }) => {
             </div>
             <div className="flex gap-2">
               <QuickActions />
-              <LocaleSwitcher />
             </div>
           </div>
         </header>

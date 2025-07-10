@@ -18,12 +18,7 @@ const CATEGORY_LIMIT = 10;
 
 const formSchema = z.object({
   categories: z
-    .array(
-      z.object({
-        name: z.string().min(1, "Category name is required"),
-        value: z.string().min(1, "Category name is required"),
-      })
-    )
+    .array(z.string())
     .max(CATEGORY_LIMIT, `You can select up to ${CATEGORY_LIMIT} categories`),
 });
 
@@ -38,10 +33,9 @@ export function EditCategories({
     resolver: zodResolver(formSchema),
     defaultValues: {
       categories: categories
-        ? categories.map((cat) => ({
-            name: cat.name,
-            value: cat.value,
-          }))
+        ? categories.map((cat) => {
+            return cat.value;
+          })
         : [],
     },
   });
@@ -76,39 +70,27 @@ export function EditCategories({
     if (categoryName) {
       const currentCategories = getValues("categories");
       const categoryExists = currentCategories.some(
-        (cat) => cat.name.toLowerCase() === categoryName.toLowerCase()
+        (cat) => cat.toLowerCase() === categoryName.toLowerCase()
       );
 
       if (!categoryExists && currentCategories.length < CATEGORY_LIMIT) {
-        const categoryValue = categoryName.toLowerCase().replace(/\s+/g, "-");
-        setValue("categories", [
-          ...currentCategories,
-          { name: categoryName, value: categoryValue },
-        ]);
+        setValue("categories", [...currentCategories, categoryName]);
         input.value = "";
       }
     }
   };
 
-  const toggleDefaultCategory = (category: { name: string; value: string }) => {
+  const toggleDefaultCategory = (category: string) => {
     const currentCategories = getValues("categories");
-    const isSelected = currentCategories.some(
-      (cat) => cat.value === category.value
-    );
+    const isSelected = currentCategories.some((cat) => cat === category);
 
     if (isSelected) {
       setValue(
         "categories",
-        currentCategories.filter((cat) => cat.value !== category.value)
+        currentCategories.filter((cat) => cat !== category)
       );
     } else if (currentCategories.length < CATEGORY_LIMIT) {
-      setValue("categories", [
-        ...currentCategories,
-        {
-          name: category.name,
-          value: category.value,
-        },
-      ]);
+      setValue("categories", [...currentCategories, category]);
     }
   };
 
@@ -169,13 +151,13 @@ export function EditCategories({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {defaultCategories.map((category) => {
                 const isSelected = watch("categories").some(
-                  (cat) => cat.value === category.value
+                  (cat) => cat === category
                 );
                 const canSelect = !isAtLimit || isSelected;
 
                 return (
                   <div
-                    key={category.value}
+                    key={category}
                     className={`p-4 border rounded-lg transition-colors ${
                       isSelected
                         ? "border-input bg-muted/70"
@@ -187,9 +169,7 @@ export function EditCategories({
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <h5 className="font-medium text-sm">
-                          {t(category.name)}
-                        </h5>
+                        <h5 className="font-medium text-sm">{category}</h5>
                       </div>
                     </div>
                   </div>
@@ -232,7 +212,7 @@ export function EditCategories({
                       variant="secondary"
                       className="flex items-center"
                     >
-                      {category.name}
+                      {category}
                       <Button
                         type="button"
                         variant={"ghost"}

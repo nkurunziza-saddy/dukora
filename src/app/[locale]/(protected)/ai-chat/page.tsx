@@ -19,6 +19,8 @@ import {
   Sparkles,
   Zap,
   Brain,
+  User,
+  Bot,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -26,8 +28,9 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import { useEffect, useState, useRef } from "react";
-import { useTranslations } from "next-intl";
 import { CodeBlock } from "./code-block";
+import { SIDEBAR_WIDTH } from "@/components/ui/sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 function TypingIndicator() {
   return (
@@ -165,7 +168,7 @@ export default function AIChat() {
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = `
-      .katex { font-size: 1.1em; font-family: inherit; }
+      .katex { font-size: 1em; font-family: inherit; }
       .katex-display { margin: 1.5em 0; overflow-x: auto; overflow-y: hidden; }
       .katex-display > .katex { display: block; text-align: center; }
     `;
@@ -174,150 +177,173 @@ export default function AIChat() {
       document.head.removeChild(style);
     };
   }, []);
-
-  const t = useTranslations("ai-chat");
-
+  const isMobile = useIsMobile();
   return (
-    <div className="relative mx-auto max-w-4xl h-[89vh] overflow-hidden">
-      <div className="h-full flex flex-col overflow-hidden">
-        <div className="flex-1 overflow-hidden">
-          {messages.length === 0 ? (
-            <div className="h-full flex flex-col">
-              <WelcomeScreen onSuggestionClick={handleSuggestionClick} />
-            </div>
-          ) : (
-            <ScrollArea ref={scrollAreaRef} className="px-4 h-full">
-              <div className="space-y-6 pb-4 pt-4">
-                {messages.map((message) => (
-                  <div key={message.id} className="group">
+    <div className="relative h-full w-full max-w-4xl mx-auto">
+      <div className="h-full pb-32 overflow-hidden">
+        {messages.length === 0 ? (
+          <WelcomeScreen onSuggestionClick={handleSuggestionClick} />
+        ) : (
+          <ScrollArea ref={scrollAreaRef} className="h-full">
+            <div className="p-6 space-y-6">
+              {messages.map((message) => (
+                <div key={message.id} className="group">
+                  <div
+                    className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""}`}
+                  >
                     <div
-                      className={`flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                      className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        message.role === "user"
+                          ? "bg-foreground text-background"
+                          : "bg-muted"
+                      }`}
                     >
-                      <div className="max-w-[80%] space-y-2">
-                        <div
-                          className={`rounded-lg px-4 py-3 text-sm ${
-                            message.role === "user"
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-muted"
-                          }`}
-                        >
-                          <div className="markdown-content space-y-4 text-sm">
-                            <ReactMarkdown
-                              remarkPlugins={[remarkGfm, remarkMath]}
-                              rehypePlugins={[rehypeKatex]}
-                              components={markdownComponents}
-                            >
-                              {processMessage(message.content)}
-                            </ReactMarkdown>
-                          </div>
-                        </div>
+                      {message.role === "user" ? (
+                        <User className="w-3.5 h-3.5" />
+                      ) : (
+                        <Bot className="w-3.5 h-3.5 text-muted-foreground" />
+                      )}
+                    </div>
 
-                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-sm text-muted-foreground"
-                            onClick={() =>
-                              handleCopyMessage(message.content, message.id)
-                            }
+                    <div className="flex-1 max-w-[85%] space-y-2">
+                      <div
+                        className={`px-4 py-3 rounded-lg ${
+                          message.role === "user"
+                            ? "bg-foreground text-background ml-auto"
+                            : "bg-muted/50 text-foreground"
+                        }`}
+                      >
+                        <div className="prose prose-sm max-w-none dark:prose-invert [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm, remarkMath]}
+                            rehypePlugins={[rehypeKatex]}
+                            components={markdownComponents}
                           >
-                            {copiedMessageId === message.id ? (
-                              <>
-                                <Check className="size-3.5 mr-1" />
-                                <span className="hidden sm:block">Copied</span>
-                              </>
-                            ) : (
-                              <>
-                                <Copy className="size-3.5 mr-1" />
-                                <span className="hidden sm:block">Copy</span>
-                              </>
-                            )}
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-sm text-destructive hover:text-destructive"
-                            onClick={() => handleDelete(message.id)}
-                            disabled={isLoading}
-                          >
-                            <Trash2 className="size-3.5 mr-1" />
-                            <span className="hidden sm:block">Delete</span>
-                          </Button>
+                            {processMessage(message.content)}
+                          </ReactMarkdown>
                         </div>
+                      </div>
+
+                      <div
+                        className={`flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity ${
+                          message.role === "user"
+                            ? "justify-end"
+                            : "justify-start"
+                        }`}
+                      >
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
+                          onClick={() =>
+                            handleCopyMessage(message.content, message.id)
+                          }
+                        >
+                          {copiedMessageId === message.id ? (
+                            <Check className="w-3 h-3" />
+                          ) : (
+                            <Copy className="w-3 h-3" />
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 px-2 text-xs text-muted-foreground hover:text-destructive"
+                          onClick={() => handleDelete(message.id)}
+                          disabled={isLoading}
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
                       </div>
                     </div>
                   </div>
-                ))}
+                </div>
+              ))}
 
-                {isLoading && <TypingIndicator />}
-                <div className="h-20"></div>
-              </div>
-            </ScrollArea>
+              {isLoading && <TypingIndicator />}
+
+              <div className="h-8" />
+            </div>
+          </ScrollArea>
+        )}
+      </div>
+
+      <div
+        className="fixed bottom-0 right-0 border-t border-border/50 bg-background/95 backdrop-blur-sm flex justify-center"
+        style={{ left: isMobile ? 0 : SIDEBAR_WIDTH }}
+      >
+        <div className="input-div max-w-4xl w-full p-6 mx-auto">
+          {error && (
+            <div className="mb-4 p-3 bg-destructive/5 border border-destructive/20 rounded-lg">
+              <p className="text-sm text-destructive mb-2">
+                Something went wrong
+              </p>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => reload()}
+                className="h-7 px-2 text-xs"
+              >
+                <RotateCcw className="w-3 h-3 mr-1" />
+                Retry
+              </Button>
+            </div>
           )}
-        </div>
 
-        <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-4xl">
-          <div className="border-t bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 shadow-lg">
-            <div className="py-4 px-6">
-              {error && (
-                <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-                  <p className="text-sm text-destructive mb-2">
-                    {t("errorOccurred")}
-                  </p>
+          {(isLoading || messages.length > 0) && (
+            <div className="flex gap-2 mb-4">
+              {isLoading && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => stop()}
+                  className="h-7 px-3 text-xs"
+                >
+                  <Square className="w-3 h-3 mr-1" />
+                  Stop
+                </Button>
+              )}
+              {messages.length > 0 && (
+                <>
                   <Button
-                    variant="outline"
+                    variant="ghost"
                     size="sm"
                     onClick={() => reload()}
-                    className="h-8"
+                    disabled={isLoading}
+                    className="h-7 px-3 text-xs"
                   >
-                    <RotateCcw className="h-3 w-3 mr-1" />
-                    {t("retry")}
+                    <RotateCcw className="w-3 h-3 mr-1" />
+                    Regenerate
                   </Button>
-                </div>
-              )}
-
-              <div className="flex gap-2 mb-3">
-                {isLoading && (
                   <Button
-                    variant="outline"
+                    variant="ghost"
                     size="sm"
-                    onClick={() => stop()}
-                    className="h-8"
+                    onClick={() => setMessages([])}
+                    className="h-7 px-3 text-xs text-muted-foreground"
                   >
-                    <Square className="h-3 w-3 mr-1" />
-                    {t("stop")}
+                    Clear
                   </Button>
-                )}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => reload()}
-                  disabled={isLoading || messages.length === 0}
-                  className="h-8"
-                >
-                  <RotateCcw className="h-3 w-3 mr-1" />
-                  {t("regenerate")}
-                </Button>
-              </div>
-
-              <form onSubmit={handleSubmit} className="flex gap-2">
-                <Input
-                  value={input}
-                  onChange={handleInputChange}
-                  placeholder={
-                    messages.length === 0
-                      ? "Ask me anything..."
-                      : t("askAnythingPlaceholder")
-                  }
-                  disabled={isLoading}
-                  className="flex-1 w-full"
-                />
-                <Button type="submit" disabled={isLoading || !input.trim()}>
-                  <Send className="h-4 w-4" />
-                </Button>
-              </form>
+                </>
+              )}
             </div>
-          </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="flex gap-3">
+            <Input
+              value={input}
+              onChange={handleInputChange}
+              placeholder="Type a message..."
+              disabled={isLoading}
+              className="flex-1 h-11 border-border/50 focus:border-border bg-background"
+            />
+            <Button
+              type="submit"
+              disabled={isLoading || !input.trim()}
+              className="h-11 w-11 p-0 flex-shrink-0"
+            >
+              <Send className="w-4 h-4" />
+            </Button>
+          </form>
         </div>
       </div>
     </div>
