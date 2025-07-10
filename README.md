@@ -1,6 +1,6 @@
 # Quantra - Modern Inventory Management
 
-![Quantra Banner](https://user-images.githubusercontent.com/12422491/226891931-90a4ea5a-1889-42c9-91d3-a75654a2a241.png)
+<!-- ![Quantra Banner](https://user-images.githubusercontent.com/12422491/226891931-90a4ea5a-1889-42c9-91d3-a75654a2a241.png) -->
 
 Quantra is a modern, open-source inventory and business management system designed to provide a comprehensive, real-time overview of your operations. Built with a powerful and scalable tech stack, it offers everything from product and warehouse management to detailed financial analytics and role-based user permissions.
 
@@ -14,14 +14,15 @@ Quantra is a modern, open-source inventory and business management system design
 - **Auditing**: Every critical action is logged, providing a complete and immutable history of changes.
 - **Multi-language Support**: Internationalized UI to support multiple languages (i18n).
 - **Scheduling**: Built-in calendar for scheduling tasks and events.
+- **Ai Assistant**: Tuned AI Assitant for your business.
+- ...
 
 ## 🛠️ Tech Stack
 
 - **Framework**: [Next.js](https://nextjs.org/) (App Router)
 - **ORM**: [Drizzle ORM](https://orm.drizzle.team/)
 - **Database**: PostgreSQL
-- **Authentication**: [NextAuth.js](https://next-auth.js.org/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) with [shadcn/ui](https://ui.shadcn.com/)
+- **Authentication**: [Better-auth](https://www.better-auth.com/)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 
 ## 🚀 Getting Started
@@ -31,20 +32,20 @@ Follow these steps to get a local instance of Quantra up and running.
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/en/) (v18.17 or later)
-- [pnpm](https://pnpm.io/) (or your preferred package manager)
+- [bun](https://bun.com/) (or your preferred package manager)
 - [PostgreSQL](https://www.postgresql.org/) database
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/quantra.git
+git clone https://github.com/nkurunziza-saddy/quantra.git
 cd quantra
 ```
 
 ### 2. Install Dependencies
 
 ```bash
-pnpm install
+bun install
 ```
 
 ### 3. Set Up Environment Variables
@@ -67,13 +68,13 @@ AUTH_SECRET="your-super-secret-auth-secret"
 Drizzle Kit is used to manage database schema migrations. Run the following command to apply the existing migrations to your database.
 
 ```bash
-pnpm drizzle:push
+bunx drizzle-kit push
 ```
 
 ### 5. Run the Development Server
 
 ```bash
-pnpm dev
+bun dev
 ```
 
 The application should now be running at [http://localhost:3000](http://localhost:3000).
