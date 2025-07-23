@@ -47,7 +47,6 @@ export const data = {
           title: "Inventory Overview",
           url: "/inventory",
           icon: Warehouse,
-          disabled: true,
         },
         {
           title: "Product Catalog",
