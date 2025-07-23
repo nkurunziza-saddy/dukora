@@ -13,7 +13,7 @@ import {
   Truck,
   Users,
   Calculator,
-  // Warehouse,
+  Warehouse,
 } from "lucide-react";
 import {
   Sidebar,
@@ -43,12 +43,12 @@ export const data = {
           url: "/dashboard",
           icon: Layers,
         },
-        // {
-        //   title: "Inventory Overview",
-        //   url: "/inventory",
-        //   icon: Warehouse,
-        //   disabled: true,
-        // },
+        {
+          title: "Inventory Overview",
+          url: "/inventory",
+          icon: Warehouse,
+          disabled: true,
+        },
         {
           title: "Product Catalog",
           url: "/products",
