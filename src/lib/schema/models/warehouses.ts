@@ -19,8 +19,8 @@ export const warehousesTable = pgTable(
       .primaryKey()
       .notNull()
       .default(sql`gen_random_uuid()`),
-    name: text("name").notNull(),
-    code: text("code").notNull(),
+    name: text("name").notNull().unique(),
+    code: text("code").notNull().unique(),
     address: text("address"),
     businessId: text("business_id")
       .notNull()

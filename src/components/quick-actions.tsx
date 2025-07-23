@@ -167,9 +167,9 @@ export default function QuickActions() {
           <CommandSeparator />
 
           <CommandGroup heading={t("managementGroup")}>
-            <CommandItem onSelect={() => handleNavigation("/categories")}>
+            <CommandItem onSelect={() => handleNavigation("/products")}>
               <FileText size={16} className="opacity-60" aria-hidden="true" />
-              <span>{t("productCategories")}</span>
+              <span>{t("productManagement")}</span>
             </CommandItem>
             <CommandItem onSelect={() => handleNavigation("/suppliers")}>
               <Users size={16} className="opacity-60" aria-hidden="true" />
@@ -177,7 +177,7 @@ export default function QuickActions() {
             </CommandItem>
             <CommandItem onSelect={() => handleNavigation("/settings")}>
               <Settings size={16} className="opacity-60" aria-hidden="true" />
-              <span>{t("systemSettings")}</span>
+              <span>{t("settings")}</span>
             </CommandItem>
           </CommandGroup>
         </CommandList>

@@ -243,7 +243,7 @@ export function EditBusinessSettings({
           <div>
             <h4 className="font-medium mb-4">{t("businessInformation")}</h4>
             <div className="space-y-4">
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="businessName"
                 render={({ field }) => (
@@ -263,7 +263,7 @@ export function EditBusinessSettings({
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
 
               <FormField
                 control={form.control}

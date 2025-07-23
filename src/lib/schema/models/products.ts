@@ -92,6 +92,7 @@ export const categoriesTable = pgTable(
     index("categories_business_id").on(table.businessId),
     index("categories_id").on(table.id),
     index("categories_value").on(table.value),
+    uniqueIndex("businessCategory").on(table.value, table.businessId)
   ]
 );
 

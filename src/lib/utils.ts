@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatKeys(key: string) {
   return key
-    .replace(/_/g, " ")
+    .replace(/[_-]/g, " ")
     .replace(/([a-z])([A-Z])/g, "$1 $2")
     .replace(/^./, (str) => str.toUpperCase());
 }

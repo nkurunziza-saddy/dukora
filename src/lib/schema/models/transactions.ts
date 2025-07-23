@@ -13,6 +13,7 @@ import { businessesTable } from "./businesses";
 import { usersTable } from "./users";
 import { sql } from "drizzle-orm";
 import { transactionType } from "./enums";
+import { suppliersTable } from "./suppliers";
 
 export const transactionsTable = pgTable(
   "transactions",
@@ -36,8 +37,9 @@ export const transactionsTable = pgTable(
     businessId: text("business_id")
       .notNull()
       .references(() => businessesTable.id, { onDelete: "cascade" }),
-    supplierId: text("supplier_id")
-      .references(() => businessesTable.id, { onDelete: "cascade" }),
+    supplierId: text("supplier_id").references(() => suppliersTable.id, {
+      onDelete: "cascade",
+    }),
     note: text("note"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
@@ -52,7 +54,6 @@ export const transactionsTable = pgTable(
     index("transactions_warehouse_id").on(table.warehouseId),
     index("transactions_warehouse_item_id").on(table.warehouseItemId),
     index("transactions_business_id").on(table.businessId),
-    index("transactions_supplier_id").on(table.supplierId),
     index("transactions_created_at").on(table.createdAt),
     index("transactions_type").on(table.type),
   ]

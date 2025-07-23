@@ -48,18 +48,17 @@ export function EditWarehouses({
   warehouses?: SelectWarehouse[];
 }) {
   const t = useTranslations("forms");
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      warehouses: warehouses?.length
+      warehouses: warehouses
         ? warehouses.map((w) => ({
             name: w.name,
             isDefault: w.isDefault || false,
           }))
         : [
             {
-              name: "",
+              name: "Main Warehouse",
               isDefault: true,
             },
           ],
@@ -76,7 +75,7 @@ export function EditWarehouses({
   const currentWarehouses = watch("warehouses");
   const isAtLimit = currentWarehouses.length >= WAREHOUSE_LIMIT;
   const remainingSlots = WAREHOUSE_LIMIT - currentWarehouses.length;
-
+console.log(isAtLimit)
   const addWarehouse = () => {
     if (isAtLimit) return;
 
@@ -85,8 +84,8 @@ export function EditWarehouses({
       ...currentWarehouses,
       {
         name: "",
-        isDefault: false,
-      },
+        isDefault: false
+      }
     ]);
   };
 
@@ -114,7 +113,19 @@ export function EditWarehouses({
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const result = await createManyWarehouses(values.warehouses);
+    if(!warehouses) return;
+      const existingNames = new Set(warehouses.map(w => w.name));
+      const expectedNames = new Set(values.warehouses.map(w => w.name));
+
+      const created = values.warehouses.filter(w => !existingNames.has(w.name));
+
+      const deleted = warehouses.filter(w => !expectedNames.has(w.name));
+
+
+    const result = await createManyWarehouses({
+      created,
+      deleted
+    });
     if (result.error) {
       toast.error("Failed to update warehouses", {
         description: result.error,

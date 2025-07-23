@@ -182,9 +182,15 @@ export async function remove(
   try {
     const existingRecord = await db.query.warehousesTable.findFirst({
       where: eq(warehousesTable.id, warehouseId),
+      with: {
+        warehouseItems: true
+      }
     });
     if (!existingRecord) {
       return { data: null, error: ErrorCode.NOT_FOUND };
+    }
+    if(existingRecord.warehouseItems.length > 0){
+      return { data: null, error: ErrorCode.CANNOT_DELETE };
     }
     const result = await db.transaction(async (tx) => {
       const [deletedWarehouse] = await tx

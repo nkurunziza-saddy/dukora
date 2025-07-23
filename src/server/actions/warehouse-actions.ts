@@ -1,6 +1,6 @@
 "use server";
 
-import type { InsertWarehouse } from "@/lib/schema/schema-types";
+import type {InsertWarehouse, SelectWarehouse} from "@/lib/schema/schema-types";
 import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
 import { revalidatePath } from "next/cache";
@@ -104,12 +104,16 @@ export const createManyWarehouses = createProtectedAction(
   Permission.WAREHOUSE_CREATE,
   async (
     user,
-    warehousesData: Omit<InsertWarehouse, "businessId" | "id" | "code">[]
+    data: {
+        created: Omit<InsertWarehouse, "businessId" | "id" | "code">[],
+        deleted: SelectWarehouse[],
+    }
+
   ) => {
-    if (warehousesData === null) {
+    if (data === null) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const warehouses: InsertWarehouse[] = warehousesData.map((warehouse) => ({
+    const warehouses: InsertWarehouse[] = data.created.map((warehouse) => ({
       ...warehouse,
       businessId: user.businessId!,
       code: Math.random().toString(36).substr(2, 6).toUpperCase(),
@@ -118,7 +122,12 @@ export const createManyWarehouses = createProtectedAction(
       warehouses,
       user.id
     );
-    revalidatePath("/", "layout");
-    return { data: createdWarehouses, error: null };
+      const deleteWarehouses = await Promise.all(
+          data.deleted.map((warehouse) => {
+              return warehouseRepo.remove(warehouse.id, warehouse.businessId, user.id);
+          })
+      );
+      revalidatePath("/", "layout");
+    return { data: {createdWarehouses, deleteWarehouses}, error: null };
   }
 );

@@ -262,6 +262,7 @@ export async function create_with_warehouse_item(
   if (!transaction.productId || !transaction.businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
+  console.log({ transaction });
 
   try {
     const result = await db.transaction(async (tx) => {
@@ -271,16 +272,41 @@ export async function create_with_warehouse_item(
         quantity: transaction.quantity,
         lastUpdated: new Date(),
       };
-      const newWarehouseItem = await createWarehouseItem(
-        transaction.businessId,
-        transaction.createdBy,
-        warehouseItemData
-      );
+      const existingWarehouseItem =
+        await tx.query.warehouseItemsTable.findFirst({
+          where: and(
+            eq(warehouseItemsTable.productId, transaction.productId),
+            eq(warehouseItemsTable.warehouseId, transaction.warehouseId)
+          ),
+        });
+      let warehouseItem;
+      if (existingWarehouseItem) {
+        const updatedWarehouseItem = await tx
+          .update(warehouseItemsTable)
+          .set({
+            quantity: sql`${warehouseItemsTable.quantity} + ${transaction.quantity}`,
+            lastUpdated: new Date(),
+          })
+          .where(eq(warehouseItemsTable.id, existingWarehouseItem.id))
+          .returning();
+        warehouseItem = updatedWarehouseItem[0];
+      } else {
+        const newWarehouseItem = await createWarehouseItem(
+          transaction.businessId,
+          transaction.createdBy,
+          warehouseItemData
+        );
+        if (newWarehouseItem.error) {
+          return { data: null, error: newWarehouseItem.error };
+        }
+        warehouseItem = newWarehouseItem.data;
+      }
+
       const [newTransaction] = await tx
         .insert(transactionsTable)
         .values({
           ...transaction,
-          warehouseItemId: newWarehouseItem.data?.id ?? "",
+          warehouseItemId: warehouseItem.id ?? "",
         })
         .returning();
       const productSupplierData: InsertProductSupplier = {
@@ -288,15 +314,14 @@ export async function create_with_warehouse_item(
         supplierId: transaction.supplierId ?? "",
         businessId: transaction.businessId,
         note: transaction.note,
-        supplierProductCode: newWarehouseItem.data?.id ?? "",
+        supplierProductCode: warehouseItem.id ?? "",
       };
       await tx.insert(productSuppliersTable).values(productSupplierData);
 
       return newTransaction;
     });
 
-    revalidatePath("/transactions");
-    revalidatePath("/sales");
+    revalidatePath("/", "layout");
 
     return { data: result, error: null };
   } catch (error) {

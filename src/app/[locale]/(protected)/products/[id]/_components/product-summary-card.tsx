@@ -50,7 +50,7 @@ export default async function ProductSummaryCard({
           <p className="text-sm font-medium text-muted-foreground">
             {t("category")}
           </p>
-          <p>{product.category?.name || "N/A"}</p>
+          <p>{product.category?.value || "N/A"}</p>
         </div>
         <div>
           <p className="text-sm font-medium text-muted-foreground">

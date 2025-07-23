@@ -1,8 +1,8 @@
-# Quantra - Modern Inventory Management
+# Quantura - Modern Inventory Management
 
-<!-- ![Quantra Banner](https://user-images.githubusercontent.com/12422491/226891931-90a4ea5a-1889-42c9-91d3-a75654a2a241.png) -->
+<!-- ![Quantura Banner](https://user-images.githubusercontent.com/12422491/226891931-90a4ea5a-1889-42c9-91d3-a75654a2a241.png) -->
 
-Quantra is a modern, open-source inventory and business management system designed to provide a comprehensive, real-time overview of your operations. Built with a powerful and scalable tech stack, it offers everything from product and warehouse management to detailed financial analytics and role-based user permissions.
+Quantura is a modern, open-source inventory and business management system designed to provide a comprehensive, real-time overview of your operations. Built with a powerful and scalable tech stack, it offers everything from product and warehouse management to detailed financial analytics and role-based user permissions.
 
 ## ✨ Core Features
 
@@ -27,7 +27,7 @@ Quantra is a modern, open-source inventory and business management system design
 
 ## 🚀 Getting Started
 
-Follow these steps to get a local instance of Quantra up and running.
+Follow these steps to get a local instance of Quantura up and running.
 
 ### Prerequisites
 
@@ -38,8 +38,8 @@ Follow these steps to get a local instance of Quantra up and running.
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/nkurunziza-saddy/quantra.git
-cd quantra
+git clone https://github.com/nkurunziza-saddy/quantura.git
+cd quantura
 ```
 
 ### 2. Install Dependencies

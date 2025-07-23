@@ -66,7 +66,7 @@ export const get_by_id_cached = unstable_cache(
 );
 
 export async function create(category: InsertCategory, userId: string) {
-  if (!category.name || !category.businessId) {
+  if (!category.value || !category.businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
   try {
@@ -75,8 +75,8 @@ export async function create(category: InsertCategory, userId: string) {
         .insert(categoriesTable)
         .values(category)
         .onConflictDoUpdate({
-          target: [categoriesTable.businessId, categoriesTable.name],
-          set: { value: categoriesTable.value, name: categoriesTable.name },
+          target: [categoriesTable.businessId, categoriesTable.value],
+          set: { businessId: categoriesTable.businessId, value: category.value },
         })
         .returning();
 
@@ -222,7 +222,6 @@ export async function upsert_many(
   if (!categories) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
-
   const businessId = categories[0]?.businessId;
   if (!businessId || !categories.every((c) => c.businessId === businessId)) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -231,15 +230,18 @@ export async function upsert_many(
   try {
     const result = await db.transaction(async (tx) => {
       const upsertedCategories = [];
-
+      const errorValues: string[] = []
       for (const category of categories) {
-        if (!category.name) continue;
+        if (!category.value) {
+          errorValues.push(category.value);
+          continue;
+        }
         const [newCategory] = await tx
           .insert(categoriesTable)
           .values(category)
           .onConflictDoUpdate({
-            target: [categoriesTable.businessId, categoriesTable.name],
-            set: { value: category.value, name: category.name },
+            target: [categoriesTable.businessId, categoriesTable.value],
+            set: { businessId: categoriesTable.businessId, value: category.value },
           })
           .returning();
 
@@ -256,7 +258,9 @@ export async function upsert_many(
         await tx.insert(auditLogsTable).values(auditLogs);
         upsertedCategories.push(newCategory);
       }
-
+      if(errorValues.length > 0) {
+        return {data: null, error: ErrorCode.MISSING_INPUT };
+      }
       return upsertedCategories;
     });
 

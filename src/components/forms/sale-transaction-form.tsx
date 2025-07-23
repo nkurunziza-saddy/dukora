@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import z from "zod";
 import { CheckIcon, Loader2, AlertCircle, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -56,6 +56,7 @@ export default function SaleTransactionForm({
   const t = useTranslations("forms");
   const tCommon = useTranslations("common");
   const tInventory = useTranslations("inventory");
+
   const saleTransactionSchema = z.object({
     productId: z.string().min(1, t("productRequired")),
     warehouseItemId: z.string().min(1, t("warehouseRequired")),
@@ -297,7 +298,9 @@ export default function SaleTransactionForm({
                           <CommandInput placeholder={t("searchWarehouses")} />
                           <CommandList>
                             <CommandEmpty>
-                              {t("noWarehousesFound")}
+                              {productDetailsData.warehouseItems.length === 0
+                                ? t("noWarehousesFoundForProd")
+                                : t("noWarehousesFound")}
                             </CommandEmpty>
                             <CommandGroup>
                               {productDetailsData.warehouseItems.map((item) => (

@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import z from "zod";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -55,9 +55,9 @@ export default function SupplierForm({
       name: supplier ? supplier.name : "",
       email: supplier ? supplier.email : "",
       phone: supplier ? supplier.phone : "",
-      address: supplier ? supplier.address ?? "" : "",
-      note: supplier ? supplier.note ?? "" : "",
-      contactName: supplier ? supplier.contactName ?? "" : "",
+      address: supplier ? (supplier.address ?? "") : "",
+      note: supplier ? (supplier.note ?? "") : "",
+      contactName: supplier ? (supplier.contactName ?? "") : "",
     },
   });
 

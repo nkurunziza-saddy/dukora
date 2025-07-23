@@ -1,6 +1,6 @@
 CREATE TYPE "public"."order_status" AS ENUM('DRAFT', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'RETURNED');--> statement-breakpoint
 CREATE TYPE "public"."product_status" AS ENUM('ACTIVE', 'INACTIVE', 'DISCONTINUED');--> statement-breakpoint
-CREATE TYPE "public"."transaction_type" AS ENUM('PURCHASE', 'SALE', 'DAMAGE', 'STOCK_ADJUSTMENT', 'TRANSFER_IN', 'TRANSFER_OUT', 'RETURN_SALE', 'RETURN_PURCHASE', 'PRODUCTION_INPUT', 'PRODUCTION_OUTPUT');--> statement-breakpoint
+CREATE TYPE "public"."transaction_type" AS ENUM('PURCHASE', 'SALE', 'DAMAGE', 'RETURN_SALE', 'RETURN_PURCHASE');--> statement-breakpoint
 CREATE TYPE "public"."user_role" AS ENUM('OWNER', 'ADMIN', 'MEMBER', 'VIEW_ONLY');--> statement-breakpoint
 CREATE TABLE "business_settings" (
 	"id" text PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
@@ -15,9 +15,11 @@ CREATE TABLE "business_settings" (
 CREATE TABLE "businesses" (
 	"id" text PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
-	"domain" text NOT NULL,
+	"domain" text,
+	"business_type" text,
 	"logo_url" text,
-	"registration_number" text NOT NULL,
+	"registration_number" text,
+	"stripe_account_id" text,
 	"is_active" boolean DEFAULT true NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
@@ -92,14 +94,13 @@ CREATE TABLE "verifications" (
 --> statement-breakpoint
 CREATE TABLE "categories" (
 	"id" text PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"name" text NOT NULL,
+	"value" text NOT NULL,
 	"description" text,
 	"business_id" text NOT NULL,
-	"parent_id" text,
 	"is_active" boolean DEFAULT true NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
-	CONSTRAINT "no_self_reference" CHECK ("categories"."id" != "categories"."parent_id")
+	CONSTRAINT "categories_value_unique" UNIQUE("value")
 );
 --> statement-breakpoint
 CREATE TABLE "product_attribute_values" (
@@ -213,7 +214,7 @@ CREATE TABLE "warehouses" (
 	"id" text PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
 	"code" text NOT NULL,
-	"address" text NOT NULL,
+	"address" text,
 	"business_id" text NOT NULL,
 	"is_active" boolean DEFAULT true NOT NULL,
 	"is_default" boolean DEFAULT false NOT NULL,
@@ -336,6 +337,17 @@ CREATE TABLE "audit_logs" (
 	"performed_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "expenses" (
+	"id" text PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"amount" numeric(10, 2) NOT NULL,
+	"reference" text,
+	"business_id" text NOT NULL,
+	"note" text,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"created_by" text NOT NULL,
+	CONSTRAINT "quantity_not_zero" CHECK ("expenses"."amount" != 0)
+);
+--> statement-breakpoint
 CREATE TABLE "transactions" (
 	"id" text PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"product_id" text NOT NULL,
@@ -345,6 +357,7 @@ CREATE TABLE "transactions" (
 	"quantity" integer NOT NULL,
 	"reference" text,
 	"business_id" text NOT NULL,
+	"supplier_id" text,
 	"note" text,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"created_by" text NOT NULL,
@@ -366,13 +379,44 @@ CREATE TABLE "schedules" (
 	"updated_at" timestamp with time zone
 );
 --> statement-breakpoint
+CREATE TABLE "invitations" (
+	"id" text PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"email" text NOT NULL,
+	"name" text,
+	"role" "user_role" DEFAULT 'VIEW_ONLY' NOT NULL,
+	"business_id" text,
+	"invited_by" text,
+	"code" text,
+	"is_active" boolean DEFAULT false NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"expires_at" timestamp with time zone,
+	"deleted_at" timestamp with time zone,
+	CONSTRAINT "email_format" CHECK ("invitations"."email" ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,}$')
+);
+--> statement-breakpoint
+CREATE TABLE "inter_business_payments" (
+	"id" text PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"payer_business_id" text NOT NULL,
+	"receiver_business_id" text NOT NULL,
+	"amount" numeric(12, 2) NOT NULL,
+	"currency" text NOT NULL,
+	"stripe_charge_id" text,
+	"stripe_payment_intent_id" text,
+	"status" text NOT NULL,
+	"application_fee_amount" numeric(12, 2),
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"initiated_by_user_id" text NOT NULL,
+	CONSTRAINT "inter_business_payments_stripe_charge_id_unique" UNIQUE("stripe_charge_id"),
+	CONSTRAINT "inter_business_payments_stripe_payment_intent_id_unique" UNIQUE("stripe_payment_intent_id")
+);
+--> statement-breakpoint
 ALTER TABLE "business_settings" ADD CONSTRAINT "business_settings_business_id_businesses_id_fk" FOREIGN KEY ("business_id") REFERENCES "public"."businesses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_settings" ADD CONSTRAINT "user_settings_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "users" ADD CONSTRAINT "users_business_id_businesses_id_fk" FOREIGN KEY ("business_id") REFERENCES "public"."businesses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "categories" ADD CONSTRAINT "categories_business_id_businesses_id_fk" FOREIGN KEY ("business_id") REFERENCES "public"."businesses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "categories" ADD CONSTRAINT "categories_parent_id_categories_id_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."categories"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "product_attribute_values" ADD CONSTRAINT "product_attribute_values_attribute_id_product_attributes_id_fk" FOREIGN KEY ("attribute_id") REFERENCES "public"."product_attributes"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "product_attributes" ADD CONSTRAINT "product_attributes_business_id_businesses_id_fk" FOREIGN KEY ("business_id") REFERENCES "public"."businesses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "product_product_tags" ADD CONSTRAINT "product_product_tags_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -404,13 +448,21 @@ ALTER TABLE "profit_reports" ADD CONSTRAINT "profit_reports_business_id_business
 ALTER TABLE "metrics" ADD CONSTRAINT "metrics_business_id_businesses_id_fk" FOREIGN KEY ("business_id") REFERENCES "public"."businesses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "audit_logs" ADD CONSTRAINT "audit_logs_business_id_businesses_id_fk" FOREIGN KEY ("business_id") REFERENCES "public"."businesses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "audit_logs" ADD CONSTRAINT "audit_logs_performed_by_users_id_fk" FOREIGN KEY ("performed_by") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "expenses" ADD CONSTRAINT "expenses_business_id_businesses_id_fk" FOREIGN KEY ("business_id") REFERENCES "public"."businesses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "expenses" ADD CONSTRAINT "expenses_created_by_users_id_fk" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "transactions" ADD CONSTRAINT "transactions_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "transactions" ADD CONSTRAINT "transactions_warehouse_id_warehouses_id_fk" FOREIGN KEY ("warehouse_id") REFERENCES "public"."warehouses"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "transactions" ADD CONSTRAINT "transactions_warehouse_item_id_warehouse_items_id_fk" FOREIGN KEY ("warehouse_item_id") REFERENCES "public"."warehouse_items"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "transactions" ADD CONSTRAINT "transactions_business_id_businesses_id_fk" FOREIGN KEY ("business_id") REFERENCES "public"."businesses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "transactions" ADD CONSTRAINT "transactions_supplier_id_businesses_id_fk" FOREIGN KEY ("supplier_id") REFERENCES "public"."businesses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "transactions" ADD CONSTRAINT "transactions_created_by_users_id_fk" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "schedules" ADD CONSTRAINT "schedules_business_id_businesses_id_fk" FOREIGN KEY ("business_id") REFERENCES "public"."businesses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "schedules" ADD CONSTRAINT "schedules_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "invitations" ADD CONSTRAINT "invitations_business_id_businesses_id_fk" FOREIGN KEY ("business_id") REFERENCES "public"."businesses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "invitations" ADD CONSTRAINT "invitations_invited_by_users_id_fk" FOREIGN KEY ("invited_by") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "inter_business_payments" ADD CONSTRAINT "inter_business_payments_payer_business_id_businesses_id_fk" FOREIGN KEY ("payer_business_id") REFERENCES "public"."businesses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "inter_business_payments" ADD CONSTRAINT "inter_business_payments_receiver_business_id_businesses_id_fk" FOREIGN KEY ("receiver_business_id") REFERENCES "public"."businesses"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "inter_business_payments" ADD CONSTRAINT "inter_business_payments_initiated_by_user_id_users_id_fk" FOREIGN KEY ("initiated_by_user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 CREATE UNIQUE INDEX "business_settings_business_id_key" ON "business_settings" USING btree ("business_id","key");--> statement-breakpoint
 CREATE INDEX "business_settings_business_id" ON "business_settings" USING btree ("business_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "user_settings_user_id_key" ON "user_settings" USING btree ("user_id","key");--> statement-breakpoint
@@ -418,13 +470,13 @@ CREATE UNIQUE INDEX "users_business_id_email" ON "users" USING btree ("business_
 CREATE INDEX "users_business_id" ON "users" USING btree ("business_id");--> statement-breakpoint
 CREATE INDEX "users_email" ON "users" USING btree ("email");--> statement-breakpoint
 CREATE INDEX "categories_business_id" ON "categories" USING btree ("business_id");--> statement-breakpoint
-CREATE INDEX "categories_parent_id" ON "categories" USING btree ("parent_id");--> statement-breakpoint
+CREATE INDEX "categories_id" ON "categories" USING btree ("id");--> statement-breakpoint
+CREATE INDEX "categories_value" ON "categories" USING btree ("value");--> statement-breakpoint
 CREATE UNIQUE INDEX "product_attribute_values_attribute_id_value" ON "product_attribute_values" USING btree ("attribute_id","value");--> statement-breakpoint
 CREATE UNIQUE INDEX "product_attributes_business_id_name" ON "product_attributes" USING btree ("business_id","name");--> statement-breakpoint
 CREATE UNIQUE INDEX "product_tags_business_id_name" ON "product_tags" USING btree ("business_id","name");--> statement-breakpoint
 CREATE UNIQUE INDEX "product_variants_product_id_attribute_value_id" ON "product_variants" USING btree ("product_id","attribute_value_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "products_business_id_sku" ON "products" USING btree ("business_id","sku");--> statement-breakpoint
-CREATE UNIQUE INDEX "products_business_id_barcode" ON "products" USING btree ("business_id","barcode");--> statement-breakpoint
 CREATE INDEX "products_business_id" ON "products" USING btree ("business_id");--> statement-breakpoint
 CREATE INDEX "products_category_id" ON "products" USING btree ("category_id");--> statement-breakpoint
 CREATE INDEX "products_sku" ON "products" USING btree ("sku");--> statement-breakpoint
@@ -458,12 +510,22 @@ CREATE INDEX "audit_logs_model_record_id" ON "audit_logs" USING btree ("model","
 CREATE INDEX "audit_logs_business_id" ON "audit_logs" USING btree ("business_id");--> statement-breakpoint
 CREATE INDEX "audit_logs_performed_by" ON "audit_logs" USING btree ("performed_by");--> statement-breakpoint
 CREATE INDEX "audit_logs_performed_at" ON "audit_logs" USING btree ("performed_at");--> statement-breakpoint
+CREATE INDEX "expenses_business_id" ON "expenses" USING btree ("business_id");--> statement-breakpoint
+CREATE INDEX "expenses_created_at" ON "expenses" USING btree ("created_at");--> statement-breakpoint
 CREATE INDEX "transactions_product_id" ON "transactions" USING btree ("product_id");--> statement-breakpoint
 CREATE INDEX "transactions_warehouse_id" ON "transactions" USING btree ("warehouse_id");--> statement-breakpoint
 CREATE INDEX "transactions_warehouse_item_id" ON "transactions" USING btree ("warehouse_item_id");--> statement-breakpoint
 CREATE INDEX "transactions_business_id" ON "transactions" USING btree ("business_id");--> statement-breakpoint
+CREATE INDEX "transactions_supplier_id" ON "transactions" USING btree ("supplier_id");--> statement-breakpoint
 CREATE INDEX "transactions_created_at" ON "transactions" USING btree ("created_at");--> statement-breakpoint
 CREATE INDEX "transactions_type" ON "transactions" USING btree ("type");--> statement-breakpoint
 CREATE INDEX "schedule_business_id_user_id" ON "schedules" USING btree ("business_id","user_id");--> statement-breakpoint
 CREATE INDEX "schedule_business_id" ON "schedules" USING btree ("business_id");--> statement-breakpoint
-CREATE INDEX "schedule_performed_by" ON "schedules" USING btree ("user_id");
+CREATE INDEX "schedule_performed_by" ON "schedules" USING btree ("user_id");--> statement-breakpoint
+CREATE UNIQUE INDEX "invitations_business_id_email" ON "invitations" USING btree ("business_id","email");--> statement-breakpoint
+CREATE INDEX "invitations_business_id" ON "invitations" USING btree ("business_id");--> statement-breakpoint
+CREATE INDEX "invitations_email" ON "invitations" USING btree ("email");--> statement-breakpoint
+CREATE INDEX "inter_business_payments_payer_business_id" ON "inter_business_payments" USING btree ("payer_business_id");--> statement-breakpoint
+CREATE INDEX "inter_business_payments_receiver_business_id" ON "inter_business_payments" USING btree ("receiver_business_id");--> statement-breakpoint
+CREATE INDEX "inter_business_payments_status" ON "inter_business_payments" USING btree ("status");--> statement-breakpoint
+CREATE INDEX "inter_business_payments_initiated_by_user_id" ON "inter_business_payments" USING btree ("initiated_by_user_id");

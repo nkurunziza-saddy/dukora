@@ -15,6 +15,13 @@
 /.next/
 /out/
 
+# fleet
+/.fleet/
+
+# idea
+/.idea/
+qodana.yaml
+
 # production
 /build
 

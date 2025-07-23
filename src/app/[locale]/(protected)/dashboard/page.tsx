@@ -67,7 +67,10 @@ export default async function InventoryDashboard() {
     },
     {
       title: t("lowStockAlerts"),
-      subText: (lowStockCount.data ?? 0) > 0 ? t("requiringAttention") : "",
+      subText:
+        (lowStockCount.data ?? 0) > 0
+          ? t("requiringAttention")
+          : t("healthyInventory"),
       value: formatNumber(lowStockCount.data ?? 0),
       icon: AlertTriangle,
     },
@@ -119,7 +122,7 @@ export default async function InventoryDashboard() {
           ))}
         </div>
 
-        {inventoryItems && (
+        {inventoryItems && inventoryItems.length > 0 && (
           <Card>
             <CardHeader>
               <CardTitle>{t("inventoryItems")}</CardTitle>
@@ -253,7 +256,7 @@ export default async function InventoryDashboard() {
           </Card>
         )}
 
-        {logsData && (
+        {logsData && logsData.length > 0 && (
           <Card>
             <CardHeader>
               <CardTitle>{t("logs")}</CardTitle>
@@ -280,10 +283,12 @@ export default async function InventoryDashboard() {
                     const formattedString = log.audit_logs.action
                       .split("-")
                       .join(" ");
+                    const formattedModelName = formatKeys(log.audit_logs.model)
+
                     return (
                       <TableRow key={log.audit_logs.id}>
                         <TableCell>
-                          {formatKeys(log.audit_logs.model)}
+                          {formatKeys(formattedModelName)}
                         </TableCell>
                         <TableCell>{log.audit_logs.recordId}</TableCell>
                         <TableCell>

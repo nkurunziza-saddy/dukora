@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import z from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -55,6 +55,7 @@ import { USER_ROLES } from "@/lib/schema/models/enums";
 import { businessInitialization } from "@/server/actions/onboarding-actions";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import LocaleSwitcher from "./language-switcher";
 const CATEGORY_LIMIT = 10;
 const INVITATIONS_LIMIT = 5;
 const WAREHOUSES_LIMIT = 5;
@@ -121,8 +122,8 @@ const steps = [
   },
   {
     step: 5,
-    title: "Warehouses",
-    description: "Set up your locations",
+    title: "Warehouses/Branches",
+    description: "Set up your business branches and warehouses management",
     icon: MapPin,
   },
 ];
@@ -278,7 +279,7 @@ export default function OnboardingFlow() {
   };
 
   const onSubmit = async (data: OnboardingFormData) => {
-    if (currentStep < steps.length) {
+    if (currentStep !== steps.length) {
       return;
     }
     setIsSubmitting(true);
@@ -302,7 +303,7 @@ export default function OnboardingFlow() {
   return (
     <div className="min-h-screen py-8">
       <div className="max-w-5xl mx-auto px-4">
-        <CardHeader className="mb-8">
+        <CardHeader className="mb-8 px-0">
           <CardTitle className="">Welcome to Your Inventory System</CardTitle>
           <CardDescription className="">
             Let&apos;s set up your business in just a few steps
@@ -336,23 +337,44 @@ export default function OnboardingFlow() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              {(() => {
-                const currentStepData = steps.find(
-                  (s) => s.step === currentStep
-                );
-                // const CurrentIcon = currentStepData?.icon;
-                return (
-                  <>
-                    {/* {CurrentIcon && <CurrentIcon className="h-5 w-5" />} */}
-                    {currentStepData?.title}
-                  </>
-                );
-              })()}
-            </CardTitle>
-            <CardDescription>
-              {steps.find((s) => s.step === currentStep)?.description}
-            </CardDescription>
+            <div className="flex justify-between">
+              <div className="flex flex-col gap-2">
+                <CardTitle className="flex items-center gap-2">
+                  {(() => {
+                    const currentStepData = steps.find(
+                      (s) => s.step === currentStep
+                    );
+                    // const CurrentIcon = currentStepData?.icon;
+                    return (
+                      <>
+                        {/* {CurrentIcon && <CurrentIcon className="h-5 w-5" />} */}
+                        {currentStepData?.title}
+                      </>
+                    );
+                  })()}
+                </CardTitle>
+                <CardDescription>
+                  {steps.find((s) => s.step === currentStep)?.description}
+                </CardDescription>
+              </div>
+              {currentStep === 3 && (
+                <Button
+                  type="button"
+                  size={"sm"}
+                  variant="outline"
+                  onClick={addTeamMember}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Member
+                </Button>
+              )}
+              {currentStep === 5 && (
+                <Button type="button" variant="outline" onClick={addWarehouse}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Location
+                </Button>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -583,23 +605,6 @@ export default function OnboardingFlow() {
 
                 {currentStep === 3 && (
                   <div className="space-y-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="text-lg font-medium">Team Members</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Invite your team members to collaborate (optional)
-                        </p>
-                      </div>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={addTeamMember}
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Member
-                      </Button>
-                    </div>
-
                     {watch("teamMembers").length === 0 ? (
                       <div className="text-center py-8 text-muted-foreground">
                         <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
@@ -611,7 +616,7 @@ export default function OnboardingFlow() {
                     ) : (
                       <div className="space-y-4">
                         {watch("teamMembers").map((_, index) => (
-                          <div key={index} className="flex gap-4 items-end">
+                          <div key={index} className="flex gap-4 items-start">
                             <FormField
                               control={form.control}
                               name={`teamMembers.${index}.email`}
@@ -634,38 +639,40 @@ export default function OnboardingFlow() {
                               render={({ field }) => (
                                 <FormItem className="w-40">
                                   <FormLabel>Role</FormLabel>
-                                  <Select
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                  >
-                                    <FormControl>
-                                      <SelectTrigger>
-                                        <SelectValue placeholder="Select role" />
-                                      </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                      {userRolesObject.map((role) => (
-                                        <SelectItem
-                                          key={role.value}
-                                          value={role.value}
-                                        >
-                                          {role.label}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
+                                  <div className="flex gap-2">
+                                    <Select
+                                      onValueChange={field.onChange}
+                                      defaultValue={field.value}
+                                    >
+                                      <FormControl>
+                                        <SelectTrigger>
+                                          <SelectValue placeholder="Select role" />
+                                        </SelectTrigger>
+                                      </FormControl>
+                                      <SelectContent>
+                                        {userRolesObject.map((role) => (
+                                          <SelectItem
+                                            key={role.value}
+                                            value={role.value}
+                                          >
+                                            {role.label}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="icon"
+                                      onClick={() => removeTeamMember(index)}
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </div>
                                   <FormMessage />
                                 </FormItem>
                               )}
                             />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="icon"
-                              onClick={() => removeTeamMember(index)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
                           </div>
                         ))}
                       </div>
@@ -790,7 +797,7 @@ export default function OnboardingFlow() {
                       {watch("categories").length > 0 && (
                         <div className="space-y-2">
                           <p className="text-sm font-medium">
-                            Selected categories:
+                            Selected categories ({watch("categories").length}):
                           </p>
                           <div className="flex flex-wrap gap-2">
                             {watch("categories").map((category, index) => (
@@ -814,44 +821,15 @@ export default function OnboardingFlow() {
                         </div>
                       )}
                     </div>
-
-                    {watch("categories").length > 0 && (
-                      <div className="p-1 w-fit bg-green-800 border border-green-600 rounded-lg">
-                        <p className="text-sm text-green-200">
-                          <strong>Selected:</strong>{" "}
-                          {watch("categories").length} categories
-                        </p>
-                      </div>
-                    )}
                   </div>
                 )}
                 {currentStep === 5 && (
                   <div className="space-y-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="text-lg font-medium">
-                          Warehouses & Branches
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          Set up your business locations for inventory
-                          management
-                        </p>
-                      </div>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={addWarehouse}
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Location
-                      </Button>
-                    </div>
-
                     <div className="space-y-4">
                       {watch("warehouses").map((warehouse, index) => (
                         <div
                           key={index}
-                          className="flex gap-4 items-center p-4 border rounded-lg"
+                          className="flex gap-4 items-start p-4 border rounded-lg"
                         >
                           <FormField
                             control={form.control}
@@ -912,11 +890,13 @@ export default function OnboardingFlow() {
                     Previous
                   </Button>
 
-                  {currentStep < 5 ? (
+                  {currentStep < 5 && (
                     <Button type="button" onClick={nextStep}>
                       Next
                     </Button>
-                  ) : (
+                  )}
+
+                  {currentStep === 5 && (
                     <Button type="submit" disabled={isSubmitting}>
                       {isSubmitting ? "Setting up..." : "Complete Setup"}
                     </Button>
@@ -926,6 +906,9 @@ export default function OnboardingFlow() {
             </Form>
           </CardContent>
         </Card>
+      </div>
+      <div className="absolute bottom-2 right-2">
+        <LocaleSwitcher />
       </div>
     </div>
   );

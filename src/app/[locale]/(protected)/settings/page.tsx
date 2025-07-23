@@ -113,8 +113,8 @@ export default async function SettingsPage() {
     <div className="min-h-screen">
       <div className="container mx-auto py-8 px-4 max-w-7xl">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-          <p className="text-muted-foreground mt-2">
+          <h1 className="font-medium tracking-tight">Settings</h1>
+          <p className="text-sm text-muted-foreground">
             Manage your business and account preferences
           </p>
         </div>

@@ -43,7 +43,7 @@ export async function businessInitialization(data: OnboardingFormData) {
 
     const [invitation, warehouse, category, settings] = await Promise.all([
       createManyInvitations(teamMembers),
-      createManyWarehouses(warehouses),
+      createManyWarehouses({created: warehouses, deleted: []}),
       upsertManyCategories(categories),
       upsertManyBusinessSettings(businessSettingsRecordArray),
     ]);

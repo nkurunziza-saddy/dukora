@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/sidebar";
 import { CurrentPage } from "../navigation/current-page";
 import QuickActions from "@/components/quick-actions";
+import { RefreshButton } from "../refresh-button";
 
 const SidebarContainer = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -26,6 +27,7 @@ const SidebarContainer = ({ children }: { children: React.ReactNode }) => {
             </div>
             <div className="flex gap-2">
               <QuickActions />
+              <RefreshButton />
             </div>
           </div>
         </header>

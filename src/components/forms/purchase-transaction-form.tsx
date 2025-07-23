@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import z from "zod";
 import { CheckIcon, Loader2, AlertCircle, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -81,7 +81,7 @@ export default function PurchaseTransactionForm({
   const {
     data: suppliersData,
     error: suppliersError,
-    isLoading: issuppliersLoading,
+    isLoading: supplierLoading,
   } = useSwr<SelectSupplier[]>("/api/suppliers", fetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
@@ -118,7 +118,7 @@ export default function PurchaseTransactionForm({
     data: warehousesData,
     error: warehousesError,
     isLoading: isWarehousesLoading,
-  } = useSwr<SelectWarehouse[]>(`/api/warehouse`, fetcher, {
+  } = useSwr<SelectWarehouse[]>(`/api/warehouses`, fetcher, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     dedupingInterval: 60000,
@@ -368,11 +368,11 @@ export default function PurchaseTransactionForm({
             render={({ field }) => (
               <FormItem className="flex flex-col space-y-2">
                 <FormLabel>{tInventory("supplierName")} *</FormLabel>
-                {issuppliersLoading ? (
+                {supplierLoading ? (
                   <div className="flex items-center space-x-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     <span className="text-sm text-muted-foreground">
-                      {t("loadingsuppliers")}
+                      {t("loadingSuppliers")}
                     </span>
                   </div>
                 ) : suppliersData ? (
