@@ -11,26 +11,18 @@ const languageItems = [
   {
     value: "en",
     label: "English",
-    flag: "🇺🇸",
-    country: "United States",
   },
   {
     value: "fr",
     label: "Français",
-    flag: "🇫🇷",
-    country: "France",
   },
   {
     value: "sw",
     label: "Kiswahili",
-    flag: "🇰🇪",
-    country: "Kenya",
   },
   {
     value: "rw",
     label: "Kinyarwanda",
-    flag: "🇷🇼",
-    country: "Rwanda",
   },
 ];
 
@@ -42,7 +34,6 @@ export default function LocaleSwitcher() {
   // const t = useTranslations("common");
   const [mounted, setMounted] = useState(false);
 
-  // Avoid hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
