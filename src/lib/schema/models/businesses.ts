@@ -19,6 +19,7 @@ export const businessesTable = pgTable(
       .default(sql`gen_random_uuid()`),
     name: text("name").notNull(),
     domain: text("domain").unique(),
+    description: text("description"),
     businessType: text("business_type"),
     logoUrl: text("logo_url"),
     registrationNumber: text("registration_number").unique(),
@@ -30,13 +31,13 @@ export const businessesTable = pgTable(
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
-  },
-  (table) => [
-    check(
-      "domain_format",
-      sql`${table.domain} ~* '^[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.([a-zA-Z]{2,})+$'`
-    ),
-  ]
+  }
+  // (table) => [
+  //   check(
+  //     "domain_format",
+  //     sql`${table.domain} ~* '^[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.([a-zA-Z]{2,})+$'`
+  //   ),
+  // ]
 );
 
 export const businessSettingsTable = pgTable(

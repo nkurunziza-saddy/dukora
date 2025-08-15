@@ -44,6 +44,30 @@ export default function QuickActions() {
   const [transactionDialogOpen, setTransactionDialogOpen] =
     React.useState(false);
   const [saleDialogOpen, setSaleDialogOpen] = React.useState(false);
+  const [search, setSearch] = React.useState("");
+
+  const evaluateMath = (input: string) => {
+    const mathRegex = /^[\d+\-*/().\s]+$/;
+    const hasOperator = /[+\-*/]/.test(input);
+
+    if (mathRegex.test(input) && hasOperator && input.trim()) {
+      try {
+        const result = new Function("return " + input)();
+        return { isMath: true, result: result.toString() };
+      } catch {
+        return { isMath: false, result: null };
+      }
+    }
+    return { isMath: false, result: null };
+  };
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      const mathResult = evaluateMath(search);
+      if (mathResult.isMath && mathResult.result) {
+        setSearch(`${search} = ${mathResult.result}`);
+      }
+    }
+  };
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -121,7 +145,12 @@ export default function QuickActions() {
       </Button>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder={t("searchActionsPlaceholder")} />
+        <CommandInput
+          value={search}
+          onValueChange={setSearch}
+          placeholder={t("searchActionsPlaceholder")}
+          onKeyDown={handleKeyDown}
+        />
         <CommandList>
           <CommandEmpty>{t("noResultsFound")}</CommandEmpty>
 

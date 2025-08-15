@@ -12,6 +12,8 @@ export async function insert_metric(
   try {
     const existingRecord = await db.query.metricsTable.findFirst({
       where: and(
+        eq(metricsTable.businessId, metric.businessId),
+        eq(metricsTable.name, metric.name),
         eq(metricsTable.period, metric.period),
         eq(metricsTable.periodType, metric.periodType || "monthly")
       ),

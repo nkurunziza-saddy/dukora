@@ -13,7 +13,6 @@ import { sql } from "drizzle-orm";
 export const schedulesTable = pgTable(
   "schedules",
   {
-    // id: varchar("id", { length: 255 }).primaryKey().notNull().default("cuid()"),
     id: text("id")
       .primaryKey()
       .notNull()

@@ -1,3 +1,4 @@
+import { ErrorCode } from "@/server/constants/errors";
 import { openrouter } from "@openrouter/ai-sdk-provider";
 import { streamText } from "ai";
 
@@ -23,6 +24,6 @@ export async function POST(req: Request) {
     ) {
       return new Response("Rate limit exceeded", { status: 429 });
     }
-    return new Response("Error processing request", { status: 500 });
+    return new Response(ErrorCode.API_ERROR, { status: 500 });
   }
 }

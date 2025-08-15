@@ -109,7 +109,6 @@ export function EditCategories({
     } catch (error) {
       console.error("Error updating categories:", error);
     }
-    console.log("Categories submitted:", values);
   }
 
   return (
@@ -120,7 +119,9 @@ export function EditCategories({
             <div>
               <p className="text-sm text-muted-foreground">
                 {remainingSlots > 0
-                  ? `${remainingSlots} ${remainingSlots === 1 ? "slot" : "slots"} remaining`
+                  ? `${remainingSlots} ${
+                      remainingSlots === 1 ? "slot" : "slots"
+                    } remaining`
                   : "Category limit reached"}
               </p>
             </div>
@@ -162,8 +163,8 @@ export function EditCategories({
                       isSelected
                         ? "border-input bg-muted/70"
                         : canSelect
-                          ? "cursor-pointer hover:bg-muted/50"
-                          : "opacity-50 cursor-not-allowed"
+                        ? "cursor-pointer hover:bg-muted/50"
+                        : "opacity-50 cursor-not-allowed"
                     }`}
                     onClick={() => canSelect && toggleDefaultCategory(category)}
                   >

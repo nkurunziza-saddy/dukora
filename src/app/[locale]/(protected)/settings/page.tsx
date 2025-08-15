@@ -68,7 +68,12 @@ export default async function SettingsPage() {
         },
         { value: "categories", label: "Categories", icon: Tags },
         { value: "warehouses", label: "Warehouses", icon: Warehouse },
-        { value: "stripe", label: "Payments", icon: CreditCard },
+        {
+          value: "stripe",
+          label: "Payments",
+          icon: CreditCard,
+          disabled: true,
+        },
       ],
     },
     {
@@ -95,7 +100,6 @@ export default async function SettingsPage() {
 
   const business = businessRes.data;
   const user = userRes.data;
-
   if (!business) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -171,26 +175,13 @@ export default async function SettingsPage() {
                     business={{
                       businessType: business?.businessType || "",
                       domain: business?.domain || "",
+                      description: business?.description || "",
                       id: business?.id || "",
                       isActive: business?.isActive || false,
                       logoUrl: business?.logoUrl || "",
                       name: business?.name || "",
                       registrationNumber: business?.registrationNumber || "",
                     }}
-                    businessTypes={[
-                      { value: "corporation", label: "Corporation" },
-                      {
-                        value: "llc",
-                        label: "Limited Liability Company (LLC)",
-                      },
-                      { value: "partnership", label: "Partnership" },
-                      {
-                        value: "sole_proprietorship",
-                        label: "Sole Proprietorship",
-                      },
-                      { value: "nonprofit", label: "Non-Profit Organization" },
-                      { value: "other", label: "Other" },
-                    ]}
                   />
                 </CardContent>
               </Card>

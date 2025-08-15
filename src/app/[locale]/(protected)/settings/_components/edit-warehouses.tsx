@@ -75,7 +75,6 @@ export function EditWarehouses({
   const currentWarehouses = watch("warehouses");
   const isAtLimit = currentWarehouses.length >= WAREHOUSE_LIMIT;
   const remainingSlots = WAREHOUSE_LIMIT - currentWarehouses.length;
-console.log(isAtLimit)
   const addWarehouse = () => {
     if (isAtLimit) return;
 
@@ -84,8 +83,8 @@ console.log(isAtLimit)
       ...currentWarehouses,
       {
         name: "",
-        isDefault: false
-      }
+        isDefault: false,
+      },
     ]);
   };
 
@@ -113,18 +112,17 @@ console.log(isAtLimit)
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if(!warehouses) return;
-      const existingNames = new Set(warehouses.map(w => w.name));
-      const expectedNames = new Set(values.warehouses.map(w => w.name));
+    if (!warehouses) return;
+    const existingNames = new Set(warehouses.map((w) => w.name));
+    const expectedNames = new Set(values.warehouses.map((w) => w.name));
 
-      const created = values.warehouses.filter(w => !existingNames.has(w.name));
+    const created = values.warehouses.filter((w) => !existingNames.has(w.name));
 
-      const deleted = warehouses.filter(w => !expectedNames.has(w.name));
-
+    const deleted = warehouses.filter((w) => !expectedNames.has(w.name));
 
     const result = await createManyWarehouses({
       created,
-      deleted
+      deleted,
     });
     if (result.error) {
       toast.error("Failed to update warehouses", {
@@ -146,7 +144,9 @@ console.log(isAtLimit)
             <div>
               <p className="text-xs text-muted-foreground mt-1">
                 {remainingSlots > 0
-                  ? `${remainingSlots} ${remainingSlots === 1 ? "slot" : "slots"} remaining`
+                  ? `${remainingSlots} ${
+                      remainingSlots === 1 ? "slot" : "slots"
+                    } remaining`
                   : "Warehouse limit reached"}
               </p>
             </div>

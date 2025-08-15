@@ -4,6 +4,9 @@ import * as businessService from "@/server/actions/business-actions";
 export async function GET() {
   try {
     const businesses = await businessService.getBusinesses({});
+    if (businesses.error) {
+      return NextResponse.json(businesses.error, { status: 500 });
+    }
     return NextResponse.json(businesses.data);
   } catch (error) {
     console.error(error);
@@ -15,6 +18,9 @@ export async function POST(request: NextRequest) {
   try {
     const business = await request.json();
     const newBusiness = await businessService.createBusiness(business);
+    if (newBusiness.error) {
+      return NextResponse.json(newBusiness.error, { status: 500 });
+    }
     return NextResponse.json(newBusiness);
   } catch (error) {
     console.error(error);
@@ -29,6 +35,9 @@ export async function PUT(request: NextRequest) {
       businessId: businessId,
       updates: business,
     });
+    if (updatedBusiness.error) {
+      return NextResponse.json(updatedBusiness.error, { status: 500 });
+    }
     return NextResponse.json(updatedBusiness);
   } catch (error) {
     console.error(error);
@@ -40,6 +49,9 @@ export async function DELETE(request: NextRequest) {
   try {
     const { id } = await request.json();
     const r = await businessService.deleteBusiness(id);
+    if (r.error) {
+      return NextResponse.json(r.error, { status: 500 });
+    }
     return NextResponse.json(r);
   } catch (error) {
     console.error("Error deleting business:", error);

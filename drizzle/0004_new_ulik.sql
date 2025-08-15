@@ -1,0 +1,1 @@
+ALTER TABLE "businesses" DROP CONSTRAINT "domain_format";

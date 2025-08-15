@@ -33,7 +33,6 @@ import { upsertBusinessSettings } from "@/server/actions/business-settings-actio
 import { format } from "date-fns";
 import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-// Business settings limits
 const LIMITS = {
   VAT_RATE_MIN: 0,
   VAT_RATE_MAX: 100,
@@ -54,14 +53,6 @@ const formSchema = z.object({
       `VAT rate must be at least ${LIMITS.VAT_RATE_MIN}%`
     )
     .max(LIMITS.VAT_RATE_MAX, `VAT rate cannot exceed ${LIMITS.VAT_RATE_MAX}%`),
-  businessName: z
-    .string()
-    .min(1, "Business name is required")
-    .max(
-      LIMITS.BUSINESS_NAME_MAX,
-      `Business name cannot exceed ${LIMITS.BUSINESS_NAME_MAX} characters`
-    )
-    .optional(),
   businessDescription: z
     .string()
     .max(
@@ -105,11 +96,6 @@ export function EditBusinessSettings({
       defaultVatRate:
         (settings.find((s) => s.key === "defaultVatRate")?.value as number) ||
         0,
-      businessName:
-        (settings.find((s) => s.key === "businessName")?.value as string) || "",
-      businessDescription:
-        (settings.find((s) => s.key === "businessDescription")
-          ?.value as string) || "",
       invoicePrefix:
         (settings.find((s) => s.key === "invoicePrefix")?.value as string) ||
         "",
@@ -126,13 +112,9 @@ export function EditBusinessSettings({
   } = form;
 
   const vatRate = watch("defaultVatRate") || 0;
-  const businessName = watch("businessName") || "";
-  const businessDescription = watch("businessDescription") || "";
   const invoicePrefix = watch("invoicePrefix") || "";
 
   const isVatRateAtLimit = vatRate >= LIMITS.VAT_RATE_MAX;
-  const businessNameLength = businessName.length;
-  const descriptionLength = businessDescription.length;
   const invoicePrefixLength = invoicePrefix.length;
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -152,7 +134,7 @@ export function EditBusinessSettings({
       });
     }
   }
-
+  console.log(errors);
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -176,36 +158,7 @@ export function EditBusinessSettings({
                 </Badge>
               </div>
             </div>
-            <div className="p-3 border rounded-lg">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium">Business Name</span>
-                <Badge
-                  variant={
-                    businessNameLength > LIMITS.BUSINESS_NAME_MAX * 0.8
-                      ? "destructive"
-                      : "secondary"
-                  }
-                  className="text-xs"
-                >
-                  {businessNameLength}/{LIMITS.BUSINESS_NAME_MAX}
-                </Badge>
-              </div>
-            </div>
-            <div className="p-3 border rounded-lg">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium">Description</span>
-                <Badge
-                  variant={
-                    descriptionLength > LIMITS.DESCRIPTION_MAX * 0.8
-                      ? "destructive"
-                      : "secondary"
-                  }
-                  className="text-xs"
-                >
-                  {descriptionLength}/{LIMITS.DESCRIPTION_MAX}
-                </Badge>
-              </div>
-            </div>
+
             <div className="p-3 border rounded-lg">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-medium">Invoice Prefix</span>
@@ -230,64 +183,6 @@ export function EditBusinessSettings({
               </AlertDescription>
             </Alert>
           )}
-
-          {Object.keys(errors).length > 0 && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                Please fix the errors below before submitting.
-              </AlertDescription>
-            </Alert>
-          )}
-
-          <div>
-            <h4 className="font-medium mb-4">{t("businessInformation")}</h4>
-            <div className="space-y-4">
-              {/* <FormField
-                control={form.control}
-                name="businessName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("businessName")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={t("enterBusinessName")}
-                        maxLength={LIMITS.BUSINESS_NAME_MAX}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      {LIMITS.BUSINESS_NAME_MAX - businessNameLength} characters
-                      remaining
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
-
-              <FormField
-                control={form.control}
-                name="businessDescription"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("businessDescription")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={t("enterBusinessDescription")}
-                        maxLength={LIMITS.DESCRIPTION_MAX}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      {LIMITS.DESCRIPTION_MAX - descriptionLength} characters
-                      remaining
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
 
           <div>
             <h4 className="font-medium mb-4">{t("regionalSettings")}</h4>

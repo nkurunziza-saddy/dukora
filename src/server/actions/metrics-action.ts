@@ -8,7 +8,14 @@ import { ErrorCode } from "@/server/constants/errors";
 import { get_all_cached as getAllBusinesses } from "../repos/business-repo";
 import { calculateAllMetrics } from "../helpers/accounting-formulas";
 import { syncMetricsToDatabase } from "../helpers/db-functional-helpers";
-import { endOfMonth, startOfMonth, subMonths } from "date-fns";
+import {
+  endOfMonth,
+  startOfMonth,
+  subMonths,
+  isAfter,
+  isBefore,
+} from "date-fns";
+import { getCurrentMonthBoundary } from "@/server/helpers/time-date-forrmatters";
 import { getWarehouseItemsByBusiness } from "@/server/actions/warehouse-item-actions";
 import { calculateClosingStock } from "@/server/helpers/accounting-formulas";
 import { getExpensesByTimeInterval } from "./expense-actions";
@@ -20,30 +27,56 @@ import type {
 export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
   const currentUser = await getUserIfHasPermission(Permission.FINANCIAL_VIEW);
   if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
+  if (!dateFrom || isNaN(dateFrom.getTime())) {
+    console.error("Invalid date provided for metrics calculation");
+    return { data: null, error: ErrorCode.BAD_REQUEST };
+  }
+
+  const currentMonthBoundary = getCurrentMonthBoundary();
+  if (isAfter(dateFrom, currentMonthBoundary)) {
+    console.warn(
+      `Attempted to calculate metrics for future/current month: ${dateFrom.toISOString()}`
+    );
+    return { data: null, error: ErrorCode.BAD_REQUEST };
+  }
+
   const dateTo = endOfMonth(dateFrom);
+
   try {
     const businessCreatedAt = currentUser.createdAt;
+
+    if (isBefore(dateFrom, startOfMonth(businessCreatedAt))) {
+      console.warn(
+        `Attempted to calculate metrics before business creation: ${dateFrom.toISOString()}`
+      );
+      return { data: null, error: ErrorCode.BAD_REQUEST };
+    }
 
     const transactions = await transactionRepo.get_by_time_interval(
       currentUser.businessId!,
       dateFrom,
       dateTo
     );
-    const transactionsFormatted = (transactions.data ?? []).map(
-      (item: { transactions: SelectTransaction; products: SelectProduct }) => ({
-        ...item.transactions,
-        product: item.products,
-      })
-    );
+
     if (transactions.error) {
+      console.error("Failed to fetch transactions:", transactions.error);
       return { data: null, error: transactions.error };
     }
-    if (dateFrom < businessCreatedAt) {
-      return { data: null, error: ErrorCode.BAD_REQUEST };
-    }
-    if (dateFrom === businessCreatedAt) {
-      return {};
-    }
+
+    const transactionsFormatted = (transactions.data ?? [])
+      .filter(
+        (item: { transactions: SelectTransaction; products: SelectProduct }) =>
+          item.products
+      )
+      .map(
+        (item: {
+          transactions: SelectTransaction;
+          products: SelectProduct;
+        }) => ({
+          ...item.transactions,
+          product: item.products,
+        })
+      );
 
     const prevMonth = subMonths(dateFrom, 1);
     const openingStockMetric = await metricsRepo.get_metric_by_name(
@@ -52,14 +85,22 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
       "monthly",
       prevMonth
     );
-    const openingStockValue = parseFloat(openingStockMetric.data?.value ?? "0");
+    const openingStockValue = Math.max(
+      0,
+      parseFloat(openingStockMetric.data?.value ?? "0")
+    );
 
     const warehouseItemsReq = await getWarehouseItemsByBusiness(
       currentUser.businessId!
     );
     if (warehouseItemsReq.error) {
+      console.error(
+        "Failed to fetch warehouse items:",
+        warehouseItemsReq.error
+      );
       return { data: null, error: warehouseItemsReq.error };
     }
+
     const closingStockValue = calculateClosingStock(
       warehouseItemsReq.data ?? []
     );
@@ -69,21 +110,27 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
       endDate: dateTo,
     });
     if (expenses.error) {
+      console.error("Failed to fetch expenses:", expenses.error);
       return { data: null, error: expenses.error };
     }
 
     const calculatedMetrics = calculateAllMetrics(
       transactionsFormatted,
-      expenses.data!,
+      expenses.data || [],
       openingStockValue,
       closingStockValue
     );
 
-    await syncMetricsToDatabase(
+    const syncResult = await syncMetricsToDatabase(
       currentUser.businessId!,
       dateFrom,
       calculatedMetrics
     );
+
+    if (syncResult.error) {
+      console.error("Failed to sync metrics to database:", syncResult.error);
+      return { data: calculatedMetrics, error: syncResult.error };
+    }
 
     return { data: calculatedMetrics, error: null };
   } catch (error) {
@@ -127,7 +174,6 @@ export async function scheduleMonthlyMetricsSync() {
         );
         errorCount++;
       } else {
-        console.log(`Successfully synced metrics for business ${business.id}`);
         successCount++;
       }
     }

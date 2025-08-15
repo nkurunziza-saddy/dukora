@@ -90,7 +90,6 @@ export const createInvitation = createProtectedAction(
         subject: `Join ${business.data.name} on Quantura`,
         html: resolvedEmailHtml,
       });
-      console.log({ t });
     } catch (emailError) {
       console.error("Failed to send invitation email:", emailError);
       return { data: null, error: ErrorCode.FAILED_REQUEST };

@@ -8,9 +8,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
 
-    async sendResetPassword(data, request) {
-      console.log({ data, request });
-    },
+    async sendResetPassword(data, request) {},
   },
   socialProviders: {
     github: {

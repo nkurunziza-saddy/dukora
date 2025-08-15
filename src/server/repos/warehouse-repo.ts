@@ -88,8 +88,9 @@ export async function create(warehouse: InsertWarehouse, userId: string) {
           eq(warehousesTable.name, warehouse.name)
         ),
       });
-      if (existingWarehouse)
+      if (existingWarehouse) {
         return { data: null, error: ErrorCode.ALREADY_EXISTS };
+      }
       const [newWarehouse] = await tx
         .insert(warehousesTable)
         .values(warehouse)
@@ -106,12 +107,12 @@ export async function create(warehouse: InsertWarehouse, userId: string) {
       };
 
       await tx.insert(auditLogsTable).values(auditData);
-      return newWarehouse;
+      return { data: newWarehouse, error: null };
     });
 
     revalidatePath("/", "layout");
 
-    return { data: result, error: null };
+    return result;
   } catch (error) {
     console.error("Error creating warehouse:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
@@ -238,7 +239,7 @@ export async function create_many(
   warehouses: InsertWarehouse[],
   userId: string
 ) {
-  if (warehouses === null) {
+  if (warehouses === null || warehouses.length === 0) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
   const businessId = warehouses[0]?.businessId;
@@ -258,7 +259,7 @@ export async function create_many(
         if (existingWarehouse) continue;
         const [newWarehouse] = await tx
           .insert(warehousesTable)
-          .values(warehouses)
+          .values(warehouse)
           .returning();
 
         const auditLog: InsertAuditLog = {

@@ -1,6 +1,9 @@
 import { TimeRange } from "@/components/time-range";
 import { calculateAndSyncMonthlyMetrics } from "@/server/actions/metrics-action";
-import { getMonthData } from "@/server/helpers/time-date-forrmatters";
+import {
+  getMonthData,
+  getCurrentMonthBoundary,
+} from "@/server/helpers/time-date-forrmatters";
 import {
   Card,
   CardContent,
@@ -24,127 +27,231 @@ import {
   BarChart3,
   Calculator,
   Wallet,
+  Package,
+  ShoppingCart,
+  Users,
+  AlertTriangle,
+  CheckCircle,
+  Info,
+  TrendingDown,
+  AlertCircle,
 } from "lucide-react";
 import StatCard from "@/components/shared/stat-card";
 import { getTranslations } from "next-intl/server";
-import { formatCurrency, formatNumber } from "@/lib/utils";
+import { formatCurrency, formatKeys, formatNumber } from "@/lib/utils";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const analytics = async (props: {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }) => {
   const searchParams = await props.searchParams;
-  const time_range = (searchParams.t as string) || "1";
+  const time_range = (searchParams.t as string) || "0";
   const { date, monthName, year } = getMonthData(Number(time_range));
-  const metrics = await calculateAndSyncMonthlyMetrics(date);
+
+  const currentBoundary = getCurrentMonthBoundary();
+  const analysisDate = date > currentBoundary ? currentBoundary : date;
+
+  const metrics = await calculateAndSyncMonthlyMetrics(analysisDate);
   const t = await getTranslations("analytics");
+
+  if (metrics.error) {
+    return (
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>{formatKeys(metrics.error)}</AlertDescription>
+      </Alert>
+    );
+  }
+
+  const data = metrics.data;
 
   const revenueMetrics = [
     {
       title: t("totalRevenue"),
-      value: formatCurrency(metrics.data?.grossRevenue),
+      value: formatCurrency(data?.grossRevenue || 0),
       icon: DollarSign,
+      trend: data?.grossRevenue && data.grossRevenue > 0 ? "up" : "neutral",
+      description: t("totalRevenueDesc"),
     },
     {
       title: t("netRevenue"),
-      value: formatCurrency(metrics.data?.netRevenue),
+      value: formatCurrency(data?.netRevenue || 0),
       icon: TrendingUp,
+      trend: data?.netRevenue && data.netRevenue > 0 ? "up" : "neutral",
+      description: t("netRevenueDesc"),
     },
     {
       title: t("grossProfit"),
-      value: formatCurrency(metrics.data?.grossProfit),
+      value: formatCurrency(data?.grossProfit || 0),
       icon: BarChart3,
+      trend:
+        data?.grossProfit && data.grossProfit > 0
+          ? "up"
+          : data?.grossProfit && data.grossProfit < 0
+          ? "down"
+          : "neutral",
+      description: t("grossProfitDesc"),
     },
     {
       title: t("netIncome"),
-      value: formatCurrency(metrics.data?.netIncome),
+      value: formatCurrency(data?.netIncome || 0),
       icon: Wallet,
+      trend:
+        data?.netIncome && data.netIncome > 0
+          ? "up"
+          : data?.netIncome && data.netIncome < 0
+          ? "down"
+          : "neutral",
+      description: t("netIncomeDesc"),
     },
   ];
 
   const operatingMetrics = [
     {
       title: t("operatingIncome"),
-      value: formatCurrency(metrics.data?.operatingIncome),
+      value: formatCurrency(data?.operatingIncome || 0),
       icon: Calculator,
+      trend:
+        data?.operatingIncome && data.operatingIncome > 0
+          ? "up"
+          : data?.operatingIncome && data.operatingIncome < 0
+          ? "down"
+          : "neutral",
+      description: t("operatingIncomeDesc"),
+    },
+    {
+      title: t("operatingExpenses"),
+      value: formatCurrency(data?.operatingExpenses || 0),
+      icon: TrendingDown,
+      trend: "neutral",
+      description: t("operatingExpensesDesc"),
+    },
+    {
+      title: t("expenseRatio"),
+      value: `${data?.expenseRatio || 0}%`,
+      icon: BarChart3,
+      trend:
+        data?.expenseRatio && data.expenseRatio < 30
+          ? "up"
+          : data?.expenseRatio && data.expenseRatio > 50
+          ? "down"
+          : "neutral",
+      description: t("expenseRatioDesc"),
     },
   ];
 
-  const detailedMetrics = [
+  const salesMetrics = [
     {
-      label: t("returns"),
-      value: formatNumber(metrics.data?.returns),
+      label: t("transactionCount"),
+      value: formatNumber(data?.transactionCount || 0),
       category: t("salesCategory"),
+      icon: ShoppingCart,
     },
     {
       label: t("averageOrderValue"),
-      value: formatCurrency(metrics.data?.averageOrderValue),
+      value: formatCurrency(data?.averageOrderValue || 0),
       category: t("salesCategory"),
+      icon: DollarSign,
     },
     {
-      label: t("transactionCount"),
-      value: formatNumber(metrics.data?.transactionCount),
+      label: t("uniqueProductsSold"),
+      value: formatNumber(data?.uniqueProductsSold || 0),
       category: t("salesCategory"),
+      icon: Package,
     },
+    {
+      label: t("returns"),
+      value: formatCurrency(data?.returns || 0),
+      category: t("salesCategory"),
+      icon: TrendingDown,
+    },
+    {
+      label: t("returnRate"),
+      value: `${data?.returnRate || 0}%`,
+      category: t("salesCategory"),
+      icon: AlertTriangle,
+    },
+  ];
+
+  const inventoryMetrics = [
     {
       label: t("openingStock"),
-      value: formatCurrency(metrics.data?.openingStock),
+      value: formatCurrency(data?.openingStock || 0),
       category: t("inventoryCategory"),
+      icon: Package,
     },
     {
       label: t("closingStock"),
-      value: formatCurrency(metrics.data?.closingStock),
+      value: formatCurrency(data?.closingStock || 0),
       category: t("inventoryCategory"),
+      icon: Package,
     },
     {
       label: t("purchases"),
-      value: formatCurrency(metrics.data?.purchases),
+      value: formatCurrency(data?.purchases || 0),
       category: t("inventoryCategory"),
+      icon: ShoppingCart,
     },
     {
       label: t("costOfGoodsSold"),
-      value: formatCurrency(metrics.data?.costOfGoodsSold),
+      value: formatCurrency(data?.costOfGoodsSold || 0),
       category: t("inventoryCategory"),
-    },
-    {
-      label: t("averageInventory"),
-      value: formatCurrency(metrics.data?.averageInventory),
-      category: t("inventoryCategory"),
+      icon: Calculator,
     },
     {
       label: t("inventoryTurnover"),
-      value: formatNumber(metrics.data?.inventoryTurnover),
-      category: t("ratiosCategory"),
+      value: formatNumber(data?.inventoryTurnover || 0),
+      category: t("inventoryCategory"),
+      icon: TrendingUp,
     },
     {
       label: t("daysOnHand"),
-      value: formatNumber(metrics.data?.daysOnHand),
-      category: t("ratiosCategory"),
+      value: `${data?.daysOnHand || 0} days`,
+      category: t("inventoryCategory"),
+      icon: Info,
     },
-    // {
-    //   label: t("totalExpenses"),
-    //   value: formatCurrency(metrics.data?.),
-    //   category: t("expensesCategory"),
-    // },
     {
-      label: t("operatingExpenses"),
-      value: formatCurrency(metrics.data?.operatingExpenses),
-      category: t("expensesCategory"),
+      label: t("inventoryGrowth"),
+      value: `${data?.inventoryGrowth || 0}%`,
+      category: t("inventoryCategory"),
+      icon:
+        data?.inventoryGrowth && data.inventoryGrowth > 0
+          ? TrendingUp
+          : TrendingDown,
     },
+  ];
+
+  const profitabilityMetrics = [
     {
       label: t("grossMargin"),
-      value: `${metrics.data?.grossMargin ?? 0}%`,
+      value: `${data?.grossMargin || 0}%`,
       category: t("marginsCategory"),
+      icon: BarChart3,
     },
     {
       label: t("netMargin"),
-      value: `${metrics.data?.netMargin ?? 0}%`,
+      value: `${data?.netMargin || 0}%`,
       category: t("marginsCategory"),
+      icon: BarChart3,
     },
     {
       label: t("operatingMargin"),
-      value: `${metrics.data?.operatingMargin ?? 0}%`,
+      value: `${data?.operatingMargin || 0}%`,
       category: t("marginsCategory"),
+      icon: BarChart3,
     },
+    {
+      label: t("assetTurnover"),
+      value: formatNumber(data?.assetTurnover || 0),
+      category: t("efficiencyCategory"),
+      icon: TrendingUp,
+    },
+  ];
+
+  const allDetailedMetrics = [
+    ...salesMetrics,
+    ...inventoryMetrics,
+    ...profitabilityMetrics,
   ];
 
   return (
@@ -174,6 +281,7 @@ const analytics = async (props: {
                 title={metric.title}
                 value={metric.value}
                 icon={metric.icon}
+                subText={metric.description}
               />
             );
           })}
@@ -193,11 +301,52 @@ const analytics = async (props: {
                 title={metric.title}
                 value={metric.value}
                 icon={metric.icon}
+                subText={metric.description}
               />
             );
           })}
         </div>
       </div>
+
+      {/* Data Quality Indicator */}
+      {data?.dataQuality && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CheckCircle className="h-5 w-5 text-green-600" />
+              {t("dataQuality")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div>
+                <p className="font-medium">{t("totalTransactions")}</p>
+                <p className="text-muted-foreground">
+                  {data.dataQuality.totalTransactions}
+                </p>
+              </div>
+              <div>
+                <p className="font-medium">{t("validTransactions")}</p>
+                <p className="text-muted-foreground">
+                  {data.dataQuality.validTransactions}
+                </p>
+              </div>
+              <div>
+                <p className="font-medium">{t("hasInventoryData")}</p>
+                <p className="text-muted-foreground">
+                  {data.dataQuality.hasInventoryData ? t("yes") : t("no")}
+                </p>
+              </div>
+              <div>
+                <p className="font-medium">{t("hasExpenseData")}</p>
+                <p className="text-muted-foreground">
+                  {data.dataQuality.hasExpenseData ? t("yes") : t("no")}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="space-y-4">
         <div className="flex items-center gap-2">
@@ -225,33 +374,41 @@ const analytics = async (props: {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {detailedMetrics.map((metric, index) => (
-                  <TableRow key={index} className="hover:bg-muted/50">
-                    <TableCell className="font-medium">
-                      {metric.label}
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          metric.category === t("salesCategory")
-                            ? "green"
-                            : metric.category === t("inventoryCategory")
-                            ? "blue"
-                            : metric.category === t("expensesCategory")
-                            ? "redStrong"
-                            : metric.category === t("marginsCategory")
-                            ? "purple"
-                            : "orange"
-                        }
-                      >
-                        {metric.category}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right font-mono">
-                      {metric.value}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {allDetailedMetrics.map((metric, index) => {
+                  const IconComponent = metric.icon || Info;
+                  return (
+                    <TableRow key={index} className="hover:bg-muted/50">
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          <IconComponent className="h-4 w-4 text-muted-foreground" />
+                          {metric.label}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            metric.category === t("salesCategory")
+                              ? "green"
+                              : metric.category === t("inventoryCategory")
+                              ? "blue"
+                              : metric.category === t("expensesCategory")
+                              ? "redStrong"
+                              : metric.category === t("marginsCategory")
+                              ? "purple"
+                              : metric.category === t("efficiencyCategory")
+                              ? "orange"
+                              : "default"
+                          }
+                        >
+                          {metric.category}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right font-mono font-semibold">
+                        {metric.value}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </CardContent>

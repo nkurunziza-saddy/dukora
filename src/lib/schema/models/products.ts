@@ -75,7 +75,7 @@ export const categoriesTable = pgTable(
       .primaryKey()
       .notNull()
       .default(sql`gen_random_uuid()`),
-    value: text("value").notNull().unique(),
+    value: text("value").notNull(),
     description: text("description"),
     businessId: text("business_id")
       .notNull()

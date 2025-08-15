@@ -78,10 +78,10 @@ function WelcomeScreen({
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
       <div className="mb-8">
-        <div className="size-12 bg-primary/10 rounded-full flex items-center justify-center mb-4 mx-auto">
+        {/* <div className="size-12 bg-primary/10 rounded-full flex items-center justify-center mb-4 mx-auto">
           <MessageSquare className="size-6 text-primary" />
-        </div>
-        <h1 className="text-2xl font-bold mb-2">Welcome to AI Chat</h1>
+        </div> */}
+        <h1 className="text-2xl font-bold mb-2">Welcome to your AI Assistant</h1>
         <p className="text-muted-foreground">
           Start a conversation or try one of these suggestions
         </p>

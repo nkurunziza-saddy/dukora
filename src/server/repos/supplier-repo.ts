@@ -61,7 +61,7 @@ export async function get_by_id(supplierId: string, businessId: string) {
     if (!supplier) {
       return {
         data: null,
-        error: ErrorCode.SUPPLIER_NOT_FOUND ?? ErrorCode.PRODUCT_NOT_FOUND,
+        error: ErrorCode.SUPPLIER_NOT_FOUND,
       };
     }
 
@@ -145,6 +145,10 @@ export async function update(
         )
         .returning();
 
+      if (updatedSupplier === undefined) {
+        return { data: null, error: ErrorCode.SUPPLIER_NOT_FOUND };
+      }
+
       const auditData: InsertAuditLog = {
         businessId: businessId,
         model: "supplier",
@@ -156,19 +160,12 @@ export async function update(
       };
 
       await tx.insert(auditLogsTable).values(auditData);
-      return updatedSupplier;
+      return { data: updatedSupplier, error: null };
     });
-
-    if (!result) {
-      return {
-        data: null,
-        error: ErrorCode.SUPPLIER_NOT_FOUND ?? ErrorCode.PRODUCT_NOT_FOUND,
-      };
-    }
 
     revalidatePath("/", "layout");
 
-    return { data: result, error: null };
+    return result;
   } catch (error) {
     console.error("Failed to update supplier:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };
@@ -203,6 +200,10 @@ export async function remove(
         )
         .returning();
 
+      if (updatedSupplier === undefined) {
+        return { data: null, error: ErrorCode.SUPPLIER_NOT_FOUND };
+      }
+
       const auditData: InsertAuditLog = {
         businessId: businessId,
         model: "supplier",
@@ -214,18 +215,12 @@ export async function remove(
       };
 
       await tx.insert(auditLogsTable).values(auditData);
-      return updatedSupplier;
+      return { data: updatedSupplier, error: null };
     });
 
-    if (!result) {
-      return {
-        data: null,
-        error: ErrorCode.SUPPLIER_NOT_FOUND ?? ErrorCode.PRODUCT_NOT_FOUND,
-      };
-    }
     revalidatePath("/", "layout");
 
-    return { data: result, error: null };
+    return result;
   } catch (error) {
     console.error("Failed to delete supplier:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };

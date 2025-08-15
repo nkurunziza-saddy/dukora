@@ -29,14 +29,19 @@ export async function fetchTransactionsByFilters(
       dateFromObj,
       dateToObj
     );
+
+    if (data.error) {
+      return { data: null, error: ErrorCode.UNAUTHORIZED };
+    }
+
     return { data: data.data, error: null };
   } catch (error) {
+    if (error instanceof Error && error.message === ErrorCode.UNAUTHORIZED) {
+      return { data: null, error: ErrorCode.UNAUTHORIZED };
+    }
     return {
       data: null,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to get recent transactions",
+      error: "Failed to get recent transactions",
     };
   }
 }

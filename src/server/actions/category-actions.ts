@@ -88,7 +88,14 @@ export const deleteCategory = createProtectedAction(
     if (!categoryId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    await categoryRepo.remove(categoryId, user.businessId!, user.id);
+    const res = await categoryRepo.remove(
+      categoryId,
+      user.businessId!,
+      user.id
+    );
+    if (res.error) {
+      return { data: null, error: ErrorCode.DATABASE_ERROR };
+    }
     revalidatePath("/", "layout");
     return { data: { success: true }, error: null };
   }

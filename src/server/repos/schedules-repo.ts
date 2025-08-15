@@ -58,8 +58,8 @@ export const get_overview = cache(
             eq(schedulesTable.userId, userId)
           )
         )
-        .limit(limit ?? 5)
-        .orderBy(desc(schedulesTable.created_at));
+        .orderBy(desc(schedulesTable.created_at))
+        .limit(limit ?? 5);
       return { data: schedules, error: null };
     } catch (error) {
       console.error("Failed to fetch schedules:", error);

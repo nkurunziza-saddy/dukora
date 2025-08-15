@@ -1,0 +1,1 @@
+ALTER TABLE "categories" DROP CONSTRAINT "categories_value_unique";

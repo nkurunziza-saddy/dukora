@@ -205,7 +205,9 @@ export async function create(transaction: InsertTransaction) {
   if (
     !transaction.productId ||
     !transaction.businessId ||
-    !transaction.warehouseItemId
+    !transaction.warehouseItemId ||
+    !transaction.type ||
+    !transaction.quantity
   ) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -259,10 +261,14 @@ export async function create(transaction: InsertTransaction) {
 export async function create_with_warehouse_item(
   transaction: Omit<InsertTransaction, "warehouseItemId">
 ) {
-  if (!transaction.productId || !transaction.businessId) {
+  if (
+    !transaction.productId ||
+    !transaction.businessId ||
+    !transaction.type ||
+    !transaction.quantity
+  ) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
-  console.log({ transaction });
 
   try {
     const result = await db.transaction(async (tx) => {

@@ -27,6 +27,8 @@ import { AlertCircle } from "lucide-react";
 import { SelectBusiness } from "@/lib/schema/schema-types";
 import { updateBusiness } from "@/server/actions/business-actions";
 import { toast } from "sonner";
+import { de } from "@faker-js/faker";
+import { Textarea } from "@/components/ui/textarea";
 
 const LIMITS = {
   NAME_MIN: 2,
@@ -51,10 +53,10 @@ const formSchema = z.object({
       /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/,
       "Please enter a valid domain"
     )
-    // .nullable()
     .optional()
     .or(z.literal("")),
-  businessType: z.string().nullable().optional(),
+  businessType: z.string().optional(),
+  description: z.string().optional(),
   logoUrl: z
     .string()
     .url("Please enter a valid URL")
@@ -71,18 +73,18 @@ const formSchema = z.object({
 
 export function EditBusinessDetails({
   business,
-  businessTypes,
 }: {
   business: Omit<SelectBusiness, "createdAt" | "updatedAt" | "stripeAccountId">;
-  businessTypes: { value: string; label: string }[];
 }) {
   const t = useTranslations("forms");
+  const tCommon = useTranslations("common");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: business?.name || "",
       domain: business?.domain || "",
+      description: business?.description || "",
       businessType: business?.businessType || "",
       logoUrl: business?.logoUrl || "",
       registrationNumber: business?.registrationNumber || "",
@@ -98,6 +100,15 @@ export function EditBusinessDetails({
   const nameValue = watch("name") || "";
   const domainValue = watch("domain") || "";
   const logoUrlValue = watch("logoUrl") || "";
+
+  const businessTypes = [
+    { value: "retail", label: t("businessTypeRetail") },
+    { value: "wholesale", label: t("businessTypeWholesale") },
+    { value: "restaurant", label: t("businessTypeRestaurant") },
+    { value: "manufacturing", label: t("businessTypeManufacturing") },
+    { value: "service", label: t("businessTypeService") },
+    { value: "other", label: t("businessTypeOther") },
+  ];
 
   const nameRemaining = LIMITS.NAME_MAX - nameValue.length;
   const domainRemaining = LIMITS.DOMAIN_MAX - domainValue.length;
@@ -213,6 +224,24 @@ export function EditBusinessDetails({
                       {domainRemaining} characters remaining •{" "}
                       {t("domainDescription")}
                     </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("description")}</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder={t("enterBusinessDescription")}
+                        className="field-sizing-content max-h-29.5 min-h-0 resize-none py-1.75"
+                        {...field}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}

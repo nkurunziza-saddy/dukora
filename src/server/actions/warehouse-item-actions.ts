@@ -116,7 +116,10 @@ export const deleteWarehouseItem = createProtectedAction(
     if (!warehouseItemId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    await warehouseItemsRepo.remove(warehouseItemId, user.businessId!, user.id);
+    const res = await warehouseItemsRepo.remove(warehouseItemId, user.businessId!, user.id);
+    if (res.error) {
+      return { data: null, error: res.error };
+    }
 
     return { data: { success: true }, error: null };
   }
@@ -139,7 +142,9 @@ export const createManyWarehouseItems = createProtectedAction(
     );
     const createdWarehouseItems =
       await warehouseItemsRepo.create_many(warehouseItems);
-
-    return { data: createdWarehouseItems, error: null };
+    if (createdWarehouseItems.error) {
+      return { data: null, error: createdWarehouseItems.error };
+    }
+    return { data: createdWarehouseItems.data, error: null };
   }
 );

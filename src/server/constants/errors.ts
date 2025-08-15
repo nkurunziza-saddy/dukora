@@ -51,6 +51,7 @@ export enum ErrorCode {
   // Database errors
   DATABASE_ERROR = "DATABASE_ERROR",
   QUERY_ERROR = "QUERY_ERROR",
+  PARTIAL_SUCCESS = "PARTIAL_SUCCESS",
 
   // External service errors
   EXTERNAL_SERVICE_ERROR = "EXTERNAL_SERVICE_ERROR",
@@ -131,6 +132,7 @@ export const ERROR_CODE_STATUS_MAP: Record<ErrorCode, number> = {
   // Database errors
   [ErrorCode.DATABASE_ERROR]: 500,
   [ErrorCode.QUERY_ERROR]: 500,
+  [ErrorCode.PARTIAL_SUCCESS]: 207,
 
   // External service errors
   [ErrorCode.EXTERNAL_SERVICE_ERROR]: 502,
