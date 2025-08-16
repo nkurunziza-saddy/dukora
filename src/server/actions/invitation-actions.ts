@@ -84,7 +84,7 @@ export const createInvitation = createProtectedAction(
 
     try {
       const resolvedEmailHtml = await emailHtml;
-      const t = await resend.emails.send({
+      await resend.emails.send({
         from: "Quantura <onboarding@resend.dev>",
         to: invitationData.email,
         subject: `Join ${business.data.name} on Quantura`,

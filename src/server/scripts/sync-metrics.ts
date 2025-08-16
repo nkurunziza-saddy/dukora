@@ -1,7 +1,7 @@
 import { scheduleMonthlyMetricsSync } from "@/server/actions/metrics-action";
 async function syncAllBusinessMetrics() {
   try {
-    const result = await scheduleMonthlyMetricsSync();
+    await scheduleMonthlyMetricsSync();
   } catch (error) {
     console.error("Failed to sync monthly metrics:", error);
   }

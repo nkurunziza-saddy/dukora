@@ -27,7 +27,6 @@ import { AlertCircle } from "lucide-react";
 import { SelectBusiness } from "@/lib/schema/schema-types";
 import { updateBusiness } from "@/server/actions/business-actions";
 import { toast } from "sonner";
-import { de } from "@faker-js/faker";
 import { Textarea } from "@/components/ui/textarea";
 
 const LIMITS = {
@@ -64,7 +63,6 @@ const formSchema = z.object({
       LIMITS.LOGO_URL_MAX,
       `Logo URL cannot exceed ${LIMITS.LOGO_URL_MAX} characters`
     )
-    // .nullable()
     .optional()
     .or(z.literal("")),
   registrationNumber: z.string().optional(),
@@ -77,7 +75,6 @@ export function EditBusinessDetails({
   business: Omit<SelectBusiness, "createdAt" | "updatedAt" | "stripeAccountId">;
 }) {
   const t = useTranslations("forms");
-  const tCommon = useTranslations("common");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

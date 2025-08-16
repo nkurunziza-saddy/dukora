@@ -155,16 +155,9 @@ export function BusinessSettingsForm({ business }: BusinessSettingsProps) {
             isActive: business?.isActive || false,
             logoUrl: business?.logoUrl || "",
             name: business?.name || "",
+            description: business?.description || "",
             registrationNumber: business?.registrationNumber || "",
           }}
-          businessTypes={[
-            { value: "corporation", label: "Corporation" },
-            { value: "llc", label: "Limited Liability Company (LLC)" },
-            { value: "partnership", label: "Partnership" },
-            { value: "sole_proprietorship", label: "Sole Proprietorship" },
-            { value: "nonprofit", label: "Non-Profit Organization" },
-            { value: "other", label: "Other" },
-          ]}
         />
       </div>
 

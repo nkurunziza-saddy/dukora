@@ -3,7 +3,6 @@ import {
   text,
   boolean,
   timestamp,
-  check,
   json,
   uniqueIndex,
   index,

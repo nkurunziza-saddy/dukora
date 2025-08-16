@@ -100,7 +100,7 @@ describe("Metrics Actions", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    (getCurrentSession as vi.Mock).mockResolvedValue({
+    (getCurrentSession as Mock).mockResolvedValue({
       user: mockUser,
     });
     (rolePermissions.roleHasPermission as Mock).mockReturnValue(true);

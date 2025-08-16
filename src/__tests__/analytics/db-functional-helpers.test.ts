@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
 import { syncMetricsToDatabase } from "@/server/helpers/db-functional-helpers";
 import { ErrorCode } from "@/server/constants/errors";
@@ -72,25 +72,20 @@ describe("DB Functional Helpers", () => {
     });
 
     it("should validate input parameters", async () => {
-      const result1 = await syncMetricsToDatabase(
-        null as any,
-        mockDate,
-        mockMetrics
-      );
+      // @ts-expect-error - Testing invalid input
+      const result1 = await syncMetricsToDatabase(null, mockDate, mockMetrics);
       expect(result1.error).toBe(ErrorCode.BAD_REQUEST);
 
+      // @ts-expect-error - Testing invalid input
       const result2 = await syncMetricsToDatabase(
         mockBusinessId,
-        null as any,
+        null,
         mockMetrics
       );
       expect(result2.error).toBe(ErrorCode.BAD_REQUEST);
 
-      const result3 = await syncMetricsToDatabase(
-        mockBusinessId,
-        mockDate,
-        null as any
-      );
+      // @ts-expect-error - Testing invalid input
+      const result3 = await syncMetricsToDatabase(mockBusinessId, mockDate, null);
       expect(result3.error).toBe(ErrorCode.BAD_REQUEST);
     });
 

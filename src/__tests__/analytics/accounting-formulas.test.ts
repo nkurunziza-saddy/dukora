@@ -7,13 +7,11 @@ import {
 import {
   ProductStatus,
   type ExtendedWarehouseItemPayload,
-  type InsertProduct,
   type SelectExpense,
   type SelectProduct,
   type SelectTransaction,
 } from "@/lib/schema/schema-types";
 
-// Mock data types
 type MockTransaction = SelectTransaction & { product: SelectProduct };
 
 describe("Accounting Formulas", () => {
@@ -54,7 +52,7 @@ describe("Accounting Formulas", () => {
         warehouseId: "wh-1",
         warehouseItemId: "whi-1",
         type: "SALE",
-        quantity: -10, // Sales have negative quantity
+        quantity: -10,
         reference: "SALE-001",
         businessId: "biz-1",
         supplierId: null,
@@ -258,14 +256,16 @@ describe("Accounting Formulas", () => {
 
     it("should validate input parameters", () => {
       // Test with invalid transactions array
-      const result1 = calculateAllMetrics(null as any, mockExpenses, 1000, 800);
+      // @ts-expect-error - Testing invalid input
+      const result1 = calculateAllMetrics(null, mockExpenses, 1000, 800);
       expect(result1.grossRevenue).toBe(0);
       expect(result1.dataQuality.totalTransactions).toBe(0);
 
       // Test with invalid expenses array
+      // @ts-expect-error - Testing invalid input
       const result2 = calculateAllMetrics(
         mockTransactions,
-        null as any,
+        null,
         1000,
         800
       );

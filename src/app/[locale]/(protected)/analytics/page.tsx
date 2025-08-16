@@ -29,7 +29,6 @@ import {
   Wallet,
   Package,
   ShoppingCart,
-  Users,
   AlertTriangle,
   CheckCircle,
   Info,
