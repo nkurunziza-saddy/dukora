@@ -13,7 +13,7 @@ import {
   MenuGroup,
 } from "@/components/ui/menu";
 import { toast } from "sonner";
-import { Link } from "@/i18n/navigation";
+import Link from "next/link";
 import { format } from "date-fns";
 import ConfirmDialog from "../shared/confirm-dialog";
 import { SelectSupplier } from "@/lib/schema/schema-types";
