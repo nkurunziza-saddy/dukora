@@ -1,7 +1,5 @@
 # Dukora - Modern Inventory Management
 
-<!-- ![Dukora Banner](https://user-images.githubusercontent.com/12422491/226891931-90a4ea5a-1889-42c9-91d3-a75654a2a241.png) -->
-
 Dukora is a modern, open-source inventory and business management system designed to provide a comprehensive, real-time overview of your operations. Built with a powerful and scalable tech stack, it offers everything from product and warehouse management to detailed financial analytics and role-based user permissions.
 
 ## ✨ Core Features

@@ -5,27 +5,28 @@ import { Toaster } from "@/components/ui/sonner";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import localFont from "next/font/local";
+import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Analytics } from "@vercel/analytics/next";
 import { locales } from "@/i18n/config";
-const geistSans = localFont({
-  src: "../fonts/GeistVF.woff",
+
+const geistSans = Geist({
+  subsets: ["latin"],
   variable: "--font-geist",
   display: "swap",
   preload: true,
 });
-
-const geistMono = localFont({
-  src: "../fonts/GeistMonoVF.woff",
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
   variable: "--font-geist-mono",
   display: "swap",
   preload: true,
 });
 
 export const metadata: Metadata = {
-  title: "dukora",
-  description: "inventory",
+  title: "Dukora - Modern Inventory Management for Growing Businesses",
+  description:
+    "Track inventory across multiple warehouses, manage sales in real-time, and get AI-powered insights—all in one unified dashboard.",
 };
 
 export async function generateStaticParams() {
@@ -46,11 +47,11 @@ export default async function RootLayout({
     notFound();
   }
   return (
-    <html
-      lang={locale}
-      className={`${geistSans.variable} ${geistMono.variable}`}
-    >
-      <body suppressHydrationWarning className="scrollbar">
+    <html lang={locale} className={`dark `}>
+      <body
+        suppressHydrationWarning
+        className={`scrollbar ${geistSans.variable} ${geistMono.variable}`}
+      >
         <NextIntlClientProvider>
           <ThemeProvider
             attribute="class"

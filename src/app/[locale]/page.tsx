@@ -1,9 +1,13 @@
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { CheckCircle, BarChart, Database, ShieldCheck } from "lucide-react";
+import { Navigation } from "@/components/landing/navigation";
+import { HeroSection } from "@/components/landing/hero-section";
+import { FeaturesSection } from "@/components/landing/features-section";
+import { StatsSection } from "@/components/landing/stats-section";
+import { AboutSection } from "@/components/landing/about-section";
+import { BlogSection } from "@/components/landing/blog-section";
+import { CTASection } from "@/components/landing/cta-section";
+import { Footer } from "@/components/landing/footer";
 import { getCurrentSession } from "@/server/actions/auth-actions";
 import { redirect } from "next/navigation";
-import { Link } from "@/i18n/navigation";
 
 export default async function LandingPage() {
   const session = await getCurrentSession();
@@ -11,87 +15,15 @@ export default async function LandingPage() {
     redirect("/dashboard");
   }
   return (
-    <div className="bg-background text-foreground min-h-screen flex flex-col">
-      <div className="flex-grow flex items-center justify-center p-4 md:p-8">
-        <div className="relative w-full max-w-5xl mx-auto">
-          <div className="absolute top-0 left-0 w-full h-full border-t border-l border-r border-b border-border/80 rounded-xl"></div>
-          <div className="absolute -top-px left-1/2 -translate-x-1/2 h-px w-1/2 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
-          <div className="absolute -bottom-px left-1/2 -translate-x-1/2 h-px w-1/2 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
-          <div className="absolute -left-px top-1/2 -translate-y-1/2 w-px h-1/2 bg-gradient-to-b from-transparent via-primary/40 to-transparent"></div>
-          <div className="absolute -right-px top-1/2 -translate-y-1/2 w-px h-1/2 bg-gradient-to-b from-transparent via-primary/40 to-transparent"></div>
-
-          <main className="relative bg-background/80 backdrop-blur-sm rounded-xl p-8 md:p-16">
-            <header className="text-center">
-              <h1 className="text-2xl md:text-6xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70">
-                Dukora
-              </h1>
-              <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-                The modern, open-source platform for intelligent inventory
-                management and real-time business analytics.
-              </p>
-              <div className="mt-8 flex justify-center gap-4">
-                <Button asChild>
-                  <Link href="/auth/sign-up">Get Started</Link>
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link href="https://github.com/nkurunziza-saddy/dukora">
-                    View on GitHub
-                  </Link>
-                </Button>
-              </div>
-            </header>
-
-            <Separator className="my-16" />
-
-            <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-              <FeatureCard
-                icon={<CheckCircle className="size-4 text-primary" />}
-                title="Real-time Tracking"
-                description="Monitor stock levels, sales, and expenses as they happen."
-              />
-              <FeatureCard
-                icon={<BarChart className="size-4 text-primary" />}
-                title="Powerful Analytics"
-                description="Automated financial metrics and insightful reports."
-              />
-              <FeatureCard
-                icon={<Database className="size-4 text-primary" />}
-                title="Robust Data Layer"
-                description="Built on PostgreSQL with Drizzle ORM for type-safe queries."
-              />
-              <FeatureCard
-                icon={<ShieldCheck className="size-4 text-primary" />}
-                title="Secure by Design"
-                description="Granular, role-based permissions for every action."
-              />
-            </section>
-          </main>
-        </div>
-      </div>
-
-      <footer className="text-center p-4 text-muted-foreground text-sm">
-        <p>Built with Next.js. Open Source on GitHub.</p>
-      </footer>
-    </div>
-  );
-}
-
-function FeatureCard({
-  icon,
-  title,
-  description,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="flex flex-col items-center">
-      <div className="p-2 rounded-lg bg-primary/10 backdrop-blur-lg mb-4">
-        {icon}
-      </div>
-      <h3 className="font-semibold">{title}</h3>
-      <p className="text-muted-foreground text-xs mt-1">{description}</p>
-    </div>
+    <main className="min-h-screen">
+      <Navigation />
+      <HeroSection />
+      <FeaturesSection />
+      <StatsSection />
+      <AboutSection />
+      <BlogSection />
+      <CTASection />
+      <Footer />
+    </main>
   );
 }
