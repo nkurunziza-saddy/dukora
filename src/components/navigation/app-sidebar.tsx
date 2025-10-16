@@ -82,7 +82,7 @@ export const data = {
           title: "Payments & Invoices",
           url: "/payments",
           icon: CreditCard,
-          disabled: true
+          disabled: true,
         },
       ],
     },
@@ -171,9 +171,7 @@ export function AppSidebar() {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <div className="p-4 text-xs text-muted-foreground">
-          © 2025 quantura
-        </div>
+        <div className="p-4 text-xs text-muted-foreground">© 2025 dukora</div>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

@@ -1,8 +1,8 @@
-# Quantura - Modern Inventory Management
+# Dukora - Modern Inventory Management
 
-<!-- ![Quantura Banner](https://user-images.githubusercontent.com/12422491/226891931-90a4ea5a-1889-42c9-91d3-a75654a2a241.png) -->
+<!-- ![Dukora Banner](https://user-images.githubusercontent.com/12422491/226891931-90a4ea5a-1889-42c9-91d3-a75654a2a241.png) -->
 
-Quantura is a modern, open-source inventory and business management system designed to provide a comprehensive, real-time overview of your operations. Built with a powerful and scalable tech stack, it offers everything from product and warehouse management to detailed financial analytics and role-based user permissions.
+Dukora is a modern, open-source inventory and business management system designed to provide a comprehensive, real-time overview of your operations. Built with a powerful and scalable tech stack, it offers everything from product and warehouse management to detailed financial analytics and role-based user permissions.
 
 ## ✨ Core Features
 
@@ -27,7 +27,7 @@ Quantura is a modern, open-source inventory and business management system desig
 
 ## 🚀 Getting Started
 
-Follow these steps to get a local instance of Quantura up and running.
+Follow these steps to get a local instance of Dukora up and running.
 
 ### Prerequisites
 
@@ -38,8 +38,8 @@ Follow these steps to get a local instance of Quantura up and running.
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/nkurunziza-saddy/quantura.git
-cd quantura
+git clone https://github.com/nkurunziza-saddy/dukora.git
+cd dukora
 ```
 
 ### 2. Install Dependencies

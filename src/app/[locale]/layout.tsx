@@ -24,7 +24,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "quantura",
+  title: "dukora",
   description: "inventory",
 };
 

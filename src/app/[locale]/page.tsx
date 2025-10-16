@@ -23,7 +23,7 @@ export default async function LandingPage() {
           <main className="relative bg-background/80 backdrop-blur-sm rounded-xl p-8 md:p-16">
             <header className="text-center">
               <h1 className="text-2xl md:text-6xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70">
-                Quantura
+                Dukora
               </h1>
               <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
                 The modern, open-source platform for intelligent inventory
@@ -34,7 +34,7 @@ export default async function LandingPage() {
                   <Link href="/auth/sign-up">Get Started</Link>
                 </Button>
                 <Button variant="outline" asChild>
-                  <Link href="https://github.com/nkurunziza-saddy/quantra">
+                  <Link href="https://github.com/nkurunziza-saddy/dukora">
                     View on GitHub
                   </Link>
                 </Button>

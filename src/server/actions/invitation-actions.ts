@@ -85,9 +85,9 @@ export const createInvitation = createProtectedAction(
     try {
       const resolvedEmailHtml = await emailHtml;
       await resend.emails.send({
-        from: "Quantura <onboarding@resend.dev>",
+        from: "Dukora <onboarding@resend.dev>",
         to: invitationData.email,
-        subject: `Join ${business.data.name} on Quantura`,
+        subject: `Join ${business.data.name} on Dukora`,
         html: resolvedEmailHtml,
       });
     } catch (emailError) {
@@ -189,9 +189,9 @@ export const createManyInvitations = createProtectedAction(
       try {
         const resolvedEmailHtml = await emailHtml;
         await resend.emails.send({
-          from: "Quantura <onboarding@resend.dev>",
+          from: "Dukora <onboarding@resend.dev>",
           to: invitation.email,
-          subject: `Join ${business.data.name} on Quantura`,
+          subject: `Join ${business.data.name} on Dukora`,
           html: resolvedEmailHtml,
         });
       } catch (emailError) {
