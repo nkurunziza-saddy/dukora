@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
+  CardPanel,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -28,7 +28,7 @@ export default async function AcceptInvitationPage({
           <CardTitle>{t("title")}</CardTitle>
           <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardPanel>
           <div className="flex gap-4">
             <Link href={`/auth/accept-invitation?code=${code}`}>
               <Button className="w-full">{t("acceptInvitationButton")}</Button>
@@ -39,7 +39,7 @@ export default async function AcceptInvitationPage({
               </Button>
             </Link>
           </div>
-        </CardContent>
+        </CardPanel>
       </Card>
     </div>
   );

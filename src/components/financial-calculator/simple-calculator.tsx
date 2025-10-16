@@ -2,7 +2,7 @@
 
 import {
   Card,
-  CardContent,
+  CardPanel,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -30,7 +30,7 @@ export function SimpleCalculator() {
         <CardTitle>{t("simple_calculator.title")}</CardTitle>
         <CardDescription>{t("simple_calculator.description")}</CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardPanel className="grid gap-4">
         <div className="grid gap-2">
           <Label htmlFor="principal">
             {t("simple_calculator.principal_label")}
@@ -69,7 +69,7 @@ export function SimpleCalculator() {
           <Label htmlFor="result">{t("simple_calculator.result_label")}</Label>
           <Input id="result" type="number" value={result.toFixed(2)} readOnly />
         </div>
-      </CardContent>
+      </CardPanel>
     </Card>
   );
 }

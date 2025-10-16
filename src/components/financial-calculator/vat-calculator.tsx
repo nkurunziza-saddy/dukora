@@ -2,7 +2,7 @@
 
 import {
   Card,
-  CardContent,
+  CardPanel,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -31,7 +31,7 @@ export function VATCalculator() {
         <CardTitle>{t("vat_calculator.title")}</CardTitle>
         <CardDescription>{t("vat_calculator.description")}</CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardPanel className="grid gap-4">
         <div className="grid gap-2">
           <Label htmlFor="salesAmount">
             {t("vat_calculator.sales_amount_label")}
@@ -60,7 +60,7 @@ export function VATCalculator() {
           <Label htmlFor="vatDue">{t("vat_calculator.vat_due_label")}</Label>
           <Input id="vatDue" type="number" value={vatDue.toFixed(2)} readOnly />
         </div>
-      </CardContent>
+      </CardPanel>
     </Card>
   );
 }

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
-  SelectContent,
+  SelectPopup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -64,7 +64,7 @@ export function InviteUserForm() {
   const { isSubmitting } = form.formState;
   return (
     <Form {...form}>
-      <Alert variant="destructive">
+      <Alert variant="error">
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>{t("emailVerificationDown")}</AlertDescription>
       </Alert>
@@ -116,13 +116,13 @@ export function InviteUserForm() {
                       <SelectValue />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
+                  <SelectPopup>
                     {userRolesObject.map((role) => (
                       <SelectItem key={role.value} value={role.value}>
                         {role.label}
                       </SelectItem>
                     ))}
-                  </SelectContent>
+                  </SelectPopup>
                 </Select>
                 <FormMessage />
               </FormItem>

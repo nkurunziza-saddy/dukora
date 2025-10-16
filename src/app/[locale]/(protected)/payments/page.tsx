@@ -36,7 +36,7 @@ export default async function PaymentsHistoryPage() {
     <div className="space-y-6">
       <div className="flex justify-between">
         <div></div>
-        <Button asChild variant={"link"}>
+        <Button variant={"link"}>
           <Link href="/payments/send">New payment</Link>
         </Button>
       </div>

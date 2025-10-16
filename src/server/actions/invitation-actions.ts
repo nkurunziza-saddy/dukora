@@ -39,11 +39,13 @@ export const getInvitationById = createProtectedAction(
 );
 
 import { resend } from "@/lib/email";
-import InvitationEmail from "@/components/emails/invitation-email";
-import { render } from "@react-email/render";
 import { get_by_id_cached as getBusinessByIdRepo } from "../repos/business-repo";
 import { accept_invitation as acceptInvitationRepo } from "../repos/invitations-repo";
 import { redirect } from "next/navigation";
+import {
+  buildInviteEmailHtml,
+  buildInviteEmailText,
+} from "@/components/email-templates/invitation-email";
 
 export const createInvitation = createProtectedAction(
   Permission.INVITATION_CREATE,
@@ -74,21 +76,25 @@ export const createInvitation = createProtectedAction(
 
     const inviteLink = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/accept-invitation?code=${res.data.code}`;
 
-    const emailHtml = render(
-      InvitationEmail({
-        inviteLink,
-        invitedByName: user.name,
-        businessName: business.data.name,
-      })
-    );
+    const html = buildInviteEmailHtml({
+      inviteLink,
+      invitedByName: user.name,
+      businessName: business.data.name,
+    });
+
+    const text = buildInviteEmailText({
+      inviteLink,
+      invitedByName: user.name,
+      businessName: business.data.name,
+    });
 
     try {
-      const resolvedEmailHtml = await emailHtml;
       await resend.emails.send({
         from: "Dukora <onboarding@resend.dev>",
         to: invitationData.email,
         subject: `Join ${business.data.name} on Dukora`,
-        html: resolvedEmailHtml,
+        html,
+        text,
       });
     } catch (emailError) {
       console.error("Failed to send invitation email:", emailError);
@@ -178,21 +184,26 @@ export const createManyInvitations = createProtectedAction(
 
     for (const invitation of createdInvitations.data) {
       const inviteLink = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/accept-invitation?code=${invitation.code}`;
-      const emailHtml = render(
-        InvitationEmail({
-          inviteLink,
-          invitedByName: user.name,
-          businessName: business.data.name,
-        })
-      );
+
+      const html = buildInviteEmailHtml({
+        inviteLink,
+        invitedByName: user.name,
+        businessName: business.data.name,
+      });
+
+      const text = buildInviteEmailText({
+        inviteLink,
+        invitedByName: user.name,
+        businessName: business.data.name,
+      });
 
       try {
-        const resolvedEmailHtml = await emailHtml;
         await resend.emails.send({
           from: "Dukora <onboarding@resend.dev>",
           to: invitation.email,
           subject: `Join ${business.data.name} on Dukora`,
-          html: resolvedEmailHtml,
+          html,
+          text,
         });
       } catch (emailError) {
         console.error(

@@ -2,7 +2,7 @@
 
 import {
   Card,
-  CardContent,
+  CardPanel,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -34,7 +34,7 @@ export function SavingsGoalCalculator() {
         <CardTitle>{t("savings_calculator.title")}</CardTitle>
         <CardDescription>{t("savings_calculator.description")}</CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardPanel className="grid gap-4">
         <div className="grid gap-2">
           <Label htmlFor="targetAmount">
             {t("savings_calculator.target_amount_label")}
@@ -82,7 +82,7 @@ export function SavingsGoalCalculator() {
             readOnly
           />
         </div>
-      </CardContent>
+      </CardPanel>
     </Card>
   );
 }

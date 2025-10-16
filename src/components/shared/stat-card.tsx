@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { type LucideIcon } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardPanel, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface StatProps {
   title: string;
@@ -16,10 +16,10 @@ const StatCard: FC<StatProps> = ({ title, value, icon: Icon, subText }) => {
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
         <Icon className="h-4 w-4 text-muted-foreground" />
       </CardHeader>
-      <CardContent>
+      <CardPanel>
         <div className="text-2xl font-bold">{value}</div>
         {subText && <p className="text-xs text-muted-foreground">{subText}</p>}
-      </CardContent>
+      </CardPanel>
     </Card>
   );
 };

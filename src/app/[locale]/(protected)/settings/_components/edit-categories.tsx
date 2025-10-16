@@ -131,7 +131,7 @@ export function EditCategories({
           </div>
 
           {isAtLimit && (
-            <Alert variant="destructive">
+            <Alert variant="error">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
                 You&apos;ve reached the maximum limit of {CATEGORY_LIMIT}{" "}
@@ -141,7 +141,7 @@ export function EditCategories({
           )}
 
           {errors.categories && (
-            <Alert variant="destructive">
+            <Alert variant="error">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>{errors.categories.message}</AlertDescription>
             </Alert>

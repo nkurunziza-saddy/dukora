@@ -2,7 +2,7 @@
 
 import {
   Card,
-  CardContent,
+  CardPanel,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -49,7 +49,7 @@ export function IncomeTaxCalculator() {
           {t("income_tax_calculator.description")}
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardPanel className="grid gap-4">
         <div className="grid gap-2">
           <Label htmlFor="annualIncome">
             {t("income_tax_calculator.annual_income_label")}
@@ -84,7 +84,7 @@ export function IncomeTaxCalculator() {
             readOnly
           />
         </div>
-      </CardContent>
+      </CardPanel>
     </Card>
   );
 }

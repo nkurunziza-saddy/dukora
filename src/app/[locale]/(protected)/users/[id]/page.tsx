@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsPanel, TabsList, TabsTab } from "@/components/ui/tabs";
 import { getUserById } from "@/server/actions/user-actions";
 import UserSummaryCard from "./_components/user-summary-card";
 import UserSchedules from "./_components/user-schedules";
@@ -36,23 +36,23 @@ export default async function UserDetailsPage({
       <UserSummaryCard user={user} />
       <Tabs defaultValue="schedules">
         <TabsList>
-          <TabsTrigger value="schedules">{t("schedules")}</TabsTrigger>
-          <TabsTrigger value="auditLogs">{t("auditLogs")}</TabsTrigger>
-          <TabsTrigger value="expenses">{t("expenses")}</TabsTrigger>
-          <TabsTrigger value="transactions">{t("transactions")}</TabsTrigger>
+          <TabsTab value="schedules">{t("schedules")}</TabsTab>
+          <TabsTab value="auditLogs">{t("auditLogs")}</TabsTab>
+          <TabsTab value="expenses">{t("expenses")}</TabsTab>
+          <TabsTab value="transactions">{t("transactions")}</TabsTab>
         </TabsList>
-        <TabsContent value="schedules">
+        <TabsPanel value="schedules">
           <UserSchedules schedules={user.schedules} />
-        </TabsContent>
-        <TabsContent value="auditLogs">
+        </TabsPanel>
+        <TabsPanel value="auditLogs">
           <UserAuditLogs auditLogs={user.auditLogs} />
-        </TabsContent>
-        <TabsContent value="expenses">
+        </TabsPanel>
+        <TabsPanel value="expenses">
           <UserExpenses expenses={user.expenses} />
-        </TabsContent>
-        <TabsContent value="transactions">
+        </TabsPanel>
+        <TabsPanel value="transactions">
           <UserTransactions transactions={user.transactions} />
-        </TabsContent>
+        </TabsPanel>
       </Tabs>
     </div>
   );

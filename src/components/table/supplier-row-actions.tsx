@@ -4,13 +4,14 @@ import React, { FC, useState } from "react";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+  Menu,
+  MenuTrigger,
+  MenuPopup,
+  MenuItem,
+  MenuSeparator,
+  MenuGroupLabel,
+  MenuGroup,
+} from "@/components/ui/menu";
 import { toast } from "sonner";
 import { Link } from "@/i18n/navigation";
 import { format } from "date-fns";
@@ -70,38 +71,40 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">{t_common("openMenu")}</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>{t_common("actions")}</DropdownMenuLabel>
-          <DropdownMenuItem asChild>
-            <Link href={`/suppliers/${supplier.id}`} prefetch>
-              {t("supplier.viewDetails")}
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={() => setIsUpdateDialogOpen(true)}
-            className="cursor-pointer"
-          >
-            <Edit className="mr-2 h-4 w-4" />
-            {t_common("edit")}
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            variant="destructive"
-            onClick={() => setIsDeleteDialogOpen(true)}
-            className="cursor-pointer"
-          >
-            <Trash className="mr-2 h-4 w-4" />
-            {t_common("delete")}
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <Menu>
+        <MenuTrigger
+          render={<Button variant={"ghost"} className="h-8 w-8 p-0" />}
+        >
+          <span className="sr-only">{t_common("openMenu")}</span>
+          <MoreHorizontal className="h-4 w-4" />
+        </MenuTrigger>
+        <MenuPopup align="end">
+          <MenuGroup>
+            <MenuGroupLabel>{t_common("actions")}</MenuGroupLabel>
+            <MenuItem>
+              <Link href={`/suppliers/${supplier.id}`} prefetch>
+                {t("supplier.viewDetails")}
+              </Link>
+            </MenuItem>
+            <MenuSeparator />
+            <MenuItem
+              onClick={() => setIsUpdateDialogOpen(true)}
+              className="cursor-pointer"
+            >
+              <Edit className="mr-2 h-4 w-4" />
+              {t_common("edit")}
+            </MenuItem>
+            <MenuItem
+              variant="destructive"
+              onClick={() => setIsDeleteDialogOpen(true)}
+              className="cursor-pointer"
+            >
+              <Trash className="mr-2 h-4 w-4" />
+              {t_common("delete")}
+            </MenuItem>
+          </MenuGroup>
+        </MenuPopup>
+      </Menu>
 
       <ConfirmDialog
         isDialogOpen={isDeleteDialogOpen}

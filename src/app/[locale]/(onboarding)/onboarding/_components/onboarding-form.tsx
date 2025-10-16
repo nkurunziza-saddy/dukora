@@ -7,7 +7,7 @@ import z from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
+  CardPanel,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -24,7 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import {
   Select,
-  SelectContent,
+  SelectPopup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -376,7 +376,7 @@ export default function OnboardingFlow() {
               )}
             </div>
           </CardHeader>
-          <CardContent>
+          <CardPanel>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -413,16 +413,16 @@ export default function OnboardingFlow() {
                           >
                             <FormControl>
                               <SelectTrigger>
-                                <SelectValue placeholder="Select business type" />
+                                <SelectValue />{" "}
                               </SelectTrigger>
                             </FormControl>
-                            <SelectContent>
+                            <SelectPopup>
                               {businessTypes.map((type) => (
                                 <SelectItem key={type.value} value={type.value}>
                                   {type.label}
                                 </SelectItem>
                               ))}
-                            </SelectContent>
+                            </SelectPopup>
                           </Select>
                           <FormMessage />
                         </FormItem>
@@ -442,10 +442,10 @@ export default function OnboardingFlow() {
                             >
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Select currency" />
+                                  <SelectValue />{" "}
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent>
+                              <SelectPopup>
                                 {currencies.map((currency) => (
                                   <SelectItem
                                     key={currency.value}
@@ -454,7 +454,7 @@ export default function OnboardingFlow() {
                                     {currency.label}
                                   </SelectItem>
                                 ))}
-                              </SelectContent>
+                              </SelectPopup>
                             </Select>
                             <FormMessage />
                           </FormItem>
@@ -481,10 +481,10 @@ export default function OnboardingFlow() {
                             >
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Select country" />
+                                  <SelectValue />{" "}
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent>
+                              <SelectPopup>
                                 {countries.map((country) => (
                                   <SelectItem
                                     key={country.value}
@@ -493,7 +493,7 @@ export default function OnboardingFlow() {
                                     {country.label}
                                   </SelectItem>
                                 ))}
-                              </SelectContent>
+                              </SelectPopup>
                             </Select>
                             <FormMessage />
                           </FormItem>
@@ -531,10 +531,10 @@ export default function OnboardingFlow() {
                             >
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Select month" />
+                                  <SelectValue />{" "}
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent>
+                              <SelectPopup>
                                 {months.map((month) => (
                                   <SelectItem
                                     key={month.value}
@@ -543,7 +543,7 @@ export default function OnboardingFlow() {
                                     {month.label}
                                   </SelectItem>
                                 ))}
-                              </SelectContent>
+                              </SelectPopup>
                             </Select>
                             <FormMessage />
                           </FormItem>
@@ -646,10 +646,10 @@ export default function OnboardingFlow() {
                                     >
                                       <FormControl>
                                         <SelectTrigger>
-                                          <SelectValue placeholder="Select role" />
+                                          <SelectValue />{" "}
                                         </SelectTrigger>
                                       </FormControl>
-                                      <SelectContent>
+                                      <SelectPopup>
                                         {userRolesObject.map((role) => (
                                           <SelectItem
                                             key={role.value}
@@ -658,7 +658,7 @@ export default function OnboardingFlow() {
                                             {role.label}
                                           </SelectItem>
                                         ))}
-                                      </SelectContent>
+                                      </SelectPopup>
                                     </Select>
                                     <Button
                                       type="button"
@@ -904,7 +904,7 @@ export default function OnboardingFlow() {
                 </div>
               </form>
             </Form>
-          </CardContent>
+          </CardPanel>
         </Card>
       </div>
       <div className="absolute bottom-2 right-2">

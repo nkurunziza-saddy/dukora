@@ -2,7 +2,7 @@
 
 import {
   Card,
-  CardContent,
+  CardPanel,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -38,7 +38,7 @@ export function LoanCalculator() {
         <CardTitle>{t("loan_calculator.title")}</CardTitle>
         <CardDescription>{t("loan_calculator.description")}</CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardPanel className="grid gap-4">
         <div className="grid gap-2">
           <Label htmlFor="loanAmount">
             {t("loan_calculator.loan_amount_label")}
@@ -86,7 +86,7 @@ export function LoanCalculator() {
             readOnly
           />
         </div>
-      </CardContent>
+      </CardPanel>
     </Card>
   );
 }

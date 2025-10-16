@@ -29,7 +29,7 @@ import {
 import { fetcher, cn } from "@/lib/utils";
 import useSwr from "swr";
 import { preload } from "swr";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Popover, PopoverPopup, PopoverTrigger } from "../ui/popover";
 import {
   Command,
   CommandEmpty,
@@ -45,7 +45,7 @@ import { useTranslations } from "next-intl";
 import { TRANSACTION_TYPE } from "@/lib/schema";
 import {
   Select,
-  SelectContent,
+  SelectPopup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -91,8 +91,8 @@ export default function AnyTransactionForm({
       productId: transaction ? transaction.productId : "",
       warehouseItemId: transaction ? transaction.warehouseItemId : "",
       quantity: transaction ? Math.abs(transaction.quantity) : 1,
-      note: transaction ? (transaction.note ?? "") : "",
-      reference: transaction ? (transaction.reference ?? "") : "",
+      note: transaction ? transaction.note ?? "" : "",
+      reference: transaction ? transaction.reference ?? "" : "",
       type: transaction ? transaction.type : "DAMAGE",
     },
   });
@@ -164,7 +164,7 @@ export default function AnyTransactionForm({
 
   if (productsError) {
     return (
-      <Alert variant="destructive">
+      <Alert variant="error">
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>{t("failedToLoadProducts")}</AlertDescription>
       </Alert>
@@ -191,13 +191,13 @@ export default function AnyTransactionForm({
                       <SelectValue />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
+                  <SelectPopup>
                     {transactionTypesObject.map((type) => (
                       <SelectItem key={type.value} value={type.value}>
                         {type.label}
                       </SelectItem>
                     ))}
-                  </SelectContent>
+                  </SelectPopup>
                 </Select>
                 <FormMessage />
               </FormItem>
@@ -218,31 +218,29 @@ export default function AnyTransactionForm({
                   </div>
                 ) : productsData ? (
                   <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          className={cn(
-                            "justify-between",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            <div className="flex items-center gap-2">
-                              <span>{selectedProduct?.name}</span>
-                              <Badge variant="secondary" className="text-xs">
-                                {selectedProduct?.sku}
-                              </Badge>
-                            </div>
-                          ) : (
-                            t("selectProduct")
-                          )}
-                          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </FormControl>
+                    <PopoverTrigger render={<FormControl />}>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "justify-between",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          <div className="flex items-center gap-2">
+                            <span>{selectedProduct?.name}</span>
+                            <Badge variant="secondary" className="text-xs">
+                              {selectedProduct?.sku}
+                            </Badge>
+                          </div>
+                        ) : (
+                          t("selectProduct")
+                        )}
+                        <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-full p-0" align="start">
+                    <PopoverPopup className="w-full p-0" align="start">
                       <Command>
                         <CommandInput placeholder={t("searchProducts")} />
                         <CommandList>
@@ -279,7 +277,7 @@ export default function AnyTransactionForm({
                           </CommandGroup>
                         </CommandList>
                       </Command>
-                    </PopoverContent>
+                    </PopoverPopup>
                   </Popover>
                 ) : null}
                 <FormMessage />
@@ -303,34 +301,32 @@ export default function AnyTransactionForm({
                     </div>
                   ) : productDetailsData ? (
                     <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn(
-                              "justify-between",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              <div className="flex items-center gap-2">
-                                <span>
-                                  {selectedWarehouseItem?.warehouse.name}
-                                </span>
-                                <Badge variant="outline" className="text-xs">
-                                  {tInventory("onHand")}:{" "}
-                                  {selectedWarehouseItem?.quantity || 0}
-                                </Badge>
-                              </div>
-                            ) : (
-                              tInventory("selectWarehouse")
-                            )}
-                            <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </FormControl>
+                      <PopoverTrigger render={<FormControl />}>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            <div className="flex items-center gap-2">
+                              <span>
+                                {selectedWarehouseItem?.warehouse.name}
+                              </span>
+                              <Badge variant="outline" className="text-xs">
+                                {tInventory("onHand")}:{" "}
+                                {selectedWarehouseItem?.quantity || 0}
+                              </Badge>
+                            </div>
+                          ) : (
+                            tInventory("selectWarehouse")
+                          )}
+                          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-full p-0" align="start">
+                      <PopoverPopup className="w-full p-0" align="start">
                         <Command>
                           <CommandInput placeholder={t("searchWarehouses")} />
                           <CommandList>
@@ -368,10 +364,10 @@ export default function AnyTransactionForm({
                             </CommandGroup>
                           </CommandList>
                         </Command>
-                      </PopoverContent>
+                      </PopoverPopup>
                     </Popover>
                   ) : productDetailsError ? (
-                    <Alert variant="destructive">
+                    <Alert variant="error">
                       <AlertCircle className="h-4 w-4" />
                       <AlertDescription>
                         {t("failedToLoadWarehouses")}

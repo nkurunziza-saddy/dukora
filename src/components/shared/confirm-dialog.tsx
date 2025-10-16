@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogContent,
+  DialogPopup,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -35,7 +35,7 @@ const ConfirmDialog: FC<DialogProps> = ({
         setIsDialogOpen(open);
       }}
     >
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogPopup className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
@@ -56,7 +56,7 @@ const ConfirmDialog: FC<DialogProps> = ({
             {isLoading ? <>{t("wait")}</> : t("confirm")}
           </Button>
         </DialogFooter>
-      </DialogContent>
+      </DialogPopup>
     </Dialog>
   );
 };

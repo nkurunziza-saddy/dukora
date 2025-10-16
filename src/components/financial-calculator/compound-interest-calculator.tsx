@@ -2,7 +2,7 @@
 
 import {
   Card,
-  CardContent,
+  CardPanel,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -36,7 +36,7 @@ export function CompoundInterestCalculator() {
           {t("compound_calculator.description")}
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardPanel className="grid gap-4">
         <div className="grid gap-2">
           <Label htmlFor="principal">
             {t("compound_calculator.principal_label")}
@@ -96,7 +96,7 @@ export function CompoundInterestCalculator() {
             readOnly
           />
         </div>
-      </CardContent>
+      </CardPanel>
     </Card>
   );
 }

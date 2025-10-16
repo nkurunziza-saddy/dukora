@@ -12,7 +12,7 @@ import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
   Select,
-  SelectContent,
+  SelectPopup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -175,7 +175,7 @@ export function EditBusinessSettings({
           </div>
 
           {isVatRateAtLimit && (
-            <Alert variant="destructive">
+            <Alert variant="error">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
                 VAT rate has reached the maximum limit of {LIMITS.VAT_RATE_MAX}
@@ -199,10 +199,10 @@ export function EditBusinessSettings({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder={t("selectCurrency")} />
+                          <SelectValue />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
+                      <SelectPopup>
                         {currencies.map((currency) => (
                           <SelectItem
                             key={currency.value}
@@ -211,7 +211,7 @@ export function EditBusinessSettings({
                             {t(currency.label)}
                           </SelectItem>
                         ))}
-                      </SelectContent>
+                      </SelectPopup>
                     </Select>
                     <FormMessage />
                   </FormItem>
@@ -238,16 +238,16 @@ export function EditBusinessSettings({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder={t("selectCountry")} />
+                          <SelectValue />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
+                      <SelectPopup>
                         {countries.map((country) => (
                           <SelectItem key={country.value} value={country.value}>
                             {t(country.label)}
                           </SelectItem>
                         ))}
-                      </SelectContent>
+                      </SelectPopup>
                     </Select>
                     <FormMessage />
                   </FormItem>
@@ -282,16 +282,16 @@ export function EditBusinessSettings({
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder={t("selectMonth")} />
+                            <SelectValue />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
+                        <SelectPopup>
                           {months.map((month) => (
                             <SelectItem key={month.value} value={month.value}>
                               {t(month.label)}
                             </SelectItem>
                           ))}
-                        </SelectContent>
+                        </SelectPopup>
                       </Select>
                       <FormMessage />
                     </FormItem>

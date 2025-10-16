@@ -2,8 +2,9 @@
 
 import * as React from "react";
 import { createContext, useContext } from "react";
+import { mergeProps } from "@base-ui-components/react/merge-props";
+import { useRender } from "@base-ui-components/react/use-render";
 import { CheckIcon, LoaderCircleIcon } from "lucide-react";
-import { Slot } from "radix-ui";
 
 import { cn } from "@/lib/utils";
 
@@ -142,70 +143,54 @@ function StepperItem({
   );
 }
 
-interface StepperTriggerProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  asChild?: boolean;
-}
+interface StepperTriggerProps extends useRender.ComponentProps<"button"> {}
 
 function StepperTrigger({
-  asChild = false,
   className,
+  render,
   children,
   ...props
 }: StepperTriggerProps) {
   const { setActiveStep } = useStepper();
   const { step, isDisabled } = useStepItem();
 
-  if (asChild) {
-    const Comp = asChild ? Slot.Root : "span";
-    return (
-      <Comp data-slot="stepper-trigger" className={className}>
-        {children}
-      </Comp>
-    );
-  }
+  const defaultProps = {
+    "data-slot": "stepper-trigger",
+    className: cn(
+      "focus-visible:border-ring focus-visible:ring-ring/50 inline-flex items-center gap-3 rounded-full outline-none focus-visible:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50",
+      className
+    ),
+    onClick: () => setActiveStep(step),
+    disabled: isDisabled,
+    children,
+  };
 
-  return (
-    <button
-      data-slot="stepper-trigger"
-      className={cn(
-        "focus-visible:border-ring focus-visible:ring-ring/50 inline-flex items-center gap-3 rounded-full outline-none focus-visible:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50",
-        className
-      )}
-      onClick={() => setActiveStep(step)}
-      disabled={isDisabled}
-      {...props}
-    >
-      {children}
-    </button>
-  );
+  return useRender({
+    defaultTagName: "button",
+    render,
+    props: mergeProps<"button">(defaultProps, props),
+  });
 }
 
-interface StepperIndicatorProps extends React.HTMLAttributes<HTMLDivElement> {
-  asChild?: boolean;
-}
+interface StepperIndicatorProps extends useRender.ComponentProps<"span"> {}
 
 function StepperIndicator({
-  asChild = false,
   className,
+  render,
   children,
   ...props
 }: StepperIndicatorProps) {
   const { state, step, isLoading } = useStepItem();
 
-  return (
-    <span
-      data-slot="stepper-indicator"
-      className={cn(
-        "bg-muted text-muted-foreground data-[state=active]:bg-primary data-[state=completed]:bg-primary data-[state=active]:text-primary-foreground data-[state=completed]:text-primary-foreground relative flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-medium",
-        className
-      )}
-      data-state={state}
-      {...props}
-    >
-      {asChild ? (
-        children
-      ) : (
+  const defaultProps = {
+    "data-slot": "stepper-indicator",
+    className: cn(
+      "bg-muted text-muted-foreground data-[state=active]:bg-primary data-[state=completed]:bg-primary data-[state=active]:text-primary-foreground data-[state=completed]:text-primary-foreground relative flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-medium",
+      className
+    ),
+    "data-state": state,
+    children:
+      children ?? (
         <>
           <span className="transition-all group-data-loading/step:scale-0 group-data-loading/step:opacity-0 group-data-loading/step:transition-none group-data-[state=completed]/step:scale-0 group-data-[state=completed]/step:opacity-0">
             {step}
@@ -225,9 +210,14 @@ function StepperIndicator({
             </span>
           )}
         </>
-      )}
-    </span>
-  );
+      ),
+  };
+
+  return useRender({
+    defaultTagName: "span",
+    render,
+    props: mergeProps<"span">(defaultProps, props),
+  });
 }
 
 function StepperTitle({

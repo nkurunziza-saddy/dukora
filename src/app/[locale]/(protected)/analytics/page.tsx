@@ -6,7 +6,7 @@ import {
 } from "@/server/helpers/time-date-forrmatters";
 import {
   Card,
-  CardContent,
+  CardPanel,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -55,7 +55,7 @@ const analytics = async (props: {
 
   if (metrics.error) {
     return (
-      <Alert variant="destructive">
+      <Alert variant="error">
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>{formatKeys(metrics.error)}</AlertDescription>
       </Alert>
@@ -316,7 +316,7 @@ const analytics = async (props: {
               {t("dataQuality")}
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardPanel>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div>
                 <p className="font-medium">{t("totalTransactions")}</p>
@@ -343,7 +343,7 @@ const analytics = async (props: {
                 </p>
               </div>
             </div>
-          </CardContent>
+          </CardPanel>
         </Card>
       )}
 
@@ -359,7 +359,7 @@ const analytics = async (props: {
               {t("financialBreakdownDescription")}
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardPanel>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -410,7 +410,7 @@ const analytics = async (props: {
                 })}
               </TableBody>
             </Table>
-          </CardContent>
+          </CardPanel>
         </Card>
       </div>
     </div>

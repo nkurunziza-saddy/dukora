@@ -1,7 +1,7 @@
 import { TrendingUp, ShoppingCart, DollarSign } from "lucide-react";
 import {
   Card,
-  CardContent,
+  CardPanel,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -76,13 +76,13 @@ export default async function SalesTracking() {
             </div>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardPanel>
           <ColumnWrapper
             column={TransactionColumn}
             data={transactions.data}
             tag="transactions"
           />
-        </CardContent>
+        </CardPanel>
       </Card>
     </div>
   );

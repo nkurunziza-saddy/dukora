@@ -1,7 +1,7 @@
 import { getProductById } from "@/server/actions/product-actions";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsPanel, TabsList, TabsTab } from "@/components/ui/tabs";
 import ProductSummaryCard from "./_components/product-summary-card";
 import ProductStockLevels from "./_components/product-stock-levels";
 import ProductTransactions from "./_components/product-transactions";
@@ -35,19 +35,19 @@ export default async function ProductDetailsPage({
       <ProductSummaryCard product={product} />
       <Tabs defaultValue="stock">
         <TabsList>
-          <TabsTrigger value="stock">{t("stockLevels")}</TabsTrigger>
-          <TabsTrigger value="transactions">{t("transactions")}</TabsTrigger>
-          <TabsTrigger value="suppliers">{t("suppliers")}</TabsTrigger>
+          <TabsTab value="stock">{t("stockLevels")}</TabsTab>
+          <TabsTab value="transactions">{t("transactions")}</TabsTab>
+          <TabsTab value="suppliers">{t("suppliers")}</TabsTab>
         </TabsList>
-        <TabsContent value="stock">
+        <TabsPanel value="stock">
           <ProductStockLevels warehouseItems={product.warehouseItems} />
-        </TabsContent>
-        <TabsContent value="transactions">
+        </TabsPanel>
+        <TabsPanel value="transactions">
           <ProductTransactions transactions={product.transactions} />
-        </TabsContent>
-        <TabsContent value="suppliers">
+        </TabsPanel>
+        <TabsPanel value="suppliers">
           <ProductSuppliers productSupplier={product.productSuppliers} />
-        </TabsContent>
+        </TabsPanel>
       </Tabs>
     </div>
   );

@@ -1,5 +1,4 @@
 import { Link } from "@/i18n/navigation";
-import { Github, ArrowRight } from "lucide-react";
 
 export function CTASection() {
   return (

@@ -10,13 +10,14 @@ import {
   Frame,
 } from "lucide-react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Menu,
+  MenuPopup,
+  MenuItem,
+  MenuSeparator,
+  MenuTrigger,
+  MenuGroup,
+  MenuGroupLabel,
+} from "@/components/ui/menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -140,94 +141,97 @@ const SessionCard = memo(() => {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <div className="bg-muted text-xs font-medium text-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                <Briefcase className="size-4" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium truncate">
-                  {computedData.userName}
-                </p>
-                <p className="text-xs text-muted-foreground truncate">
-                  {computedData.businessName}
-                </p>
-              </div>
-              <ChevronsUpDown className="ml-auto" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-64 rounded-lg"
+        <Menu>
+          <MenuTrigger
+            render={
+              <SidebarMenuButton
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              />
+            }
+          >
+            <div className="bg-muted text-xs font-medium text-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+              <Briefcase className="size-4" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium truncate">
+                {computedData.userName}
+              </p>
+              <p className="text-xs text-muted-foreground truncate">
+                {computedData.businessName}
+              </p>
+            </div>
+            <ChevronsUpDown className="ml-auto" />
+          </MenuTrigger>
+          <MenuPopup
+            className="min-w-64 rounded-lg"
             align="start"
             side={isMobile ? "bottom" : "right"}
             sideOffset={8}
-            forceMount
           >
-            <DropdownMenuLabel className="p-3">
-              <div className="flex items-start gap-3">
-                <Avatar className="rounded-lg h-10 w-10">
-                  <AvatarImage
-                    src={computedData.userImage || "/placeholder.svg"}
-                    alt={`${computedData.userName} avatar`}
-                    loading="lazy"
-                  />
-                  <AvatarFallback className="rounded-lg text-xs font-medium">
-                    {computedData.userInitials}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {computedData.userName}
-                  </p>
-                  <p className="text-xs text-muted-foreground leading-none">
-                    {computedData.businessName}
-                  </p>
-                  <p className="text-xs text-muted-foreground leading-none">
-                    {computedData.userRole.charAt(0).toUpperCase() +
-                      computedData.userRole.slice(1).toLowerCase()}
-                  </p>
+            <MenuGroup>
+              <MenuGroupLabel className="p-3">
+                <div className="flex items-start gap-3">
+                  <Avatar className="rounded-lg h-10 w-10">
+                    <AvatarImage
+                      src={computedData.userImage || "/placeholder.svg"}
+                      alt={`${computedData.userName} avatar`}
+                      loading="lazy"
+                    />
+                    <AvatarFallback className="rounded-lg text-xs font-medium">
+                      {computedData.userInitials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium leading-none">
+                      {computedData.userName}
+                    </p>
+                    <p className="text-xs text-muted-foreground leading-none">
+                      {computedData.businessName}
+                    </p>
+                    <p className="text-xs text-muted-foreground leading-none">
+                      {computedData.userRole.charAt(0).toUpperCase() +
+                        computedData.userRole.slice(1).toLowerCase()}
+                    </p>
+                  </div>
                 </div>
+              </MenuGroupLabel>
+
+              <MenuSeparator />
+
+              <div className="p-1">
+                <MenuItem>
+                  <Link
+                    href={`/users/${computedData.userId}`}
+                    className="flex items-center cursor-pointer"
+                  >
+                    <User className="mr-3 h-4 w-4" />
+                    <span>{t("profile")}</span>
+                  </Link>
+                </MenuItem>
+
+                <MenuItem>
+                  <Link
+                    href="/settings"
+                    className="flex items-center cursor-pointer"
+                  >
+                    <Settings className="mr-3 h-4 w-4" />
+                    <span>{t("settings")}</span>
+                  </Link>
+                </MenuItem>
               </div>
-            </DropdownMenuLabel>
 
-            <DropdownMenuSeparator />
+              <MenuSeparator />
 
-            <div className="p-1">
-              <DropdownMenuItem asChild>
-                <Link
-                  href={`/users/${computedData.userId}`}
-                  className="flex items-center cursor-pointer"
-                >
-                  <User className="mr-3 h-4 w-4" />
-                  <span>{t("profile")}</span>
-                </Link>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem asChild>
-                <Link
-                  href="/settings"
-                  className="flex items-center cursor-pointer"
-                >
-                  <Settings className="mr-3 h-4 w-4" />
-                  <span>{t("settings")}</span>
-                </Link>
-              </DropdownMenuItem>
-            </div>
-
-            <DropdownMenuSeparator />
-
-            <div className="p-1">
-              <DropdownMenuItem onClick={handleLogout} variant="destructive">
-                <LogOut className="mr-3 h-4 w-4" />
-                <span>{t("signOut")}</span>
-              </DropdownMenuItem>
-            </div>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <div className="p-1">
+                <MenuItem onClick={handleLogout} variant="destructive">
+                  <LogOut className="mr-3 h-4 w-4" />
+                  <span>{t("signOut")}</span>
+                </MenuItem>
+              </div>
+            </MenuGroup>
+          </MenuPopup>
+        </Menu>
       </SidebarMenuItem>
     </SidebarMenu>
   );

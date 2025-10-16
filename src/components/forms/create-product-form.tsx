@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
-  SelectContent,
+  SelectPopup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -95,16 +95,16 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: product ? product.name : "",
-      description: product ? (product.description ?? "") : "",
+      description: product ? product.description ?? "" : "",
       sku: product ? product.sku : "",
-      barcode: product ? (product.barcode ?? "") : "",
+      barcode: product ? product.barcode ?? "" : "",
       price: product ? product.price : "",
       costPrice: product ? product.costPrice : "",
-      categoryId: product ? (product.categoryId ?? "") : "",
+      categoryId: product ? product.categoryId ?? "" : "",
       reorderPoint: product ? product.reorderPoint.toString() : "10",
       maxStock: product ? product.maxStock.toString() : "1000",
       unit: product ? product.unit : "pcs",
-      weight: product ? (product.weight ?? "") : "",
+      weight: product ? product.weight ?? "" : "",
     },
   });
 
@@ -221,10 +221,10 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
                 >
                   <FormControl>
                     <SelectTrigger className="w-full sm:w-1/2">
-                      <SelectValue placeholder={t("categoryId")} />
+                      <SelectValue />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
+                  <SelectPopup>
                     {isCategoriesLoading && <div>{t("loading")}...</div>}
                     {categoriesError && <div>{t("errorLoading")}</div>}
 
@@ -237,7 +237,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
                         {category.value}
                       </SelectItem>
                     ))}
-                  </SelectContent>
+                  </SelectPopup>
                 </Select>
                 <FormMessage />
               </FormItem>
@@ -338,13 +338,13 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
                         <SelectValue />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectPopup>
                       {units.map((unit) => (
                         <SelectItem key={unit.value} value={unit.value}>
                           {unit.label}
                         </SelectItem>
                       ))}
-                    </SelectContent>
+                    </SelectPopup>
                   </Select>
                   <FormMessage />
                 </FormItem>

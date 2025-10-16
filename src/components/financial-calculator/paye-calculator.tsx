@@ -2,7 +2,7 @@
 
 import {
   Card,
-  CardContent,
+  CardPanel,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -13,7 +13,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import {
   Select,
-  SelectContent,
+  SelectPopup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -59,7 +59,7 @@ export function PAYECalculator() {
         <CardTitle>{t("paye_calculator.title")}</CardTitle>
         <CardDescription>{t("paye_calculator.description")}</CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardPanel className="grid gap-4">
         <div className="grid gap-2">
           <Label htmlFor="monthlyIncome">
             {t("paye_calculator.monthly_income_label")}
@@ -82,21 +82,21 @@ export function PAYECalculator() {
                 placeholder={t("paye_calculator.select_employee_type")}
               />
             </SelectTrigger>
-            <SelectContent>
+            <SelectPopup>
               <SelectItem value="permanent">
                 {t("paye_calculator.permanent_employee")}
               </SelectItem>
               <SelectItem value="casual">
                 {t("paye_calculator.casual_laborer")}
               </SelectItem>
-            </SelectContent>
+            </SelectPopup>
           </Select>
         </div>
         <div className="grid gap-2">
           <Label htmlFor="paye">{t("paye_calculator.paye_label")}</Label>
           <Input id="paye" type="number" value={paye.toFixed(2)} readOnly />
         </div>
-      </CardContent>
+      </CardPanel>
     </Card>
   );
 }

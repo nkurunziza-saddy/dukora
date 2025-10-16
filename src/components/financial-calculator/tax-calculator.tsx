@@ -1,6 +1,6 @@
 "use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsPanel, TabsList, TabsTab } from "@/components/ui/tabs";
 import { IncomeTaxCalculator } from "./income-tax-calculator";
 import { PAYECalculator } from "./paye-calculator";
 import { VATCalculator } from "./vat-calculator";
@@ -12,19 +12,19 @@ export function TaxCalculator() {
   return (
     <Tabs defaultValue="pit">
       <TabsList className="w-fit">
-        <TabsTrigger value="pit">{t("tax_calculator.pit_tab")}</TabsTrigger>
-        <TabsTrigger value="paye">{t("tax_calculator.paye_tab")}</TabsTrigger>
-        <TabsTrigger value="vat">{t("tax_calculator.vat_tab")}</TabsTrigger>
+        <TabsTab value="pit">{t("tax_calculator.pit_tab")}</TabsTab>
+        <TabsTab value="paye">{t("tax_calculator.paye_tab")}</TabsTab>
+        <TabsTab value="vat">{t("tax_calculator.vat_tab")}</TabsTab>
       </TabsList>
-      <TabsContent value="pit">
+      <TabsPanel value="pit">
         <IncomeTaxCalculator />
-      </TabsContent>
-      <TabsContent value="paye">
+      </TabsPanel>
+      <TabsPanel value="paye">
         <PAYECalculator />
-      </TabsContent>
-      <TabsContent value="vat">
+      </TabsPanel>
+      <TabsPanel value="vat">
         <VATCalculator />
-      </TabsContent>
+      </TabsPanel>
     </Tabs>
   );
 }

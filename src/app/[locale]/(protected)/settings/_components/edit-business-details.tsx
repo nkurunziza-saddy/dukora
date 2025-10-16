@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
-  SelectContent,
+  SelectPopup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -172,7 +172,7 @@ export function EditBusinessDetails({
           </div>
 
           {Object.keys(errors).length > 0 && (
-            <Alert variant="destructive">
+            <Alert variant="error">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
                 Please fix the errors below before submitting.
@@ -256,16 +256,16 @@ export function EditBusinessDetails({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder={t("selectBusinessType")} />
+                          <SelectValue />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
+                      <SelectPopup>
                         {businessTypes.map((type) => (
                           <SelectItem key={type.value} value={type.value}>
                             {type.label}
                           </SelectItem>
                         ))}
-                      </SelectContent>
+                      </SelectPopup>
                     </Select>
                     <FormDescription>
                       {t("businessTypeDescription")}

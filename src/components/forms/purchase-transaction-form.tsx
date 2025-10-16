@@ -30,7 +30,7 @@ import type {
 import { fetcher, cn } from "@/lib/utils";
 import useSwr from "swr";
 import { preload } from "swr";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Popover, PopoverPopup, PopoverTrigger } from "../ui/popover";
 import {
   Command,
   CommandEmpty,
@@ -93,16 +93,14 @@ export default function PurchaseTransactionForm({
     defaultValues: {
       productId: purchaseTransaction ? purchaseTransaction.productId : "",
       supplierId: purchaseTransaction
-        ? (purchaseTransaction.supplierId ?? "")
+        ? purchaseTransaction.supplierId ?? ""
         : "",
       warehouseId: purchaseTransaction ? purchaseTransaction.warehouseId : "",
       quantity: purchaseTransaction
         ? Math.abs(purchaseTransaction.quantity)
         : 1,
-      note: purchaseTransaction ? (purchaseTransaction.note ?? "") : "",
-      reference: purchaseTransaction
-        ? (purchaseTransaction.reference ?? "")
-        : "",
+      note: purchaseTransaction ? purchaseTransaction.note ?? "" : "",
+      reference: purchaseTransaction ? purchaseTransaction.reference ?? "" : "",
     },
   });
 
@@ -161,7 +159,7 @@ export default function PurchaseTransactionForm({
 
   if (productsError) {
     return (
-      <Alert variant="destructive">
+      <Alert variant="error">
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>{t("failedToLoadProducts")}</AlertDescription>
       </Alert>
@@ -170,7 +168,7 @@ export default function PurchaseTransactionForm({
 
   if (suppliersError) {
     return (
-      <Alert variant="destructive">
+      <Alert variant="error">
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>{t("failedToLoadSuppliers")}</AlertDescription>
       </Alert>
@@ -198,31 +196,29 @@ export default function PurchaseTransactionForm({
                   </div>
                 ) : productsData ? (
                   <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          className={cn(
-                            "justify-between",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            <div className="flex items-center gap-2">
-                              <span>{selectedProduct?.name}</span>
-                              <Badge variant="secondary" className="text-xs">
-                                {selectedProduct?.sku}
-                              </Badge>
-                            </div>
-                          ) : (
-                            t("selectProduct")
-                          )}
-                          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </FormControl>
+                    <PopoverTrigger render={<FormControl />}>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "justify-between",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          <div className="flex items-center gap-2">
+                            <span>{selectedProduct?.name}</span>
+                            <Badge variant="secondary" className="text-xs">
+                              {selectedProduct?.sku}
+                            </Badge>
+                          </div>
+                        ) : (
+                          t("selectProduct")
+                        )}
+                        <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-full p-0" align="start">
+                    <PopoverPopup className="w-full p-0" align="start">
                       <Command>
                         <CommandInput placeholder={t("searchProducts")} />
                         <CommandList>
@@ -259,7 +255,7 @@ export default function PurchaseTransactionForm({
                           </CommandGroup>
                         </CommandList>
                       </Command>
-                    </PopoverContent>
+                    </PopoverPopup>
                   </Popover>
                 ) : null}
                 <FormMessage />
@@ -283,34 +279,32 @@ export default function PurchaseTransactionForm({
                     </div>
                   ) : warehousesData ? (
                     <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn(
-                              "justify-between",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              <div className="flex items-center gap-2">
-                                <span>
-                                  {
-                                    warehousesData.find(
-                                      (item) => item.id === field.value
-                                    )?.name
-                                  }
-                                </span>
-                              </div>
-                            ) : (
-                              tInventory("selectWarehouse")
-                            )}
-                            <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
-                        </FormControl>
+                      <PopoverTrigger render={<FormControl />}>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "justify-between",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            <div className="flex items-center gap-2">
+                              <span>
+                                {
+                                  warehousesData.find(
+                                    (item) => item.id === field.value
+                                  )?.name
+                                }
+                              </span>
+                            </div>
+                          ) : (
+                            tInventory("selectWarehouse")
+                          )}
+                          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-full p-0" align="start">
+                      <PopoverPopup className="w-full p-0" align="start">
                         <Command>
                           <CommandInput placeholder={t("searchWarehouses")} />
                           <CommandList>
@@ -346,10 +340,10 @@ export default function PurchaseTransactionForm({
                             </CommandGroup>
                           </CommandList>
                         </Command>
-                      </PopoverContent>
+                      </PopoverPopup>
                     </Popover>
                   ) : warehousesError ? (
-                    <Alert variant="destructive">
+                    <Alert variant="error">
                       <AlertCircle className="h-4 w-4" />
                       <AlertDescription>
                         {t("failedToLoadWarehouses")}
@@ -377,41 +371,37 @@ export default function PurchaseTransactionForm({
                   </div>
                 ) : suppliersData ? (
                   <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          className={cn(
-                            "justify-between",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            <div className="flex items-center gap-2">
-                              <span>
-                                {
-                                  suppliersData?.find(
-                                    (p) => p.id === field.value
-                                  )?.name
-                                }
-                              </span>
-                              <Badge variant="secondary" className="text-xs">
-                                {
-                                  suppliersData?.find(
-                                    (p) => p.id === field.value
-                                  )?.contactName
-                                }
-                              </Badge>
-                            </div>
-                          ) : (
-                            t("selectsupplier")
-                          )}
-                          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </FormControl>
+                    <PopoverTrigger render={<FormControl />}>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          "justify-between",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          <div className="flex items-center gap-2">
+                            <span>
+                              {
+                                suppliersData?.find((p) => p.id === field.value)
+                                  ?.name
+                              }
+                            </span>
+                            <Badge variant="secondary" className="text-xs">
+                              {
+                                suppliersData?.find((p) => p.id === field.value)
+                                  ?.contactName
+                              }
+                            </Badge>
+                          </div>
+                        ) : (
+                          t("selectsupplier")
+                        )}
+                        <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-full p-0" align="start">
+                    <PopoverPopup className="w-full p-0" align="start">
                       <Command>
                         <CommandInput placeholder={t("searchsuppliers")} />
                         <CommandList>
@@ -444,7 +434,7 @@ export default function PurchaseTransactionForm({
                           </CommandGroup>
                         </CommandList>
                       </Command>
-                    </PopoverContent>
+                    </PopoverPopup>
                   </Popover>
                 ) : null}
                 <FormMessage />

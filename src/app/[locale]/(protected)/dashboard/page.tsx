@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import {
   Card,
-  CardContent,
+  CardPanel,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -92,7 +92,7 @@ export default async function InventoryDashboard() {
     return (
       <div className="space-y-6">
         {lowStockItems && lowStockItems.length > 0 && (
-          <Alert variant="destructive">
+          <Alert variant="error">
             <AlertCircle />
             <AlertTitle>{t("lowStockAlerts")}</AlertTitle>
             <AlertDescription>
@@ -133,7 +133,7 @@ export default async function InventoryDashboard() {
                 })}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardPanel>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -190,7 +190,7 @@ export default async function InventoryDashboard() {
                   ))}
                 </TableBody>
               </Table>
-            </CardContent>
+            </CardPanel>
           </Card>
         )}
 
@@ -205,7 +205,7 @@ export default async function InventoryDashboard() {
                 })}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardPanel>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -252,7 +252,7 @@ export default async function InventoryDashboard() {
                   ))}
                 </TableBody>
               </Table>
-            </CardContent>
+            </CardPanel>
           </Card>
         )}
 
@@ -267,7 +267,7 @@ export default async function InventoryDashboard() {
                 })}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardPanel>
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -283,13 +283,11 @@ export default async function InventoryDashboard() {
                     const formattedString = log.audit_logs.action
                       .split("-")
                       .join(" ");
-                    const formattedModelName = formatKeys(log.audit_logs.model)
+                    const formattedModelName = formatKeys(log.audit_logs.model);
 
                     return (
                       <TableRow key={log.audit_logs.id}>
-                        <TableCell>
-                          {formatKeys(formattedModelName)}
-                        </TableCell>
+                        <TableCell>{formatKeys(formattedModelName)}</TableCell>
                         <TableCell>{log.audit_logs.recordId}</TableCell>
                         <TableCell>
                           <Badge variant="outline">
@@ -310,7 +308,7 @@ export default async function InventoryDashboard() {
                   })}
                 </TableBody>
               </Table>
-            </CardContent>
+            </CardPanel>
           </Card>
         )}
       </div>

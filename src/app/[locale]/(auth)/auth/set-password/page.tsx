@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-  CardContent,
+  CardPanel,
   CardFooter,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -64,7 +64,7 @@ export default function SetPassword() {
         <CardTitle>{t("setPassword.title")}</CardTitle>
         <CardDescription>{t("setPassword.description")}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardPanel>
         <form
           className="grid gap-4"
           onSubmit={(e) => {
@@ -108,7 +108,7 @@ export default function SetPassword() {
             )}
           </Button>
         </form>
-      </CardContent>
+      </CardPanel>
       <CardFooter className="flex items-center">
         <p className="text-xs text-muted-foreground">
           {t("setPassword.alreadyHaveAccount")}

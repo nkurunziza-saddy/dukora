@@ -1,3 +1,4 @@
+import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
 
 const posts = {
@@ -220,12 +221,12 @@ export default function InsightPage({ params }: { params: { slug: string } }) {
     <main className="min-h-screen">
       <header className="border-b border-border">
         <div className="max-w-4xl mx-auto px-6 py-4">
-          <a
+          <Link
             href="/"
             className="inline-flex items-center gap-2 text-xs text-secondary hover:text-foreground transition"
           >
             ← Back to home
-          </a>
+          </Link>
         </div>
       </header>
 
@@ -246,14 +247,14 @@ export default function InsightPage({ params }: { params: { slug: string } }) {
               <div className="text-sm font-medium text-foreground">
                 {post.author}
               </div>
-              <a
+              <Link
                 href="https://x.com/nk_saddy"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs text-text-secondary hover:text-foreground transition"
               >
                 @nk_saddy
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -303,20 +304,20 @@ export default function InsightPage({ params }: { params: { slug: string } }) {
 
           <div className="mt-16 pt-8 border-t border-border">
             <div className="flex items-center justify-between">
-              <a
+              <Link
                 href="/#insights"
                 className="text-xs text-text-secondary hover:text-foreground transition"
               >
                 ← More insights
-              </a>
-              <a
+              </Link>
+              <Link
                 href="https://github.com/nkurunziza-saddy/dukora"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs text-text-secondary hover:text-foreground transition"
               >
                 Contribute on GitHub →
-              </a>
+              </Link>
             </div>
           </div>
         </div>

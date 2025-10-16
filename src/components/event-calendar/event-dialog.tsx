@@ -16,7 +16,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
-  DialogContent,
+  DialogPopup,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -24,15 +24,11 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverPopup, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
-  SelectContent,
+  SelectPopup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -229,7 +225,7 @@ export function EventDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogPopup className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
             {event?.id ? t("editEvent") : t("createEvent")}
@@ -267,31 +263,33 @@ export function EventDialog({
             <div className="flex-1 *:not-first:mt-1.5">
               <Label htmlFor="start-date">{t("startDate")}</Label>
               <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    id="start-date"
-                    variant={"outline"}
+                <PopoverTrigger
+                  render={
+                    <Button
+                      id="start-date"
+                      variant={"outline"}
+                      className={cn(
+                        "group bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]",
+                        !startDate && "text-muted-foreground"
+                      )}
+                    />
+                  }
+                >
+                  <span
                     className={cn(
-                      "group bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]",
+                      "truncate",
                       !startDate && "text-muted-foreground"
                     )}
                   >
-                    <span
-                      className={cn(
-                        "truncate",
-                        !startDate && "text-muted-foreground"
-                      )}
-                    >
-                      {startDate ? format(startDate, "PPP") : "Pick a date"}
-                    </span>
-                    <Calendar1
-                      size={16}
-                      className="text-muted-foreground/80 shrink-0"
-                      aria-hidden="true"
-                    />
-                  </Button>
+                    {startDate ? format(startDate, "PPP") : "Pick a date"}
+                  </span>
+                  <Calendar1
+                    size={16}
+                    className="text-muted-foreground/80 shrink-0"
+                    aria-hidden="true"
+                  />
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-2" align="start">
+                <PopoverPopup className="w-auto p-2" align="start">
                   <Calendar
                     mode="single"
                     selected={startDate}
@@ -307,7 +305,7 @@ export function EventDialog({
                       }
                     }}
                   />
-                </PopoverContent>
+                </PopoverPopup>
               </Popover>
             </div>
 
@@ -316,15 +314,15 @@ export function EventDialog({
                 <Label htmlFor="start-time">{t("startTime")}</Label>
                 <Select value={startTime} onValueChange={setStartTime}>
                   <SelectTrigger id="start-time">
-                    <SelectValue placeholder="Select time" />
+                    <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectPopup>
                     {timeOptions.map((option) => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem>
                     ))}
-                  </SelectContent>
+                  </SelectPopup>
                 </Select>
               </div>
             )}
@@ -334,31 +332,33 @@ export function EventDialog({
             <div className="flex-1 *:not-first:mt-1.5">
               <Label htmlFor="end-date">{t("endDate")}</Label>
               <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    id="end-date"
-                    variant={"outline"}
+                <PopoverTrigger
+                  render={
+                    <Button
+                      id="end-date"
+                      variant={"outline"}
+                      className={cn(
+                        "group bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]",
+                        !endDate && "text-muted-foreground"
+                      )}
+                    />
+                  }
+                >
+                  <span
                     className={cn(
-                      "group bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]",
+                      "truncate",
                       !endDate && "text-muted-foreground"
                     )}
                   >
-                    <span
-                      className={cn(
-                        "truncate",
-                        !endDate && "text-muted-foreground"
-                      )}
-                    >
-                      {endDate ? format(endDate, "PPP") : "Pick a date"}
-                    </span>
-                    <Calendar1
-                      size={16}
-                      className="text-muted-foreground/80 shrink-0"
-                      aria-hidden="true"
-                    />
-                  </Button>
+                    {endDate ? format(endDate, "PPP") : "Pick a date"}
+                  </span>
+                  <Calendar1
+                    size={16}
+                    className="text-muted-foreground/80 shrink-0"
+                    aria-hidden="true"
+                  />
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-2" align="start">
+                <PopoverPopup className="w-auto p-2" align="start">
                   <Calendar
                     mode="single"
                     selected={endDate}
@@ -372,7 +372,7 @@ export function EventDialog({
                       }
                     }}
                   />
-                </PopoverContent>
+                </PopoverPopup>
               </Popover>
             </div>
 
@@ -381,15 +381,15 @@ export function EventDialog({
                 <Label htmlFor="end-time">{t("endTime")}</Label>
                 <Select value={endTime} onValueChange={setEndTime}>
                   <SelectTrigger id="end-time">
-                    <SelectValue placeholder="Select time" />
+                    <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectPopup>
                     {timeOptions.map((option) => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem>
                     ))}
-                  </SelectContent>
+                  </SelectPopup>
                 </Select>
               </div>
             )}
@@ -456,7 +456,7 @@ export function EventDialog({
             <Button onClick={handleSave}>{t("save")}</Button>
           </div>
         </DialogFooter>
-      </DialogContent>
+      </DialogPopup>
     </Dialog>
   );
 }

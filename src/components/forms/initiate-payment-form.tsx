@@ -16,8 +16,14 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { initiateInterBusinessPayment } from "@/server/actions/payment-actions";
-import { Select } from "@/components/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import {
+  Select,
+  SelectItem,
+  SelectPopup,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Popover, PopoverPopup, PopoverTrigger } from "../ui/popover";
 import {
   Command,
   CommandEmpty,
@@ -26,12 +32,6 @@ import {
   CommandItem,
   CommandList,
 } from "../ui/command";
-import {
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@radix-ui/react-select";
 import { SelectBusiness } from "@/lib/schema/schema-types";
 import { fetcher } from "@/lib/utils";
 import { preload } from "swr";
@@ -106,7 +106,7 @@ export default function InitiatePaymentForm() {
 
   if (!businessesData || businessesError) {
     return (
-      <Alert variant="destructive">
+      <Alert variant="error">
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>{t("failedToLoadBusinesses")}</AlertDescription>
       </Alert>
@@ -131,44 +131,42 @@ export default function InitiatePaymentForm() {
                 </div>
               ) : businessesData ? (
                 <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        className={
-                          !field.value
-                            ? "text-muted-foreground justify-between"
-                            : "justify-between"
-                        }
-                      >
-                        {field.value ? (
-                          <div className="flex gap-4">
-                            <span className="flex items-center gap-2">
-                              {
-                                businessesData.find((b) => b.id === field.value)
-                                  ?.name
-                              }
-                            </span>
+                  <PopoverTrigger render={<FormControl />}>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className={
+                        !field.value
+                          ? "text-muted-foreground justify-between"
+                          : "justify-between"
+                      }
+                    >
+                      {field.value ? (
+                        <div className="flex gap-4">
+                          <span className="flex items-center gap-2">
+                            {
+                              businessesData.find((b) => b.id === field.value)
+                                ?.name
+                            }
+                          </span>
 
-                            <Badge
-                              className="flex items-center gap-2"
-                              variant={"secondary"}
-                            >
-                              {
-                                businessesData.find((b) => b.id === field.value)
-                                  ?.id
-                              }
-                            </Badge>
-                          </div>
-                        ) : (
-                          tPayments("selectReceiverBusiness")
-                        )}
-                        <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </FormControl>
+                          <Badge
+                            className="flex items-center gap-2"
+                            variant={"secondary"}
+                          >
+                            {
+                              businessesData.find((b) => b.id === field.value)
+                                ?.id
+                            }
+                          </Badge>
+                        </div>
+                      ) : (
+                        tPayments("selectReceiverBusiness")
+                      )}
+                      <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-full p-0" align="start">
+                  <PopoverPopup className="w-full p-0" align="start">
                     <Command>
                       <CommandInput
                         placeholder={tPayments("searchBusinesses")}
@@ -211,7 +209,7 @@ export default function InitiatePaymentForm() {
                         </CommandGroup>
                       </CommandList>
                     </Command>
-                  </PopoverContent>
+                  </PopoverPopup>
                 </Popover>
               ) : null}
               <FormMessage />
@@ -247,14 +245,14 @@ export default function InitiatePaymentForm() {
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder={tPayments("selectCurrency")} />
+                    <SelectValue />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
+                <SelectPopup>
                   <SelectItem value="USD">USD</SelectItem>
                   <SelectItem value="EUR">EUR</SelectItem>
                   <SelectItem value="RWF">RWF</SelectItem>
-                </SelectContent>
+                </SelectPopup>
               </Select>
               <FormMessage />
             </FormItem>

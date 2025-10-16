@@ -24,7 +24,7 @@ export function CurrentPage() {
       return (
         <Fragment key={segment.toString()}>
           <BreadcrumbItem key={href}>
-            <BreadcrumbLink asChild>
+            <BreadcrumbLink>
               <Link href={href} prefetch>
                 {formattedSegment}
               </Link>
@@ -41,7 +41,7 @@ export function CurrentPage() {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink asChild>
+            <BreadcrumbLink>
               <Link href="/" prefetch>
                 /
               </Link>

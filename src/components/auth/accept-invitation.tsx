@@ -1,6 +1,6 @@
 import {
   Card,
-  CardContent,
+  CardPanel,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -26,7 +26,7 @@ export const AcceptInvitation: React.FC<{ code: string }> = ({ code }) => {
         <CardTitle>{t("invitationTitle")}</CardTitle>
         <CardDescription>{t("invitationDescription")}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardPanel>
         <div className="flex gap-4">
           <Button className="w-full" onClick={accept}>
             {t("acceptButton")}
@@ -35,7 +35,7 @@ export const AcceptInvitation: React.FC<{ code: string }> = ({ code }) => {
             {t("declineButton")}
           </Button>
         </div>
-      </CardContent>
+      </CardPanel>
     </Card>
   );
 };

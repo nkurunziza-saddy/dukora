@@ -28,7 +28,7 @@ interface BusinessSettingsProps {
 export function BusinessSettingsForm({ business }: BusinessSettingsProps) {
   if (!business) {
     return (
-      <Alert variant="destructive">
+      <Alert variant="error">
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
           Business data is not available. Please try refreshing the page.

@@ -1,7 +1,7 @@
 "use client";
 import {
   Select,
-  SelectContent,
+  SelectPopup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -25,9 +25,9 @@ export function TimeRange() {
         className="w-[160px] rounded-lg sm:ml-auto"
         aria-label={t("selectTimeRange")}
       >
-        <SelectValue placeholder={t("last3Months")} />
+        <SelectValue />
       </SelectTrigger>
-      <SelectContent className="rounded-xl">
+      <SelectPopup className="rounded-xl">
         <SelectItem value="1" className="rounded-lg">
           {t("lastMonth")}
         </SelectItem>
@@ -37,7 +37,7 @@ export function TimeRange() {
         <SelectItem value="3" className="rounded-lg">
           {t("last3Months")}
         </SelectItem>
-      </SelectContent>
+      </SelectPopup>
     </Select>
   );
 }

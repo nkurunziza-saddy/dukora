@@ -81,7 +81,9 @@ function WelcomeScreen({
         {/* <div className="size-12 bg-primary/10 rounded-full flex items-center justify-center mb-4 mx-auto">
           <MessageSquare className="size-6 text-primary" />
         </div> */}
-        <h1 className="text-2xl font-bold mb-2">Welcome to your AI Assistant</h1>
+        <h1 className="text-2xl font-bold mb-2">
+          Welcome to your AI Assistant
+        </h1>
         <p className="text-muted-foreground">
           Start a conversation or try one of these suggestions
         </p>
@@ -127,7 +129,7 @@ export default function AIChat() {
   } = useChat({});
 
   const isLoading = status === "submitted" || status === "streaming";
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement | null>(null);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
 
   const handleDelete = (id: string) => {
@@ -155,14 +157,10 @@ export default function AIChat() {
   };
 
   useEffect(() => {
-    if (scrollAreaRef.current) {
-      const scrollContainer = scrollAreaRef.current.querySelector(
-        "[data-radix-scroll-area-viewport]"
-      );
-      if (scrollContainer) {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
-      }
-    }
+    const vp = scrollAreaRef.current;
+    if (!vp) return;
+    vp.scrollTop = vp.scrollHeight;
+    vp.scrollTo({ top: vp.scrollHeight, behavior: "smooth" });
   }, [messages, isLoading]);
 
   useEffect(() => {
@@ -189,7 +187,9 @@ export default function AIChat() {
               {messages.map((message) => (
                 <div key={message.id} className="group">
                   <div
-                    className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""}`}
+                    className={`flex gap-3 ${
+                      message.role === "user" ? "flex-row-reverse" : ""
+                    }`}
                   >
                     <div
                       className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${

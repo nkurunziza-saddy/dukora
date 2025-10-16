@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
+  CardPanel,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -38,9 +38,9 @@ export default function SignUp() {
         <CardTitle>{t("signUp.title")}</CardTitle>
         <CardDescription>{t("signUp.description")}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardPanel>
         <div className="mb-6">
-          <Alert variant="destructive">
+          <Alert variant="error">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
               {t_form("emailVerificationDown", {
@@ -249,7 +249,7 @@ export default function SignUp() {
             </Button>
           </div>
         </div>
-      </CardContent>
+      </CardPanel>
       <CardFooter className="flex gap-1 items-center">
         <p className="text-xs text-muted-foreground">{t("signUp.signedIn")}</p>
         <Link href="/auth/sign-in" className="text-xs text-primary underline">

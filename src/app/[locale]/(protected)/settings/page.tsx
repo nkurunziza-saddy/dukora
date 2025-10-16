@@ -1,4 +1,4 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsPanel, TabsList, TabsTab } from "@/components/ui/tabs";
 import { getCurrentSession } from "@/server/actions/auth-actions";
 import { getBusinessById } from "@/server/actions/business-actions";
 import { getUserById } from "@/server/actions/user-actions";
@@ -9,7 +9,7 @@ import { EditCategories } from "./_components/edit-categories";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Card,
-  CardContent,
+  CardPanel,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -144,7 +144,7 @@ export default async function SettingsPage() {
 
                     <div className="space-y-1">
                       {section.tabs.map((tab) => (
-                        <TabsTrigger
+                        <TabsTab
                           key={tab.value}
                           value={tab.value}
                           disabled={tab.disabled}
@@ -152,7 +152,7 @@ export default async function SettingsPage() {
                         >
                           {/* <tab.icon className="h-4 w-4 flex-shrink-0" /> */}
                           <span className="truncate">{tab.label}</span>
-                        </TabsTrigger>
+                        </TabsTab>
                       ))}
                     </div>
                   </div>
@@ -162,7 +162,7 @@ export default async function SettingsPage() {
           </div>
 
           <div className="flex-1 min-w-0">
-            <TabsContent value="business-details" className="m-0">
+            <TabsPanel value="business-details" className="m-0">
               <Card>
                 <CardHeader>
                   <CardTitle>Business Details</CardTitle>
@@ -170,7 +170,7 @@ export default async function SettingsPage() {
                     Update your business information and branding
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardPanel>
                   <EditBusinessDetails
                     business={{
                       businessType: business?.businessType || "",
@@ -183,18 +183,18 @@ export default async function SettingsPage() {
                       registrationNumber: business?.registrationNumber || "",
                     }}
                   />
-                </CardContent>
+                </CardPanel>
               </Card>
-            </TabsContent>
+            </TabsPanel>
 
-            <TabsContent value="business-settings" className="m-0">
+            <TabsPanel value="business-settings" className="m-0">
               <Card>
-                <CardContent>
+                <CardPanel>
                   <EditBusinessSettings settings={business.businessSettings} />
-                </CardContent>
+                </CardPanel>
               </Card>
-            </TabsContent>
-            <TabsContent value="categories" className="m-0">
+            </TabsPanel>
+            <TabsPanel value="categories" className="m-0">
               <Card>
                 <CardHeader>
                   <CardTitle>Categories</CardTitle>
@@ -202,13 +202,13 @@ export default async function SettingsPage() {
                     Manage product and service categories
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardPanel>
                   <EditCategories categories={business.categories} />
-                </CardContent>
+                </CardPanel>
               </Card>
-            </TabsContent>
+            </TabsPanel>
 
-            <TabsContent value="warehouses" className="m-0">
+            <TabsPanel value="warehouses" className="m-0">
               <Card>
                 <CardHeader>
                   <CardTitle>Warehouses</CardTitle>
@@ -216,23 +216,23 @@ export default async function SettingsPage() {
                     Manage your warehouse locations and inventory
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardPanel>
                   <EditWarehouses warehouses={business.warehouses} />
-                </CardContent>
+                </CardPanel>
               </Card>
-            </TabsContent>
+            </TabsPanel>
 
-            <TabsContent value="stripe" className="m-0">
+            <TabsPanel value="stripe" className="m-0">
               <Card>
-                <CardContent>
+                <CardPanel>
                   <ConnectStripe
                     stripeAccountId={business.stripeAccountId ?? undefined}
                   />
-                </CardContent>
+                </CardPanel>
               </Card>
-            </TabsContent>
+            </TabsPanel>
 
-            <TabsContent value="user-details" className="m-0">
+            <TabsPanel value="user-details" className="m-0">
               <Card>
                 <CardHeader>
                   <CardTitle>Profile Details</CardTitle>
@@ -240,13 +240,13 @@ export default async function SettingsPage() {
                     Update your personal information and profile
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardPanel>
                   <UserProfileForm user={user} />
-                </CardContent>
+                </CardPanel>
               </Card>
-            </TabsContent>
+            </TabsPanel>
 
-            <TabsContent value="user-settings" className="m-0">
+            <TabsPanel value="user-settings" className="m-0">
               <Card>
                 <CardHeader>
                   <CardTitle>User Settings</CardTitle>
@@ -254,13 +254,13 @@ export default async function SettingsPage() {
                     Configure your account preferences and notifications
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardPanel>
                   <UserSettingsForm />
-                </CardContent>
+                </CardPanel>
               </Card>
-            </TabsContent>
+            </TabsPanel>
 
-            <TabsContent value="notifications" className="m-0">
+            <TabsPanel value="notifications" className="m-0">
               <Card>
                 <CardHeader>
                   <CardTitle>Notification Settings</CardTitle>
@@ -268,7 +268,7 @@ export default async function SettingsPage() {
                     Manage how and when you receive notifications
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardPanel className="space-y-6">
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
@@ -308,11 +308,11 @@ export default async function SettingsPage() {
                     </div>
                   </div>
                   <Button>Update Notifications</Button>
-                </CardContent>
+                </CardPanel>
               </Card>
-            </TabsContent>
+            </TabsPanel>
 
-            <TabsContent value="security" className="m-0">
+            <TabsPanel value="security" className="m-0">
               <Card>
                 <CardHeader>
                   <CardTitle>Security Settings</CardTitle>
@@ -320,7 +320,7 @@ export default async function SettingsPage() {
                     Manage your account security and authentication
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardPanel className="space-y-6">
                   <div className="space-y-4">
                     <div className="p-4 border rounded-lg">
                       <h4 className="font-medium mb-2">Password</h4>
@@ -361,9 +361,9 @@ export default async function SettingsPage() {
                       </Button>
                     </div>
                   </div>
-                </CardContent>
+                </CardPanel>
               </Card>
-            </TabsContent>
+            </TabsPanel>
           </div>
         </Tabs>
       </div>

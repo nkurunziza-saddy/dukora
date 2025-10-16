@@ -4,12 +4,7 @@ import { useId } from "react";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Menu, MenuPopup, MenuItem, MenuTrigger } from "@/components/ui/menu";
 import { Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -39,22 +34,20 @@ export default function LocaleSwitcher() {
   if (!mounted) return null;
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button size="icon" variant="ghost">
-          <Settings size={16} />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+    <Menu>
+      <MenuTrigger render={<Button size="icon" variant="ghost" />}>
+        <Settings size={16} />
+      </MenuTrigger>
+      <MenuPopup align="end">
         {languageItems.map((item) => (
-          <DropdownMenuItem
+          <MenuItem
             key={`${id}-${item.value}`}
             onClick={() => handleLocaleChange(item.value)}
           >
             {item.label}
-          </DropdownMenuItem>
+          </MenuItem>
         ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </MenuPopup>
+    </Menu>
   );
 }

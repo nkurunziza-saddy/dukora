@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardPanel, CardHeader, CardTitle } from "@/components/ui/card";
 // import { Badge } from "@/components/ui/badge";
 import { getTranslations } from "next-intl/server";
 import {
@@ -33,7 +33,7 @@ export default async function ProductSummaryCard({
       <CardHeader>
         <CardTitle>{t("summary")}</CardTitle>
       </CardHeader>
-      <CardContent className="grid grid-cols-2 gap-4">
+      <CardPanel className="grid grid-cols-2 gap-4">
         <div>
           <p className="text-sm font-medium text-muted-foreground">
             {t("sku")}
@@ -88,7 +88,7 @@ export default async function ProductSummaryCard({
           </p>
           <p>{product.weight || "N/A"}</p>
         </div>
-      </CardContent>
+      </CardPanel>
     </Card>
   );
 }

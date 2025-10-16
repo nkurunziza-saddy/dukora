@@ -4,12 +4,13 @@ import React, { FC, useState } from "react";
 import { MoreHorizontal, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
+  Menu,
+  MenuTrigger,
+  MenuPopup,
+  MenuItem,
+  MenuGroup,
+  MenuGroupLabel,
+} from "@/components/ui/menu";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import ConfirmDialog from "../shared/confirm-dialog";
@@ -68,25 +69,28 @@ const InvitationRowActions: FC<InvitationRowActionsProps> = ({
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">{t_common("openMenu")}</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>{t("actions")}</DropdownMenuLabel>
-          <DropdownMenuItem
-            variant="destructive"
-            onClick={() => setIsDeleteDialogOpen(true)}
-            className="cursor-pointer"
-          >
-            <Trash className="mr-2 h-4 w-4" />
-            {t("delete")}
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <Menu>
+        <MenuTrigger
+          render={<Button variant={"ghost"} className="h-8 w-8 p-0" />}
+        >
+          <span className="sr-only">{t_common("openMenu")}</span>
+          <MoreHorizontal className="h-4 w-4" />
+        </MenuTrigger>
+        <MenuPopup align="end">
+          <MenuGroup>
+            <MenuGroupLabel>{t("actions")}</MenuGroupLabel>
+
+            <MenuItem
+              variant="destructive"
+              onClick={() => setIsDeleteDialogOpen(true)}
+              className="cursor-pointer"
+            >
+              <Trash className="mr-2 h-4 w-4" />
+              {t("delete")}
+            </MenuItem>
+          </MenuGroup>
+        </MenuPopup>
+      </Menu>
 
       <ConfirmDialog
         isDialogOpen={isDeleteDialogOpen}

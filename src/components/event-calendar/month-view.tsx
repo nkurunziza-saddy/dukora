@@ -28,11 +28,7 @@ import {
   type CalendarEvent,
 } from "@/components/event-calendar";
 import { DefaultStartHour } from "@/components/event-calendar/constants";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverPopup, PopoverTrigger } from "@/components/ui/popover";
 import { useTranslations } from "next-intl";
 
 interface MonthViewProps {
@@ -216,20 +212,22 @@ export function MonthView({
 
                       {hasMore && (
                         <Popover modal>
-                          <PopoverTrigger asChild>
-                            <button
-                              className="focus-visible:border-ring focus-visible:ring-ring/50 text-muted-foreground hover:text-foreground hover:bg-muted/50 mt-[var(--event-gap)] flex h-[var(--event-height)] w-full items-center overflow-hidden px-1 text-left text-[10px] backdrop-blur-md transition outline-none select-none focus-visible:ring-[3px] sm:px-2 sm:text-xs"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <span>
-                                + {remainingCount}{" "}
-                                <span className="max-sm:sr-only">
-                                  {t("more")}
-                                </span>
+                          <PopoverTrigger
+                            render={
+                              <button
+                                className="focus-visible:border-ring focus-visible:ring-ring/50 text-muted-foreground hover:text-foreground hover:bg-muted/50 mt-[var(--event-gap)] flex h-[var(--event-height)] w-full items-center overflow-hidden px-1 text-left text-[10px] backdrop-blur-md transition outline-none select-none focus-visible:ring-[3px] sm:px-2 sm:text-xs"
+                                onClick={(e) => e.stopPropagation()}
+                              />
+                            }
+                          >
+                            <span>
+                              + {remainingCount}{" "}
+                              <span className="max-sm:sr-only">
+                                {t("more")}
                               </span>
-                            </button>
+                            </span>
                           </PopoverTrigger>
-                          <PopoverContent
+                          <PopoverPopup
                             align="center"
                             className="max-w-52 p-3"
                             style={
@@ -264,7 +262,7 @@ export function MonthView({
                                 })}
                               </div>
                             </div>
-                          </PopoverContent>
+                          </PopoverPopup>
                         </Popover>
                       )}
                     </div>

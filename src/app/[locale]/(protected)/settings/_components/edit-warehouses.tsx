@@ -167,7 +167,7 @@ export function EditWarehouses({
           </div>
 
           {isAtLimit && (
-            <Alert variant="destructive">
+            <Alert variant="error">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
                 You&apos;ve reached the maximum limit of {WAREHOUSE_LIMIT}{" "}
@@ -177,7 +177,7 @@ export function EditWarehouses({
           )}
 
           {errors.warehouses && (
-            <Alert variant="destructive">
+            <Alert variant="error">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>{errors.warehouses.message}</AlertDescription>
             </Alert>

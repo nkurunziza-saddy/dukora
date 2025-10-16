@@ -5,13 +5,14 @@ import { Table } from "@tanstack/react-table";
 import { Download, FileText, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Menu,
+  MenuPopup,
+  MenuItem,
+  MenuSeparator,
+  MenuTrigger,
+  MenuGroup,
+  MenuGroupLabel,
+} from "@/components/ui/menu";
 import { Badge } from "@/components/ui/badge";
 import { formatKeys } from "@/lib/utils";
 import { useTranslations } from "next-intl";
@@ -141,88 +142,93 @@ export function DataTableExportPDF<TData>({
   const totalRows = table.getFilteredRowModel().rows.length;
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          disabled={isExporting || totalRows === 0}
-          className="gap-2"
-        >
-          {isExporting ? (
-            <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
-              {t("exporting")}
-            </>
-          ) : (
-            <>
-              <Download className="h-4 w-4" />
-              {t("exportPDF")}
-            </>
-          )}
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel className="flex items-center gap-2">
-          <FileText className="h-4 w-4" />
-          {t("exportOptions")}
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <div className="px-2 py-1">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Users className="h-3 w-3" />
-            <span>{t("availableRecords", { count: totalRows })}</span>
-          </div>
-        </div>
-        <DropdownMenuSeparator />
-        {totalRows > 0 && (
+    <Menu>
+      <MenuTrigger
+        render={
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={isExporting || totalRows === 0}
+            className="gap-2"
+          />
+        }
+      >
+        {isExporting ? (
           <>
-            <DropdownMenuItem
-              onClick={() => exportToPDF(20)}
-              disabled={totalRows < 1}
-              className="flex items-center justify-between"
-            >
-              <span>{t("firstRecords", { count: 20 })}</span>
-              <Badge variant="secondary" className="text-xs">
-                {Math.min(20, totalRows)}
-              </Badge>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => exportToPDF(50)}
-              disabled={totalRows < 1}
-              className="flex items-center justify-between"
-            >
-              <span>{t("firstRecords", { count: 50 })}</span>
-              <Badge variant="secondary" className="text-xs">
-                {Math.min(50, totalRows)}
-              </Badge>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => exportToPDF(70)}
-              disabled={totalRows < 1}
-              className="flex items-center justify-between"
-            >
-              <span>{t("firstRecords", { count: 70 })}</span>
-              <Badge variant="secondary" className="text-xs">
-                {Math.min(70, totalRows)}
-              </Badge>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => exportToPDF()}
-              className="flex items-center justify-between font-medium"
-            >
-              <span>{t("allRecords")}</span>
-              <Badge variant="default" className="text-xs">
-                {totalRows}
-              </Badge>
-            </DropdownMenuItem>
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+            {t("exporting")}
+          </>
+        ) : (
+          <>
+            <Download className="h-4 w-4" />
+            {t("exportPDF")}
           </>
         )}
-        {totalRows === 0 && (
-          <DropdownMenuItem disabled>{t("noDataToExport")}</DropdownMenuItem>
-        )}
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </MenuTrigger>
+      <MenuPopup align="end" className="w-56">
+        <MenuGroup>
+          <MenuGroupLabel className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            {t("exportOptions")}
+          </MenuGroupLabel>
+
+          <MenuSeparator />
+          <div className="px-2 py-1">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Users className="h-3 w-3" />
+              <span>{t("availableRecords", { count: totalRows })}</span>
+            </div>
+          </div>
+          <MenuSeparator />
+          {totalRows > 0 && (
+            <>
+              <MenuItem
+                onClick={() => exportToPDF(20)}
+                disabled={totalRows < 1}
+                className="flex items-center justify-between"
+              >
+                <span>{t("firstRecords", { count: 20 })}</span>
+                <Badge variant="secondary" className="text-xs">
+                  {Math.min(20, totalRows)}
+                </Badge>
+              </MenuItem>
+              <MenuItem
+                onClick={() => exportToPDF(50)}
+                disabled={totalRows < 1}
+                className="flex items-center justify-between"
+              >
+                <span>{t("firstRecords", { count: 50 })}</span>
+                <Badge variant="secondary" className="text-xs">
+                  {Math.min(50, totalRows)}
+                </Badge>
+              </MenuItem>
+              <MenuItem
+                onClick={() => exportToPDF(70)}
+                disabled={totalRows < 1}
+                className="flex items-center justify-between"
+              >
+                <span>{t("firstRecords", { count: 70 })}</span>
+                <Badge variant="secondary" className="text-xs">
+                  {Math.min(70, totalRows)}
+                </Badge>
+              </MenuItem>
+              <MenuSeparator />
+              <MenuItem
+                onClick={() => exportToPDF()}
+                className="flex items-center justify-between font-medium"
+              >
+                <span>{t("allRecords")}</span>
+                <Badge variant="default" className="text-xs">
+                  {totalRows}
+                </Badge>
+              </MenuItem>
+            </>
+          )}
+          {totalRows === 0 && (
+            <MenuItem disabled>{t("noDataToExport")}</MenuItem>
+          )}
+        </MenuGroup>
+      </MenuPopup>
+    </Menu>
   );
 }

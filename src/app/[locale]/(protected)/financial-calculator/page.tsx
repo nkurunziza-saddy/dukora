@@ -1,6 +1,6 @@
 import { SimpleCalculator } from "@/components/financial-calculator/simple-calculator";
 import { getTranslations } from "next-intl/server";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsPanel, TabsList, TabsTab } from "@/components/ui/tabs";
 import { LoanCalculator } from "@/components/financial-calculator/loan-calculator";
 import { CompoundInterestCalculator } from "@/components/financial-calculator/compound-interest-calculator";
 import { SavingsGoalCalculator } from "@/components/financial-calculator/savings-goal-calculator";
@@ -19,27 +19,27 @@ export default function FinancialCalculatorPage() {
     <div className="flex flex-col gap-y-4">
       <Tabs defaultValue="simple">
         <TabsList className="w-fit">
-          <TabsTrigger value="simple">Simple</TabsTrigger>
-          <TabsTrigger value="loan">Loan</TabsTrigger>
-          <TabsTrigger value="compound">Compound Interest</TabsTrigger>
-          <TabsTrigger value="savings">Savings Goal</TabsTrigger>
-          <TabsTrigger value="tax">Tax</TabsTrigger>
+          <TabsTab value="simple">Simple</TabsTab>
+          <TabsTab value="loan">Loan</TabsTab>
+          <TabsTab value="compound">Compound Interest</TabsTab>
+          <TabsTab value="savings">Savings Goal</TabsTab>
+          <TabsTab value="tax">Tax</TabsTab>
         </TabsList>
-        <TabsContent value="simple">
+        <TabsPanel value="simple">
           <SimpleCalculator />
-        </TabsContent>
-        <TabsContent value="loan">
+        </TabsPanel>
+        <TabsPanel value="loan">
           <LoanCalculator />
-        </TabsContent>
-        <TabsContent value="compound">
+        </TabsPanel>
+        <TabsPanel value="compound">
           <CompoundInterestCalculator />
-        </TabsContent>
-        <TabsContent value="savings">
+        </TabsPanel>
+        <TabsPanel value="savings">
           <SavingsGoalCalculator />
-        </TabsContent>
-        <TabsContent value="tax">
+        </TabsPanel>
+        <TabsPanel value="tax">
           <TaxCalculator />
-        </TabsContent>
+        </TabsPanel>
       </Tabs>
     </div>
   );

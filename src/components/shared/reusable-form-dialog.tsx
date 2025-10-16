@@ -3,12 +3,12 @@ import type React from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogContent,
+  DialogPopup,
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Plus } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
 import { cn } from "@/lib/utils";
@@ -30,16 +30,18 @@ export function TriggerDialog({
 }) {
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          {...(big ? { size: "lg" } : { size: "sm" })}
-          {...(outline ? { variant: "secondary" } : {})}
-        >
-          <Plus className="w-4 h-4 mr-2 " />
-          {triggerText ?? title}
-        </Button>
+      <DialogTrigger
+        render={
+          <Button
+            {...(big ? { size: "lg" } : { size: "sm" })}
+            {...(outline ? { variant: "secondary" } : {})}
+          />
+        }
+      >
+        <Plus className="w-4 h-4 mr-2 " />
+        {triggerText ?? title}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col">
+      <DialogPopup className="sm:max-w-4xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
@@ -48,7 +50,7 @@ export function TriggerDialog({
         <ScrollArea className="flex-1 px-1 overflow-auto">
           <div className="px-1 space-y-4">{children}</div>
         </ScrollArea>
-      </DialogContent>
+      </DialogPopup>
     </Dialog>
   );
 }
@@ -70,7 +72,7 @@ export function StateDialog({
 }) {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <DialogContent
+      <DialogPopup
         className={cn("sm:max-w-4xl max-h-[90vh] flex flex-col", className)}
       >
         <DialogHeader>
@@ -81,7 +83,7 @@ export function StateDialog({
         <ScrollArea className="flex-1 px-1 overflow-auto">
           <div className="px-1 space-y-4">{children}</div>
         </ScrollArea>
-      </DialogContent>
+      </DialogPopup>
     </Dialog>
   );
 }

@@ -2,14 +2,14 @@ import { Plus, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardContent,
+  CardPanel,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import {
   Dialog,
-  DialogContent,
+  DialogPopup,
   DialogDescription,
   DialogHeader,
   DialogTitle,
@@ -22,7 +22,7 @@ import { getUsers } from "@/server/actions/user-actions";
 import { getInvitations } from "@/server/actions/invitation-actions";
 import { InvitationColumn } from "@/utils/columns/invitation-column";
 import StatCard from "@/components/shared/stat-card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsPanel, TabsList, TabsTab } from "@/components/ui/tabs";
 import { getTranslations } from "next-intl/server";
 import { RolePermissions } from "@/server/helpers/role-permissions";
 import { Permission } from "@/server/constants/permissions";
@@ -71,13 +71,11 @@ export default async function users() {
         <div />
         <div className="flex gap-2">
           <Dialog>
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                {t("inviteUserButton")}
-              </Button>
+            <DialogTrigger render={<Button />}>
+              <Plus className="mr-2 h-4 w-4" />
+              {t("inviteUserButton")}
             </DialogTrigger>
-            <DialogContent>
+            <DialogPopup>
               <DialogHeader>
                 <DialogTitle>{t("inviteUserTitle")}</DialogTitle>
                 <DialogDescription>
@@ -85,7 +83,7 @@ export default async function users() {
                 </DialogDescription>
               </DialogHeader>
               <InviteUserForm />
-            </DialogContent>
+            </DialogPopup>
           </Dialog>
         </div>
       </div>
@@ -102,26 +100,26 @@ export default async function users() {
       </div>
       <Tabs defaultValue="users">
         <TabsList>
-          <TabsTrigger value="users">{t("tabsUsers")}</TabsTrigger>
-          <TabsTrigger value="invitations">{t("tabsInvitations")}</TabsTrigger>
-          <TabsTrigger value="permissions">{t("tabsPermissions")}</TabsTrigger>
+          <TabsTab value="users">{t("tabsUsers")}</TabsTab>
+          <TabsTab value="invitations">{t("tabsInvitations")}</TabsTab>
+          <TabsTab value="permissions">{t("tabsPermissions")}</TabsTab>
         </TabsList>
-        <TabsContent value="users">
+        <TabsPanel value="users">
           <Card>
             <CardHeader>
               <CardTitle>{t("tabsUsers")}</CardTitle>
               <CardDescription>{t("usersListDescription")}</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardPanel>
               <ColumnWrapper
                 column={UserColumn}
                 data={users.data ?? []}
                 tag="users"
               />
-            </CardContent>
+            </CardPanel>
           </Card>
-        </TabsContent>
-        <TabsContent value="invitations">
+        </TabsPanel>
+        <TabsPanel value="invitations">
           {invitations.data && (
             <Card>
               <CardHeader>
@@ -130,23 +128,23 @@ export default async function users() {
                   {t("invitationsListDescription")}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardPanel>
                 <ColumnWrapper
                   column={InvitationColumn}
                   data={invitations.data}
                   tag="invitations"
                 />
-              </CardContent>
+              </CardPanel>
             </Card>
           )}
-        </TabsContent>
-        <TabsContent value="permissions">
+        </TabsPanel>
+        <TabsPanel value="permissions">
           <Card>
             <CardHeader>
               <CardTitle>{t("tabsPermissions")}</CardTitle>
               <CardDescription>{t("permissionsDescription")}</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardPanel>
               <div>
                 <Table className="min-w-full text-sm border">
                   <TableHeader>
@@ -185,9 +183,9 @@ export default async function users() {
                   </TableBody>
                 </Table>
               </div>
-            </CardContent>
+            </CardPanel>
           </Card>
-        </TabsContent>
+        </TabsPanel>
       </Tabs>
     </div>
   );

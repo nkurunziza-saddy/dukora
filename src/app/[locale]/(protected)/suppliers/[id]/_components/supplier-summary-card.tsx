@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardPanel, CardHeader, CardTitle } from "@/components/ui/card";
 import { getTranslations } from "next-intl/server";
 import {
   SelectSupplier,
@@ -21,7 +21,7 @@ export default async function SupplierSummaryCard({
       <CardHeader>
         <CardTitle>{t("summary")}</CardTitle>
       </CardHeader>
-      <CardContent className="grid grid-cols-2 gap-4">
+      <CardPanel className="grid grid-cols-2 gap-4">
         <div>
           <p className="text-sm font-medium text-muted-foreground">
             {t("email")}
@@ -46,7 +46,7 @@ export default async function SupplierSummaryCard({
           </p>
           <p>{supplier.contactName || "N/A"}</p>
         </div>
-      </CardContent>
+      </CardPanel>
     </Card>
   );
 }
