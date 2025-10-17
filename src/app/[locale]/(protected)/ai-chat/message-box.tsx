@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
 import { Bot, Check, Copy, Trash2, User } from "lucide-react";
+import { memo, useCallback, useMemo } from "react";
 import ReactMarkdown from "react-markdown";
+import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-import { memo, useCallback, useMemo } from "react";
+import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
 import { markdownComponents } from "./markdown-components";
 
@@ -25,10 +25,10 @@ const Message = memo(
     const processMessage = useCallback((content: string) => {
       return content.replace(
         /\$(\d+(?:,\d{3})*(?:\.\d{2})?)/g,
-        (match, number) => {
+        (_match, number) => {
           const num = Number.parseFloat(number.replace(/,/g, ""));
           return formatCurrency(num);
-        }
+        },
       );
     }, []);
 
@@ -41,7 +41,7 @@ const Message = memo(
 
     const processedContent = useMemo(
       () => processMessage(textContent),
-      [textContent, processMessage]
+      [textContent, processMessage],
     );
 
     return (
@@ -115,7 +115,7 @@ const Message = memo(
         </div>
       </div>
     );
-  }
+  },
 );
 Message.displayName = "Message";
 

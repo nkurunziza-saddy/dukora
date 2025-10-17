@@ -1,13 +1,13 @@
-import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { Tabs, TabsPanel, TabsList, TabsTab } from "@/components/ui/tabs";
+import { getTranslations } from "next-intl/server";
+import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
+import { db } from "@/lib/db";
 import { getUserById } from "@/server/actions/user-actions";
-import UserSummaryCard from "./_components/user-summary-card";
-import UserSchedules from "./_components/user-schedules";
 import UserAuditLogs from "./_components/user-audit-logs";
 import UserExpenses from "./_components/user-expenses";
+import UserSchedules from "./_components/user-schedules";
+import UserSummaryCard from "./_components/user-summary-card";
 import UserTransactions from "./_components/user-transactions";
-import { db } from "@/lib/db";
 
 export async function generateStaticParams() {
   const res = await db.query.usersTable.findMany();

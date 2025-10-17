@@ -1,18 +1,18 @@
 "use client";
 
-import { Table } from "@tanstack/react-table";
+import type { Table } from "@tanstack/react-table";
 import { Settings2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import {
-  MenuTrigger,
   Menu,
   MenuCheckboxItem,
-  MenuPopup,
-  MenuSeparator,
   MenuGroup,
   MenuGroupLabel,
+  MenuPopup,
+  MenuSeparator,
+  MenuTrigger,
 } from "@/components/ui/menu";
 import { formatKeys } from "@/lib/utils";
 
@@ -45,7 +45,7 @@ export function DataTableViewOptions<TData>({
             .getAllColumns()
             .filter(
               (column) =>
-                typeof column.accessorFn !== "undefined" && column.getCanHide()
+                typeof column.accessorFn !== "undefined" && column.getCanHide(),
             )
             .map((column) => {
               return (

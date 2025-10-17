@@ -1,10 +1,10 @@
 import { eq } from "drizzle-orm";
-import { unstable_cache, revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
+import { cache } from "react";
 import { db } from "@/lib/db";
-import { businessesTable, auditLogsTable, usersTable } from "@/lib/schema";
+import { auditLogsTable, businessesTable, usersTable } from "@/lib/schema";
 import type { InsertAuditLog, InsertBusiness } from "@/lib/schema/schema-types";
 import { ErrorCode } from "../constants/errors";
-import { cache } from "react";
 
 export const get_all = cache(async () => {
   try {
@@ -25,7 +25,7 @@ export const get_all_cached = unstable_cache(
   {
     revalidate: 300,
     tags: ["businesses"],
-  }
+  },
 );
 
 export async function get_by_id(businessId: string) {
@@ -60,7 +60,7 @@ export const get_by_id_cached = unstable_cache(
   {
     revalidate: 300,
     tags: ["businesses"],
-  }
+  },
 );
 
 export async function create(userId: string, business: InsertBusiness) {
@@ -107,7 +107,7 @@ export async function create(userId: string, business: InsertBusiness) {
 export async function update(
   businessId: string,
   userId: string,
-  updates: Partial<InsertBusiness>
+  updates: Partial<InsertBusiness>,
 ) {
   if (!businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };

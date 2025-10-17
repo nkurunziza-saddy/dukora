@@ -1,5 +1,6 @@
-import React from "react";
+import type React from "react";
 import { AppSidebar } from "@/components/navigation/app-sidebar";
+import QuickActions from "@/components/quick-actions";
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
@@ -7,7 +8,6 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { CurrentPage } from "../navigation/current-page";
-import QuickActions from "@/components/quick-actions";
 import { RefreshButton } from "../refresh-button";
 
 const SidebarContainer = ({ children }: { children: React.ReactNode }) => {

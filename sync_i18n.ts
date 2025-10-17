@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
 const LANGUAGES = {
   en: "English",
@@ -52,7 +51,7 @@ class I18nSyncer {
 
   private async translateText(
     text: string,
-    targetLang: string
+    targetLang: string,
   ): Promise<TranslationResult> {
     try {
       const googleResult = await this.translateWithGoogle(text, targetLang);
@@ -75,7 +74,7 @@ class I18nSyncer {
     try {
       const libreResult = await this.translateWithLibreTranslate(
         text,
-        targetLang
+        targetLang,
       );
       if (libreResult.success) {
         return { ...libreResult, api: "libretranslate" };
@@ -89,7 +88,7 @@ class I18nSyncer {
 
   private async translateWithGoogle(
     text: string,
-    targetLang: string
+    targetLang: string,
   ): Promise<TranslationResult> {
     const url =
       TRANSLATION_APIS.google.baseUrl +
@@ -112,7 +111,7 @@ class I18nSyncer {
 
   private async translateWithMyMemory(
     text: string,
-    targetLang: string
+    targetLang: string,
   ): Promise<TranslationResult> {
     const url =
       TRANSLATION_APIS.mymemory.baseUrl +
@@ -122,7 +121,6 @@ class I18nSyncer {
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
-
     const data = (await response.json()) as any;
     const translatedText = data.responseData?.translatedText;
 
@@ -135,7 +133,7 @@ class I18nSyncer {
 
   private async translateWithLibreTranslate(
     text: string,
-    targetLang: string
+    targetLang: string,
   ): Promise<TranslationResult> {
     const response = await fetch(TRANSLATION_APIS.libretranslate.baseUrl, {
       method: "POST",
@@ -161,7 +159,6 @@ class I18nSyncer {
 
     return { text: translatedText, success: true };
   }
-
   private getAllKeys(obj: any, prefix: string = ""): Set<string> {
     const keys = new Set<string>();
 
@@ -171,20 +168,20 @@ class I18nSyncer {
         keys.add(currentKey);
 
         if (typeof obj[key] === "object" && obj[key] !== null) {
-          this.getAllKeys(obj[key], currentKey).forEach((k) => keys.add(k));
+          this.getAllKeys(obj[key], currentKey).forEach((k) => {
+            keys.add(k);
+          });
         }
       });
     }
 
     return keys;
   }
-
   private getNestedValue(obj: any, keyPath: string): any {
     return keyPath.split(".").reduce((current, key) => {
       return current && typeof current === "object" ? current[key] : undefined;
     }, obj);
   }
-
   private setNestedValue(obj: any, keyPath: string, value: any): void {
     const keys = keyPath.split(".");
     const lastKey = keys.pop()!;
@@ -198,7 +195,6 @@ class I18nSyncer {
 
     target[lastKey] = value;
   }
-
   private loadJsonFile(filepath: string): any {
     try {
       const content = fs.readFileSync(filepath, "utf-8");
@@ -208,10 +204,9 @@ class I18nSyncer {
       return {};
     }
   }
-
   private saveJsonFile(filepath: string, data: any): void {
     try {
-      const content = JSON.stringify(data, null, 2) + "\n";
+      const content = `${JSON.stringify(data, null, 2)}\n`;
       fs.writeFileSync(filepath, content, "utf-8");
       console.log(`✓ Updated ${filepath}`);
     } catch (error) {
@@ -239,10 +234,9 @@ class I18nSyncer {
 
     return Math.abs(enLines - langLines) > 2; // Allow small differences
   }
-
   private async syncLanguageFile(
     enData: any,
-    langCode: string
+    langCode: string,
   ): Promise<SyncStats> {
     const langFile = path.join(this.messagesDir, `${langCode}.json`);
 
@@ -258,7 +252,9 @@ class I18nSyncer {
     }
 
     console.log(
-      `\nProcessing ${langCode} (${LANGUAGES[langCode as keyof typeof LANGUAGES]})...`
+      `\nProcessing ${langCode} (${
+        LANGUAGES[langCode as keyof typeof LANGUAGES]
+      })...`,
     );
 
     const currentData = this.loadJsonFile(langFile);
@@ -266,7 +262,7 @@ class I18nSyncer {
     const currentKeys = this.getAllKeys(currentData);
 
     const missingKeys = Array.from(enKeys).filter(
-      (key) => !currentKeys.has(key)
+      (key) => !currentKeys.has(key),
     );
     const extraKeys = Array.from(currentKeys).filter((key) => !enKeys.has(key));
 
@@ -284,7 +280,6 @@ class I18nSyncer {
         linesDiff: 0,
       };
     }
-
     const newData: any = {};
     let translatedCount = 0;
 
@@ -300,17 +295,15 @@ class I18nSyncer {
 
         if (translation.success) {
           console.log(
-            `  ✓ Translated (${translation.api}): ${key} -> ${translation.text}`
+            `  ✓ Translated (${translation.api}): ${key} -> ${translation.text}`,
           );
           translatedCount++;
         } else {
-          console.warn(
-            `  ⚠ Translation failed: ${key} -> ${translation.text}`
-          );
+          console.warn(`  ⚠ Translation failed: ${key} -> ${translation.text}`);
         }
 
         await new Promise((resolve) =>
-          setTimeout(resolve, this.rateLimitDelay)
+          setTimeout(resolve, this.rateLimitDelay),
         );
       }
     }
@@ -354,7 +347,7 @@ class I18nSyncer {
 
       if (this.needsSync(enFile, langFile)) {
         console.log(
-          `\n📋 ${langCode} needs sync (line count difference detected)`
+          `\n📋 ${langCode} needs sync (line count difference detected)`,
         );
         syncPromises.push(this.syncLanguageFile(enData, langCode));
       } else {
@@ -374,7 +367,7 @@ class I18nSyncer {
       const langCode = targetLanguages[index];
       if (stats.totalKeys > 0) {
         console.log(
-          `  ${langCode}: ${stats.translatedKeys} translated, ${stats.missingKeys} added, ${stats.extraKeys} removed`
+          `  ${langCode}: ${stats.translatedKeys} translated, ${stats.missingKeys} added, ${stats.extraKeys} removed`,
         );
       }
     });

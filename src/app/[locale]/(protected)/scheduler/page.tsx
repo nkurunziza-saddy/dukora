@@ -1,24 +1,24 @@
 import { EventCalendar } from "@/components/event-calendar";
+import type { InsertSchedule } from "@/lib/schema/schema-types";
 import {
   createSchedule as _createSchedule,
   deleteSchedule as _deleteSchedule,
-  getSchedules,
   updateSchedule as _updateSchedule,
+  getSchedules,
 } from "@/server/actions/schedule-actions";
-import { InsertSchedule } from "@/lib/schema/schema-types";
 export default async function page() {
   const schedules = await getSchedules({});
   if (!schedules.data) return null;
 
   const createSchedule = async (
-    event: Omit<InsertSchedule, "businessId" | "userId">
+    event: Omit<InsertSchedule, "businessId" | "userId">,
   ) => {
     "use server";
     await _createSchedule(event);
   };
   const updateSchedule = async (
     id: string,
-    event: Partial<Omit<InsertSchedule, "userId" | "businessId">>
+    event: Partial<Omit<InsertSchedule, "userId" | "businessId">>,
   ) => {
     "use server";
     await _updateSchedule({ scheduleId: id, updates: event });

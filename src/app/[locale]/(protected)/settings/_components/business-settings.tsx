@@ -1,19 +1,19 @@
 "use client";
-import { EditBusinessDetails } from "./edit-business-details";
-import { EditBusinessSettings } from "./edit-business-settings";
-import { EditCategories } from "./edit-categories";
-import { EditWarehouses } from "./edit-warehouses";
-import { ConnectStripe } from "./connect-stripe";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import type {
   SelectBusiness,
   SelectBusinessSetting,
   SelectCategory,
   SelectWarehouse,
 } from "@/lib/schema/schema-types";
+import { ConnectStripe } from "./connect-stripe";
+import { EditBusinessDetails } from "./edit-business-details";
+import { EditBusinessSettings } from "./edit-business-settings";
+import { EditCategories } from "./edit-categories";
+import { EditWarehouses } from "./edit-warehouses";
 
 export type BusinessPayload = SelectBusiness & {
   businessSettings: SelectBusinessSetting[];
@@ -48,10 +48,10 @@ export function BusinessSettingsForm({ business }: BusinessSettingsProps) {
   const totalSections = Object.keys(completionStats).length;
   const completedSections = Object.values(completionStats).reduce(
     (sum, status) => sum + status,
-    0
+    0,
   );
   const completionPercentage = Math.round(
-    (completedSections / totalSections) * 100
+    (completedSections / totalSections) * 100,
   );
 
   return (

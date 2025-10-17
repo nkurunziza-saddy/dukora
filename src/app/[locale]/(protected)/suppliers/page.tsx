@@ -1,6 +1,6 @@
+import ColumnWrapper from "@/components/providers/column-wrapper";
 import { getSuppliers } from "@/server/actions/supplier-actions";
 import { SupplierColumn } from "@/utils/columns/supplier-column";
-import ColumnWrapper from "@/components/providers/column-wrapper";
 
 export default async function SuppliersPage() {
   const suppliers = await getSuppliers({});

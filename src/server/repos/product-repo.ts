@@ -1,5 +1,6 @@
-import { eq, desc, and, isNull } from "drizzle-orm";
+import { and, desc, eq, isNull } from "drizzle-orm";
 import { revalidatePath, unstable_cache } from "next/cache";
+import { cache } from "react";
 import { db } from "@/lib/db";
 import {
   auditLogsTable,
@@ -8,9 +9,8 @@ import {
   warehouseItemsTable,
   warehousesTable,
 } from "@/lib/schema";
-import { InsertAuditLog, InsertProduct } from "@/lib/schema/schema-types";
+import type { InsertAuditLog, InsertProduct } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
-import { cache } from "react";
 
 export const get_all = cache(async (businessId: string) => {
   if (!businessId) {
@@ -24,8 +24,8 @@ export const get_all = cache(async (businessId: string) => {
       .where(
         and(
           eq(productsTable.businessId, businessId),
-          isNull(productsTable.deletedAt)
-        )
+          isNull(productsTable.deletedAt),
+        ),
       )
       .orderBy(desc(productsTable.createdAt));
 
@@ -44,7 +44,7 @@ export const get_all_cached = unstable_cache(
   {
     tags: ["products"],
     revalidate: 300,
-  }
+  },
 );
 
 export const get_overview = cache(
@@ -60,21 +60,21 @@ export const get_overview = cache(
         .where(
           and(
             eq(productsTable.businessId, businessId),
-            isNull(productsTable.deletedAt)
-          )
+            isNull(productsTable.deletedAt),
+          ),
         )
         .orderBy(desc(productsTable.createdAt))
         .innerJoin(
           warehouseItemsTable,
-          eq(productsTable.id, warehouseItemsTable.productId)
+          eq(productsTable.id, warehouseItemsTable.productId),
         )
         .innerJoin(
           categoriesTable,
-          eq(productsTable.categoryId, categoriesTable.id)
+          eq(productsTable.categoryId, categoriesTable.id),
         )
         .innerJoin(
           warehousesTable,
-          eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+          eq(warehouseItemsTable.warehouseId, warehousesTable.id),
         );
 
       const products = await (limit ? query.limit(limit) : query);
@@ -83,7 +83,7 @@ export const get_overview = cache(
       console.error("Failed to fetch products:", error);
       return { data: null, error: ErrorCode.FAILED_REQUEST };
     }
-  }
+  },
 );
 
 export async function get_by_id(productId: string, businessId: string) {
@@ -95,7 +95,7 @@ export async function get_by_id(productId: string, businessId: string) {
     const product = await db.query.productsTable.findFirst({
       where: and(
         eq(productsTable.id, productId),
-        eq(productsTable.businessId, businessId)
+        eq(productsTable.businessId, businessId),
       ),
       with: {
         category: true,
@@ -129,7 +129,7 @@ export const get_by_id_cached = unstable_cache(
   {
     tags: ["products"],
     revalidate: 300,
-  }
+  },
 );
 
 export async function create(product: InsertProduct, userId: string) {
@@ -171,7 +171,7 @@ export async function update(
   productId: string,
   businessId: string,
   userId: string,
-  updates: Partial<InsertProduct>
+  updates: Partial<InsertProduct>,
 ) {
   if (!productId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -185,8 +185,8 @@ export async function update(
           and(
             eq(productsTable.id, productId),
             eq(productsTable.businessId, businessId),
-            isNull(productsTable.deletedAt)
-          )
+            isNull(productsTable.deletedAt),
+          ),
         )
         .returning();
 
@@ -222,7 +222,7 @@ export async function update(
 export async function remove(
   productId: string,
   businessId: string,
-  userId: string
+  userId: string,
 ) {
   if (!productId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -242,8 +242,8 @@ export async function remove(
         .where(
           and(
             eq(productsTable.id, productId),
-            eq(productsTable.businessId, businessId)
-          )
+            eq(productsTable.businessId, businessId),
+          ),
         )
         .returning();
 

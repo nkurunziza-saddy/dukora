@@ -4,6 +4,7 @@ import {
   ArrowRightLeft,
   BarChart3,
   Bot,
+  Calculator,
   Calendar,
   CreditCard,
   Layers,
@@ -12,9 +13,11 @@ import {
   Store,
   Truck,
   Users,
-  Calculator,
   Warehouse,
 } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import {
   Sidebar,
   SidebarContent,
@@ -28,9 +31,6 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import Link from "next/link";
-import { useTranslations, useLocale } from "next-intl";
-import { usePathname } from "next/navigation";
 import SessionCard from "./session-card";
 
 export const data = {
@@ -152,15 +152,13 @@ export function AppSidebar() {
                           <span className="opacity-50">{t(url)}</span>
                         </SidebarMenuButton>
                       ) : (
-                        <Link href={item.url}>
-                          <SidebarMenuButton
-                            asChild
-                            variant={isActive ? "active" : undefined}
-                          >
-                            {/* <item.icon className="h-4 w-4" /> */}
-                            <span>{t(url)}</span>
-                          </SidebarMenuButton>
-                        </Link>
+                        <SidebarMenuButton
+                          render={<Link href={item.url} />}
+                          variant={isActive ? "active" : undefined}
+                        >
+                          {/* <item.icon className="h-4 w-4" /> */}
+                          <span>{t(url)}</span>
+                        </SidebarMenuButton>
                       )}
                     </SidebarMenuItem>
                   );

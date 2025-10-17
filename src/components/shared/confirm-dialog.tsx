@@ -1,14 +1,14 @@
-import React, { FC } from "react";
+import { useTranslations } from "next-intl";
+import type { FC } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogPopup,
   DialogDescription,
   DialogFooter,
   DialogHeader,
+  DialogPopup,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useTranslations } from "next-intl";
 
 interface DialogProps {
   isDialogOpen: boolean;
@@ -53,7 +53,7 @@ const ConfirmDialog: FC<DialogProps> = ({
             disabled={isLoading}
             className="min-w-[100px]"
           >
-            {isLoading ? <>{t("wait")}</> : t("confirm")}
+            {isLoading ? t("wait") : t("confirm")}
           </Button>
         </DialogFooter>
       </DialogPopup>

@@ -1,6 +1,6 @@
-import React, { FC } from "react";
-import { type LucideIcon } from "lucide-react";
-import { Card, CardPanel, CardHeader, CardTitle } from "@/components/ui/card";
+import type { LucideIcon } from "lucide-react";
+import type { FC } from "react";
+import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card";
 
 interface StatProps {
   title: string;

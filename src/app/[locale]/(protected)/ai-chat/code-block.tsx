@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { Check, Copy } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 function CodeBlock({
@@ -117,7 +117,7 @@ function CodeBlock({
     Object.keys(markers).forEach((marker) => {
       highlighted = highlighted.replace(
         new RegExp(marker, "g"),
-        markers[marker]
+        markers[marker],
       );
     });
 
@@ -131,34 +131,19 @@ function CodeBlock({
   };
 
   if (isCodeBlock) {
-    return (
-      <div className="relative group my-4 border rounded-lg overflow-hidden bg-muted">
-        <div className="flex items-center justify-between px-4 py-2 bg-muted/70  border-b">
-          <span className="text-xs font-medium uppercase tracking-wide">
-            {language}
-          </span>
-          <Button
-            className="h-7 w-7 p-0 opacity-70 hover:opacity-100 transition-opacity bg-transparent border-none cursor-pointer rounded flex items-center justify-center"
-            onClick={copyToClipboard}
-          >
-            {copied ? (
-              <Check className="h-3 w-3" />
-            ) : (
-              <Copy className="h-3 w-3" />
-            )}
-          </Button>
-        </div>
-        <pre className="overflow-x-auto p-4 text-sm bg-secondary syntax-highlighter">
-          <code
-            className="text-sm font-mono"
-            dangerouslySetInnerHTML={{
-              __html: highlightCode(String(children), language),
-            }}
-          />
-        </pre>
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
+    const codeElement = (
+      <code
+        className="text-sm font-mono"
+        dangerouslySetInnerHTML={{
+          __html: highlightCode(String(children), language),
+        }}
+      />
+    );
+
+    const styleElement = (
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
             .syntax-highlighter .syntax-keyword {
               color: #0066cc;
               font-weight: 600;
@@ -201,8 +186,31 @@ function CodeBlock({
               color: #66ccff;
             }
           `,
-          }}
-        />
+        }}
+      />
+    );
+
+    return (
+      <div className="relative group my-4 border rounded-lg overflow-hidden bg-muted">
+        <div className="flex items-center justify-between px-4 py-2 bg-muted/70  border-b">
+          <span className="text-xs font-medium uppercase tracking-wide">
+            {language}
+          </span>
+          <Button
+            className="h-7 w-7 p-0 opacity-70 hover:opacity-100 transition-opacity bg-transparent border-none cursor-pointer rounded flex items-center justify-center"
+            onClick={copyToClipboard}
+          >
+            {copied ? (
+              <Check className="h-3 w-3" />
+            ) : (
+              <Copy className="h-3 w-3" />
+            )}
+          </Button>
+        </div>
+        <pre className="overflow-x-auto p-4 text-sm bg-secondary syntax-highlighter">
+          {codeElement}
+        </pre>
+        {styleElement}
       </div>
     );
   }

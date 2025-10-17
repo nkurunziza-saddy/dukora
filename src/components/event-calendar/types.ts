@@ -1,4 +1,4 @@
-import { InsertSchedule, SelectSchedule } from "@/lib/schema/schema-types";
+import type { InsertSchedule, SelectSchedule } from "@/lib/schema/schema-types";
 
 export type CalendarView = "month" | "week" | "day" | "agenda";
 

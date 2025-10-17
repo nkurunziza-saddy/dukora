@@ -1,21 +1,18 @@
+import { sql } from "drizzle-orm";
 import {
+  check,
+  numeric,
   pgTable,
   text,
-  numeric,
   timestamp,
   uniqueIndex,
-  check,
 } from "drizzle-orm/pg-core";
 import { businessesTable } from "./businesses";
-import { sql } from "drizzle-orm";
 
 export const profitReportsTable = pgTable(
   "profit_reports",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     businessId: text("business_id")
       .notNull()
       .references(() => businessesTable.id, { onDelete: "cascade" }),
@@ -33,11 +30,11 @@ export const profitReportsTable = pgTable(
     uniqueIndex("profit_reports_business_id_period_type_period_start").on(
       table.businessId,
       table.periodType,
-      table.periodStart
+      table.periodStart,
     ),
     check(
       "period_end_after_start",
-      sql`${table.periodEnd} > ${table.periodStart}`
+      sql`${table.periodEnd} > ${table.periodStart}`,
     ),
-  ]
+  ],
 );

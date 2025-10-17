@@ -8,7 +8,7 @@ import SupplierRowActions from "@/components/table/supplier-row-actions";
 import type { SelectSupplier } from "@/lib/schema/schema-types";
 
 export function SupplierColumn(
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<SelectSupplier>[] {
   return [
     {

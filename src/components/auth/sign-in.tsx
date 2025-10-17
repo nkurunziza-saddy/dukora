@@ -1,26 +1,26 @@
 "use client";
 
+import { AlertCircle, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardPanel,
-  CardHeader,
-  CardTitle,
   CardDescription,
   CardFooter,
+  CardHeader,
+  CardPanel,
+  CardTitle,
 } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useState } from "react";
-import { Loader2, AlertCircle } from "lucide-react";
 import { signIn } from "@/lib/auth-client";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { useTranslations } from "next-intl";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function SignIn() {
   const t = useTranslations("auth");
@@ -121,7 +121,7 @@ export default function SignIn() {
                   onSuccess: async () => {
                     router.push("/dashboard");
                   },
-                }
+                },
               );
             }}
           >
@@ -139,7 +139,7 @@ export default function SignIn() {
           <div
             className={cn(
               "w-full gap-2 flex items-center",
-              "justify-between flex-col"
+              "justify-between flex-col",
             )}
           >
             <Button
@@ -162,7 +162,7 @@ export default function SignIn() {
                     onError: (ctx) => {
                       toast.error(ctx.error.message);
                     },
-                  }
+                  },
                 );
               }}
             >
@@ -211,7 +211,7 @@ export default function SignIn() {
                     onError: (ctx) => {
                       toast.error(ctx.error.message);
                     },
-                  }
+                  },
                 );
               }}
             >

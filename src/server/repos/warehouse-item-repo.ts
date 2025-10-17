@@ -1,7 +1,8 @@
 "use server";
-import { eq, and } from "drizzle-orm";
-import { db } from "@/lib/db";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath, unstable_cache } from "next/cache";
+import { cache } from "react";
+import { db } from "@/lib/db";
 import {
   auditLogsTable,
   productsTable,
@@ -13,7 +14,6 @@ import type {
   InsertWarehouseItem,
 } from "@/lib/schema/schema-types";
 import { ErrorCode } from "../constants/errors";
-import { cache } from "react";
 
 export const get_all = cache(async (warehouseId: string) => {
   try {
@@ -36,7 +36,7 @@ export const get_all_cached = unstable_cache(
   {
     tags: ["warehouses", "warehouse-items"],
     revalidate: 300,
-  }
+  },
 );
 
 export async function get_all_by_business_id(businessId: string) {
@@ -49,11 +49,11 @@ export async function get_all_by_business_id(businessId: string) {
       .from(warehousesTable)
       .innerJoin(
         warehouseItemsTable,
-        eq(warehousesTable.id, warehouseItemsTable.warehouseId)
+        eq(warehousesTable.id, warehouseItemsTable.warehouseId),
       )
       .innerJoin(
         productsTable,
-        eq(warehouseItemsTable.productId, productsTable.id)
+        eq(warehouseItemsTable.productId, productsTable.id),
       )
       .where(eq(warehousesTable.businessId, businessId));
     return { data: items, error: null };
@@ -91,13 +91,13 @@ export const get_by_id_cached = unstable_cache(
   {
     tags: [`warehouses`, "warehouse-item"],
     revalidate: 300,
-  }
+  },
 );
 
 export async function create(
   businessId: string,
   userId: string,
-  warehouseItem: InsertWarehouseItem
+  warehouseItem: InsertWarehouseItem,
 ) {
   try {
     const result = await db.transaction(async (tx) => {
@@ -132,7 +132,7 @@ export async function update(
   businessId: string,
   warehouseItemId: string,
   userId: string,
-  updates: Partial<InsertWarehouseItem>
+  updates: Partial<InsertWarehouseItem>,
 ) {
   try {
     const result = await db.transaction(async (tx) => {
@@ -183,7 +183,7 @@ export async function update(
 export async function remove(
   warehouseItemId: string,
   businessId: string,
-  userId: string
+  userId: string,
 ) {
   try {
     const item = await db.query.warehouseItemsTable.findFirst({

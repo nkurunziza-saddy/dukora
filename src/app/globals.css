@@ -153,12 +153,12 @@
 }
 
 .katex {
-  font-size: 1.1em !important;
+  font-size: 1.1em;
   font-family: inherit;
 }
 
 .katex-display {
-  margin: 1.5em 0 !important;
+  margin: 1.5em 0;
   overflow-x: auto;
   overflow-y: hidden;
   padding: 0.5em 0;

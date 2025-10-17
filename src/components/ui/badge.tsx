@@ -50,7 +50,7 @@ const badgeVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
+  },
 );
 
 interface BadgeProps extends useRender.ComponentProps<"span"> {

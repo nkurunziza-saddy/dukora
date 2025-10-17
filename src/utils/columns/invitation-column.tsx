@@ -3,13 +3,13 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
-import type { ExtendedInvitationPayload } from "@/lib/schema/schema-types";
-import { Badge } from "@/components/ui/badge";
-import { userStatuses } from "./user-column";
 import InvitationRowActions from "@/components/table/invitation-row-actions";
+import { Badge } from "@/components/ui/badge";
+import type { ExtendedInvitationPayload } from "@/lib/schema/schema-types";
+import { userStatuses } from "./user-column";
 
 export function InvitationColumn(
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<ExtendedInvitationPayload>[] {
   return [
     {
@@ -19,7 +19,7 @@ export function InvitationColumn(
       ),
       cell: ({ row }) => {
         const role = userStatuses.find(
-          (s) => s.value === row.original.role.toLowerCase()
+          (s) => s.value === row.original.role.toLowerCase(),
         );
         if (!role) {
           return (

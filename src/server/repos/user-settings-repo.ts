@@ -2,6 +2,7 @@
 
 import { eq } from "drizzle-orm";
 import { revalidatePath, unstable_cache } from "next/cache";
+import { cache } from "react";
 import { db } from "@/lib/db";
 import { auditLogsTable, userSettingsTable } from "@/lib/schema";
 import type {
@@ -9,7 +10,6 @@ import type {
   InsertUserSetting,
 } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
-import { cache } from "react";
 
 export const get_all = cache(async (userId: string) => {
   if (!userId) {
@@ -36,13 +36,13 @@ export const get_all_cached = unstable_cache(
   {
     tags: ["user-settings"],
     revalidate: 300,
-  }
+  },
 );
 
 export async function upsert(
   businessId: string,
   userId: string,
-  setting: InsertUserSetting
+  setting: InsertUserSetting,
 ) {
   if (!setting.key) {
     return { data: null, error: ErrorCode.MISSING_INPUT };

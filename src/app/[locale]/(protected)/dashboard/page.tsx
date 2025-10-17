@@ -1,19 +1,21 @@
 import {
-  Package,
-  Warehouse,
-  AlertTriangle,
-  TrendingUp,
   AlertCircle,
+  AlertTriangle,
+  Package,
+  TrendingUp,
+  Warehouse,
 } from "lucide-react";
-import {
-  Card,
-  CardPanel,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { getTranslations } from "next-intl/server";
+import StatCard from "@/components/shared/stat-card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardPanel,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -22,19 +24,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatCurrency, formatKeys, formatNumber } from "@/lib/utils";
+import { getLogsOverview } from "@/server/actions/logs-actions";
+import { getOverviewProducts } from "@/server/actions/product-actions";
+import { getLowStockAlertProducts } from "@/server/actions/product-items-actions";
+import { getSchedulesOverview } from "@/server/actions/schedule-actions";
 import {
+  getCurrentInventoryValue,
+  getLowStockProductsCount,
   getTotalSKUCount,
   getTotalWarehousesCount,
-  getLowStockProductsCount,
-  getCurrentInventoryValue,
 } from "@/server/actions/statistics-actions";
-import { getOverviewProducts } from "@/server/actions/product-actions";
-import { getTranslations } from "next-intl/server";
-import StatCard from "@/components/shared/stat-card";
-import { getSchedulesOverview } from "@/server/actions/schedule-actions";
-import { getLogsOverview } from "@/server/actions/logs-actions";
-import { getLowStockAlertProducts } from "@/server/actions/product-items-actions";
-import { formatCurrency, formatKeys, formatNumber } from "@/lib/utils";
 
 export default async function InventoryDashboard() {
   const [totalSKUs, totalWarehouses, lowStockCount, inventoryValue] =
@@ -299,7 +299,7 @@ export default async function InventoryDashboard() {
                         <TableCell>
                           {log.audit_logs.performedAt
                             ? new Date(
-                                log.audit_logs.performedAt
+                                log.audit_logs.performedAt,
                               ).toLocaleString()
                             : "-"}
                         </TableCell>

@@ -8,20 +8,23 @@ export function AboutSection() {
           </h2>
           <div className="space-y-6 text-sm text-text-secondary leading-relaxed">
             <p>
-              Dukora is a modern, open-source inventory and business management system designed to provide a
-              comprehensive, real-time overview of your operations. Built with a powerful and scalable tech stack, it
-              offers everything from product and warehouse management to detailed financial analytics and role-based
-              user permissions.
+              Dukora is a modern, open-source inventory and business management
+              system designed to provide a comprehensive, real-time overview of
+              your operations. Built with a powerful and scalable tech stack, it
+              offers everything from product and warehouse management to
+              detailed financial analytics and role-based user permissions.
             </p>
             <p>
-              Born in Kigali in 2024, our mission is to bring total financial clarity to businesses of all sizes. We
-              combine deep technical expertise with user-centric design to create tools that empower teams to make
-              better decisions faster.
+              Born in Kigali in 2024, our mission is to bring total financial
+              clarity to businesses of all sizes. We combine deep technical
+              expertise with user-centric design to create tools that empower
+              teams to make better decisions faster.
             </p>
             <p>
-              Built with Next.js, Drizzle ORM, PostgreSQL, and Better-auth, Dukora is designed to be fast, reliable, and
-              easy to self-host. Every feature is crafted with attention to detail and a focus on real-world business
-              needs.
+              Built with Next.js, Drizzle ORM, PostgreSQL, and Better-auth,
+              Dukora is designed to be fast, reliable, and easy to self-host.
+              Every feature is crafted with attention to detail and a focus on
+              real-world business needs.
             </p>
           </div>
           <div className="pt-4">
@@ -37,5 +40,5 @@ export function AboutSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

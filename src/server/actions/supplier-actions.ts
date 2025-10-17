@@ -1,8 +1,8 @@
 "use server";
 
 import type { InsertSupplier } from "@/lib/schema/schema-types";
-import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
+import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as supplierRepo from "../repos/supplier-repo";
 
@@ -14,7 +14,7 @@ export const getSuppliers = createProtectedAction(
       return { data: null, error: suppliers.error };
     }
     return { data: suppliers.data, error: null };
-  }
+  },
 );
 
 export const getSupplierById = createProtectedAction(
@@ -25,13 +25,13 @@ export const getSupplierById = createProtectedAction(
     }
     const supplier = await supplierRepo.get_by_id_cached(
       supplierId,
-      user.businessId!
+      user.businessId!,
     );
     if (supplier.error) {
       return { data: null, error: supplier.error };
     }
     return { data: supplier.data, error: null };
-  }
+  },
 );
 
 export const createSupplier = createProtectedAction(
@@ -50,7 +50,7 @@ export const createSupplier = createProtectedAction(
     }
 
     return { data: res.data, error: null };
-  }
+  },
 );
 
 export const updateSupplier = createProtectedAction(
@@ -63,7 +63,7 @@ export const updateSupplier = createProtectedAction(
     }: {
       supplierId: string;
       updates: Partial<Omit<InsertSupplier, "id" | "businessId">>;
-    }
+    },
   ) => {
     if (!supplierId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -72,14 +72,14 @@ export const updateSupplier = createProtectedAction(
       supplierId,
       user.businessId!,
       user.id,
-      updates
+      updates,
     );
     if (updatedSupplier.error) {
       return { data: null, error: updatedSupplier.error };
     }
 
     return { data: updatedSupplier.data, error: null };
-  }
+  },
 );
 
 export const deleteSupplier = createProtectedAction(
@@ -91,14 +91,14 @@ export const deleteSupplier = createProtectedAction(
     const res = await supplierRepo.remove(
       supplierId,
       user.businessId!,
-      user.id
+      user.id,
     );
     if (res.error) {
       return { data: null, error: res.error };
     }
 
     return { data: { success: true }, error: null };
-  }
+  },
 );
 
 export const createManySuppliers = createProtectedAction(
@@ -117,5 +117,5 @@ export const createManySuppliers = createProtectedAction(
     }
 
     return { data: createdSuppliers.data, error: null };
-  }
+  },
 );

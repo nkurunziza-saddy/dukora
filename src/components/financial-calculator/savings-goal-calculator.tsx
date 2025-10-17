@@ -1,16 +1,16 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import { useState } from "react";
 import {
   Card,
-  CardPanel,
   CardDescription,
   CardHeader,
+  CardPanel,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useTranslations } from "next-intl";
-import { useState } from "react";
 
 export function SavingsGoalCalculator() {
   const t = useTranslations("FinancialCalculator");

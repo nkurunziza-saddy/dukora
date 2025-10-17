@@ -1,4 +1,4 @@
-import { Table } from "@tanstack/react-table";
+import type { Table } from "@tanstack/react-table";
 import {
   ChevronLeft,
   ChevronRight,
@@ -10,8 +10,8 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Select,
-  SelectPopup,
   SelectItem,
+  SelectPopup,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";

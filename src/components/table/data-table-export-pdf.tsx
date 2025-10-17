@@ -1,21 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
-import { Table } from "@tanstack/react-table";
+import type { Table } from "@tanstack/react-table";
 import { Download, FileText, Users } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Menu,
-  MenuPopup,
-  MenuItem,
-  MenuSeparator,
-  MenuTrigger,
   MenuGroup,
   MenuGroupLabel,
+  MenuItem,
+  MenuPopup,
+  MenuSeparator,
+  MenuTrigger,
 } from "@/components/ui/menu";
-import { Badge } from "@/components/ui/badge";
 import { formatKeys } from "@/lib/utils";
-import { useTranslations } from "next-intl";
 
 interface DataExportPDFProps<TData> {
   table: Table<TData>;
@@ -62,12 +62,11 @@ export function DataTableExportPDF<TData>({
           (header) =>
             header.id !== "select" &&
             header.id !== "actions" &&
-            header.column.getIsVisible()
+            header.column.getIsVisible(),
         );
 
       const headers = visibleColumns.map((header) => formatKeys(header.id));
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const data = rows.map((row: any) =>
         visibleColumns.map((header) => {
           const value = row[header.id];
@@ -84,7 +83,7 @@ export function DataTableExportPDF<TData>({
                 ? String(value)
                 : "N/A";
           }
-        })
+        }),
       );
 
       autoTable(doc, {
@@ -122,7 +121,7 @@ export function DataTableExportPDF<TData>({
         doc.text(
           `Page ${i} of ${pageCount}`,
           doc.internal.pageSize.getWidth() - 30,
-          doc.internal.pageSize.getHeight() - 10
+          doc.internal.pageSize.getHeight() - 10,
         );
       }
 

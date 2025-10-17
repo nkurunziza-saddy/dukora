@@ -1,10 +1,10 @@
-import { eq, desc, and, gte, lte, getTableColumns } from "drizzle-orm";
-import { db } from "@/lib/db";
-import { expensesTable, auditLogsTable, usersTable } from "@/lib/schema";
-import { InsertExpense, InsertAuditLog } from "@/lib/schema/schema-types";
-import { ErrorCode } from "@/server/constants/errors";
+import { and, desc, eq, getTableColumns, gte, lte } from "drizzle-orm";
 import { revalidatePath, unstable_cache } from "next/cache";
 import { cache } from "react";
+import { db } from "@/lib/db";
+import { auditLogsTable, expensesTable, usersTable } from "@/lib/schema";
+import type { InsertAuditLog, InsertExpense } from "@/lib/schema/schema-types";
+import { ErrorCode } from "@/server/constants/errors";
 
 export const get_all = cache(async (businessId: string) => {
   if (!businessId) {
@@ -38,13 +38,13 @@ export const get_all_cached = unstable_cache(
   {
     tags: ["expenses"],
     revalidate: 300,
-  }
+  },
 );
 
 export async function get_by_time_interval(
   businessId: string,
   dateFrom: Date,
-  dateTo: Date
+  dateTo: Date,
 ) {
   try {
     const result = await db
@@ -54,8 +54,8 @@ export async function get_by_time_interval(
         and(
           eq(expensesTable.businessId, businessId),
           gte(expensesTable.createdAt, dateFrom),
-          lte(expensesTable.createdAt, dateTo)
-        )
+          lte(expensesTable.createdAt, dateTo),
+        ),
       );
     return {
       data: result,
@@ -76,7 +76,7 @@ export async function get_by_id(expenseId: string, businessId: string) {
     const expense = await db.query.expensesTable.findFirst({
       where: and(
         eq(expensesTable.id, expenseId),
-        eq(expensesTable.businessId, businessId)
+        eq(expensesTable.businessId, businessId),
       ),
       with: {
         createdByUser: true,

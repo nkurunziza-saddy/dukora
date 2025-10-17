@@ -1,18 +1,18 @@
-import { TrendingUp, ShoppingCart, DollarSign } from "lucide-react";
+import { subDays } from "date-fns";
+import { DollarSign, ShoppingCart, TrendingUp } from "lucide-react";
+import { getTranslations } from "next-intl/server";
+import ColumnWrapper from "@/components/providers/column-wrapper";
+import StatCard from "@/components/shared/stat-card";
 import {
   Card,
-  CardPanel,
   CardDescription,
   CardHeader,
+  CardPanel,
   CardTitle,
 } from "@/components/ui/card";
-import { getTranslations } from "next-intl/server";
 import { getTodayTransactions } from "@/server/actions/statistics-actions";
-import ColumnWrapper from "@/components/providers/column-wrapper";
-import { TransactionColumn } from "@/utils/columns/transaction-column";
 import { getTransactionsByTimeInterval } from "@/server/actions/transaction-actions";
-import StatCard from "@/components/shared/stat-card";
-import { subDays } from "date-fns";
+import { TransactionColumn } from "@/utils/columns/transaction-column";
 
 export default async function SalesTracking() {
   const t = await getTranslations("sales");

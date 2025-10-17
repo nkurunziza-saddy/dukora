@@ -1,34 +1,34 @@
 "use client";
+import { useForm } from "@tanstack/react-form";
+import { format } from "date-fns";
+import { AlertCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
+import { z } from "zod";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   Select,
-  SelectPopup,
   SelectItem,
+  SelectPopup,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { countries, currencies, months } from "@/utils/constants";
-import { useForm } from "@tanstack/react-form";
-import { z } from "zod";
-import { useTranslations } from "next-intl";
-import { AlertCircle } from "lucide-react";
 import type { SelectBusinessSetting } from "@/lib/schema/schema-types";
-import { toast } from "sonner";
 import { upsertBusinessSettings } from "@/server/actions/business-settings-actions";
-import { format } from "date-fns";
-import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-  FieldError,
-  FieldDescription,
-  FieldContent,
-} from "@/components/ui/field";
+import { countries, currencies, months } from "@/utils/constants";
 
 const LIMITS = {
   VAT_RATE_MIN: 0,
@@ -47,14 +47,14 @@ const formSchema = z.object({
     .number()
     .min(
       LIMITS.VAT_RATE_MIN,
-      `VAT rate must be at least ${LIMITS.VAT_RATE_MIN}%`
+      `VAT rate must be at least ${LIMITS.VAT_RATE_MIN}%`,
     )
     .max(LIMITS.VAT_RATE_MAX, `VAT rate cannot exceed ${LIMITS.VAT_RATE_MAX}%`),
   businessDescription: z
     .string()
     .max(
       LIMITS.DESCRIPTION_MAX,
-      `Description cannot exceed ${LIMITS.DESCRIPTION_MAX} characters`
+      `Description cannot exceed ${LIMITS.DESCRIPTION_MAX} characters`,
     )
     .default(""),
   invoicePrefix: z
@@ -383,7 +383,7 @@ export function EditBusinessSettings({
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) =>
-                      field.handleChange(Number.parseInt(e.target.value))
+                      field.handleChange(Number.parseInt(e.target.value, 10))
                     }
                   />
                   <FieldDescription>

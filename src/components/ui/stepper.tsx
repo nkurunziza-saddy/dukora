@@ -1,10 +1,10 @@
 "use client";
 
-import * as React from "react";
-import { createContext, useContext } from "react";
 import { mergeProps } from "@base-ui-components/react/merge-props";
 import { useRender } from "@base-ui-components/react/use-render";
 import { CheckIcon, LoaderCircleIcon } from "lucide-react";
+import * as React from "react";
+import { createContext, useContext } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -24,10 +24,10 @@ type StepItemContextValue = {
 type StepState = "active" | "completed" | "inactive" | "loading";
 
 const StepperContext = createContext<StepperContextValue | undefined>(
-  undefined
+  undefined,
 );
 const StepItemContext = createContext<StepItemContextValue | undefined>(
-  undefined
+  undefined,
 );
 
 const useStepper = () => {
@@ -70,7 +70,7 @@ function Stepper({
       }
       onValueChange?.(step);
     },
-    [value, onValueChange]
+    [value, onValueChange],
   );
 
   const currentStep = value ?? activeStep;
@@ -87,7 +87,7 @@ function Stepper({
         data-slot="stepper"
         className={cn(
           "group/stepper inline-flex data-[orientation=horizontal]:w-full data-[orientation=horizontal]:flex-row data-[orientation=vertical]:flex-col",
-          className
+          className,
         )}
         data-orientation={orientation}
         {...props}
@@ -118,8 +118,8 @@ function StepperItem({
     completed || step < activeStep
       ? "completed"
       : activeStep === step
-      ? "active"
-      : "inactive";
+        ? "active"
+        : "inactive";
 
   const isLoading = loading && step === activeStep;
 
@@ -131,7 +131,7 @@ function StepperItem({
         data-slot="stepper-item"
         className={cn(
           "group/step flex items-center group-data-[orientation=horizontal]/stepper:flex-row group-data-[orientation=vertical]/stepper:flex-col",
-          className
+          className,
         )}
         data-state={state}
         {...(isLoading ? { "data-loading": true } : {})}
@@ -158,7 +158,7 @@ function StepperTrigger({
     "data-slot": "stepper-trigger",
     className: cn(
       "focus-visible:border-ring focus-visible:ring-ring/50 inline-flex items-center gap-3 rounded-full outline-none focus-visible:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50",
-      className
+      className,
     ),
     onClick: () => setActiveStep(step),
     disabled: isDisabled,
@@ -186,31 +186,30 @@ function StepperIndicator({
     "data-slot": "stepper-indicator",
     className: cn(
       "bg-muted text-muted-foreground data-[state=active]:bg-primary data-[state=completed]:bg-primary data-[state=active]:text-primary-foreground data-[state=completed]:text-primary-foreground relative flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-medium",
-      className
+      className,
     ),
     "data-state": state,
-    children:
-      children ?? (
-        <>
-          <span className="transition-all group-data-loading/step:scale-0 group-data-loading/step:opacity-0 group-data-loading/step:transition-none group-data-[state=completed]/step:scale-0 group-data-[state=completed]/step:opacity-0">
-            {step}
+    children: children ?? (
+      <>
+        <span className="transition-all group-data-loading/step:scale-0 group-data-loading/step:opacity-0 group-data-loading/step:transition-none group-data-[state=completed]/step:scale-0 group-data-[state=completed]/step:opacity-0">
+          {step}
+        </span>
+        <CheckIcon
+          className="absolute scale-0 opacity-0 transition-all group-data-[state=completed]/step:scale-100 group-data-[state=completed]/step:opacity-100"
+          size={16}
+          aria-hidden="true"
+        />
+        {isLoading && (
+          <span className="absolute transition-all">
+            <LoaderCircleIcon
+              className="animate-spin"
+              size={14}
+              aria-hidden="true"
+            />
           </span>
-          <CheckIcon
-            className="absolute scale-0 opacity-0 transition-all group-data-[state=completed]/step:scale-100 group-data-[state=completed]/step:opacity-100"
-            size={16}
-            aria-hidden="true"
-          />
-          {isLoading && (
-            <span className="absolute transition-all">
-              <LoaderCircleIcon
-                className="animate-spin"
-                size={14}
-                aria-hidden="true"
-              />
-            </span>
-          )}
-        </>
-      ),
+        )}
+      </>
+    ),
   };
 
   return useRender({
@@ -255,7 +254,7 @@ function StepperSeparator({
       data-slot="stepper-separator"
       className={cn(
         "bg-muted group-data-[state=completed]/step:bg-primary m-0.5 group-data-[orientation=horizontal]/stepper:h-0.5 group-data-[orientation=horizontal]/stepper:w-full group-data-[orientation=horizontal]/stepper:flex-1 group-data-[orientation=vertical]/stepper:h-12 group-data-[orientation=vertical]/stepper:w-0.5",
-        className
+        className,
       )}
       {...props}
     />

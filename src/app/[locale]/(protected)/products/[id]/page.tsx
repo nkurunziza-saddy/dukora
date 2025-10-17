@@ -1,12 +1,12 @@
-import { getProductById } from "@/server/actions/product-actions";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Tabs, TabsPanel, TabsList, TabsTab } from "@/components/ui/tabs";
-import ProductSummaryCard from "./_components/product-summary-card";
-import ProductStockLevels from "./_components/product-stock-levels";
-import ProductTransactions from "./_components/product-transactions";
-import ProductSuppliers from "./_components/product-suppliers";
+import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
 import { db } from "@/lib/db";
+import { getProductById } from "@/server/actions/product-actions";
+import ProductStockLevels from "./_components/product-stock-levels";
+import ProductSummaryCard from "./_components/product-summary-card";
+import ProductSuppliers from "./_components/product-suppliers";
+import ProductTransactions from "./_components/product-transactions";
 
 export async function generateStaticParams() {
   const res = await db.query.productsTable.findMany();

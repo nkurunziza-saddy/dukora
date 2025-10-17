@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+import { getTranslations } from "next-intl/server";
 import {
   Table,
   TableBody,
@@ -6,9 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getTranslations } from "next-intl/server";
 import type { SelectSchedule } from "@/lib/schema/schema-types";
-import { format } from "date-fns";
 
 export default async function UserSchedules({
   schedules,

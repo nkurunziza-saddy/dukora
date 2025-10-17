@@ -1,11 +1,11 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import type { InsertExpense } from "@/lib/schema/schema-types";
-import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
+import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as expenseRepo from "../repos/expenses-repo";
-import { revalidatePath } from "next/cache";
 
 export const getExpenses = createProtectedAction(
   Permission.FINANCIAL_VIEW,
@@ -15,7 +15,7 @@ export const getExpenses = createProtectedAction(
       return { data: null, error: expenses.error };
     }
     return { data: expenses.data, error: null };
-  }
+  },
 );
 
 export const getExpensesByTimeInterval = createProtectedAction(
@@ -24,13 +24,13 @@ export const getExpensesByTimeInterval = createProtectedAction(
     const expenses = await expenseRepo.get_by_time_interval(
       user.businessId!,
       startDate,
-      endDate
+      endDate,
     );
     if (expenses.error) {
       return { data: null, error: expenses.error };
     }
     return { data: expenses.data, error: null };
-  }
+  },
 );
 
 export const getExpenseById = createProtectedAction(
@@ -44,14 +44,14 @@ export const getExpenseById = createProtectedAction(
       return { data: null, error: expense.error };
     }
     return { data: expense.data, error: null };
-  }
+  },
 );
 
 export const createExpense = createProtectedAction(
   Permission.FINANCIAL_VIEW,
   async (
     user,
-    expenseData: Omit<InsertExpense, "businessId" | "id" | "createdBy">
+    expenseData: Omit<InsertExpense, "businessId" | "id" | "createdBy">,
   ) => {
     if (!expenseData.amount) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -68,5 +68,5 @@ export const createExpense = createProtectedAction(
     }
     revalidatePath("/transactions");
     return { data: resData, error: null };
-  }
+  },
 );

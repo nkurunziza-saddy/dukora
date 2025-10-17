@@ -1,20 +1,19 @@
 "use client";
 
+import { useChat } from "@ai-sdk/react";
+import { RotateCcw, Send, Square } from "lucide-react";
 import type React from "react";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useChat } from "@ai-sdk/react";
-import { RotateCcw, Send, Square } from "lucide-react";
 
 import "katex/dist/katex.min.css";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SIDEBAR_WIDTH } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { WelcomeScreen } from "./welcome-screen";
 import { Message } from "./message-box";
 import { TypingIndicator } from "./typing-indicator";
+import { WelcomeScreen } from "./welcome-screen";
 
 export default function AIChat() {
   const [input, setInput] = useState("");
@@ -38,7 +37,7 @@ export default function AIChat() {
     (id: string) => {
       setMessages((prev) => prev.filter((message) => message.id !== id));
     },
-    [setMessages]
+    [setMessages],
   );
 
   const handleCopyMessage = useCallback(
@@ -47,7 +46,7 @@ export default function AIChat() {
       setCopiedMessageId(messageId);
       setTimeout(() => setCopiedMessageId(null), 2000);
     },
-    []
+    [],
   );
 
   const handleSuggestionClick = useCallback((suggestion: string) => {
@@ -62,7 +61,7 @@ export default function AIChat() {
       sendMessage({ text: input });
       setInput("");
     },
-    [input, isLoading, sendMessage]
+    [input, isLoading, sendMessage],
   );
 
   const handleClear = useCallback(() => {
@@ -76,7 +75,7 @@ export default function AIChat() {
     requestAnimationFrame(() => {
       vp.scrollTo({ top: vp.scrollHeight, behavior: "smooth" });
     });
-  }, [messages.length]);
+  }, []);
 
   useEffect(() => {
     const style = document.createElement("style");

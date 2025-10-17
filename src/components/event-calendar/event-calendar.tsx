@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
 import {
   addDays,
   addMonths,
@@ -19,15 +18,16 @@ import {
   ChevronRightIcon,
   PlusIcon,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-
 import {
-  addHoursToDate,
   AgendaDaysToShow,
   AgendaView,
+  addHoursToDate,
   CalendarDndProvider,
-  CalendarEvent,
-  CalendarView,
+  type CalendarEvent,
+  type CalendarView,
   DayView,
   EventDialog,
   EventGap,
@@ -36,17 +36,16 @@ import {
   WeekCellsHeight,
   WeekView,
 } from "@/components/event-calendar";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Menu,
-  MenuPopup,
   MenuItem,
+  MenuPopup,
   MenuShortcut,
   MenuTrigger,
 } from "@/components/ui/menu";
+import { cn } from "@/lib/utils";
 import type { CalendarEventInput } from "./types";
-import { useTranslations } from "next-intl";
 
 export interface EventCalendarProps {
   events?: CalendarEvent[];
@@ -69,7 +68,7 @@ export function EventCalendar({
   const [view, setView] = useState<CalendarView>(initialView);
   const [isEventDialogOpen, setIsEventDialogOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
-    null
+    null,
   );
   const t = useTranslations("schedule");
   useEffect(() => {
@@ -265,7 +264,7 @@ export function EventCalendar({
         <div
           className={cn(
             "flex items-center justify-between p-2 sm:p-4",
-            className
+            className,
           )}
         >
           <div className="flex items-center gap-1 sm:gap-4">

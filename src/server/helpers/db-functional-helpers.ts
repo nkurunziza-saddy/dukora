@@ -1,11 +1,11 @@
-import * as metricsRepo from "@/server/repos/metrics-repo";
 import { ErrorCode } from "@/server/constants/errors";
-import { calculateAllMetrics } from "@/server/helpers/accounting-formulas";
+import type { calculateAllMetrics } from "@/server/helpers/accounting-formulas";
+import * as metricsRepo from "@/server/repos/metrics-repo";
 
 export async function syncMetricsToDatabase(
   businessId: string,
   date: Date,
-  metrics: ReturnType<typeof calculateAllMetrics>
+  metrics: ReturnType<typeof calculateAllMetrics>,
 ) {
   if (!businessId || !date || !metrics) {
     console.error("Invalid parameters provided for metrics sync");
@@ -17,14 +17,14 @@ export async function syncMetricsToDatabase(
     const errors = [];
 
     const metricsToSync = Object.entries(metrics).filter(
-      ([key]) => key !== "dataQuality"
+      ([key]) => key !== "dataQuality",
     );
 
     for (const [metricName, value] of metricsToSync) {
       if (
         value === null ||
         value === undefined ||
-        (typeof value === "number" && isNaN(value))
+        (typeof value === "number" && Number.isNaN(value))
       ) {
         console.warn(`Skipping invalid metric ${metricName}: ${value}`);
         continue;

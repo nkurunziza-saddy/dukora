@@ -1,17 +1,17 @@
 "use client";
 import { useForm } from "@tanstack/react-form";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Plus, X, AlertCircle } from "lucide-react";
-import type { SelectCategory } from "@/lib/schema/schema-types";
-import { z } from "zod";
-import { defaultCategories } from "@/utils/constants";
+import { AlertCircle, Plus, X } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { upsertManyCategories } from "@/server/actions/category-actions";
 import { toast } from "sonner";
+import { z } from "zod";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Field, FieldError } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import type { SelectCategory } from "@/lib/schema/schema-types";
+import { upsertManyCategories } from "@/server/actions/category-actions";
+import { defaultCategories } from "@/utils/constants";
 
 const CATEGORY_LIMIT = 10;
 
@@ -20,8 +20,6 @@ const formSchema = z.object({
     .array(z.string())
     .max(CATEGORY_LIMIT, `You can select up to ${CATEGORY_LIMIT} categories`),
 });
-
-type CategoryFormData = z.infer<typeof formSchema>;
 
 export function EditCategories({
   categories,
@@ -63,11 +61,11 @@ export function EditCategories({
   const isAtLimit = currentCategories.length >= CATEGORY_LIMIT;
   const remainingSlots = CATEGORY_LIMIT - currentCategories.length;
 
-  const removeCategory = (index: number) => {
+  const removeCategory = (categoryToRemove: string) => {
     const currentCategories = form.state.values.categories;
     form.setFieldValue(
       "categories",
-      currentCategories.filter((_, i) => i !== index)
+      currentCategories.filter((category) => category !== categoryToRemove),
     );
   };
 
@@ -75,14 +73,14 @@ export function EditCategories({
     if (isAtLimit) return;
 
     const input = document.getElementById(
-      "customCategoryInput"
+      "customCategoryInput",
     ) as HTMLInputElement;
     const categoryName = input?.value.trim();
 
     if (categoryName) {
       const currentCategories = form.state.values.categories;
       const categoryExists = currentCategories.some(
-        (cat) => cat.toLowerCase() === categoryName.toLowerCase()
+        (cat) => cat.toLowerCase() === categoryName.toLowerCase(),
       );
 
       if (!categoryExists && currentCategories.length < CATEGORY_LIMIT) {
@@ -99,7 +97,7 @@ export function EditCategories({
     if (isSelected) {
       form.setFieldValue(
         "categories",
-        currentCategories.filter((cat) => cat !== category)
+        currentCategories.filter((cat) => cat !== category),
       );
     } else if (currentCategories.length < CATEGORY_LIMIT) {
       form.setFieldValue("categories", [...currentCategories, category]);
@@ -154,19 +152,20 @@ export function EditCategories({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {defaultCategories.map((category) => {
               const isSelected = currentCategories.some(
-                (cat) => cat === category
+                (cat) => cat === category,
               );
               const canSelect = !isAtLimit || isSelected;
 
               return (
-                <div
+                <button
+                  type="button"
                   key={category}
-                  className={`p-4 border rounded-lg transition-colors ${
+                  className={`p-4 border rounded-lg transition-colors w-full text-left ${
                     isSelected
                       ? "border-input bg-muted/70"
                       : canSelect
-                      ? "cursor-pointer hover:bg-muted/50"
-                      : "opacity-50 cursor-not-allowed"
+                        ? "cursor-pointer hover:bg-muted/50"
+                        : "opacity-50 cursor-not-allowed"
                   }`}
                   onClick={() => canSelect && toggleDefaultCategory(category)}
                 >
@@ -175,7 +174,7 @@ export function EditCategories({
                       <h5 className="font-medium text-sm">{category}</h5>
                     </div>
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>
@@ -209,9 +208,9 @@ export function EditCategories({
             <div className="space-y-2">
               <p className="text-sm font-medium">{t("selectedCategories")}</p>
               <div className="flex flex-wrap gap-2">
-                {currentCategories.map((category, index: number) => (
+                {currentCategories.map((category) => (
                   <Badge
-                    key={index}
+                    key={category}
                     variant="secondary"
                     className="flex items-center"
                   >
@@ -219,7 +218,7 @@ export function EditCategories({
                     <Button
                       type="button"
                       variant={"ghost"}
-                      onClick={() => removeCategory(index)}
+                      onClick={() => removeCategory(category)}
                       className="ml-0.5 px-0 rounded-full size-4"
                     >
                       <X className="size-3" />

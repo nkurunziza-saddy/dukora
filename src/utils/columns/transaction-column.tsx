@@ -2,16 +2,16 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
+import { ArrowDown, ArrowUp, Redo2, Undo2, XCircle } from "lucide-react";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
+import { Badge } from "@/components/ui/badge";
 import {
-  CompressedTransactionPayload,
+  type CompressedTransactionPayload,
   TransactionType,
 } from "@/lib/schema/schema-types";
-import { ArrowDown, ArrowUp, XCircle, Undo2, Redo2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 
 export function TransactionColumn(
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<CompressedTransactionPayload>[] {
   return [
     {
@@ -28,7 +28,7 @@ export function TransactionColumn(
       ),
       cell: ({ row }) => {
         const status = transactionStatuses.find(
-          (s) => s.value === row.original.type.toLowerCase()
+          (s) => s.value === row.original.type.toLowerCase(),
         );
         if (!status) {
           return (
@@ -100,31 +100,31 @@ export const transactionStatuses = [
   {
     value: TransactionType.PURCHASE,
     label: "Purchase",
-    variant: "outline" as "secondary" | "destructive" | "outline",
+    variant: "outline" as "secondary" | "error" | "outline",
     icon: ArrowDown,
   },
   {
     value: TransactionType.SALE,
     label: "Sale",
-    variant: "secondary" as "secondary" | "destructive" | "outline",
+    variant: "secondary" as "secondary" | "error" | "outline",
     icon: ArrowUp,
   },
   {
     value: TransactionType.DAMAGE,
     label: "Damage",
-    variant: "destructive" as "secondary" | "destructive" | "outline",
+    variant: "error" as "secondary" | "error" | "outline",
     icon: XCircle,
   },
   {
     value: TransactionType.RETURN_SALE,
     label: "Return Sale",
-    variant: "secondary" as "secondary" | "destructive" | "outline",
+    variant: "secondary" as "secondary" | "error" | "outline",
     icon: Undo2,
   },
   {
     value: TransactionType.RETURN_PURCHASE,
     label: "Return Purchase",
-    variant: "secondary" as "secondary" | "destructive" | "outline",
+    variant: "secondary" as "secondary" | "error" | "outline",
     icon: Redo2,
   },
 ];

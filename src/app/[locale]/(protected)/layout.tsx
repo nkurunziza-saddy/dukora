@@ -1,6 +1,6 @@
-import { getCurrentSession } from "@/server/actions/auth-actions";
 import { redirect } from "next/navigation";
 import SidebarContainer from "@/components/providers/sidebar-container";
+import { getCurrentSession } from "@/server/actions/auth-actions";
 
 export default async function DashboardLayout({
   children,

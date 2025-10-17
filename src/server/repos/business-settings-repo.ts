@@ -1,15 +1,15 @@
 "use server";
 
 import { eq } from "drizzle-orm";
-import { db } from "@/lib/db";
 import { revalidatePath, unstable_cache } from "next/cache";
+import { cache } from "react";
+import { db } from "@/lib/db";
 import { auditLogsTable, businessSettingsTable } from "@/lib/schema";
-import {
+import type {
   InsertAuditLog,
   InsertBusinessSetting,
 } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
-import { cache } from "react";
 
 export const get_all = cache(async (businessId: string) => {
   if (!businessId) {
@@ -36,13 +36,13 @@ export const get_all_cached = unstable_cache(
   {
     revalidate: 300,
     tags: ["business-settings"],
-  }
+  },
 );
 
 export async function upsert(
   businessId: string,
   userId: string,
-  setting: InsertBusinessSetting
+  setting: InsertBusinessSetting,
 ) {
   if (!setting.key) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -84,7 +84,7 @@ export async function upsert(
 
 export async function upsert_many(
   userId: string,
-  settings: InsertBusinessSetting[]
+  settings: InsertBusinessSetting[],
 ) {
   if (!Array.isArray(settings) || settings.length === 0) {
     return { data: null, error: ErrorCode.MISSING_INPUT };

@@ -1,26 +1,23 @@
+import { sql } from "drizzle-orm";
 import {
-  pgTable,
-  text,
-  numeric,
+  boolean,
+  check,
+  index,
   integer,
+  numeric,
+  pgTable,
+  primaryKey,
+  text,
   timestamp,
   uniqueIndex,
-  index,
-  check,
-  boolean,
-  primaryKey,
 } from "drizzle-orm/pg-core";
 import { businessesTable } from "./businesses";
-import { sql } from "drizzle-orm";
 import { productStatusEnum } from "./enums";
 
 export const productsTable = pgTable(
   "products",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     name: text("name").notNull(),
     description: text("description"),
     sku: text("sku").notNull(),
@@ -58,23 +55,20 @@ export const productsTable = pgTable(
     check("max_stock_positive", sql`${table.maxStock} > 0`),
     check(
       "weight_positive",
-      sql`${table.weight} IS NULL OR ${table.weight} >= 0`
+      sql`${table.weight} IS NULL OR ${table.weight} >= 0`,
     ),
 
     index("products_business_id").on(table.businessId),
     index("products_category_id").on(table.categoryId),
     index("products_sku").on(table.sku),
     index("products_status").on(table.status),
-  ]
+  ],
 );
 
 export const categoriesTable = pgTable(
   "categories",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     value: text("value").notNull(),
     description: text("description"),
     businessId: text("business_id")
@@ -92,17 +86,14 @@ export const categoriesTable = pgTable(
     index("categories_business_id").on(table.businessId),
     index("categories_id").on(table.id),
     index("categories_value").on(table.value),
-    uniqueIndex("businessCategory").on(table.value, table.businessId)
-  ]
+    uniqueIndex("businessCategory").on(table.value, table.businessId),
+  ],
 );
 
 export const productAttributesTable = pgTable(
   "product_attributes",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     name: text("name").notNull(),
     businessId: text("business_id")
       .notNull()
@@ -115,18 +106,15 @@ export const productAttributesTable = pgTable(
   (table) => [
     uniqueIndex("product_attributes_business_id_name").on(
       table.businessId,
-      table.name
+      table.name,
     ),
-  ]
+  ],
 );
 
 export const productAttributeValuesTable = pgTable(
   "product_attribute_values",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     attributeId: text("attribute_id")
       .notNull()
       .references(() => productAttributesTable.id, { onDelete: "cascade" }),
@@ -138,18 +126,15 @@ export const productAttributeValuesTable = pgTable(
   (table) => [
     uniqueIndex("product_attribute_values_attribute_id_value").on(
       table.attributeId,
-      table.value
+      table.value,
     ),
-  ]
+  ],
 );
 
 export const productTagsTable = pgTable(
   "product_tags",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     name: text("name").notNull(),
     businessId: text("business_id")
       .notNull()
@@ -161,9 +146,9 @@ export const productTagsTable = pgTable(
   (table) => [
     uniqueIndex("product_tags_business_id_name").on(
       table.businessId,
-      table.name
+      table.name,
     ),
-  ]
+  ],
 );
 
 export const productProductTagsTable = pgTable(
@@ -176,16 +161,13 @@ export const productProductTagsTable = pgTable(
       .notNull()
       .references(() => productTagsTable.id, { onDelete: "cascade" }),
   },
-  (table) => [primaryKey({ columns: [table.productId, table.tagId] })]
+  (table) => [primaryKey({ columns: [table.productId, table.tagId] })],
 );
 
 export const productVariantsTable = pgTable(
   "product_variants",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     productId: text("product_id")
       .notNull()
       .references(() => productsTable.id, { onDelete: "cascade" }),
@@ -201,7 +183,7 @@ export const productVariantsTable = pgTable(
   (table) => [
     uniqueIndex("product_variants_product_id_attribute_value_id").on(
       table.productId,
-      table.attributeValueId
+      table.attributeValueId,
     ),
-  ]
+  ],
 );

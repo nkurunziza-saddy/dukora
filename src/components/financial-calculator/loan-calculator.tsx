@@ -1,16 +1,16 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import { useState } from "react";
 import {
   Card,
-  CardPanel,
   CardDescription,
   CardHeader,
+  CardPanel,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useTranslations } from "next-intl";
-import { useState } from "react";
 
 export function LoanCalculator() {
   const t = useTranslations("FinancialCalculator");
@@ -23,8 +23,7 @@ export function LoanCalculator() {
   const calculateMonthlyPayment = () => {
     const monthlyInterestRate = interestRate / 100 / 12;
     const numberOfPayments = loanTerm * 12;
-    const denominator =
-      1 - Math.pow(1 + monthlyInterestRate, -numberOfPayments);
+    const denominator = 1 - (1 + monthlyInterestRate) ** -numberOfPayments;
     if (denominator === 0) {
       setMonthlyPayment(0);
       return;

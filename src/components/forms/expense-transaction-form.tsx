@@ -1,25 +1,25 @@
 "use client";
 
 import { useForm } from "@tanstack/react-form";
-import z from "zod";
+import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
+import z from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Field,
+  FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
-  FieldError,
-  FieldDescription,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import type { SelectExpense } from "@/lib/schema/schema-types";
+import { createExpense } from "@/server/actions/expense-actions";
 import { TriggerDialog } from "../shared/reusable-form-dialog";
 import { Separator } from "../ui/separator";
-import type { SelectExpense } from "@/lib/schema/schema-types";
-import { toast } from "sonner";
-import { format } from "date-fns";
-import { useTranslations } from "next-intl";
-import { createExpense } from "@/server/actions/expense-actions";
 
 export default function ExpenseTransactionForm({
   expenseTransaction,
@@ -32,7 +32,7 @@ export default function ExpenseTransactionForm({
   const expenseTransactionSchema = z.object({
     amount: z.string().refine((val) => {
       const num = Number.parseFloat(val);
-      return !isNaN(num) && num >= 0;
+      return !Number.isNaN(num) && num >= 0;
     }, t("amountPositive")),
     note: z.string(),
     reference: z.string(),
@@ -41,8 +41,8 @@ export default function ExpenseTransactionForm({
   const form = useForm({
     defaultValues: {
       amount: expenseTransaction ? expenseTransaction.amount : "",
-      note: expenseTransaction ? expenseTransaction.note ?? "" : "",
-      reference: expenseTransaction ? expenseTransaction.reference ?? "" : "",
+      note: expenseTransaction ? (expenseTransaction.note ?? "") : "",
+      reference: expenseTransaction ? (expenseTransaction.reference ?? "") : "",
     },
     validators: {
       onSubmit: expenseTransactionSchema,

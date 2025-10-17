@@ -1,6 +1,6 @@
+import { getTranslations } from "next-intl/server";
 import InitiatePaymentForm from "@/components/forms/initiate-payment-form";
 import { Separator } from "@/components/ui/separator";
-import { getTranslations } from "next-intl/server";
 
 export default async function SendPaymentPage() {
   const t = await getTranslations("payments");

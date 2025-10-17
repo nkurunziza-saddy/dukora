@@ -1,17 +1,17 @@
 "use client";
 
-import * as React from "react";
 import { useForm } from "@tanstack/react-form";
+import type * as React from "react";
 import { toast } from "sonner";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardPanel,
   CardDescription,
   CardFooter,
   CardHeader,
+  CardPanel,
   CardTitle,
 } from "@/components/ui/card";
 import {
@@ -30,14 +30,6 @@ import {
   InputGroupTextarea,
 } from "@/components/ui/input-group";
 import {
-  Select,
-  SelectItem,
-  SelectPopup,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { Switch } from "../ui/switch";
-import {
   Autocomplete,
   AutocompleteEmpty,
   AutocompleteInput,
@@ -45,6 +37,14 @@ import {
   AutocompleteList,
   AutocompletePopup,
 } from "../ui/autocomplete";
+import {
+  Select,
+  SelectItem,
+  SelectPopup,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Switch } from "../ui/switch";
 
 const formSchema = z.object({
   title: z
@@ -63,7 +63,7 @@ const formSchema = z.object({
     .max(10, "Username must be at most 10 characters.")
     .regex(
       /^[a-zA-Z0-9_]+$/,
-      "Username can only contain letters, numbers, and underscores."
+      "Username can only contain letters, numbers, and underscores.",
     ),
   theme: z.string(),
   twoFactor: z.boolean().refine((val) => val === true, {

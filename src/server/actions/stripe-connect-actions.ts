@@ -1,7 +1,7 @@
 "use server";
-import { createProtectedAction } from "@/server/helpers/action-factory";
-import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
+import { Permission } from "@/server/constants/permissions";
+import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as stripeConnectRepo from "@/server/repos/stripe-connect-repo";
 
 export const createStripeConnectedAccount = createProtectedAction(
@@ -12,13 +12,13 @@ export const createStripeConnectedAccount = createProtectedAction(
     }
     const result = await stripeConnectRepo.create_connected_account(
       user.id,
-      user.businessId
+      user.businessId,
     );
     if (result.error) {
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const createStripeAccountLink = createProtectedAction(
@@ -29,7 +29,7 @@ export const createStripeAccountLink = createProtectedAction(
       stripeAccountId,
       refreshUrl,
       returnUrl,
-    }: { stripeAccountId: string; refreshUrl: string; returnUrl: string }
+    }: { stripeAccountId: string; refreshUrl: string; returnUrl: string },
   ) => {
     if (!user.businessId) {
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
@@ -37,13 +37,13 @@ export const createStripeAccountLink = createProtectedAction(
     const result = await stripeConnectRepo.create_account_link(
       stripeAccountId,
       refreshUrl,
-      returnUrl
+      returnUrl,
     );
     if (result.error) {
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const getStripeAccount = createProtectedAction(
@@ -57,5 +57,5 @@ export const getStripeAccount = createProtectedAction(
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );

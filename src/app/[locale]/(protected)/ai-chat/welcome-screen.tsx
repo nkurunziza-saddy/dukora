@@ -42,9 +42,10 @@ const WelcomeScreen = memo(
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl mb-8">
-          {suggestions.map((suggestion, index) => (
+          {suggestions.map((suggestion) => (
             <button
-              key={index}
+              type="button"
+              key={suggestion.title}
               onClick={() => onSuggestionClick(suggestion.description)}
               className="p-4 text-left border rounded-lg hover:bg-muted/50 transition-colors group"
             >
@@ -66,7 +67,7 @@ const WelcomeScreen = memo(
         </div>
       </div>
     );
-  }
+  },
 );
 
 WelcomeScreen.displayName = "WelcomeScreen";

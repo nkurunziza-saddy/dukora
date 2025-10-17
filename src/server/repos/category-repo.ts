@@ -1,11 +1,11 @@
 "use server";
-import { eq, desc, and } from "drizzle-orm";
-import { db } from "@/lib/db";
+import { and, desc, eq } from "drizzle-orm";
 import { revalidatePath, unstable_cache } from "next/cache";
-import { categoriesTable, auditLogsTable } from "@/lib/schema";
-import type { InsertCategory, InsertAuditLog } from "@/lib/schema/schema-types";
-import { ErrorCode } from "../constants/errors";
 import { cache } from "react";
+import { db } from "@/lib/db";
+import { auditLogsTable, categoriesTable } from "@/lib/schema";
+import type { InsertAuditLog, InsertCategory } from "@/lib/schema/schema-types";
+import { ErrorCode } from "../constants/errors";
 
 export const get_all = cache(async (businessId: string) => {
   if (!businessId) {
@@ -30,7 +30,7 @@ export const get_all_cached = unstable_cache(
   {
     revalidate: 300,
     tags: ["categories"],
-  }
+  },
 );
 
 export async function get_by_id(categoryId: string, businessId: string) {
@@ -41,7 +41,7 @@ export async function get_by_id(categoryId: string, businessId: string) {
     const category = await db.query.categoriesTable.findFirst({
       where: and(
         eq(categoriesTable.id, categoryId),
-        eq(categoriesTable.businessId, businessId)
+        eq(categoriesTable.businessId, businessId),
       ),
     });
 
@@ -62,7 +62,7 @@ export const get_by_id_cached = unstable_cache(
   ["categories"],
   {
     revalidate: 300,
-  }
+  },
 );
 
 export async function create(category: InsertCategory, userId: string) {
@@ -76,7 +76,10 @@ export async function create(category: InsertCategory, userId: string) {
         .values(category)
         .onConflictDoUpdate({
           target: [categoriesTable.businessId, categoriesTable.value],
-          set: { businessId: categoriesTable.businessId, value: category.value },
+          set: {
+            businessId: categoriesTable.businessId,
+            value: category.value,
+          },
         })
         .returning();
 
@@ -107,7 +110,7 @@ export async function update(
   categoryId: string,
   businessId: string,
   userId: string,
-  updates: Partial<InsertCategory>
+  updates: Partial<InsertCategory>,
 ) {
   if (!categoryId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -120,8 +123,8 @@ export async function update(
         .where(
           and(
             eq(categoriesTable.id, categoryId),
-            eq(categoriesTable.businessId, businessId)
-          )
+            eq(categoriesTable.businessId, businessId),
+          ),
         )
         .returning();
 
@@ -160,7 +163,7 @@ export async function update(
 export async function remove(
   categoryId: string,
   businessId: string,
-  userId: string
+  userId: string,
 ) {
   if (!categoryId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -178,8 +181,8 @@ export async function remove(
         .where(
           and(
             eq(categoriesTable.id, categoryId),
-            eq(categoriesTable.businessId, businessId)
-          )
+            eq(categoriesTable.businessId, businessId),
+          ),
         )
         .returning();
 
@@ -217,7 +220,7 @@ export async function remove(
 
 export async function upsert_many(
   categories: InsertCategory[],
-  userId: string
+  userId: string,
 ) {
   if (!categories) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -230,7 +233,7 @@ export async function upsert_many(
   try {
     const result = await db.transaction(async (tx) => {
       const upsertedCategories = [];
-      const errorValues: string[] = []
+      const errorValues: string[] = [];
       for (const category of categories) {
         if (!category.value) {
           errorValues.push(category.value);
@@ -241,7 +244,10 @@ export async function upsert_many(
           .values(category)
           .onConflictDoUpdate({
             target: [categoriesTable.businessId, categoriesTable.value],
-            set: { businessId: categoriesTable.businessId, value: category.value },
+            set: {
+              businessId: categoriesTable.businessId,
+              value: category.value,
+            },
           })
           .returning();
 
@@ -258,8 +264,8 @@ export async function upsert_many(
         await tx.insert(auditLogsTable).values(auditLogs);
         upsertedCategories.push(newCategory);
       }
-      if(errorValues.length > 0) {
-        return {data: null, error: ErrorCode.MISSING_INPUT };
+      if (errorValues.length > 0) {
+        return { data: null, error: ErrorCode.MISSING_INPUT };
       }
       return upsertedCategories;
     });

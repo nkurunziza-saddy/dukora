@@ -1,35 +1,34 @@
 "use client";
 
 import { useForm } from "@tanstack/react-form";
-import z from "zod";
+import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
-
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
+import useSwr, { preload } from "swr";
+import z from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Field,
+  FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
-  FieldError,
-  FieldDescription,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
-  SelectPopup,
   SelectItem,
+  SelectPopup,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { fetcher } from "@/lib/utils";
-import useSwr, { preload } from "swr";
+import { Textarea } from "@/components/ui/textarea";
 import type { SelectCategory, SelectProduct } from "@/lib/schema/schema-types";
+import { fetcher } from "@/lib/utils";
+import { createProduct, updateProduct } from "@/server/actions/product-actions";
 import { TriggerDialog } from "../shared/reusable-form-dialog";
 import { Separator } from "../ui/separator";
-import { createProduct, updateProduct } from "@/server/actions/product-actions";
-import { toast } from "sonner";
-import { format } from "date-fns";
-import { useTranslations } from "next-intl";
 
 if (typeof window !== "undefined") {
   preload("/api/categories", fetcher);
@@ -52,26 +51,26 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
     barcode: z.string(),
     price: z.string().refine((val) => {
       const num = Number.parseFloat(val);
-      return !isNaN(num) && num >= 0;
+      return !Number.isNaN(num) && num >= 0;
     }, t("pricePositive")),
     costPrice: z.string().refine((val) => {
       const num = Number.parseFloat(val);
-      return !isNaN(num) && num >= 0;
+      return !Number.isNaN(num) && num >= 0;
     }, t("costPricePositive")),
     categoryId: z.string(),
     reorderPoint: z.string().refine((val) => {
-      const num = Number.parseInt(val);
-      return !isNaN(num) && num >= 0;
+      const num = Number.parseInt(val, 10);
+      return !Number.isNaN(num) && num >= 0;
     }, t("reorderPointPositive")),
     maxStock: z.string().refine((val) => {
-      const num = Number.parseInt(val);
-      return !isNaN(num) && num > 0;
+      const num = Number.parseInt(val, 10);
+      return !Number.isNaN(num) && num > 0;
     }, t("maxStockPositive")),
     unit: z.string(),
     weight: z.string().refine((val) => {
       if (val === "") return true;
       const num = Number.parseFloat(val);
-      return !isNaN(num);
+      return !Number.isNaN(num);
     }, t("weightMustBeNumber")),
   });
 
@@ -88,16 +87,16 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
   const form = useForm({
     defaultValues: {
       name: product ? product.name : "",
-      description: product ? product.description ?? "" : "",
+      description: product ? (product.description ?? "") : "",
       sku: product ? product.sku : "",
-      barcode: product ? product.barcode ?? "" : "",
+      barcode: product ? (product.barcode ?? "") : "",
       price: product ? product.price : "",
       costPrice: product ? product.costPrice : "",
-      categoryId: product ? product.categoryId ?? "" : "",
+      categoryId: product ? (product.categoryId ?? "") : "",
       reorderPoint: product ? product.reorderPoint.toString() : "10",
       maxStock: product ? product.maxStock.toString() : "1000",
       unit: product ? product.unit : "pcs",
-      weight: product ? product.weight ?? "" : "",
+      weight: product ? (product.weight ?? "") : "",
     },
     validators: {
       onSubmit: productSchema,
@@ -125,7 +124,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
             : `${t("productName")} ${tCommon("add")} ${tCommon("confirm")}`,
           {
             description: format(new Date(), "MMM dd, yyyy"),
-          }
+          },
         );
       } else {
         toast.error(tCommon("error"), {
@@ -394,7 +393,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               </>
             ) : (
               `${product ? tCommon("edit") : tCommon("add")} ${t(
-                "productName"
+                "productName",
               )}`
             )}
           </Button>

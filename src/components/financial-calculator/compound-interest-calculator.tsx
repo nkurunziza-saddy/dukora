@@ -1,16 +1,16 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import { useState } from "react";
 import {
   Card,
-  CardPanel,
   CardDescription,
   CardHeader,
+  CardPanel,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useTranslations } from "next-intl";
-import { useState } from "react";
 
 export function CompoundInterestCalculator() {
   const t = useTranslations("FinancialCalculator");
@@ -25,7 +25,7 @@ export function CompoundInterestCalculator() {
     const rate = annualRate / 100;
     const n = compoundingFrequency;
     const t_years = time;
-    setFutureValue(principal * Math.pow(1 + rate / n, n * t_years));
+    setFutureValue(principal * (1 + rate / n) ** (n * t_years));
   };
 
   return (

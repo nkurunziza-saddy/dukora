@@ -36,7 +36,7 @@ function PopoverPopup({
             data-slot="popover-content"
             className={cn(
               "max-h-(--available-height) min-w-80 overflow-y-auto p-4",
-              className
+              className,
             )}
             {...props}
           >

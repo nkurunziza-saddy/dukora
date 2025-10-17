@@ -12,7 +12,7 @@ export function parseMonthYearShort(monthYear: string): Date {
 }
 
 export function getPreviousMonth(month: string): string {
-  const date = new Date(month + "-01");
+  const date = new Date(`${month}-01`);
   date.setMonth(date.getMonth() - 1);
   return date.toISOString().slice(0, 7);
 }
@@ -46,20 +46,21 @@ export function getAvailableMonthsForAnalytics(businessCreatedAt: Date): Array<{
   const months = [];
   const currentBoundary = getCurrentMonthBoundary();
   const businessStart = startOfMonth(businessCreatedAt);
-  
+
   let monthsBack = 1;
   let targetDate = currentBoundary;
-  
-  while (targetDate >= businessStart && monthsBack <= 24) { // Max 2 years
+
+  while (targetDate >= businessStart && monthsBack <= 24) {
+    // Max 2 years
     months.push({
       value: monthsBack - 1, // Adjust for 0-based indexing in UI
       label: `${format(targetDate, "MMMM yyyy")}`,
-      date: targetDate
+      date: targetDate,
     });
-    
+
     monthsBack++;
     targetDate = subMonths(currentBoundary, monthsBack - 1);
   }
-  
+
   return months;
 }

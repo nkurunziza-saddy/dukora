@@ -1,37 +1,37 @@
-import { Tabs, TabsPanel, TabsList, TabsTab } from "@/components/ui/tabs";
+import {
+  AlertCircle,
+  Bell,
+  Building2,
+  CreditCard,
+  Settings,
+  Shield,
+  Tags,
+  User,
+  Warehouse,
+} from "lucide-react";
+import UserProfileForm from "@/components/forms/user-profile-form";
+import { UserSettingsForm } from "@/components/forms/user-settings-form";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardPanel,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
 import { getCurrentSession } from "@/server/actions/auth-actions";
 import { getBusinessById } from "@/server/actions/business-actions";
 import { getUserById } from "@/server/actions/user-actions";
-import UserProfileForm from "@/components/forms/user-profile-form";
+import { ConnectStripe } from "./_components/connect-stripe";
 import { EditBusinessDetails } from "./_components/edit-business-details";
 import { EditBusinessSettings } from "./_components/edit-business-settings";
 import { EditCategories } from "./_components/edit-categories";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Card,
-  CardPanel,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import {
-  AlertCircle,
-  Building2,
-  User,
-  Settings,
-  Tags,
-  Warehouse,
-  CreditCard,
-  Bell,
-  Shield,
-} from "lucide-react";
 import { EditWarehouses } from "./_components/edit-warehouses";
-import { ConnectStripe } from "./_components/connect-stripe";
-import { UserSettingsForm } from "@/components/forms/user-settings-form";
-import { Separator } from "@/components/ui/separator";
 
 export default async function SettingsPage() {
   const session = await getCurrentSession();

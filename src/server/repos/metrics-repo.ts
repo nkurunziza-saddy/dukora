@@ -1,13 +1,13 @@
 "use server";
 
+import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { eq, and, desc } from "drizzle-orm";
 import { businessesTable, metricsTable } from "@/lib/schema";
 import type { InsertMetric } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
 
 export async function insert_metric(
-  metric: Omit<InsertMetric, "id" | "createdAt">
+  metric: Omit<InsertMetric, "id" | "createdAt">,
 ) {
   try {
     const existingRecord = await db.query.metricsTable.findFirst({
@@ -15,7 +15,7 @@ export async function insert_metric(
         eq(metricsTable.businessId, metric.businessId),
         eq(metricsTable.name, metric.name),
         eq(metricsTable.period, metric.period),
-        eq(metricsTable.periodType, metric.periodType || "monthly")
+        eq(metricsTable.periodType, metric.periodType || "monthly"),
       ),
     });
     if (existingRecord) {
@@ -30,7 +30,7 @@ export async function insert_metric(
 }
 
 export async function upsert_metric(
-  metric: Omit<InsertMetric, "id" | "createdAt">
+  metric: Omit<InsertMetric, "id" | "createdAt">,
 ) {
   try {
     const result = await db
@@ -59,7 +59,7 @@ export async function upsert_metric(
 export async function get_metric(
   businessId: string,
   periodType: string,
-  period: Date
+  period: Date,
 ) {
   try {
     const result = await db
@@ -69,8 +69,8 @@ export async function get_metric(
         and(
           eq(metricsTable.businessId, businessId),
           eq(metricsTable.periodType, periodType),
-          eq(metricsTable.period, period)
-        )
+          eq(metricsTable.period, period),
+        ),
       )
       .limit(1);
     return { data: result[0] || null, error: null };
@@ -84,7 +84,7 @@ export async function get_metric_by_name(
   businessId: string,
   name: string,
   periodType: string,
-  period: Date
+  period: Date,
 ) {
   try {
     const currentBusiness = await db.query.businessesTable.findFirst({
@@ -103,8 +103,8 @@ export async function get_metric_by_name(
           eq(metricsTable.businessId, businessId),
           eq(metricsTable.name, name),
           eq(metricsTable.periodType, periodType),
-          eq(metricsTable.period, period)
-        )
+          eq(metricsTable.period, period),
+        ),
       )
       .limit(1);
 
@@ -128,8 +128,8 @@ export async function get_monthly_metrics(businessId: string, date: Date) {
         and(
           eq(metricsTable.businessId, businessId),
           eq(metricsTable.periodType, "monthly"),
-          eq(metricsTable.period, date)
-        )
+          eq(metricsTable.period, date),
+        ),
       );
 
     const metricsObject = result.reduce(
@@ -137,7 +137,7 @@ export async function get_monthly_metrics(businessId: string, date: Date) {
         acc[metric.name] = Number(metric.value);
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
 
     return { data: metricsObject, error: null };
@@ -151,7 +151,7 @@ export async function get_metrics_history(
   businessId: string,
   metricNames: string[],
   periodType = "monthly",
-  limit = 12
+  limit = 12,
 ) {
   try {
     const result = await db
@@ -160,8 +160,8 @@ export async function get_metrics_history(
       .where(
         and(
           eq(metricsTable.businessId, businessId),
-          eq(metricsTable.periodType, periodType)
-        )
+          eq(metricsTable.periodType, periodType),
+        ),
       )
       .orderBy(desc(metricsTable.period))
       .limit(limit * metricNames.length);
@@ -173,7 +173,7 @@ export async function get_metrics_history(
         acc[period][metric.name] = Number(metric.value);
         return acc;
       },
-      {} as Record<string, Record<string, number>>
+      {} as Record<string, Record<string, number>>,
     );
 
     return { data: groupedMetrics, error: null };
@@ -186,7 +186,7 @@ export async function get_metrics_history(
 export async function delete_metrics_for_period(
   businessId: string,
   periodType: string,
-  period: Date
+  period: Date,
 ) {
   try {
     const result = await db
@@ -195,8 +195,8 @@ export async function delete_metrics_for_period(
         and(
           eq(metricsTable.businessId, businessId),
           eq(metricsTable.periodType, periodType),
-          eq(metricsTable.period, period)
-        )
+          eq(metricsTable.period, period),
+        ),
       );
     return { data: result, error: null };
   } catch (error) {
@@ -207,7 +207,7 @@ export async function delete_metrics_for_period(
 
 export async function get_latest_metrics(
   businessId: string,
-  metricNames: string[]
+  metricNames: string[],
 ) {
   try {
     const result = await db
@@ -225,7 +225,7 @@ export async function get_latest_metrics(
         }
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
 
     return { data: latestMetrics, error: null };
@@ -236,7 +236,7 @@ export async function get_latest_metrics(
 }
 
 export async function bulk_insert_metrics(
-  metrics: Omit<InsertMetric, "id" | "createdAt">[]
+  metrics: Omit<InsertMetric, "id" | "createdAt">[],
 ) {
   try {
     const result = await db.insert(metricsTable).values(metrics).returning();

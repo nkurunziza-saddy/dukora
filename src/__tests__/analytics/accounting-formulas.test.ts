@@ -1,16 +1,16 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
+import {
+  type ExtendedWarehouseItemPayload,
+  ProductStatus,
+  type SelectExpense,
+  type SelectProduct,
+  type SelectTransaction,
+} from "@/lib/schema/schema-types";
 import {
   calculateAllMetrics,
   calculateClosingStock,
   calculateCOGS,
 } from "@/server/helpers/accounting-formulas";
-import {
-  ProductStatus,
-  type ExtendedWarehouseItemPayload,
-  type SelectExpense,
-  type SelectProduct,
-  type SelectTransaction,
-} from "@/lib/schema/schema-types";
 
 type MockTransaction = SelectTransaction & { product: SelectProduct };
 
@@ -129,7 +129,7 @@ describe("Accounting Formulas", () => {
         mockTransactions,
         mockExpenses,
         1000, // opening stock
-        800 // closing stock
+        800, // closing stock
       );
 
       // Assertions based on the corrected formulas
@@ -180,7 +180,7 @@ describe("Accounting Formulas", () => {
         transactionsWithReturns,
         mockExpenses,
         1000,
-        800
+        800,
       );
 
       expect(result.grossRevenue).toBe(1000); // From the original sale
@@ -194,7 +194,7 @@ describe("Accounting Formulas", () => {
         mockTransactions,
         mockExpenses,
         1000, // opening stock
-        800 // closing stock
+        800, // closing stock
       );
 
       expect(result.openingStock).toBe(1000);
@@ -220,7 +220,7 @@ describe("Accounting Formulas", () => {
         multiProductTransactions,
         mockExpenses,
         1000,
-        800
+        800,
       );
 
       expect(result.uniqueProductsSold).toBe(2);
@@ -263,12 +263,7 @@ describe("Accounting Formulas", () => {
 
       // Test with invalid expenses array
       // @ts-expect-error - Testing invalid input
-      const result2 = calculateAllMetrics(
-        mockTransactions,
-        null,
-        1000,
-        800
-      );
+      const result2 = calculateAllMetrics(mockTransactions, null, 1000, 800);
       expect(result2.operatingExpenses).toBe(0);
       expect(result2.dataQuality.hasExpenseData).toBe(false);
 
@@ -277,7 +272,7 @@ describe("Accounting Formulas", () => {
         mockTransactions,
         mockExpenses,
         -100,
-        -50
+        -50,
       );
       expect(result3.openingStock).toBe(0);
       expect(result3.closingStock).toBe(0);

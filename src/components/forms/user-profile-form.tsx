@@ -1,21 +1,21 @@
 "use client";
 
 import { useForm } from "@tanstack/react-form";
-import z from "zod";
+import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
+import z from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Field,
+  FieldError,
   FieldGroup,
   FieldLabel,
-  FieldError,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import { format } from "date-fns";
-import { useTranslations } from "next-intl";
+import type { getUserById } from "@/server/actions/user-actions";
 import { updateUser } from "@/server/actions/user-actions";
-import { getUserById } from "@/server/actions/user-actions";
 
 export default function UserProfileForm({
   user,

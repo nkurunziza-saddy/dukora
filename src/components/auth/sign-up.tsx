@@ -1,24 +1,24 @@
 "use client";
 
+import { AlertCircle, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardPanel,
   CardDescription,
   CardFooter,
   CardHeader,
+  CardPanel,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import { AlertCircle, Loader2 } from "lucide-react";
 import { signIn, signUp } from "@/lib/auth-client";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { Alert, AlertDescription } from "../ui/alert";
 
 export default function SignUp() {
@@ -158,7 +158,7 @@ export default function SignUp() {
           <div
             className={cn(
               "w-full gap-2 flex items-center",
-              "justify-between flex-col"
+              "justify-between flex-col",
             )}
           >
             <Button
@@ -181,7 +181,7 @@ export default function SignUp() {
                     onError: (ctx) => {
                       toast.error(ctx.error.message);
                     },
-                  }
+                  },
                 );
               }}
             >
@@ -230,7 +230,7 @@ export default function SignUp() {
                     onError: (ctx) => {
                       toast.error(ctx.error.message);
                     },
-                  }
+                  },
                 );
               }}
             >

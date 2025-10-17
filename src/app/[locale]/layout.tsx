@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import "../globals.css";
-import ClientBody from "@/components/providers/client-body";
-import { Toaster } from "@/components/ui/sonner";
-import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { notFound } from "next/navigation";
-import { routing } from "@/i18n/routing";
-import { Geist, Geist_Mono } from "next/font/google";
-import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Analytics } from "@vercel/analytics/next";
+import { Geist, Geist_Mono } from "next/font/google";
+import { notFound } from "next/navigation";
+import { hasLocale, NextIntlClientProvider } from "next-intl";
+import ClientBody from "@/components/providers/client-body";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 import { locales } from "@/i18n/config";
+import { routing } from "@/i18n/routing";
 
 const geistSans = Geist({
   subsets: ["latin"],

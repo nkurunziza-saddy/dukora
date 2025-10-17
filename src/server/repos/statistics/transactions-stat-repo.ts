@@ -1,3 +1,4 @@
+import { and, asc, desc, eq, gte, lte, type SQL } from "drizzle-orm";
 import { db } from "@/lib/db";
 import {
   expensesTable,
@@ -5,14 +6,13 @@ import {
   transactionsTable,
   usersTable,
 } from "@/lib/schema";
-import { TransactionType } from "@/lib/schema/schema-types";
+import type { TransactionType } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
-import { and, asc, desc, eq, gte, lte, SQL } from "drizzle-orm";
 
 export async function getTransactionMetricsForInterval(
   businessId: string,
   dateFrom: Date,
-  dateTo: Date
+  dateTo: Date,
 ) {
   try {
     const result = await db
@@ -26,12 +26,12 @@ export async function getTransactionMetricsForInterval(
         and(
           eq(transactionsTable.businessId, businessId),
           gte(transactionsTable.createdAt, dateFrom),
-          lte(transactionsTable.createdAt, dateTo)
-        )
+          lte(transactionsTable.createdAt, dateTo),
+        ),
       )
       .innerJoin(
         productsTable,
-        eq(transactionsTable.productId, productsTable.id)
+        eq(transactionsTable.productId, productsTable.id),
       );
     const expenseReq = await db
       .select({
@@ -43,8 +43,8 @@ export async function getTransactionMetricsForInterval(
         and(
           eq(expensesTable.businessId, businessId),
           gte(expensesTable.createdAt, dateFrom),
-          lte(expensesTable.createdAt, dateTo)
-        )
+          lte(expensesTable.createdAt, dateTo),
+        ),
       );
 
     let totalSales = 0;
@@ -90,7 +90,7 @@ export async function getFilteredTransactions(
   sortOrder: "asc" | "desc",
   typeFilter?: TransactionType,
   dateFrom?: Date,
-  dateTo?: Date
+  dateTo?: Date,
 ) {
   try {
     const filters: SQL[] = [eq(transactionsTable.businessId, businessId)];
@@ -121,7 +121,7 @@ export async function getFilteredTransactions(
       .from(transactionsTable)
       .innerJoin(
         productsTable,
-        eq(transactionsTable.productId, productsTable.id)
+        eq(transactionsTable.productId, productsTable.id),
       )
       //   .innerJoin(
       //     warehousesTable,

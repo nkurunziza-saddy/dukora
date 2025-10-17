@@ -1,8 +1,8 @@
-import { Card, CardPanel, CardHeader, CardTitle } from "@/components/ui/card";
 import { getTranslations } from "next-intl/server";
-import {
-  SelectSupplier,
+import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card";
+import type {
   SelectProductSupplier,
+  SelectSupplier,
 } from "@/lib/schema/schema-types";
 
 type ExtendedSupplierPayload = SelectSupplier & {

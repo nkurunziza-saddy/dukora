@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import * as categoryService from "@/server/actions/category-actions";
 
 export async function GET() {

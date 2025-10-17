@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
+import { eq } from "drizzle-orm";
+import { type NextRequest, NextResponse } from "next/server";
+import type Stripe from "stripe";
 import { db } from "@/lib/db";
 import { businessesTable, interBusinessPaymentsTable } from "@/lib/schema";
-import { eq } from "drizzle-orm";
 import { stripe } from "@/lib/stripe";
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     console.error(`Webhook Error: ${err}`);
     return NextResponse.json(
       { error: `Webhook Error: ${err}` },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -88,7 +88,10 @@ export async function POST(req: NextRequest) {
         .update(interBusinessPaymentsTable)
         .set({ status: "failed", updatedAt: new Date() })
         .where(
-          eq(interBusinessPaymentsTable.stripePaymentIntentId, paymentIntent.id)
+          eq(
+            interBusinessPaymentsTable.stripePaymentIntentId,
+            paymentIntent.id,
+          ),
         );
       break;
     }
@@ -99,7 +102,10 @@ export async function POST(req: NextRequest) {
         .update(interBusinessPaymentsTable)
         .set({ status: "succeeded", updatedAt: new Date() })
         .where(
-          eq(interBusinessPaymentsTable.stripePaymentIntentId, paymentIntent.id)
+          eq(
+            interBusinessPaymentsTable.stripePaymentIntentId,
+            paymentIntent.id,
+          ),
         );
       break;
     }

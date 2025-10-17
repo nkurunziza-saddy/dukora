@@ -1,8 +1,8 @@
-import { type SessionUSer } from "@/lib/auth";
+import type { SessionUSer } from "@/lib/auth";
 import { getCurrentSession } from "@/server/actions/auth-actions";
-import { Permission } from "@/server/constants/permissions";
-import { roleHasPermission } from "@/server/helpers/role-permissions";
 import { ErrorCode } from "@/server/constants/errors";
+import type { Permission } from "@/server/constants/permissions";
+import { roleHasPermission } from "@/server/helpers/role-permissions";
 
 type ServiceResponse<T> = {
   data: T | null;
@@ -13,8 +13,8 @@ export function createProtectedAction<TInput, TOutput>(
   permission: Permission,
   handler: (
     user: SessionUSer,
-    input: TInput
-  ) => Promise<ServiceResponse<TOutput>>
+    input: TInput,
+  ) => Promise<ServiceResponse<TOutput>>,
 ) {
   return async (input: TInput): Promise<ServiceResponse<TOutput>> => {
     const session = await getCurrentSession();
@@ -37,9 +37,7 @@ export function createProtectedAction<TInput, TOutput>(
   };
 }
 export function createPublicAction<TInput, TOutput>(
-  handler: (
-    input: TInput
-  ) => Promise<ServiceResponse<TOutput>>
+  handler: (input: TInput) => Promise<ServiceResponse<TOutput>>,
 ) {
   return async (input: TInput): Promise<ServiceResponse<TOutput>> => {
     try {

@@ -2,13 +2,13 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
-import type { ExtendedWarehouseItemPayload } from "@/lib/schema/schema-types";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
+import type { ExtendedWarehouseItemPayload } from "@/lib/schema/schema-types";
 
 export function WarehouseItemColumn(
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<ExtendedWarehouseItemPayload & { productCount: number }>[] {
   return [
     {

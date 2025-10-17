@@ -1,31 +1,31 @@
 "use client";
 
+import { useForm } from "@tanstack/react-form";
+import { format } from "date-fns";
+import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
+import z from "zod";
 import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   Select,
-  SelectPopup,
   SelectItem,
+  SelectPopup,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "sonner";
-import { useForm } from "@tanstack/react-form";
-import z from "zod";
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-  FieldError,
-} from "@/components/ui/field";
-import { Loader2 } from "lucide-react";
-import { userRolesObject } from "@/utils/constants";
-import { format } from "date-fns";
-import { USER_ROLES } from "@/lib/schema/models/enums";
-import { SelectUser } from "@/lib/schema/schema-types";
-import { updateUser } from "@/server/actions/user-actions";
 import { useSession } from "@/lib/auth-client";
-import { useTranslations } from "next-intl";
+import { USER_ROLES } from "@/lib/schema/models/enums";
+import type { SelectUser } from "@/lib/schema/schema-types";
+import { updateUser } from "@/server/actions/user-actions";
+import { userRolesObject } from "@/utils/constants";
 
 export function UpdateUserForm({ user }: { user: SelectUser }) {
   const t = useTranslations("forms");

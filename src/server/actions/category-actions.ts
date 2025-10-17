@@ -1,10 +1,10 @@
 "use server";
+import { revalidatePath } from "next/cache";
 import type { InsertCategory } from "@/lib/schema/schema-types";
-import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
+import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as categoryRepo from "../repos/category-repo";
-import { revalidatePath } from "next/cache";
 
 export const fetchCategories = createProtectedAction(
   Permission.CATEGORY_VIEW,
@@ -14,7 +14,7 @@ export const fetchCategories = createProtectedAction(
       return { data: null, error: categories.error };
     }
     return { data: categories.data, error: null };
-  }
+  },
 );
 
 export const fetchCategoryById = createProtectedAction(
@@ -28,7 +28,7 @@ export const fetchCategoryById = createProtectedAction(
       return { data: null, error: category.error };
     }
     return { data: category.data, error: null };
-  }
+  },
 );
 
 export const upsertCategory = createProtectedAction(
@@ -43,14 +43,14 @@ export const upsertCategory = createProtectedAction(
     };
     const { data: resData, error: resError } = await categoryRepo.create(
       category,
-      user.id
+      user.id,
     );
     if (resError) {
       return { data: null, error: resError };
     }
     revalidatePath("/", "layout");
     return { data: resData, error: null };
-  }
+  },
 );
 
 export const updateCategory = createProtectedAction(
@@ -63,7 +63,7 @@ export const updateCategory = createProtectedAction(
     }: {
       categoryId: string;
       updates: Partial<Omit<InsertCategory, "id" | "businessId">>;
-    }
+    },
   ) => {
     if (!categoryId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -72,14 +72,14 @@ export const updateCategory = createProtectedAction(
       categoryId,
       user.businessId!,
       user.id,
-      updates
+      updates,
     );
     if (updatedCategory.error) {
       return { data: null, error: updatedCategory.error };
     }
     revalidatePath("/", "layout");
     return { data: updatedCategory.data, error: null };
-  }
+  },
 );
 
 export const deleteCategory = createProtectedAction(
@@ -91,14 +91,14 @@ export const deleteCategory = createProtectedAction(
     const res = await categoryRepo.remove(
       categoryId,
       user.businessId!,
-      user.id
+      user.id,
     );
     if (res.error) {
       return { data: null, error: ErrorCode.DATABASE_ERROR };
     }
     revalidatePath("/", "layout");
     return { data: { success: true }, error: null };
-  }
+  },
 );
 
 export const upsertManyCategories = createProtectedAction(
@@ -113,9 +113,9 @@ export const upsertManyCategories = createProtectedAction(
     }));
     const createdCategories = await categoryRepo.upsert_many(
       categories,
-      user.id
+      user.id,
     );
     revalidatePath("/", "layout");
     return { data: createdCategories, error: null };
-  }
+  },
 );

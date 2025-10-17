@@ -1,15 +1,12 @@
-import { pgTable, text, numeric, timestamp, index } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
+import { index, numeric, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { businessesTable } from "./businesses";
 import { usersTable } from "./users";
 
 export const interBusinessPaymentsTable = pgTable(
   "inter_business_payments",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     payerBusinessId: text("payer_business_id")
       .notNull()
       .references(() => businessesTable.id, { onDelete: "cascade" }),
@@ -37,14 +34,14 @@ export const interBusinessPaymentsTable = pgTable(
   },
   (table) => [
     index("inter_business_payments_payer_business_id").on(
-      table.payerBusinessId
+      table.payerBusinessId,
     ),
     index("inter_business_payments_receiver_business_id").on(
-      table.receiverBusinessId
+      table.receiverBusinessId,
     ),
     index("inter_business_payments_status").on(table.status),
     index("inter_business_payments_initiated_by_user_id").on(
-      table.initiatedByUserId
+      table.initiatedByUserId,
     ),
-  ]
+  ],
 );

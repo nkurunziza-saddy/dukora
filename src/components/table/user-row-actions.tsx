@@ -1,25 +1,25 @@
 "use client";
 
-import React, { FC, useState } from "react";
+import { format } from "date-fns";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
+import Link from "next/link";
+import { useTranslations } from "next-intl";
+import React, { type FC, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Menu,
-  MenuTrigger,
-  MenuPopup,
-  MenuItem,
-  MenuSeparator,
-  MenuGroupLabel,
   MenuGroup,
+  MenuGroupLabel,
+  MenuItem,
+  MenuPopup,
+  MenuSeparator,
+  MenuTrigger,
 } from "@/components/ui/menu";
-import { toast } from "sonner";
-import Link from "next/link";
-import { format } from "date-fns";
-import ConfirmDialog from "../shared/confirm-dialog";
-import { SelectUser } from "@/lib/schema/schema-types";
-import { StateDialog } from "../shared/reusable-form-dialog";
+import type { SelectUser } from "@/lib/schema/schema-types";
 import { UpdateUserForm } from "../forms/update-user-form";
-import { useTranslations } from "next-intl";
+import ConfirmDialog from "../shared/confirm-dialog";
+import { StateDialog } from "../shared/reusable-form-dialog";
 
 export interface UserRowActionsProps {
   user: SelectUser;

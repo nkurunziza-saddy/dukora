@@ -1,10 +1,10 @@
+import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import ColumnWrapper from "@/components/providers/column-wrapper";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getInterBusinessPayments } from "@/server/actions/payment-actions";
 import { ErrorCode } from "@/server/constants/errors";
-import { getTranslations } from "next-intl/server";
-import Link from "next/link";
-import ColumnWrapper from "@/components/providers/column-wrapper";
 import { PaymentColumn } from "@/utils/columns/payment-column";
 
 export default async function PaymentsHistoryPage() {
@@ -35,7 +35,6 @@ export default async function PaymentsHistoryPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between">
-        <div></div>
         <Button variant={"link"}>
           <Link href="/payments/send">New payment</Link>
         </Button>

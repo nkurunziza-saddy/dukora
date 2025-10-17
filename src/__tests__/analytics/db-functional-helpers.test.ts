@@ -1,10 +1,10 @@
-
-import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
-import { syncMetricsToDatabase } from "@/server/helpers/db-functional-helpers";
+import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { ErrorCode } from "@/server/constants/errors";
+import { syncMetricsToDatabase } from "@/server/helpers/db-functional-helpers";
 
 // Mock the metrics repo
 vi.mock("@/server/repos/metrics-repo");
+
 import * as metricsRepo from "@/server/repos/metrics-repo";
 
 describe("DB Functional Helpers", () => {
@@ -62,7 +62,7 @@ describe("DB Functional Helpers", () => {
       const result = await syncMetricsToDatabase(
         mockBusinessId,
         mockDate,
-        mockMetrics
+        mockMetrics,
       );
 
       expect(result.error).toBeNull();
@@ -80,12 +80,16 @@ describe("DB Functional Helpers", () => {
       const result2 = await syncMetricsToDatabase(
         mockBusinessId,
         null,
-        mockMetrics
+        mockMetrics,
       );
       expect(result2.error).toBe(ErrorCode.BAD_REQUEST);
 
       // @ts-expect-error - Testing invalid input
-      const result3 = await syncMetricsToDatabase(mockBusinessId, mockDate, null);
+      const result3 = await syncMetricsToDatabase(
+        mockBusinessId,
+        mockDate,
+        null,
+      );
       expect(result3.error).toBe(ErrorCode.BAD_REQUEST);
     });
 
@@ -136,7 +140,7 @@ describe("DB Functional Helpers", () => {
       await syncMetricsToDatabase(
         mockBusinessId,
         mockDate,
-        metricsWithInvalidValues
+        metricsWithInvalidValues,
       );
 
       const calls = (metricsRepo.upsert_metric as Mock).mock.calls;
@@ -161,18 +165,18 @@ describe("DB Functional Helpers", () => {
       await syncMetricsToDatabase(
         mockBusinessId,
         mockDate,
-        metricsWithDifferentTypes
+        metricsWithDifferentTypes,
       );
 
       const calls = (metricsRepo.upsert_metric as Mock).mock.calls;
       const passedMetrics = Object.fromEntries(
-        calls.map((call) => [call[0].name, call[0].value])
+        calls.map((call) => [call[0].name, call[0].value]),
       );
 
-      expect(passedMetrics["grossRevenue"]).toBe("1000.5");
-      expect(passedMetrics["netRevenue"]).toBe("900");
-      expect(passedMetrics["hasData"]).toBe("true");
-      expect(passedMetrics["metadata"]).toBe('{"key":"value"}');
+      expect(passedMetrics.grossRevenue).toBe("1000.5");
+      expect(passedMetrics.netRevenue).toBe("900");
+      expect(passedMetrics.hasData).toBe("true");
+      expect(passedMetrics.metadata).toBe('{"key":"value"}');
     });
 
     it("should handle database exceptions for individual metrics", async () => {

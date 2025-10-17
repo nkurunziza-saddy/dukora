@@ -1,10 +1,10 @@
+import { count, eq, sum } from "drizzle-orm";
 import { db } from "@/lib/db";
 import {
   productsTable,
   warehouseItemsTable,
   warehousesTable,
 } from "@/lib/schema";
-import { sum, eq, count } from "drizzle-orm";
 import { ErrorCode } from "@/server/constants/errors";
 
 export async function getTotalWarehouses(businessId: string) {
@@ -35,7 +35,7 @@ export async function getTotalQuantity(businessId: string) {
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .where(eq(warehousesTable.businessId, businessId));
 
@@ -59,7 +59,7 @@ export async function getQuantityByProduct(businessId: string) {
       .from(warehouseItemsTable)
       .innerJoin(
         productsTable,
-        eq(warehouseItemsTable.productId, productsTable.id)
+        eq(warehouseItemsTable.productId, productsTable.id),
       )
       .where(eq(productsTable.businessId, businessId))
       .groupBy(warehouseItemsTable.productId);
@@ -84,7 +84,7 @@ export async function getQuantityByWarehouse(businessId: string) {
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .where(eq(warehousesTable.businessId, businessId))
       .groupBy(warehouseItemsTable.warehouseId);
@@ -110,11 +110,11 @@ export async function getQuantityByProductAndWarehouse(businessId: string) {
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .innerJoin(
         productsTable,
-        eq(warehouseItemsTable.productId, productsTable.id)
+        eq(warehouseItemsTable.productId, productsTable.id),
       )
       .where(eq(warehousesTable.businessId, businessId))
       .groupBy(warehouseItemsTable.productId, warehouseItemsTable.warehouseId);

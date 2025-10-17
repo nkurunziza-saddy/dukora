@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
 import { format, isBefore } from "date-fns";
-
+import { Calendar1, Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { CalendarEvent, EventColor } from "@/components/event-calendar";
 import {
   DefaultEndHour,
@@ -10,16 +11,15 @@ import {
   EndHour,
   StartHour,
 } from "@/components/event-calendar/constants";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
-  DialogPopup,
   DialogDescription,
   DialogFooter,
   DialogHeader,
+  DialogPopup,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -28,15 +28,14 @@ import { Popover, PopoverPopup, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
-  SelectPopup,
   SelectItem,
+  SelectPopup,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import type { CalendarEventInput } from "./types";
-import { Calendar1, Trash2 } from "lucide-react";
-import { useTranslations } from "next-intl";
 
 interface EventDialogProps {
   event: CalendarEvent | null;
@@ -66,6 +65,25 @@ export function EventDialog({
   const [startDateOpen, setStartDateOpen] = useState(false);
   const [endDateOpen, setEndDateOpen] = useState(false);
 
+  const formatTimeForInput = useCallback((date: Date) => {
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = Math.floor(date.getMinutes() / 15) * 15;
+    return `${hours}:${minutes.toString().padStart(2, "0")}`;
+  }, []);
+
+  const resetForm = useCallback(() => {
+    setTitle("");
+    setCategory("");
+    setStartDate(new Date());
+    setEndDate(new Date());
+    setStartTime(`${DefaultStartHour}:00`);
+    setEndTime(`${DefaultEndHour}:00`);
+    setAllDay(false);
+    setLocation("");
+    setColor("sky");
+    setError(null);
+  }, []);
+
   useEffect(() => {
     if (event) {
       setTitle(event.title || "");
@@ -85,26 +103,7 @@ export function EventDialog({
     } else {
       resetForm();
     }
-  }, [event]);
-
-  const resetForm = () => {
-    setTitle("");
-    setCategory("");
-    setStartDate(new Date());
-    setEndDate(new Date());
-    setStartTime(`${DefaultStartHour}:00`);
-    setEndTime(`${DefaultEndHour}:00`);
-    setAllDay(false);
-    setLocation("");
-    setColor("sky");
-    setError(null);
-  };
-
-  const formatTimeForInput = (date: Date) => {
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = Math.floor(date.getMinutes() / 15) * 15;
-    return `${hours}:${minutes.toString().padStart(2, "0")}`;
-  };
+  }, [event, formatTimeForInput, resetForm]);
 
   const timeOptions = useMemo(() => {
     const options = [];
@@ -139,7 +138,7 @@ export function EventDialog({
         endHours > EndHour
       ) {
         setError(
-          `Selected time must be between ${StartHour}:00 and ${EndHour}:00`
+          `Selected time must be between ${StartHour}:00 and ${EndHour}:00`,
         );
         return;
       }
@@ -270,7 +269,7 @@ export function EventDialog({
                       variant={"outline"}
                       className={cn(
                         "group bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]",
-                        !startDate && "text-muted-foreground"
+                        !startDate && "text-muted-foreground",
                       )}
                     />
                   }
@@ -278,7 +277,7 @@ export function EventDialog({
                   <span
                     className={cn(
                       "truncate",
-                      !startDate && "text-muted-foreground"
+                      !startDate && "text-muted-foreground",
                     )}
                   >
                     {startDate ? format(startDate, "PPP") : "Pick a date"}
@@ -339,7 +338,7 @@ export function EventDialog({
                       variant={"outline"}
                       className={cn(
                         "group bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]",
-                        !endDate && "text-muted-foreground"
+                        !endDate && "text-muted-foreground",
                       )}
                     />
                   }
@@ -347,7 +346,7 @@ export function EventDialog({
                   <span
                     className={cn(
                       "truncate",
-                      !endDate && "text-muted-foreground"
+                      !endDate && "text-muted-foreground",
                     )}
                   >
                     {endDate ? format(endDate, "PPP") : "Pick a date"}
@@ -420,7 +419,7 @@ export function EventDialog({
               className="flex gap-1.5"
               defaultValue={colorOptions[0]?.value}
               value={color}
-              onValueChange={(value: EventColor) => setColor(value)}
+              onValueChange={(value: unknown) => setColor(value as EventColor)}
             >
               {colorOptions.map((colorOption) => (
                 <RadioGroupItem
@@ -431,7 +430,7 @@ export function EventDialog({
                   className={cn(
                     "size-6 shadow-none",
                     colorOption.bgClass,
-                    colorOption.borderClass
+                    colorOption.borderClass,
                   )}
                 />
               ))}

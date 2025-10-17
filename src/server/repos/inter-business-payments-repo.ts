@@ -1,12 +1,12 @@
-import { eq, desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
+import { cache } from "react";
 import { db } from "@/lib/db";
-import { interBusinessPaymentsTable, auditLogsTable } from "@/lib/schema";
-import { ErrorCode } from "@/server/constants/errors";
+import { auditLogsTable, interBusinessPaymentsTable } from "@/lib/schema";
 import type {
   InsertAuditLog,
   InsertInterBusinessPayment,
 } from "@/lib/schema/schema-types";
-import { cache } from "react";
+import { ErrorCode } from "@/server/constants/errors";
 
 export const get_all = cache(async (businessId: string) => {
   if (!businessId) {
@@ -45,7 +45,7 @@ export async function get_by_id(paymentId: string) {
 
 export async function create(
   payment: InsertInterBusinessPayment,
-  userId: string
+  userId: string,
 ) {
   if (!payment || !userId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -78,7 +78,7 @@ export async function create(
 export async function update_status(
   paymentId: string,
   status: string,
-  userId: string
+  userId: string,
 ) {
   if (!paymentId || !status || !userId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };

@@ -1,15 +1,15 @@
+import { sql } from "drizzle-orm";
 import {
+  boolean,
+  check,
+  index,
+  json,
   pgTable,
   text,
-  boolean,
   timestamp,
   uniqueIndex,
-  index,
-  check,
-  json,
 } from "drizzle-orm/pg-core";
 import { businessesTable } from "./businesses";
-import { sql } from "drizzle-orm";
 import { userRoleEnum } from "./enums";
 
 export const usersTable = pgTable(
@@ -42,20 +42,17 @@ export const usersTable = pgTable(
     uniqueIndex("users_business_id_email").on(table.businessId, table.email),
     check(
       "email_format",
-      sql`${table.email} ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'`
+      sql`${table.email} ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'`,
     ),
     index("users_business_id").on(table.businessId),
     index("users_email").on(table.email),
-  ]
+  ],
 );
 
 export const userSettingsTable = pgTable(
   "user_settings",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     userId: text("user_id")
       .notNull()
       .references(() => usersTable.id, { onDelete: "cascade" }),
@@ -70,5 +67,5 @@ export const userSettingsTable = pgTable(
   },
   (table) => [
     uniqueIndex("user_settings_user_id_key").on(table.userId, table.key),
-  ]
+  ],
 );

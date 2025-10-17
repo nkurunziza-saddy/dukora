@@ -1,12 +1,12 @@
 "use server";
 
-import { eq, desc, and } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { revalidatePath, unstable_cache } from "next/cache";
+import { cache } from "react";
 import { db } from "@/lib/db";
 import { schedulesTable } from "@/lib/schema/models/schedules";
 import type { InsertSchedule } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
-import { cache } from "react";
 
 export async function get_all(businessId: string, userId: string) {
   if (!businessId) {
@@ -20,8 +20,8 @@ export async function get_all(businessId: string, userId: string) {
       .where(
         and(
           eq(schedulesTable.businessId, businessId),
-          eq(schedulesTable.userId, userId)
-        )
+          eq(schedulesTable.userId, userId),
+        ),
       )
       .orderBy(desc(schedulesTable.created_at));
     return { data: schedules, error: null };
@@ -39,7 +39,7 @@ export const get_all_cached = unstable_cache(
   {
     revalidate: 300,
     tags: ["suppliers"],
-  }
+  },
 );
 
 export const get_overview = cache(
@@ -55,8 +55,8 @@ export const get_overview = cache(
         .where(
           and(
             eq(schedulesTable.businessId, businessId),
-            eq(schedulesTable.userId, userId)
-          )
+            eq(schedulesTable.userId, userId),
+          ),
         )
         .orderBy(desc(schedulesTable.created_at))
         .limit(limit ?? 5);
@@ -65,7 +65,7 @@ export const get_overview = cache(
       console.error("Failed to fetch schedules:", error);
       return { data: null, error: ErrorCode.FAILED_REQUEST };
     }
-  }
+  },
 );
 
 export const get_by_id = cache(
@@ -78,7 +78,7 @@ export const get_by_id = cache(
       const schedule = await db.query.schedulesTable.findFirst({
         where: and(
           eq(schedulesTable.id, scheduleId),
-          eq(schedulesTable.businessId, businessId)
+          eq(schedulesTable.businessId, businessId),
         ),
       });
 
@@ -94,13 +94,13 @@ export const get_by_id = cache(
       console.error("Failed to fetch schedule:", error);
       return { data: null, error: ErrorCode.FAILED_REQUEST };
     }
-  }
+  },
 );
 
 export async function create(
-  businessId: string,
-  userId: string,
-  schedule: InsertSchedule
+  _businessId: string,
+  _userId: string,
+  schedule: InsertSchedule,
 ) {
   if (!schedule.title || !schedule.businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -125,8 +125,8 @@ export async function create(
 export async function update(
   scheduleId: string,
   businessId: string,
-  userId: string,
-  updates: Partial<InsertSchedule>
+  _userId: string,
+  updates: Partial<InsertSchedule>,
 ) {
   if (!scheduleId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -139,8 +139,8 @@ export async function update(
       .where(
         and(
           eq(schedulesTable.id, scheduleId),
-          eq(schedulesTable.businessId, businessId)
-        )
+          eq(schedulesTable.businessId, businessId),
+        ),
       )
       .returning();
 
@@ -178,8 +178,8 @@ export async function remove(scheduleId: string, businessId: string) {
       .where(
         and(
           eq(schedulesTable.id, scheduleId),
-          eq(schedulesTable.businessId, businessId)
-        )
+          eq(schedulesTable.businessId, businessId),
+        ),
       )
       .returning();
 

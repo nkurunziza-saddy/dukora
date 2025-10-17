@@ -1,8 +1,8 @@
 "use client";
 
-import { Table } from "@tanstack/react-table";
-import { Input } from "@/components/ui/input";
+import type { Table } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
+import { Input } from "@/components/ui/input";
 
 interface DataTableSearchProps<TData> {
   table: Table<TData>;

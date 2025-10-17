@@ -1,39 +1,39 @@
 import { Plus, Users } from "lucide-react";
+import { getTranslations } from "next-intl/server";
+import { InviteUserForm } from "@/components/forms/invite-user-form";
+import ColumnWrapper from "@/components/providers/column-wrapper";
+import StatCard from "@/components/shared/stat-card";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardPanel,
   CardDescription,
   CardHeader,
+  CardPanel,
   CardTitle,
 } from "@/components/ui/card";
 import {
   Dialog,
-  DialogPopup,
   DialogDescription,
   DialogHeader,
+  DialogPopup,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { InviteUserForm } from "@/components/forms/invite-user-form";
-import ColumnWrapper from "@/components/providers/column-wrapper";
-import { UserColumn } from "@/utils/columns/user-column";
-import { getUsers } from "@/server/actions/user-actions";
-import { getInvitations } from "@/server/actions/invitation-actions";
-import { InvitationColumn } from "@/utils/columns/invitation-column";
-import StatCard from "@/components/shared/stat-card";
-import { Tabs, TabsPanel, TabsList, TabsTab } from "@/components/ui/tabs";
-import { getTranslations } from "next-intl/server";
-import { RolePermissions } from "@/server/helpers/role-permissions";
-import { Permission } from "@/server/constants/permissions";
 import {
   Table,
-  TableHeader,
   TableBody,
-  TableHead,
-  TableRow,
   TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
+import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
+import { getInvitations } from "@/server/actions/invitation-actions";
+import { getUsers } from "@/server/actions/user-actions";
+import { Permission } from "@/server/constants/permissions";
+import { RolePermissions } from "@/server/helpers/role-permissions";
+import { InvitationColumn } from "@/utils/columns/invitation-column";
+import { UserColumn } from "@/utils/columns/user-column";
 
 export default async function users() {
   const users = await getUsers({});

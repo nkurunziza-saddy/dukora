@@ -1,10 +1,10 @@
-import { SimpleCalculator } from "@/components/financial-calculator/simple-calculator";
 import { getTranslations } from "next-intl/server";
-import { Tabs, TabsPanel, TabsList, TabsTab } from "@/components/ui/tabs";
-import { LoanCalculator } from "@/components/financial-calculator/loan-calculator";
 import { CompoundInterestCalculator } from "@/components/financial-calculator/compound-interest-calculator";
+import { LoanCalculator } from "@/components/financial-calculator/loan-calculator";
 import { SavingsGoalCalculator } from "@/components/financial-calculator/savings-goal-calculator";
+import { SimpleCalculator } from "@/components/financial-calculator/simple-calculator";
 import { TaxCalculator } from "@/components/financial-calculator/tax-calculator";
+import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
 
 export async function generateMetadata() {
   const t = await getTranslations("FinancialCalculator");

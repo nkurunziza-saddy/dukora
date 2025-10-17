@@ -1,13 +1,13 @@
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { businessesTable, auditLogsTable } from "@/lib/schema";
-import { ErrorCode } from "@/server/constants/errors";
+import { auditLogsTable, businessesTable } from "@/lib/schema";
 import type { InsertAuditLog } from "@/lib/schema/schema-types";
 import { stripe } from "@/lib/stripe";
+import { ErrorCode } from "@/server/constants/errors";
 
 export async function create_connected_account(
   userId: string,
-  businessId: string
+  businessId: string,
 ) {
   if (!userId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -56,7 +56,7 @@ export async function create_connected_account(
 export async function create_account_link(
   stripeAccountId: string,
   refreshUrl: string,
-  returnUrl: string
+  returnUrl: string,
 ) {
   if (!stripeAccountId || !refreshUrl || !returnUrl) {
     return { data: null, error: ErrorCode.MISSING_INPUT };

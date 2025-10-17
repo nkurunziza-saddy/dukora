@@ -1,13 +1,13 @@
-import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
+import { startOfMonth, subMonths } from "date-fns";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  getMonthData,
-  getCurrentMonthBoundary,
   getAvailableMonthsForAnalytics,
+  getCurrentMonthBoundary,
+  getMonthData,
+  getPreviousMonth,
   parseMonth,
   parseMonthYearShort,
-  getPreviousMonth,
 } from "@/server/helpers/time-date-forrmatters";
-import { startOfMonth, subMonths } from "date-fns";
 
 describe("Time Date Formatters", () => {
   beforeEach(() => {
@@ -154,7 +154,7 @@ describe("Time Date Formatters", () => {
 
     it("should throw error for invalid format", () => {
       expect(() => parseMonthYearShort("invalid")).toThrow(
-        "Invalid argument invalid"
+        "Invalid argument invalid",
       );
     });
 

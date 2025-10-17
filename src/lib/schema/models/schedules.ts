@@ -1,22 +1,19 @@
+import { sql } from "drizzle-orm";
 import {
-  pgTable,
-  varchar,
   boolean,
-  timestamp,
-  text,
   index,
+  pgTable,
+  text,
+  timestamp,
+  varchar,
 } from "drizzle-orm/pg-core";
 import { businessesTable } from "@/lib/schema/models/businesses";
 import { usersTable } from "./users";
-import { sql } from "drizzle-orm";
 
 export const schedulesTable = pgTable(
   "schedules",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     title: varchar("title", { length: 255 }).notNull(),
     category: varchar("category", { length: 255 }),
     color: varchar("color", { length: 255 }).notNull().default("sky"),
@@ -37,5 +34,5 @@ export const schedulesTable = pgTable(
     index("schedule_business_id_user_id").on(table.businessId, table.userId),
     index("schedule_business_id").on(table.businessId),
     index("schedule_performed_by").on(table.userId),
-  ]
+  ],
 );

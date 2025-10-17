@@ -1,18 +1,18 @@
-import {
-  pgTable,
-  text,
-  numeric,
-  integer,
-  boolean,
-  timestamp,
-  index,
-  primaryKey,
-  check,
-} from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
+import {
+  boolean,
+  check,
+  index,
+  integer,
+  numeric,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
+import { businessesTable } from "./businesses";
 import { productsTable } from "./products";
 import { suppliersTable } from "./suppliers";
-import { businessesTable } from "./businesses";
 
 export const productSuppliersTable = pgTable(
   "product_suppliers",
@@ -43,13 +43,13 @@ export const productSuppliersTable = pgTable(
     primaryKey({ columns: [table.productId, table.supplierId] }),
     check(
       "supplier_price_positive",
-      sql`${table.supplierPrice} IS NULL OR ${table.supplierPrice} >= 0`
+      sql`${table.supplierPrice} IS NULL OR ${table.supplierPrice} >= 0`,
     ),
     check(
       "lead_time_non_negative",
-      sql`${table.leadTimeDays} IS NULL OR ${table.leadTimeDays} >= 0`
+      sql`${table.leadTimeDays} IS NULL OR ${table.leadTimeDays} >= 0`,
     ),
     index("product_suppliers_product_id").on(table.productId),
     index("product_suppliers_supplier_id").on(table.supplierId),
-  ]
+  ],
 );

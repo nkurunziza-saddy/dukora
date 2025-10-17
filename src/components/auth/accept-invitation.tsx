@@ -1,12 +1,12 @@
+import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardPanel,
   CardDescription,
   CardHeader,
+  CardPanel,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useTranslations } from "next-intl";
 import { acceptInvitation } from "@/server/actions/invitation-actions";
 
 export const AcceptInvitation: React.FC<{ code: string }> = ({ code }) => {

@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import ColumnWrapper from "@/components/providers/column-wrapper";
+import { Skeleton } from "@/components/ui/skeleton";
 import { getTransactions } from "@/server/actions/transaction-actions";
 import { TransactionColumn } from "@/utils/columns/transaction-column";
-import { Skeleton } from "@/components/ui/skeleton";
 
 function TransactionsLoading() {
   return (

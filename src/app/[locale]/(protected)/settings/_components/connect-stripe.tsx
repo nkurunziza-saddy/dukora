@@ -1,29 +1,43 @@
 "use client";
-import { useForm } from "react-hook-form";
+
+import * as React from "react";
+import { useForm } from "@tanstack/react-form";
+import { toast } from "sonner";
+import { z } from "zod";
+import { AlertCircle, CheckCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
+
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardPanel,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+
 import {
-  Form,
-  FormDescription,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { toast } from "sonner";
-import { useTranslations } from "next-intl";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircle, CheckCircle } from "lucide-react";
-import {
-  createStripeConnectedAccount,
   createStripeAccountLink,
+  createStripeConnectedAccount,
 } from "@/server/actions/stripe-connect-actions";
-import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const formSchema = z.object({
   stripeAccountId: z.string().optional(),
   isConnected: z.boolean(),
 });
+
+type FormType = z.infer<typeof formSchema>;
 
 export function ConnectStripe({
   stripeAccountId,
@@ -33,26 +47,51 @@ export function ConnectStripe({
   const tStripe = useTranslations("stripe");
   const tCommon = useTranslations("common");
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm({
     defaultValues: {
-      stripeAccountId: stripeAccountId || "",
+      stripeAccountId: stripeAccountId ?? "",
       isConnected: !!stripeAccountId,
+    },
+    validators: {
+      onSubmit: (values) => {
+        try {
+          formSchema.parse(values);
+          return {};
+        } catch (e) {
+          const zErr = e as z.ZodError;
+          const errors: Record<string, string> = {};
+          zErr.issues.forEach((err) => {
+            const key = String(err.path?.[0] ?? "form");
+            errors[key] = err.message;
+          });
+          return errors;
+        }
+      },
+    },
+    onSubmit: async ({ value }) => {
+      toast("Form submitted", {
+        description: (
+          <pre className="bg-code text-code-foreground mt-2 w-[320px] overflow-x-auto rounded-md p-4">
+            <code>{JSON.stringify(value, null, 2)}</code>
+          </pre>
+        ),
+      });
     },
   });
 
-  const {
-    formState: { isSubmitting },
-    watch,
-  } = form;
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  const isStripeConnected = watch("isConnected");
+  const formValues = form.state.values as FormType;
+  const displayedStripeAccountId =
+    formValues?.stripeAccountId ?? stripeAccountId ?? "";
+  const isStripeConnected = formValues?.isConnected ?? !!stripeAccountId;
 
   const handleConnectStripe = async () => {
     try {
-      let currentStripeAccountId = stripeAccountId;
+      setIsLoading(true);
 
-      // If stripeAccountId is not provided, create a new account
+      let currentStripeAccountId = displayedStripeAccountId;
+
       if (!currentStripeAccountId) {
         const createAccountRes = await createStripeConnectedAccount({});
 
@@ -61,13 +100,13 @@ export function ConnectStripe({
             description:
               createAccountRes.error || tStripe("failedToCreateStripeAccount"),
           });
+          setIsLoading(false);
           return;
         }
 
         currentStripeAccountId = createAccountRes.data.id;
       }
 
-      // Create account link for onboarding
       const accountLinkRes = await createStripeAccountLink({
         stripeAccountId: currentStripeAccountId,
         refreshUrl: `${window.location.origin}/dashboard/settings/business`,
@@ -79,6 +118,7 @@ export function ConnectStripe({
           description:
             accountLinkRes.error || tStripe("failedToCreateAccountLink"),
         });
+        setIsLoading(false);
         return;
       }
 
@@ -88,15 +128,23 @@ export function ConnectStripe({
       toast.error(tCommon("error"), {
         description: tStripe("stripeConnectError"),
       });
+      setIsLoading(false);
     }
   };
 
   const handleManageStripe = async () => {
-    if (!stripeAccountId) return;
+    const currentStripeAccountId = displayedStripeAccountId;
+    if (!currentStripeAccountId) {
+      toast.error(tCommon("error"), {
+        description: tStripe("noStripeAccountId"),
+      });
+      return;
+    }
 
     try {
+      setIsLoading(true);
       const accountLinkRes = await createStripeAccountLink({
-        stripeAccountId,
+        stripeAccountId: currentStripeAccountId,
         refreshUrl: `${window.location.origin}/dashboard/settings/business`,
         returnUrl: `${window.location.origin}/dashboard/settings/business`,
       });
@@ -106,135 +154,132 @@ export function ConnectStripe({
           description:
             accountLinkRes.error || tStripe("failedToCreateAccountLink"),
         });
+        setIsLoading(false);
         return;
       }
 
       window.open(accountLinkRes.data.url, "_blank");
+      setIsLoading(false);
     } catch (error) {
       console.error("Stripe manage error:", error);
       toast.error(tCommon("error"), {
         description: tStripe("stripeManageError"),
       });
+      setIsLoading(false);
     }
   };
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("Stripe form submitted:", values);
-  }
-
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="space-y-6">
-          <div className="flex items-center gap-3 justify-between">
-            <CardHeader className="px-0 w-full">
-              <CardTitle> {tStripe("stripeIntegration")}</CardTitle>
-              <CardDescription>
-                {tStripe("stripeIntegrationDescription")}
-              </CardDescription>
-            </CardHeader>
-            <Badge
-              variant={isStripeConnected ? "default" : "secondary"}
-              className="flex items-center gap-1"
-            >
-              {isStripeConnected ? (
-                <>
-                  <CheckCircle className="h-3 w-3" />
-                  {tStripe("connected")}
-                </>
-              ) : (
-                <>
-                  <AlertCircle className="h-3 w-3" />
-                  {tStripe("notConnected")}
-                </>
-              )}
-            </Badge>
-          </div>
+    <Card className="w-full sm:max-w-lg">
+      <CardHeader>
+        <CardTitle>{tStripe("stripeIntegration")}</CardTitle>
+        <CardDescription>
+          {tStripe("stripeIntegrationDescription")}
+        </CardDescription>
+      </CardHeader>
 
-          <div className="p-4 border rounded-lg">
-            <FormItem>
-              <FormLabel className="text-base">
-                {tStripe("connectionStatus")}
-              </FormLabel>
-              <FormDescription>
-                {isStripeConnected
-                  ? tStripe("stripeConnectedDescription")
-                  : tStripe("stripeNotConnectedDescription")}
-              </FormDescription>
+      <CardPanel>
+        <form
+          id="connect-stripe-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            form.handleSubmit();
+          }}
+        >
+          <FieldGroup>
+            <form.Field
+              name="stripeAccountId"
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <div data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>
+                      {tStripe("connectionStatus")}
+                    </FieldLabel>
 
-              {stripeAccountId && (
-                <div className="mt-2 p-2 bg-muted rounded text-xs font-mono">
-                  <span className="text-muted-foreground">Account ID: </span>
-                  {stripeAccountId}
-                </div>
-              )}
-            </FormItem>
-          </div>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={String(displayedStripeAccountId ?? "")}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder={tStripe("stripeAccountIdPlaceholder") ?? ""}
+                      readOnly
+                      aria-invalid={isInvalid}
+                    />
 
-          {!isStripeConnected && (
-            <Alert>
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                <div className="space-y-2">
-                  <p className="font-medium">{tStripe("stripeBenefits")}</p>
-                  <ul className="text-sm space-y-1 ml-4">
-                    <li>• Accept payments directly in your app</li>
-                    <li>
-                      • Payouts to your bank account without leaving the
-                      platform
-                    </li>
-                    <li>• Secure and compliant payment processing</li>
-                    <li>• Manage refunds and disputes easily</li>
-                    <li>• Access to detailed transaction analytics</li>
-                  </ul>
-                </div>
-              </AlertDescription>
-            </Alert>
-          )}
+                    <FieldDescription>
+                      {isStripeConnected
+                        ? tStripe("stripeConnectedDescription")
+                        : tStripe("stripeNotConnectedDescription")}
+                    </FieldDescription>
 
-          <div className="flex gap-3">
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </div>
+                );
+              }}
+            />
+          </FieldGroup>
+        </form>
+      </CardPanel>
+
+      <CardFooter>
+        <Field orientation="horizontal">
+          <div className="flex items-center gap-3">
             {!isStripeConnected ? (
               <Button
                 type="button"
                 onClick={handleConnectStripe}
-                disabled={isSubmitting}
-                className="flex items-center gap-2"
+                disabled={isLoading}
               >
-                {isSubmitting
+                {isLoading
                   ? tStripe("connecting")
                   : tStripe("connectStripeAccount")}
               </Button>
             ) : (
               <>
+                <Badge
+                  variant="default"
+                  className="flex items-center gap-2 px-3 py-1"
+                >
+                  <CheckCircle className="h-4 w-4" />
+                  {tStripe("connected")}
+                </Badge>
+
                 <Button
                   type="button"
                   variant="outline"
                   onClick={handleManageStripe}
-                  className="flex items-center gap-2 bg-transparent"
+                  disabled={isLoading}
                 >
                   {tStripe("manageStripeAccount")}
                 </Button>
+
                 <Button
                   type="button"
-                  onClick={handleConnectStripe}
                   variant="outline"
-                  className="flex items-center gap-2 bg-transparent"
+                  onClick={handleConnectStripe}
+                  disabled={isLoading}
                 >
                   {tStripe("reconnectStripeAccount")}
                 </Button>
               </>
             )}
-          </div>
 
-          {isStripeConnected && (
-            <Badge>
-              <strong>{tStripe("summary")}</strong>{" "}
-              {tStripe("stripeAccountActive")}
-              {stripeAccountId && ` • ID: ${stripeAccountId.slice(0, 12)}...`}
-            </Badge>
-          )}
-        </div>
-      </form>
-    </Form>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => form.reset()}
+              disabled={isLoading}
+            >
+              {tCommon("reset") ?? "Reset"}
+            </Button>
+          </div>
+        </Field>
+      </CardFooter>
+    </Card>
   );
 }

@@ -1,10 +1,10 @@
+import { type NextRequest, NextResponse } from "next/server";
 import { getProductById } from "@/server/actions/product-actions";
 import { ErrorCode } from "@/server/constants/errors";
-import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ productId: string }> }
+  _request: NextRequest,
+  { params }: { params: Promise<{ productId: string }> },
 ) {
   try {
     const productDetails = await getProductById((await params).productId);

@@ -1,31 +1,31 @@
 import { relations } from "drizzle-orm";
 import {
-  businessesTable,
-  usersTable,
-  categoriesTable,
-  productsTable,
-  warehousesTable,
-  businessSettingsTable,
-  productSuppliersTable,
-  profitReportsTable,
-  metricsTable,
   auditLogsTable,
-  transactionsTable,
-  userSettingsTable,
-  suppliersTable,
-  productVariantsTable,
-  saleOrdersTable,
-  purchaseOrdersTable,
-  productAttributesTable,
-  productAttributeValuesTable,
-  productTagsTable,
-  productProductTagsTable,
-  warehouseItemsTable,
-  productPriceHistoryTable,
-  schedulesTable,
-  invitationsTable,
+  businessesTable,
+  businessSettingsTable,
+  categoriesTable,
   expensesTable,
   interBusinessPaymentsTable,
+  invitationsTable,
+  metricsTable,
+  productAttributesTable,
+  productAttributeValuesTable,
+  productPriceHistoryTable,
+  productProductTagsTable,
+  productSuppliersTable,
+  productsTable,
+  productTagsTable,
+  productVariantsTable,
+  profitReportsTable,
+  purchaseOrdersTable,
+  saleOrdersTable,
+  schedulesTable,
+  suppliersTable,
+  transactionsTable,
+  userSettingsTable,
+  usersTable,
+  warehouseItemsTable,
+  warehousesTable,
 } from "./models";
 
 export const businessesTableRelations = relations(
@@ -47,7 +47,7 @@ export const businessesTableRelations = relations(
     invitations: many(invitationsTable),
     expenses: many(expensesTable),
     payments: many(interBusinessPaymentsTable),
-  })
+  }),
 );
 
 export const usersTableRelations = relations(usersTable, ({ one, many }) => ({
@@ -71,7 +71,7 @@ export const categoriesTableRelations = relations(
       references: [businessesTable.id],
     }),
     products: many(productsTable),
-  })
+  }),
 );
 
 export const productsTableRelations = relations(
@@ -90,7 +90,7 @@ export const productsTableRelations = relations(
     transactions: many(transactionsTable),
     productPriceHistory: many(productPriceHistoryTable),
     warehouseItems: many(warehouseItemsTable),
-  })
+  }),
 );
 
 export const warehousesTableRelations = relations(
@@ -102,7 +102,7 @@ export const warehousesTableRelations = relations(
     }),
     transactions: many(transactionsTable),
     warehouseItems: many(warehouseItemsTable),
-  })
+  }),
 );
 
 export const productVariantsTableRelations = relations(
@@ -116,7 +116,7 @@ export const productVariantsTableRelations = relations(
       fields: [productVariantsTable.attributeValueId],
       references: [productAttributeValuesTable.id],
     }),
-  })
+  }),
 );
 
 export const productSuppliersTableRelations = relations(
@@ -134,7 +134,7 @@ export const productSuppliersTableRelations = relations(
       fields: [productSuppliersTable.businessId],
       references: [businessesTable.id],
     }),
-  })
+  }),
 );
 
 export const businessSettingsTableRelations = relations(
@@ -144,7 +144,7 @@ export const businessSettingsTableRelations = relations(
       fields: [businessSettingsTable.businessId],
       references: [businessesTable.id],
     }),
-  })
+  }),
 );
 
 export const userSettingsTableRelations = relations(
@@ -154,7 +154,7 @@ export const userSettingsTableRelations = relations(
       fields: [userSettingsTable.userId],
       references: [usersTable.id],
     }),
-  })
+  }),
 );
 export const invitationsTableRelations = relations(
   invitationsTable,
@@ -167,7 +167,7 @@ export const invitationsTableRelations = relations(
       fields: [invitationsTable.invitedBy],
       references: [businessesTable.id],
     }),
-  })
+  }),
 );
 
 export const productPriceHistoryTableRelations = relations(
@@ -181,7 +181,7 @@ export const productPriceHistoryTableRelations = relations(
       fields: [productPriceHistoryTable.createdBy],
       references: [usersTable.id],
     }),
-  })
+  }),
 );
 
 export const profitReportsTableRelations = relations(
@@ -191,7 +191,7 @@ export const profitReportsTableRelations = relations(
       fields: [profitReportsTable.businessId],
       references: [businessesTable.id],
     }),
-  })
+  }),
 );
 
 export const saleOrdersTableRelations = relations(
@@ -205,7 +205,7 @@ export const saleOrdersTableRelations = relations(
       fields: [saleOrdersTable.createdBy],
       references: [usersTable.id],
     }),
-  })
+  }),
 );
 
 export const purchaseOrdersTableRelations = relations(
@@ -219,7 +219,7 @@ export const purchaseOrdersTableRelations = relations(
       fields: [purchaseOrdersTable.supplierId],
       references: [suppliersTable.id],
     }),
-  })
+  }),
 );
 
 export const metricsTableRelations = relations(metricsTable, ({ one }) => ({
@@ -273,7 +273,7 @@ export const transactionsRelations = relations(
       fields: [transactionsTable.createdBy],
       references: [usersTable.id],
     }),
-  })
+  }),
 );
 export const expensesRelations = relations(expensesTable, ({ one }) => ({
   business: one(businessesTable, {
@@ -296,7 +296,7 @@ export const interBusinessPaymentsRelations = relations(
       fields: [interBusinessPaymentsTable.receiverBusinessId],
       references: [businessesTable.id],
     }),
-  })
+  }),
 );
 
 export const productAttributesTableRelations = relations(
@@ -307,7 +307,7 @@ export const productAttributesTableRelations = relations(
       references: [businessesTable.id],
     }),
     values: many(productAttributeValuesTable),
-  })
+  }),
 );
 
 export const productAttributeValuesTableRelations = relations(
@@ -318,7 +318,7 @@ export const productAttributeValuesTableRelations = relations(
       references: [productAttributesTable.id],
     }),
     productVariants: many(productVariantsTable),
-  })
+  }),
 );
 
 export const productTagsTableRelations = relations(
@@ -329,7 +329,7 @@ export const productTagsTableRelations = relations(
       references: [businessesTable.id],
     }),
     productProductTags: many(productProductTagsTable),
-  })
+  }),
 );
 
 export const productProductTagsTableRelations = relations(
@@ -343,7 +343,7 @@ export const productProductTagsTableRelations = relations(
       fields: [productProductTagsTable.tagId],
       references: [productTagsTable.id],
     }),
-  })
+  }),
 );
 
 export const warehouseItemsTableRelations = relations(
@@ -357,7 +357,7 @@ export const warehouseItemsTableRelations = relations(
       fields: [warehouseItemsTable.warehouseId],
       references: [warehousesTable.id],
     }),
-  })
+  }),
 );
 
 export const suppliersTableRelations = relations(
@@ -368,5 +368,5 @@ export const suppliersTableRelations = relations(
       references: [businessesTable.id],
     }),
     productSuppliers: many(productSuppliersTable),
-  })
+  }),
 );

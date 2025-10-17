@@ -1,27 +1,24 @@
+import { sql } from "drizzle-orm";
 import {
+  check,
+  index,
+  integer,
+  numeric,
   pgTable,
   text,
   timestamp,
   uniqueIndex,
-  integer,
-  numeric,
-  index,
-  check,
 } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
-import { orderStatusEnum } from "./enums";
 import { businessesTable } from "./businesses";
-import { usersTable } from "./users";
-import { suppliersTable } from "./suppliers";
+import { orderStatusEnum } from "./enums";
 import { productsTable } from "./products";
+import { suppliersTable } from "./suppliers";
+import { usersTable } from "./users";
 
 export const saleOrdersTable = pgTable(
   "sales_orders",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     orderNumber: text("order_number").notNull(),
     status: orderStatusEnum("status").notNull().default("DRAFT"),
     orderDate: timestamp("order_date", { withTimezone: true })
@@ -51,7 +48,7 @@ export const saleOrdersTable = pgTable(
   (table) => [
     uniqueIndex("sales_orders_business_id_order_number").on(
       table.businessId,
-      table.orderNumber
+      table.orderNumber,
     ),
     check("total_amount_positive", sql`${table.totalAmount} >= 0`),
     check("discount_amount_non_negative", sql`${table.discountAmount} >= 0`),
@@ -59,16 +56,13 @@ export const saleOrdersTable = pgTable(
     index("sales_orders_business_id").on(table.businessId),
     index("sales_orders_status").on(table.status),
     index("sales_orders_order_date").on(table.orderDate),
-  ]
+  ],
 );
 
 export const purchaseOrdersTable = pgTable(
   "purchase_orders",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     orderNumber: text("order_number").notNull(),
     status: orderStatusEnum("status").notNull().default("DRAFT"),
     orderDate: timestamp("order_date", { withTimezone: true })
@@ -101,21 +95,18 @@ export const purchaseOrdersTable = pgTable(
   (table) => [
     uniqueIndex("purchase_orders_business_id_order_number").on(
       table.businessId,
-      table.orderNumber
+      table.orderNumber,
     ),
     check("total_amount_positive", sql`${table.totalAmount} >= 0`),
     index("purchase_orders_business_id").on(table.businessId),
     index("purchase_orders_supplier_id").on(table.supplierId),
-  ]
+  ],
 );
 
 export const saleOrderItemsTable = pgTable(
   "sales_order_items",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     salesOrderId: text("sales_order_id")
       .notNull()
       .references(() => saleOrdersTable.id, { onDelete: "cascade" }),
@@ -135,16 +126,13 @@ export const saleOrderItemsTable = pgTable(
     check("discount_non_negative", sql`${table.discount} >= 0`),
     index("sales_order_items_sales_order_id").on(table.salesOrderId),
     index("sales_order_items_product_id").on(table.productId),
-  ]
+  ],
 );
 
 export const purchaseOrderItemsTable = pgTable(
   "purchase_order_items",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     purchaseOrderId: text("purchase_order_id")
       .notNull()
       .references(() => purchaseOrdersTable.id, { onDelete: "cascade" }),
@@ -164,5 +152,5 @@ export const purchaseOrderItemsTable = pgTable(
     check("discount_non_negative", sql`${table.discount} >= 0`),
     index("purchase_order_items_purchase_order_id").on(table.purchaseOrderId),
     index("purchase_order_items_product_id").on(table.productId),
-  ]
+  ],
 );

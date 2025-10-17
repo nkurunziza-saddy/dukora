@@ -1,29 +1,29 @@
 "use client";
 
 import {
+  DndContext,
+  type DragEndEvent,
+  type DragOverEvent,
+  DragOverlay,
+  type DragStartEvent,
+  MouseSensor,
+  PointerSensor,
+  TouchSensor,
+  type UniqueIdentifier,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { addMinutes, differenceInMinutes } from "date-fns";
+import {
   createContext,
+  type ReactNode,
   useContext,
   useId,
   useRef,
   useState,
-  type ReactNode,
 } from "react";
-import {
-  DndContext,
-  DragOverlay,
-  MouseSensor,
-  PointerSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-  type DragOverEvent,
-  type DragStartEvent,
-  type UniqueIdentifier,
-} from "@dnd-kit/core";
-import { addMinutes, differenceInMinutes } from "date-fns";
 
-import { EventItem, type CalendarEvent } from "@/components/event-calendar";
+import { type CalendarEvent, EventItem } from "@/components/event-calendar";
 
 type CalendarDndContextType = {
   activeEvent: CalendarEvent | null;
@@ -68,7 +68,7 @@ export function CalendarDndProvider({
   const [activeEvent, setActiveEvent] = useState<CalendarEvent | null>(null);
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [activeView, setActiveView] = useState<"month" | "week" | "day" | null>(
-    null
+    null,
   );
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
   const [eventHeight, setEventHeight] = useState<number | null>(null);
@@ -101,7 +101,7 @@ export function CalendarDndProvider({
       activationConstraint: {
         distance: 5,
       },
-    })
+    }),
   );
 
   const dndContextId = useId();
@@ -188,7 +188,7 @@ export function CalendarDndProvider({
             currentTime.getHours(),
             currentTime.getMinutes(),
             currentTime.getSeconds(),
-            currentTime.getMilliseconds()
+            currentTime.getMilliseconds(),
           );
         }
 
@@ -256,7 +256,7 @@ export function CalendarDndProvider({
           currentTime.getHours(),
           currentTime.getMinutes(),
           currentTime.getSeconds(),
-          currentTime.getMilliseconds()
+          currentTime.getMilliseconds(),
         );
       }
 

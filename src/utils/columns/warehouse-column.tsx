@@ -2,13 +2,13 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
-import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
-import type { SelectWarehouse } from "@/lib/schema/schema-types";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
+import { Badge } from "@/components/ui/badge";
+import type { SelectWarehouse } from "@/lib/schema/schema-types";
 
 export function WarehouseColumn(
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<SelectWarehouse & { warehouseItemCount: number }>[] {
   return [
     {
@@ -74,7 +74,7 @@ export function WarehouseColumn(
         <DataTableColumnHeader column={column} title={t("isActive")} />
       ),
       cell: ({ row }) => (
-        <Badge variant={row.original.isActive ? "outline" : "destructive"}>
+        <Badge variant={row.original.isActive ? "outline" : "error"}>
           {row.original.isActive ? t("active") : t("inactive")}
         </Badge>
       ),

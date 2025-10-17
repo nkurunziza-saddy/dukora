@@ -1,9 +1,9 @@
 "use client";
 
+import { RefreshCw } from "lucide-react";
+import { useState } from "react";
 import { handleRefresh } from "@/server/helpers/general-purpose";
 import { Button } from "./ui/button";
-import { useState } from "react";
-import { RefreshCw } from "lucide-react";
 
 export function RefreshButton() {
   const [loading, setLoading] = useState(false);

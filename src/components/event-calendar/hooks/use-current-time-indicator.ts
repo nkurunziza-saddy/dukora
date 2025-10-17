@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { endOfWeek, isSameDay, isWithinInterval, startOfWeek } from "date-fns";
+import { useEffect, useState } from "react";
 
 import { EndHour, StartHour } from "@/components/event-calendar/constants";
 
 export function useCurrentTimeIndicator(
   currentDate: Date,
-  view: "day" | "week"
+  view: "day" | "week",
 ) {
   const [currentTimePosition, setCurrentTimePosition] = useState<number>(0);
   const [currentTimeVisible, setCurrentTimeVisible] = useState<boolean>(false);

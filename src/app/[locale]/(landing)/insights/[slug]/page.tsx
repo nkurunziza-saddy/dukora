@@ -263,7 +263,11 @@ export default function InsightPage({ params }: { params: { slug: string } }) {
               if (block.type === "paragraph") {
                 return (
                   <p
-                    key={index}
+                    key={
+                      block.text
+                        ? block.text.substring(0, 30)
+                        : `${block.type}-${index}`
+                    }
                     className="text-sm text-text-secondary leading-relaxed mb-6"
                   >
                     {block.text}
@@ -274,7 +278,7 @@ export default function InsightPage({ params }: { params: { slug: string } }) {
               if (block.type === "heading") {
                 return (
                   <h2
-                    key={index}
+                    key={block.text}
                     className="text-xl md:text-2xl font-bold text-foreground mt-12 mb-4"
                   >
                     {block.text}
@@ -285,10 +289,10 @@ export default function InsightPage({ params }: { params: { slug: string } }) {
               if (block.type === "list") {
                 const items = (block as any).items as any[];
                 return (
-                  <ul key={index} className="space-y-2 mb-6 ml-6">
-                    {items.map((item, itemIndex) => (
+                  <ul key={items[0]} className="space-y-2 mb-6 ml-6">
+                    {items.map((item) => (
                       <li
-                        key={itemIndex}
+                        key={item}
                         className="text-sm text-text-secondary leading-relaxed list-disc"
                       >
                         {item}

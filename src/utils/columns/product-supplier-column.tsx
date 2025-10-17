@@ -6,7 +6,7 @@ import { DataTableColumnHeader } from "@/components/table/data-table-column-head
 import type { SelectProductSupplier } from "@/lib/schema/schema-types";
 
 export function ProductSupplierColumn(
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<SelectProductSupplier>[] {
   return [
     {

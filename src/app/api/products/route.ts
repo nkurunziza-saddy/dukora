@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import * as productService from "@/server/actions/product-actions";
 import { ErrorCode } from "@/server/constants/errors";
 

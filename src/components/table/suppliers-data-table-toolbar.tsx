@@ -1,13 +1,13 @@
 "use client";
 
-import { Table } from "@tanstack/react-table";
+import type { Table } from "@tanstack/react-table";
 import { X } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { CreateSupplierDialog } from "@/components/forms/create-supplier-form";
+import { DataTableExportPDF } from "@/components/table/data-table-export-pdf";
+import { DataTableSearch } from "@/components/table/data-table-search";
 import { Button } from "@/components/ui/button";
 import { DataTableViewOptions } from "./data-table-view-options";
-import { DataTableSearch } from "@/components/table/data-table-search";
-import { DataTableExportPDF } from "@/components/table/data-table-export-pdf";
-import { CreateSupplierDialog } from "@/components/forms/create-supplier-form";
-import { useTranslations } from "next-intl";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;

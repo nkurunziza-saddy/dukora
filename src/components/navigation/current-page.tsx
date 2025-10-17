@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
+import { Fragment } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,7 +9,6 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Fragment } from "react";
 
 export function CurrentPage() {
   const pathname = usePathname();
@@ -17,7 +16,7 @@ export function CurrentPage() {
   const generateBreadcrumbs = () => {
     const segments = pathname.split("/").filter(Boolean);
     return segments.slice(1).map((segment, index) => {
-      const href = "/" + segments.slice(0, index + 1).join("/");
+      const href = `/${segments.slice(0, index + 1).join("/")}`;
       const formattedSegment =
         segment.charAt(0).toUpperCase() + segment.slice(1);
 

@@ -1,23 +1,24 @@
-import { eq, desc, and, sql, gte, lte } from "drizzle-orm";
+import { and, desc, eq, gte, lte, sql } from "drizzle-orm";
 import { revalidatePath, unstable_cache } from "next/cache";
+import { cache } from "react";
 import { db } from "@/lib/db";
 import {
-  transactionsTable,
-  warehouseItemsTable,
   auditLogsTable,
-  productsTable,
   productSuppliersTable,
+  productsTable,
+  transactionsTable,
   usersTable,
+  warehouseItemsTable,
 } from "@/lib/schema";
-import {
-  InsertTransaction,
-  TransactionType,
+import type {
   InsertAuditLog,
   InsertProductSupplier,
+  InsertTransaction,
+  SelectWarehouseItem,
+  TransactionType,
 } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
 import { create as createWarehouseItem } from "@/server/repos/warehouse-item-repo";
-import { cache } from "react";
 
 export const get_all = cache(async (businessId: string) => {
   if (!businessId) {
@@ -39,7 +40,7 @@ export const get_all = cache(async (businessId: string) => {
       .where(eq(transactionsTable.businessId, businessId))
       .innerJoin(
         productsTable,
-        eq(productsTable.id, transactionsTable.productId)
+        eq(productsTable.id, transactionsTable.productId),
       )
       .innerJoin(usersTable, eq(usersTable.id, transactionsTable.createdBy))
       .orderBy(desc(transactionsTable.createdAt));
@@ -59,7 +60,7 @@ export const get_all_cached = unstable_cache(
   {
     tags: ["transactions"],
     revalidate: 300,
-  }
+  },
 );
 
 export const get_paginated = cache(
@@ -99,13 +100,13 @@ export const get_paginated = cache(
       console.error("Failed to fetch transactions:", error);
       return { data: null, error: ErrorCode.FAILED_REQUEST, total: 0 };
     }
-  }
+  },
 );
 
 export async function get_by_time_interval(
   businessId: string,
   dateFrom: Date,
-  dateTo: Date
+  dateTo: Date,
 ) {
   try {
     const result = await db
@@ -115,12 +116,12 @@ export async function get_by_time_interval(
         and(
           eq(transactionsTable.businessId, businessId),
           gte(transactionsTable.createdAt, dateFrom),
-          lte(transactionsTable.createdAt, dateTo)
-        )
+          lte(transactionsTable.createdAt, dateTo),
+        ),
       )
       .innerJoin(
         productsTable,
-        eq(transactionsTable.productId, productsTable.id)
+        eq(transactionsTable.productId, productsTable.id),
       );
     return {
       data: result,
@@ -134,7 +135,7 @@ export async function get_by_time_interval(
 export async function get_time_interval_with_with(
   businessId: string,
   dateFrom: Date,
-  dateTo: Date
+  dateTo: Date,
 ) {
   try {
     const result = await db
@@ -152,12 +153,12 @@ export async function get_time_interval_with_with(
         and(
           eq(transactionsTable.businessId, businessId),
           gte(transactionsTable.createdAt, dateFrom),
-          lte(transactionsTable.createdAt, dateTo)
-        )
+          lte(transactionsTable.createdAt, dateTo),
+        ),
       )
       .innerJoin(
         productsTable,
-        eq(productsTable.id, transactionsTable.productId)
+        eq(productsTable.id, transactionsTable.productId),
       )
       .innerJoin(usersTable, eq(usersTable.id, transactionsTable.createdBy))
       .orderBy(desc(transactionsTable.createdAt));
@@ -181,7 +182,7 @@ export async function get_by_id(transactionId: string, businessId: string) {
     const transaction = await db.query.transactionsTable.findFirst({
       where: and(
         eq(transactionsTable.id, transactionId),
-        eq(transactionsTable.businessId, businessId)
+        eq(transactionsTable.businessId, businessId),
       ),
       with: {
         product: true,
@@ -259,7 +260,7 @@ export async function create(transaction: InsertTransaction) {
 }
 
 export async function create_with_warehouse_item(
-  transaction: Omit<InsertTransaction, "warehouseItemId">
+  transaction: Omit<InsertTransaction, "warehouseItemId">,
 ) {
   if (
     !transaction.productId ||
@@ -282,10 +283,10 @@ export async function create_with_warehouse_item(
         await tx.query.warehouseItemsTable.findFirst({
           where: and(
             eq(warehouseItemsTable.productId, transaction.productId),
-            eq(warehouseItemsTable.warehouseId, transaction.warehouseId)
+            eq(warehouseItemsTable.warehouseId, transaction.warehouseId),
           ),
         });
-      let warehouseItem;
+      let warehouseItem: SelectWarehouseItem | undefined;
       if (existingWarehouseItem) {
         const updatedWarehouseItem = await tx
           .update(warehouseItemsTable)
@@ -300,7 +301,7 @@ export async function create_with_warehouse_item(
         const newWarehouseItem = await createWarehouseItem(
           transaction.businessId,
           transaction.createdBy,
-          warehouseItemData
+          warehouseItemData,
         );
         if (newWarehouseItem.error) {
           return { data: null, error: newWarehouseItem.error };
@@ -348,8 +349,8 @@ export async function get_by_type(businessId: string, type: TransactionType) {
       .where(
         and(
           eq(transactionsTable.businessId, businessId),
-          eq(transactionsTable.type, type)
-        )
+          eq(transactionsTable.type, type),
+        ),
       )
       .orderBy(desc(transactionsTable.createdAt));
 

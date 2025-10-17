@@ -164,9 +164,7 @@ export enum Permission {
 
 // Group permissions by feature for easier management
 export const PermissionGroups = {
-  STRIPE_CONNECT: [
-    Permission.STRIPE_CONNECT_MANAGE,
-  ],
+  STRIPE_CONNECT: [Permission.STRIPE_CONNECT_MANAGE],
   INTER_BUSINESS_PAYMENTS: [
     Permission.INTER_BUSINESS_PAYMENT_INITIATE,
     Permission.INTER_BUSINESS_PAYMENT_VIEW,

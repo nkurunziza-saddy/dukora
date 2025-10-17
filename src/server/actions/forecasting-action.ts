@@ -1,6 +1,6 @@
 import { ErrorCode } from "@/server/constants/errors";
-import { getUserIfHasPermission } from "./auth/permission-middleware";
 import { Permission } from "@/server/constants/permissions";
+import { getUserIfHasPermission } from "./auth/permission-middleware";
 
 function linearRegression(data: { x: number; y: number }[]) {
   const n = data.length;
@@ -33,7 +33,7 @@ export interface ForecastPoint {
 export async function getForecastedMetrics(
   historicalData: Record<string, Record<string, number>>,
   metricName: string,
-  forecastPeriods = 3
+  forecastPeriods = 3,
 ) {
   const currentUser = await getUserIfHasPermission(Permission.FINANCIAL_VIEW);
   if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
@@ -45,7 +45,7 @@ export async function getForecastedMetrics(
           x: index,
           y: metrics[metricName] || 0,
           name: new Date(period).toLocaleString("default", { month: "short" }),
-        } as ForecastPoint)
+        }) as ForecastPoint,
     );
 
     if (formattedData.length < 2) {

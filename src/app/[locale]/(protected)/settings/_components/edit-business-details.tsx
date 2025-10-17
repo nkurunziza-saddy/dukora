@@ -1,30 +1,30 @@
 "use client";
 import { useForm } from "@tanstack/react-form";
+import { AlertCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
+import { z } from "zod";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   Select,
-  SelectPopup,
   SelectItem,
+  SelectPopup,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { z } from "zod";
-import { useTranslations } from "next-intl";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import type { SelectBusiness } from "@/lib/schema/schema-types";
 import { updateBusiness } from "@/server/actions/business-actions";
-import { toast } from "sonner";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-  FieldError,
-  FieldDescription,
-} from "@/components/ui/field";
 
 const LIMITS = {
   NAME_MIN: 2,
@@ -43,11 +43,11 @@ const formSchema = z.object({
     .string()
     .max(
       LIMITS.DOMAIN_MAX,
-      `Domain cannot exceed ${LIMITS.DOMAIN_MAX} characters`
+      `Domain cannot exceed ${LIMITS.DOMAIN_MAX} characters`,
     )
     .regex(
       /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/,
-      "Please enter a valid domain"
+      "Please enter a valid domain",
     ),
   businessType: z.string(),
   description: z.string(),
@@ -55,7 +55,7 @@ const formSchema = z.object({
     .url("Please enter a valid URL")
     .max(
       LIMITS.LOGO_URL_MAX,
-      `Logo URL cannot exceed ${LIMITS.LOGO_URL_MAX} characters`
+      `Logo URL cannot exceed ${LIMITS.LOGO_URL_MAX} characters`,
     ),
   registrationNumber: z.string(),
   isActive: z.boolean(),

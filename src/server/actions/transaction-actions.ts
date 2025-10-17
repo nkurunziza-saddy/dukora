@@ -4,8 +4,8 @@ import type {
   InsertTransaction,
   TransactionType,
 } from "@/lib/schema/schema-types";
-import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
+import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as transactionRepo from "../repos/transaction-repo";
 
@@ -17,7 +17,7 @@ export const getTransactions = createProtectedAction(
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  }
+  },
 );
 
 export const getTransactionsPaginated = createProtectedAction(
@@ -26,7 +26,7 @@ export const getTransactionsPaginated = createProtectedAction(
     const result = await transactionRepo.get_paginated(
       user.businessId!,
       page,
-      limit
+      limit,
     );
 
     if (result.error) {
@@ -43,7 +43,7 @@ export const getTransactionsPaginated = createProtectedAction(
         totalPages: result.totalPages,
       },
     };
-  }
+  },
 );
 
 export const getTransactionsByTimeInterval = createProtectedAction(
@@ -52,13 +52,13 @@ export const getTransactionsByTimeInterval = createProtectedAction(
     const transactions = await transactionRepo.get_time_interval_with_with(
       user.businessId!,
       startDate,
-      endDate
+      endDate,
     );
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  }
+  },
 );
 
 export const getTransactionById = createProtectedAction(
@@ -69,20 +69,20 @@ export const getTransactionById = createProtectedAction(
     }
     const transaction = await transactionRepo.get_by_id(
       transactionId,
-      user.businessId!
+      user.businessId!,
     );
     if (transaction.error) {
       return { data: null, error: transaction.error };
     }
     return { data: transaction.data, error: null };
-  }
+  },
 );
 
 export const createTransaction = createProtectedAction(
   Permission.TRANSACTION_PURCHASE_CREATE,
   async (
     user,
-    transactionData: Omit<InsertTransaction, "businessId" | "id" | "createdBy">
+    transactionData: Omit<InsertTransaction, "businessId" | "id" | "createdBy">,
   ) => {
     if (
       !transactionData.productId?.trim() ||
@@ -104,7 +104,7 @@ export const createTransaction = createProtectedAction(
     }
 
     return { data: resData, error: null };
-  }
+  },
 );
 
 export const createTransactionAndWarehouseItem = createProtectedAction(
@@ -114,7 +114,7 @@ export const createTransactionAndWarehouseItem = createProtectedAction(
     transactionData: Omit<
       InsertTransaction,
       "businessId" | "id" | "createdBy" | "warehouseItemId"
-    >
+    >,
   ) => {
     if (
       !transactionData.productId?.trim() ||
@@ -134,7 +134,7 @@ export const createTransactionAndWarehouseItem = createProtectedAction(
       return { data: null, error: resError };
     }
     return { data: resData, error: null };
-  }
+  },
 );
 
 export const getTransactionsByType = createProtectedAction(
@@ -145,11 +145,11 @@ export const getTransactionsByType = createProtectedAction(
     }
     const transactions = await transactionRepo.get_by_type(
       user.businessId!,
-      type
+      type,
     );
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  }
+  },
 );

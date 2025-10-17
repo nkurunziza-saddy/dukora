@@ -1,20 +1,20 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+import { useState } from "react";
 import {
   Card,
-  CardPanel,
   CardDescription,
   CardHeader,
+  CardPanel,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useTranslations } from "next-intl";
-import { useState } from "react";
 import {
   Select,
-  SelectPopup,
   SelectItem,
+  SelectPopup,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -78,9 +78,7 @@ export function PAYECalculator() {
           </Label>
           <Select value={employeeType} onValueChange={setEmployeeType}>
             <SelectTrigger id="employeeType">
-              <SelectValue
-                placeholder={t("paye_calculator.select_employee_type")}
-              />
+              <SelectValue />
             </SelectTrigger>
             <SelectPopup>
               <SelectItem value="permanent">

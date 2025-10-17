@@ -1,11 +1,11 @@
 "use server";
-import type { InsertBusiness } from "@/lib/schema/schema-types";
-import { Permission } from "@/server/constants/permissions";
-import { ErrorCode } from "@/server/constants/errors";
-import * as businessRepo from "../repos/business-repo";
-import { createProtectedAction } from "@/server/helpers/action-factory";
-import { getCurrentSession } from "@/server/actions/auth-actions";
 import { revalidatePath } from "next/cache";
+import type { InsertBusiness } from "@/lib/schema/schema-types";
+import { getCurrentSession } from "@/server/actions/auth-actions";
+import { ErrorCode } from "@/server/constants/errors";
+import { Permission } from "@/server/constants/permissions";
+import { createProtectedAction } from "@/server/helpers/action-factory";
+import * as businessRepo from "../repos/business-repo";
 
 export const getBusinesses = createProtectedAction(
   Permission.BUSINESS_VIEW,
@@ -15,12 +15,12 @@ export const getBusinesses = createProtectedAction(
       return { data: null, error: businesses.error };
     }
     return { data: businesses.data, error: null };
-  }
+  },
 );
 
 export const getBusinessById = createProtectedAction(
   Permission.BUSINESS_VIEW,
-  async (user, businessId: string) => {
+  async (_user, businessId: string) => {
     if (!businessId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
@@ -29,11 +29,11 @@ export const getBusinessById = createProtectedAction(
       return { data: null, error: business.error };
     }
     return { data: business.data, error: null };
-  }
+  },
 );
 
 export const createBusiness = async (
-  businessData: Omit<InsertBusiness, "id">
+  businessData: Omit<InsertBusiness, "id">,
 ) => {
   const session = await getCurrentSession();
   if (!session) {
@@ -44,7 +44,7 @@ export const createBusiness = async (
   }
   const res = await businessRepo.create(
     session.user.id,
-    businessData as InsertBusiness
+    businessData as InsertBusiness,
   );
   if (res.error) {
     return { data: null, error: res.error };
@@ -63,7 +63,7 @@ export const updateBusiness = createProtectedAction(
     }: {
       businessId: string;
       updates: Partial<Omit<InsertBusiness, "id">>;
-    }
+    },
   ) => {
     if (!businessId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -71,14 +71,14 @@ export const updateBusiness = createProtectedAction(
     const updatedBusiness = await businessRepo.update(
       businessId,
       user.id,
-      updates
+      updates,
     );
     if (updatedBusiness.error) {
       return { data: null, error: updatedBusiness.error };
     }
     revalidatePath("/", "layout");
     return { data: updatedBusiness.data, error: null };
-  }
+  },
 );
 
 export const deleteBusiness = createProtectedAction(
@@ -93,12 +93,12 @@ export const deleteBusiness = createProtectedAction(
     }
     revalidatePath("/", "layout");
     return { data: { success: true }, error: null };
-  }
+  },
 );
 
 export const createManyBusinesses = createProtectedAction(
   Permission.BUSINESS_CREATE,
-  async (user, businessesData: Omit<InsertBusiness, "id">[]) => {
+  async (_user, businessesData: Omit<InsertBusiness, "id">[]) => {
     if (!businessesData?.length) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
@@ -109,5 +109,5 @@ export const createManyBusinesses = createProtectedAction(
     }
     revalidatePath("/", "layout");
     return { data: createdBusinesses.data, error: null };
-  }
+  },
 );

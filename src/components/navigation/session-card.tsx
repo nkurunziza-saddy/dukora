@@ -1,22 +1,27 @@
 "use client";
 
-import * as React from "react";
 import {
   Briefcase,
   ChevronsUpDown,
+  Frame,
   LogOut,
   Settings,
   User,
-  Frame,
 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { memo, useMemo } from "react";
+import useSWR from "swr";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Menu,
-  MenuPopup,
-  MenuItem,
-  MenuSeparator,
-  MenuTrigger,
   MenuGroup,
   MenuGroupLabel,
+  MenuItem,
+  MenuPopup,
+  MenuSeparator,
+  MenuTrigger,
 } from "@/components/ui/menu";
 import {
   SidebarMenu,
@@ -24,16 +29,10 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { memo, useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { SelectBusiness, SelectUser } from "@/lib/schema/schema-types";
-import { useRouter } from "next/navigation";
 import { authClient, useSession } from "@/lib/auth-client";
-import useSWR from "swr";
+import type { SelectBusiness, SelectUser } from "@/lib/schema/schema-types";
 import { fetcher } from "@/lib/utils";
-import { useTranslations } from "next-intl";
 
 type UserPayload = SelectUser & {
   business: SelectBusiness;

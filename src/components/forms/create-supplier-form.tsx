@@ -1,28 +1,28 @@
 "use client";
 
 import { useForm } from "@tanstack/react-form";
-import z from "zod";
+import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
+import z from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Field,
+  FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
-  FieldError,
-  FieldDescription,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { TriggerDialog } from "../shared/reusable-form-dialog";
-import { SelectSupplier } from "@/lib/schema/schema-types";
-import { Separator } from "../ui/separator";
+import type { SelectSupplier } from "@/lib/schema/schema-types";
 import {
   createSupplier,
   updateSupplier,
 } from "@/server/actions/supplier-actions";
-import { toast } from "sonner";
-import { format } from "date-fns";
-import { useTranslations } from "next-intl";
+import { TriggerDialog } from "../shared/reusable-form-dialog";
+import { Separator } from "../ui/separator";
 
 export default function SupplierForm({
   supplier,
@@ -48,9 +48,9 @@ export default function SupplierForm({
       name: supplier ? supplier.name : "",
       email: supplier ? supplier.email : "",
       phone: supplier ? supplier.phone : "",
-      address: supplier ? supplier.address ?? "" : "",
-      note: supplier ? supplier.note ?? "" : "",
-      contactName: supplier ? supplier.contactName ?? "" : "",
+      address: supplier ? (supplier.address ?? "") : "",
+      note: supplier ? (supplier.note ?? "") : "",
+      contactName: supplier ? (supplier.contactName ?? "") : "",
     },
     validators: {
       onSubmit: supplierSchema,
@@ -63,11 +63,11 @@ export default function SupplierForm({
         form.reset();
         toast.success(
           supplier
-            ? tCommon("edit") + " " + t("supplier") + " " + tCommon("confirm")
-            : t("supplier") + " " + tCommon("add") + " " + tCommon("confirm"),
+            ? `${tCommon("edit")} ${t("supplier")} ${tCommon("confirm")}`
+            : `${t("supplier")} ${tCommon("add")} ${tCommon("confirm")}`,
           {
             description: format(new Date(), "MMM dd, yyyy"),
-          }
+          },
         );
       } else {
         toast.error(tCommon("error"), {

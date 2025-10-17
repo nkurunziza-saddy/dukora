@@ -1,22 +1,22 @@
 "use server";
 
-import type { InsertUser, UserRole } from "@/lib/schema/schema-types";
-import { Permission } from "@/server/constants/permissions";
-import { ErrorCode } from "@/server/constants/errors";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { auth } from "@/lib/auth";
+import { db } from "@/lib/db";
+import { usersTable } from "@/lib/schema";
+import type { InsertUser, UserRole } from "@/lib/schema/schema-types";
+import { ErrorCode } from "@/server/constants/errors";
+import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import {
   create as createUserRepo,
-  get_by_id as getUserByIdRepo,
-  update as updateUserRepo,
   get_all_cached as getAllUsersRepo,
+  get_by_id as getUserByIdRepo,
   remove as removeUserRepo,
   toggle_active as toggleActiveRepo,
+  update as updateUserRepo,
 } from "../repos/user-repo";
-import { db } from "@/lib/db";
-import { usersTable } from "@/lib/schema";
-import { eq } from "drizzle-orm";
-import { auth } from "@/lib/auth";
 
 export const getUsers = createProtectedAction(
   Permission.USER_VIEW,
@@ -26,7 +26,7 @@ export const getUsers = createProtectedAction(
       return { data: null, error: users.error };
     }
     return { data: users.data, error: null };
-  }
+  },
 );
 
 export const getUserById = createProtectedAction(
@@ -40,7 +40,7 @@ export const getUserById = createProtectedAction(
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const createUser = createProtectedAction(
@@ -58,14 +58,14 @@ export const createUser = createProtectedAction(
     }
     revalidatePath("/dashboard/users");
     return { data: newUser.data, error: null };
-  }
+  },
 );
 
 export const updateUser = createProtectedAction(
   Permission.USER_UPDATE,
   async (
     user,
-    { userId, userData }: { userId: string; userData: Partial<InsertUser> }
+    { userId, userData }: { userId: string; userData: Partial<InsertUser> },
   ) => {
     if (!userId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -73,14 +73,14 @@ export const updateUser = createProtectedAction(
     const updatedUser = await updateUserRepo(
       userId,
       userData,
-      user.businessId!
+      user.businessId!,
     );
     if (updatedUser.error) {
       return { data: null, error: updatedUser.error };
     }
     revalidatePath("/dashboard/users");
     return { data: updatedUser.data, error: null };
-  }
+  },
 );
 
 export const deleteUser = createProtectedAction(
@@ -98,7 +98,7 @@ export const deleteUser = createProtectedAction(
     }
     revalidatePath("/dashboard/users");
     return { data: { success: true }, error: null };
-  }
+  },
 );
 
 export const toggleUserStatus = createProtectedAction(
@@ -116,7 +116,7 @@ export const toggleUserStatus = createProtectedAction(
     }
     revalidatePath("/dashboard/users");
     return { data: updatedUser.data, error: null };
-  }
+  },
 );
 
 export const assignRole = createProtectedAction(
@@ -128,14 +128,14 @@ export const assignRole = createProtectedAction(
     const updatedUser = await updateUserRepo(
       userId,
       { role },
-      user.businessId!
+      user.businessId!,
     );
     if (updatedUser.error) {
       return { data: null, error: updatedUser.error };
     }
     revalidatePath("/dashboard/users");
     return { data: updatedUser.data, error: null };
-  }
+  },
 );
 
 export const changeUserPassword = createProtectedAction(
@@ -164,5 +164,5 @@ export const changeUserPassword = createProtectedAction(
     }
 
     return { data: updateResult, error: null };
-  }
+  },
 );

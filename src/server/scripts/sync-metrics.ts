@@ -1,4 +1,5 @@
 import { scheduleMonthlyMetricsSync } from "@/server/actions/metrics-action";
+
 async function syncAllBusinessMetrics() {
   try {
     await scheduleMonthlyMetricsSync();

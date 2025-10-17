@@ -1,8 +1,8 @@
 "use server";
 
 import type { InsertUserSetting } from "@/lib/schema/schema-types";
-import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
+import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as userSettingsRepo from "../repos/user-settings-repo";
 
@@ -14,14 +14,14 @@ export const getUserSettings = createProtectedAction(
       return { data: null, error: settings.error };
     }
     return { data: settings.data, error: null };
-  }
+  },
 );
 
 export const upsertUserSettings = createProtectedAction(
   Permission.USER_UPDATE,
   async (
     user,
-    settingsData: Partial<Omit<InsertUserSetting, "id" | "userId">>[]
+    settingsData: Partial<Omit<InsertUserSetting, "id" | "userId">>[],
   ) => {
     if (!settingsData?.length) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -46,5 +46,5 @@ export const upsertUserSettings = createProtectedAction(
     }
 
     return { data: { success: true }, error: null };
-  }
+  },
 );

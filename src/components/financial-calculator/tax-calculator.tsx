@@ -1,10 +1,10 @@
 "use client";
 
-import { Tabs, TabsPanel, TabsList, TabsTab } from "@/components/ui/tabs";
+import { useTranslations } from "next-intl";
+import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
 import { IncomeTaxCalculator } from "./income-tax-calculator";
 import { PAYECalculator } from "./paye-calculator";
 import { VATCalculator } from "./vat-calculator";
-import { useTranslations } from "next-intl";
 
 export function TaxCalculator() {
   const t = useTranslations("FinancialCalculator");

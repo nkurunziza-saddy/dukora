@@ -1,12 +1,12 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { eq, and, isNull } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import { revalidatePath, unstable_cache } from "next/cache";
-import { ErrorCode } from "@/server/constants/errors";
-import type { InsertUser } from "@/lib/schema/schema-types";
-import { usersTable } from "@/lib/schema";
 import { cache } from "react";
+import { db } from "@/lib/db";
+import { usersTable } from "@/lib/schema";
+import type { InsertUser } from "@/lib/schema/schema-types";
+import { ErrorCode } from "@/server/constants/errors";
 
 export const get_all = cache(async (businessId: string) => {
   if (!businessId) {
@@ -18,7 +18,10 @@ export const get_all = cache(async (businessId: string) => {
       .select()
       .from(usersTable)
       .where(
-        and(eq(usersTable.businessId, businessId), isNull(usersTable.deletedAt))
+        and(
+          eq(usersTable.businessId, businessId),
+          isNull(usersTable.deletedAt),
+        ),
       );
     return { data: users, error: null };
   } catch (error) {
@@ -35,7 +38,7 @@ export const get_all_cached = unstable_cache(
   {
     revalidate: 300,
     tags: ["users"],
-  }
+  },
 );
 
 export const get_by_id = cache(async (userId: string, businessId: string) => {
@@ -48,7 +51,7 @@ export const get_by_id = cache(async (userId: string, businessId: string) => {
       where: and(
         eq(usersTable.id, userId),
         eq(usersTable.businessId, businessId),
-        isNull(usersTable.deletedAt)
+        isNull(usersTable.deletedAt),
       ),
       with: {
         business: true,
@@ -97,7 +100,7 @@ export async function create(userData: Omit<InsertUser, "id">) {
 export async function update(
   userId: string,
   userData: Partial<InsertUser>,
-  businessId: string
+  businessId: string,
 ) {
   if (!userId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -114,8 +117,8 @@ export async function update(
         and(
           eq(usersTable.id, userId),
           eq(usersTable.businessId, businessId),
-          isNull(usersTable.deletedAt)
-        )
+          isNull(usersTable.deletedAt),
+        ),
       )
       .returning();
 
@@ -147,8 +150,8 @@ export async function remove(userId: string, businessId: string) {
         and(
           eq(usersTable.id, userId),
           eq(usersTable.businessId, businessId),
-          isNull(usersTable.deletedAt)
-        )
+          isNull(usersTable.deletedAt),
+        ),
       )
       .returning();
 
@@ -178,11 +181,11 @@ export async function toggle_active(userId: string, businessId: string) {
     const result = await db
       .update(usersTable)
       .set({
-        isActive: !currentUser.data!.isActive,
+        isActive: !currentUser.data?.isActive,
         updatedAt: new Date(),
       })
       .where(
-        and(eq(usersTable.id, userId), eq(usersTable.businessId, businessId))
+        and(eq(usersTable.id, userId), eq(usersTable.businessId, businessId)),
       )
       .returning();
 

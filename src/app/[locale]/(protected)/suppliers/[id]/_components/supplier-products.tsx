@@ -1,9 +1,20 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { getTranslations } from "next-intl/server";
-import type { SelectProductSupplier } from "@/lib/schema/schema-types";
 import { format } from "date-fns";
+import { getTranslations } from "next-intl/server";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import type { SelectProductSupplier } from "@/lib/schema/schema-types";
 
-export default async function SupplierProducts({ productSupplier }: { productSupplier: SelectProductSupplier[] }) {
+export default async function SupplierProducts({
+  productSupplier,
+}: {
+  productSupplier: SelectProductSupplier[];
+}) {
   const t = await getTranslations("supplier");
 
   return (

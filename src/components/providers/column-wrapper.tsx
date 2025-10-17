@@ -1,8 +1,7 @@
 "use client";
-import React from "react";
-import { DataTable } from "@/components/table/data-table";
-import { useTranslations } from "next-intl";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useTranslations } from "next-intl";
+import { DataTable } from "@/components/table/data-table";
 
 type ColumnWrapperProps<T> = {
   column: (t: (key: string) => string) => ColumnDef<T>[];

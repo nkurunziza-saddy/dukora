@@ -27,7 +27,7 @@ function SelectTrigger({
         size === "sm" &&
           "gap-1.5 px-[calc(--spacing(2.5)-1px)] py-[calc(--spacing(1)-1px)]",
         size === "lg" && "py-[calc(--spacing(2)-1px)]",
-        className
+        className,
       )}
       {...props}
     >
@@ -92,7 +92,7 @@ function SelectPopup({
               data-slot="select-list"
               className={cn(
                 "max-h-(--available-height) min-w-(--anchor-width) overflow-y-auto p-1",
-                className
+                className,
               )}
             >
               {children}
@@ -120,7 +120,7 @@ function SelectItem({
       data-slot="select-item"
       className={cn(
         "grid cursor-default grid-cols-[1rem_1fr] items-center gap-2 rounded-sm py-1 ps-2 pe-4 text-base outline-none in-data-[side=none]:min-w-[calc(var(--anchor-width)+1.25rem)] data-disabled:pointer-events-none data-disabled:opacity-64 data-highlighted:bg-accent data-highlighted:text-accent-foreground sm:text-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        className
+        className,
       )}
       {...props}
     >

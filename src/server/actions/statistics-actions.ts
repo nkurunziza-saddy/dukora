@@ -1,13 +1,13 @@
+import { addDays, startOfToday, subDays } from "date-fns";
 import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import { getTotalProducts as getTotalProductsRepo } from "@/server/repos/statistics/product-stat-repo";
-import { getTotalWarehouses as getTotalWarehousesRepo } from "@/server/repos/statistics/warehouse-stat-repo";
 import {
-  getProductsWithStockAlert as getProductsWithStockAlertRepo,
   getInventoryValue as getInventoryValueRepo,
+  getProductsWithStockAlert as getProductsWithStockAlertRepo,
 } from "@/server/repos/statistics/stock-stat-repo";
 import * as transactionRepo from "@/server/repos/statistics/transactions-stat-repo";
-import { startOfToday, addDays, subDays } from "date-fns";
+import { getTotalWarehouses as getTotalWarehousesRepo } from "@/server/repos/statistics/warehouse-stat-repo";
 
 export const getTotalSKUCount = createProtectedAction(
   Permission.FINANCIAL_VIEW,
@@ -17,7 +17,7 @@ export const getTotalSKUCount = createProtectedAction(
       return { data: null, error: count.error };
     }
     return { data: count.data, error: null };
-  }
+  },
 );
 
 export const getTotalWarehousesCount = createProtectedAction(
@@ -28,7 +28,7 @@ export const getTotalWarehousesCount = createProtectedAction(
       return { data: null, error: count.error };
     }
     return { data: count.data, error: null };
-  }
+  },
 );
 
 export const getLowStockProductsCount = createProtectedAction(
@@ -39,7 +39,7 @@ export const getLowStockProductsCount = createProtectedAction(
       return { data: null, error: count.error };
     }
     return { data: count.data.length, error: null };
-  }
+  },
 );
 
 export const getCurrentInventoryValue = createProtectedAction(
@@ -50,7 +50,7 @@ export const getCurrentInventoryValue = createProtectedAction(
       return { data: null, error: count.error };
     }
     return { data: count.data, error: null };
-  }
+  },
 );
 
 export const getTodayTransactions = createProtectedAction(
@@ -63,17 +63,17 @@ export const getTodayTransactions = createProtectedAction(
       transactionRepo.getTransactionMetricsForInterval(
         user.businessId!,
         today,
-        tomorrow
+        tomorrow,
       ),
       transactionRepo.getTransactionMetricsForInterval(
         user.businessId!,
         yesterday,
-        today
+        today,
       ),
     ]);
     return {
       data: { current: resToday.data, prev: resYesterday.data },
       error: null,
     };
-  }
+  },
 );

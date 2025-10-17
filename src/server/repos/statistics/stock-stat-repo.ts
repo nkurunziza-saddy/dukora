@@ -1,9 +1,9 @@
-import { eq, desc, asc, and, lte, sum, sql, lt } from "drizzle-orm";
+import { and, asc, desc, eq, lt, lte, sql, sum } from "drizzle-orm";
 import { db } from "@/lib/db";
 import {
+  productsTable,
   warehouseItemsTable,
   warehousesTable,
-  productsTable,
 } from "@/lib/schema";
 import { ErrorCode } from "@/server/constants/errors";
 
@@ -18,7 +18,7 @@ export async function getProductsWithMostQuantity(businessId: string) {
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .where(eq(warehousesTable.businessId, businessId))
       .orderBy(desc(warehouseItemsTable.quantity))
@@ -41,7 +41,7 @@ export async function getProductsWithLowestQuantity(businessId: string) {
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .where(eq(warehousesTable.businessId, businessId))
       .orderBy(asc(warehouseItemsTable.quantity))
@@ -64,17 +64,17 @@ export async function getProductsWithStockAlert(businessId: string) {
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .innerJoin(
         productsTable,
-        eq(warehouseItemsTable.productId, productsTable.id)
+        eq(warehouseItemsTable.productId, productsTable.id),
       )
       .where(
         and(
           eq(productsTable.businessId, businessId),
-          lte(warehouseItemsTable.quantity, productsTable.reorderPoint)
-        )
+          lte(warehouseItemsTable.quantity, productsTable.reorderPoint),
+        ),
       )
       .orderBy(asc(warehouseItemsTable.quantity))
       .limit(5);
@@ -88,7 +88,7 @@ export async function getProductsWithStockAlert(businessId: string) {
 export async function get_by_quantity(
   businessId: string,
   threshold: number = 5,
-  fn?: string
+  fn?: string,
 ) {
   if (!businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -99,15 +99,15 @@ export async function get_by_quantity(
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .where(
         and(
           eq(warehousesTable.businessId, businessId),
           fn === "equal"
             ? eq(warehouseItemsTable.quantity, threshold)
-            : lte(warehouseItemsTable.quantity, threshold)
-        )
+            : lte(warehouseItemsTable.quantity, threshold),
+        ),
       );
     return { data: items, error: null };
   } catch (error) {
@@ -126,13 +126,13 @@ export async function get_negative_item(businessId: string) {
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .where(
         and(
           eq(warehousesTable.businessId, businessId),
-          lt(warehouseItemsTable.quantity, 0)
-        )
+          lt(warehouseItemsTable.quantity, 0),
+        ),
       );
     return { data: items, error: null };
   } catch (error) {
@@ -154,11 +154,11 @@ export async function getInventoryValue(businessId: string) {
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .innerJoin(
         productsTable,
-        eq(warehouseItemsTable.productId, productsTable.id)
+        eq(warehouseItemsTable.productId, productsTable.id),
       )
       .where(eq(warehousesTable.businessId, businessId));
 
@@ -170,7 +170,7 @@ export async function getInventoryValue(businessId: string) {
 }
 
 export async function getInventoryValueByWarehouseAndProduct(
-  businessId: string
+  businessId: string,
 ) {
   if (!businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -186,11 +186,11 @@ export async function getInventoryValueByWarehouseAndProduct(
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .innerJoin(
         productsTable,
-        eq(warehouseItemsTable.productId, productsTable.id)
+        eq(warehouseItemsTable.productId, productsTable.id),
       )
       .where(eq(warehousesTable.businessId, businessId))
       .groupBy(warehouseItemsTable.productId, warehouseItemsTable.warehouseId);

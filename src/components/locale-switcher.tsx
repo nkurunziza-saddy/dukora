@@ -1,10 +1,9 @@
 "use client";
 
-import { useId } from "react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useLocale } from "next-intl";
+import { useEffect, useId, useState } from "react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "./ui/label";
 
 const languageItems = [
@@ -38,8 +37,10 @@ export default function LocaleSwitcher() {
     setMounted(true);
   }, []);
 
-  const handleLocaleChange = (newLocale: string) => {
-    const newPath = pathname.replace(`/${locale}`, `/${newLocale}`);
+  const handleLocaleChange = (value: unknown) => {
+    if (typeof value !== "string") return;
+    const newLocale = value;
+    const newPath = (pathname ?? "").replace(`/${locale}`, `/${newLocale}`);
     router.replace(newPath);
   };
 

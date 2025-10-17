@@ -1,9 +1,8 @@
 "use client";
 
-import * as React from "react";
 import {
-  ColumnDef,
-  ColumnFiltersState,
+  type ColumnDef,
+  type ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
@@ -11,11 +10,15 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  SortingState,
+  type SortingState,
   useReactTable,
-  VisibilityState,
+  type VisibilityState,
 } from "@tanstack/react-table";
-
+import { useTranslations } from "next-intl";
+import * as React from "react";
+import { DefaultDataTableToolbar } from "@/components/table/data-table-toolbar";
+import { TransactionsDataTableToolbar } from "@/components/table/transactions-data-table-toolbar";
+import { UsersDataTableToolbar } from "@/components/table/users-data-table-toolbar";
 import {
   Table,
   TableBody,
@@ -24,15 +27,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import { DataTablePagination } from "./data-table-pagination";
-import { DefaultDataTableToolbar } from "@/components/table/data-table-toolbar";
+import { InvitationDataTableToolbar } from "./invitation-data-table-toolbar";
 import { ProductsDataTableToolbar } from "./products-data-table-toolbar";
 import { SuppliersDataTableToolbar } from "./suppliers-data-table-toolbar";
-import { TransactionsDataTableToolbar } from "@/components/table/transactions-data-table-toolbar";
-import { UsersDataTableToolbar } from "@/components/table/users-data-table-toolbar";
-import { InvitationDataTableToolbar } from "./invitation-data-table-toolbar";
-import { useTranslations } from "next-intl";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -55,7 +53,7 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const t = useTranslations("table");
@@ -123,7 +121,7 @@ export function DataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -153,7 +151,7 @@ export function DataTable<TData, TValue>({
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext()
+                          cell.getContext(),
                         )}
                       </TableCell>
                     ))}

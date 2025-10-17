@@ -1,8 +1,8 @@
 "use server";
 
 import type { InsertBusinessSetting } from "@/lib/schema/schema-types";
-import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
+import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as businessSettingsRepo from "../repos/business-settings-repo";
 
@@ -10,20 +10,20 @@ export const getBusinessSettings = createProtectedAction(
   Permission.BUSINESS_SETTINGS_VIEW,
   async (user) => {
     const settings = await businessSettingsRepo.get_all_cached(
-      user.businessId!
+      user.businessId!,
     );
     if (settings.error) {
       return { data: null, error: settings.error };
     }
     return { data: settings.data, error: null };
-  }
+  },
 );
 
 export const upsertBusinessSettings = createProtectedAction(
   Permission.BUSINESS_SETTINGS_UPDATE,
   async (
     user,
-    settingsData: Partial<Omit<InsertBusinessSetting, "id" | "businessId">>[]
+    settingsData: Partial<Omit<InsertBusinessSetting, "id" | "businessId">>[],
   ) => {
     if (!settingsData?.length) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -47,14 +47,14 @@ export const upsertBusinessSettings = createProtectedAction(
     }
 
     return { data: { success: true }, error: null };
-  }
+  },
 );
 
 export const upsertManyBusinessSettings = createProtectedAction(
   Permission.BUSINESS_SETTINGS_CREATE,
   async (
     user,
-    settingsData: Omit<InsertBusinessSetting, "businessId" | "id">[]
+    settingsData: Omit<InsertBusinessSetting, "businessId" | "id">[],
   ) => {
     if (settingsData === null) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -65,11 +65,11 @@ export const upsertManyBusinessSettings = createProtectedAction(
     }));
     const createdSettings = await businessSettingsRepo.upsert_many(
       user.id,
-      settings
+      settings,
     );
     if (createdSettings.error) {
       return { data: null, error: createdSettings.error };
     }
     return { data: createdSettings.data, error: null };
-  }
+  },
 );

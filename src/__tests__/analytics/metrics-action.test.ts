@@ -1,12 +1,11 @@
-import { describe, it, expect, beforeEach, vi, Mock } from "vitest";
+import { startOfMonth, subMonths } from "date-fns";
+import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
+import { getCurrentSession } from "@/server/actions/auth-actions";
 import {
   calculateAndSyncMonthlyMetrics,
   getMonthlyMetrics,
 } from "@/server/actions/metrics-action";
-import { startOfMonth, subMonths } from "date-fns";
 import { ErrorCode } from "@/server/constants/errors";
-
-import { getCurrentSession } from "@/server/actions/auth-actions";
 
 vi.mock("@/server/actions/auth-actions");
 vi.mock("@/server/helpers/role-permissions");
@@ -17,16 +16,16 @@ vi.mock("@/server/actions/expense-actions");
 vi.mock("@/server/helpers/db-functional-helpers");
 vi.mock("@/server/helpers/accounting-formulas");
 
-import * as rolePermissions from "@/server/helpers/role-permissions";
-import * as transactionRepo from "@/server/repos/transaction-repo";
-import * as metricsRepo from "@/server/repos/metrics-repo";
-import { getWarehouseItemsByBusiness } from "@/server/actions/warehouse-item-actions";
 import { getExpensesByTimeInterval } from "@/server/actions/expense-actions";
-import { syncMetricsToDatabase } from "@/server/helpers/db-functional-helpers";
+import { getWarehouseItemsByBusiness } from "@/server/actions/warehouse-item-actions";
 import {
   calculateAllMetrics,
   calculateClosingStock,
 } from "@/server/helpers/accounting-formulas";
+import { syncMetricsToDatabase } from "@/server/helpers/db-functional-helpers";
+import * as rolePermissions from "@/server/helpers/role-permissions";
+import * as metricsRepo from "@/server/repos/metrics-repo";
+import * as transactionRepo from "@/server/repos/transaction-repo";
 
 describe("Metrics Actions", () => {
   const mockUser = {
@@ -105,7 +104,7 @@ describe("Metrics Actions", () => {
     });
     (rolePermissions.roleHasPermission as Mock).mockReturnValue(true);
     (transactionRepo.get_by_time_interval as Mock).mockResolvedValue(
-      mockTransactions
+      mockTransactions,
     );
     (getExpensesByTimeInterval as Mock).mockResolvedValue(mockExpenses);
     (getWarehouseItemsByBusiness as Mock).mockResolvedValue(mockWarehouseItems);
@@ -132,12 +131,12 @@ describe("Metrics Actions", () => {
         expect.any(Array),
         mockExpenses.data,
         2000, // opening stock
-        3000 // closing stock
+        3000, // closing stock
       );
       expect(syncMetricsToDatabase).toHaveBeenCalledWith(
         "biz-1",
         testDate,
-        mockCalculatedMetrics
+        mockCalculatedMetrics,
       );
     });
 
@@ -245,7 +244,7 @@ describe("Metrics Actions", () => {
       };
 
       (transactionRepo.get_by_time_interval as Mock).mockResolvedValue(
-        transactionsWithInvalid
+        transactionsWithInvalid,
       );
 
       const testDate = startOfMonth(subMonths(new Date(), 2));
@@ -261,7 +260,7 @@ describe("Metrics Actions", () => {
         ]),
         expect.any(Array),
         expect.any(Number),
-        expect.any(Number)
+        expect.any(Number),
       );
 
       // Should not include the invalid transaction
@@ -296,13 +295,13 @@ describe("Metrics Actions", () => {
         expect.any(Array),
         expect.any(Array),
         0, // should default to 0 for opening stock
-        3000
+        3000,
       );
     });
 
     it("should handle exceptions gracefully", async () => {
       (transactionRepo.get_by_time_interval as Mock).mockRejectedValue(
-        new Error("Database connection failed")
+        new Error("Database connection failed"),
       );
 
       const testDate = startOfMonth(subMonths(new Date(), 2));
@@ -331,7 +330,7 @@ describe("Metrics Actions", () => {
       expect(result).toEqual(mockMetrics);
       expect(metricsRepo.get_monthly_metrics).toHaveBeenCalledWith(
         "biz-1",
-        testDate
+        testDate,
       );
     });
 
@@ -347,7 +346,7 @@ describe("Metrics Actions", () => {
 
     it("should handle database errors", async () => {
       (metricsRepo.get_monthly_metrics as Mock).mockRejectedValue(
-        new Error("Database error")
+        new Error("Database error"),
       );
 
       const testDate = startOfMonth(subMonths(new Date(), 1));

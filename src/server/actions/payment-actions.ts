@@ -1,11 +1,11 @@
 "use server";
 
-import { createProtectedAction } from "@/server/helpers/action-factory";
-import { Permission } from "@/server/constants/permissions";
-import { ErrorCode } from "@/server/constants/errors";
-import * as interBusinessPaymentsRepo from "@/server/repos/inter-business-payments-repo";
-import { get_by_id as getBusinessByIdRepo } from "@/server/repos/business-repo";
 import { stripe } from "@/lib/stripe";
+import { ErrorCode } from "@/server/constants/errors";
+import { Permission } from "@/server/constants/permissions";
+import { createProtectedAction } from "@/server/helpers/action-factory";
+import { get_by_id as getBusinessByIdRepo } from "@/server/repos/business-repo";
+import * as interBusinessPaymentsRepo from "@/server/repos/inter-business-payments-repo";
 
 export const initiateInterBusinessPayment = createProtectedAction(
   Permission.INTER_BUSINESS_PAYMENT_INITIATE,
@@ -21,7 +21,7 @@ export const initiateInterBusinessPayment = createProtectedAction(
       amount: number;
       currency: string;
       applicationFeeAmount?: number;
-    }
+    },
   ) => {
     if (!user.businessId) {
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
@@ -63,7 +63,7 @@ export const initiateInterBusinessPayment = createProtectedAction(
           applicationFeeAmount: String(applicationFeeAmount),
           initiatedByUserId: user.id,
         },
-        user.id
+        user.id,
       );
 
       if (paymentRecord.error) {
@@ -79,7 +79,7 @@ export const initiateInterBusinessPayment = createProtectedAction(
         error: ErrorCode.FAILED_REQUEST,
       };
     }
-  }
+  },
 );
 
 export const getInterBusinessPayments = createProtectedAction(
@@ -93,5 +93,5 @@ export const getInterBusinessPayments = createProtectedAction(
       return { data: null, error: payments.error };
     }
     return { data: payments.data, error: null };
-  }
+  },
 );

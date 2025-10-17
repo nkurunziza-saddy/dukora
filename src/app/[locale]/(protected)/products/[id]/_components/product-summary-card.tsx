@@ -1,14 +1,14 @@
-import { Card, CardPanel, CardHeader, CardTitle } from "@/components/ui/card";
 // import { Badge } from "@/components/ui/badge";
 import { getTranslations } from "next-intl/server";
-import {
-  SelectProduct,
+import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card";
+import type {
   SelectCategory,
-  SelectProductVariant,
+  SelectProduct,
   SelectProductSupplier,
+  SelectProductVariant,
   SelectTransaction,
-  SelectWarehouseItem,
   SelectWarehouse,
+  SelectWarehouseItem,
 } from "@/lib/schema/schema-types";
 
 type ExtendedProductPayload = SelectProduct & {

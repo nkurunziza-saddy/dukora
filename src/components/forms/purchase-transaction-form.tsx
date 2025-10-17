@@ -1,31 +1,33 @@
 "use client";
 
 import { useForm } from "@tanstack/react-form";
+import { format } from "date-fns";
+import { AlertCircle, CheckIcon, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
+import useSwr, { preload } from "swr";
 import z from "zod";
-import { CheckIcon, Loader2, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Field,
+  FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
-  FieldError,
-  FieldDescription,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { TriggerDialog } from "../shared/reusable-form-dialog";
-import { Separator } from "../ui/separator";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import type {
-  SelectTransaction,
-  SelectProduct,
   InsertTransaction,
-  SelectWarehouse,
+  SelectProduct,
   SelectSupplier,
+  SelectTransaction,
+  SelectWarehouse,
 } from "@/lib/schema/schema-types";
-import { fetcher, cn } from "@/lib/utils";
-import useSwr from "swr";
-import { preload } from "swr";
+import { cn, fetcher } from "@/lib/utils";
+import { createTransactionAndWarehouseItem } from "@/server/actions/transaction-actions";
+import { TriggerDialog } from "../shared/reusable-form-dialog";
 import {
   Autocomplete,
   AutocompleteEmpty,
@@ -34,10 +36,7 @@ import {
   AutocompleteList,
   AutocompletePopup,
 } from "../ui/autocomplete";
-import { toast } from "sonner";
-import { createTransactionAndWarehouseItem } from "@/server/actions/transaction-actions";
-import { format } from "date-fns";
-import { useTranslations } from "next-intl";
+import { Separator } from "../ui/separator";
 
 if (typeof window !== "undefined") {
   preload("/api/products", fetcher);
@@ -86,14 +85,16 @@ export default function PurchaseTransactionForm({
     defaultValues: {
       productId: purchaseTransaction ? purchaseTransaction.productId : "",
       supplierId: purchaseTransaction
-        ? purchaseTransaction.supplierId ?? ""
+        ? (purchaseTransaction.supplierId ?? "")
         : "",
       warehouseId: purchaseTransaction ? purchaseTransaction.warehouseId : "",
       quantity: purchaseTransaction
         ? Math.abs(purchaseTransaction.quantity)
         : 1,
-      note: purchaseTransaction ? purchaseTransaction.note ?? "" : "",
-      reference: purchaseTransaction ? purchaseTransaction.reference ?? "" : "",
+      note: purchaseTransaction ? (purchaseTransaction.note ?? "") : "",
+      reference: purchaseTransaction
+        ? (purchaseTransaction.reference ?? "")
+        : "",
     },
     validators: {
       onSubmit: purchaseTransactionSchema,
@@ -224,7 +225,7 @@ export default function PurchaseTransactionForm({
                                 "h-4 w-4",
                                 product.id === field.state.value
                                   ? "opacity-100"
-                                  : "opacity-0"
+                                  : "opacity-0",
                               )}
                             />
                           </div>
@@ -288,7 +289,7 @@ export default function PurchaseTransactionForm({
                                   "h-4 w-4",
                                   item.id === field.state.value
                                     ? "opacity-100"
-                                    : "opacity-0"
+                                    : "opacity-0",
                                 )}
                               />
                             </div>
@@ -357,7 +358,7 @@ export default function PurchaseTransactionForm({
                                 "h-4 w-4",
                                 supplier.id === field.state.value
                                   ? "opacity-100"
-                                  : "opacity-0"
+                                  : "opacity-0",
                               )}
                             />
                           </div>
@@ -456,12 +457,10 @@ export default function PurchaseTransactionForm({
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 {purchaseTransaction ? tCommon("edit") : tCommon("add")}...
               </>
+            ) : purchaseTransaction ? (
+              `${tCommon("edit")} ${tInventory("productName")}`
             ) : (
-              <>
-                {purchaseTransaction
-                  ? `${tCommon("edit")} ${tInventory("productName")}`
-                  : `${tCommon("add")} ${tInventory("productName")}`}
-              </>
+              `${tCommon("add")} ${tInventory("productName")}`
             )}
           </Button>
         </div>

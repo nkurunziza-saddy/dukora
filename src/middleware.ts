@@ -1,8 +1,8 @@
-import createMiddleware from "next-intl/middleware";
-import { routing } from "./i18n/routing";
-import { NextRequest, NextResponse } from "next/server";
-import * as routes from "@/utils/routes";
 import { getSessionCookie } from "better-auth/cookies";
+import { type NextRequest, NextResponse } from "next/server";
+import createMiddleware from "next-intl/middleware";
+import * as routes from "@/utils/routes";
+import { routing } from "./i18n/routing";
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -11,7 +11,7 @@ const locales = routing.locales;
 function getPathWithoutLocale(pathname: string, locales: string[]) {
   const parts = pathname.split("/");
   if (parts.length > 1 && locales.includes(parts[1])) {
-    return "/" + parts.slice(2).join("/");
+    return `/${parts.slice(2).join("/")}`;
   }
   return pathname;
 }
@@ -37,7 +37,7 @@ export async function middleware(req: NextRequest) {
   if (isAuthRoute(pathWithoutLocale)) {
     if (isLoggedIn) {
       return NextResponse.redirect(
-        new URL(routes.DEFAULT_AUTH_REDIRECT, nextUrl)
+        new URL(routes.DEFAULT_AUTH_REDIRECT, nextUrl),
       );
     }
     return NextResponse.next();

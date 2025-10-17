@@ -1,18 +1,19 @@
 "use client";
 
-import * as React from "react";
-import { useRouter } from "next/navigation";
 import {
-  Package,
-  ShoppingCart,
-  Plus,
-  Users,
-  Settings,
   FileText,
+  Package,
+  Plus,
+  Settings,
+  ShoppingCart,
+  Users,
   Zap,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-
+import * as React from "react";
+import SupplierForm from "@/components/forms/create-supplier-form";
+import PurchaseTransactionForm from "@/components/forms/purchase-transaction-form";
 import {
   CommandDialog,
   CommandEmpty,
@@ -23,14 +24,12 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command";
+import AnyTransactionForm from "./forms/create-any-transaction-form";
 import CreateProductForm from "./forms/create-product-form";
-import PurchaseTransactionForm from "@/components/forms/purchase-transaction-form";
-import SupplierForm from "@/components/forms/create-supplier-form";
-import { Button } from "./ui/button";
+import ExpenseTransactionForm from "./forms/expense-transaction-form";
 import SaleTransactionForm from "./forms/sale-transaction-form";
 import { StateDialog } from "./shared/reusable-form-dialog";
-import ExpenseTransactionForm from "./forms/expense-transaction-form";
-import AnyTransactionForm from "./forms/create-any-transaction-form";
+import { Button } from "./ui/button";
 
 export default function QuickActions() {
   const [open, setOpen] = React.useState(false);
@@ -52,7 +51,7 @@ export default function QuickActions() {
 
     if (mathRegex.test(input) && hasOperator && input.trim()) {
       try {
-        const result = new Function("return " + input)();
+        const result = new Function(`return ${input}`)();
         return { isMath: true, result: result.toString() };
       } catch {
         return { isMath: false, result: null };

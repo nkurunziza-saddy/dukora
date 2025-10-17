@@ -1,12 +1,11 @@
 "use client";
 
-import { useId } from "react";
-import { useLocale } from "next-intl";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Menu, MenuPopup, MenuItem, MenuTrigger } from "@/components/ui/menu";
 import { Settings } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
+import { useEffect, useId, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Menu, MenuItem, MenuPopup, MenuTrigger } from "@/components/ui/menu";
 
 const languageItems = [
   { value: "en", label: "English" },

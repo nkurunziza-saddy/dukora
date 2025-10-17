@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import type { SelectInterBusinessPayment } from "@/lib/schema/schema-types";
 
 export function PaymentColumn(
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<SelectInterBusinessPayment>[] {
   return [
     {

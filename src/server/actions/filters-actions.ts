@@ -1,8 +1,8 @@
-import { TransactionType } from "@/lib/schema/schema-types";
-import { getFilteredTransactions } from "@/server/repos/statistics/transactions-stat-repo";
+import type { TransactionType } from "@/lib/schema/schema-types";
 import { getUserIfHasPermission } from "@/server/actions/auth/permission-middleware";
-import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
+import { Permission } from "@/server/constants/permissions";
+import { getFilteredTransactions } from "@/server/repos/statistics/transactions-stat-repo";
 export async function fetchTransactionsByFilters(
   limit = 10,
   offset = 0,
@@ -10,7 +10,7 @@ export async function fetchTransactionsByFilters(
   sortOrder: "asc" | "desc" = "desc",
   typeFilter?: TransactionType,
   dateFrom?: string,
-  dateTo?: string
+  dateTo?: string,
 ) {
   try {
     const currentUser = await getUserIfHasPermission(Permission.FINANCIAL_VIEW);
@@ -27,7 +27,7 @@ export async function fetchTransactionsByFilters(
       sortOrder,
       typeFilter,
       dateFromObj,
-      dateToObj
+      dateToObj,
     );
 
     if (data.error) {

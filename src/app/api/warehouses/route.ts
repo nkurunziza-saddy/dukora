@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import * as warehouseService from "@/server/actions/warehouse-actions";
 import { ErrorCode } from "@/server/constants/errors";
 

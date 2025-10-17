@@ -1,17 +1,29 @@
-import { TimeRange } from "@/components/time-range";
-import { calculateAndSyncMonthlyMetrics } from "@/server/actions/metrics-action";
 import {
-  getMonthData,
-  getCurrentMonthBoundary,
-} from "@/server/helpers/time-date-forrmatters";
+  AlertCircle,
+  AlertTriangle,
+  BarChart3,
+  Calculator,
+  CheckCircle,
+  DollarSign,
+  Info,
+  Package,
+  ShoppingCart,
+  TrendingDown,
+  TrendingUp,
+  Wallet,
+} from "lucide-react";
+import { getTranslations } from "next-intl/server";
+import StatCard from "@/components/shared/stat-card";
+import { TimeRange } from "@/components/time-range";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
-  CardPanel,
   CardDescription,
   CardHeader,
+  CardPanel,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
   Table,
@@ -21,24 +33,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  TrendingUp,
-  DollarSign,
-  BarChart3,
-  Calculator,
-  Wallet,
-  Package,
-  ShoppingCart,
-  AlertTriangle,
-  CheckCircle,
-  Info,
-  TrendingDown,
-  AlertCircle,
-} from "lucide-react";
-import StatCard from "@/components/shared/stat-card";
-import { getTranslations } from "next-intl/server";
 import { formatCurrency, formatKeys, formatNumber } from "@/lib/utils";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { calculateAndSyncMonthlyMetrics } from "@/server/actions/metrics-action";
+import {
+  getCurrentMonthBoundary,
+  getMonthData,
+} from "@/server/helpers/time-date-forrmatters";
 
 const analytics = async (props: {
   searchParams: Promise<{ [key: string]: string | undefined }>;
@@ -87,8 +87,8 @@ const analytics = async (props: {
         data?.grossProfit && data.grossProfit > 0
           ? "up"
           : data?.grossProfit && data.grossProfit < 0
-          ? "down"
-          : "neutral",
+            ? "down"
+            : "neutral",
       description: t("grossProfitDesc"),
     },
     {
@@ -99,8 +99,8 @@ const analytics = async (props: {
         data?.netIncome && data.netIncome > 0
           ? "up"
           : data?.netIncome && data.netIncome < 0
-          ? "down"
-          : "neutral",
+            ? "down"
+            : "neutral",
       description: t("netIncomeDesc"),
     },
   ];
@@ -114,8 +114,8 @@ const analytics = async (props: {
         data?.operatingIncome && data.operatingIncome > 0
           ? "up"
           : data?.operatingIncome && data.operatingIncome < 0
-          ? "down"
-          : "neutral",
+            ? "down"
+            : "neutral",
       description: t("operatingIncomeDesc"),
     },
     {
@@ -133,8 +133,8 @@ const analytics = async (props: {
         data?.expenseRatio && data.expenseRatio < 30
           ? "up"
           : data?.expenseRatio && data.expenseRatio > 50
-          ? "down"
-          : "neutral",
+            ? "down"
+            : "neutral",
       description: t("expenseRatioDesc"),
     },
   ];
@@ -373,10 +373,10 @@ const analytics = async (props: {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {allDetailedMetrics.map((metric, index) => {
+                {allDetailedMetrics.map((metric) => {
                   const IconComponent = metric.icon || Info;
                   return (
-                    <TableRow key={index} className="hover:bg-muted/50">
+                    <TableRow key={metric.label} className="hover:bg-muted/50">
                       <TableCell className="font-medium">
                         <div className="flex items-center gap-2">
                           <IconComponent className="h-4 w-4 text-muted-foreground" />
@@ -389,14 +389,15 @@ const analytics = async (props: {
                             metric.category === t("salesCategory")
                               ? "green"
                               : metric.category === t("inventoryCategory")
-                              ? "blue"
-                              : metric.category === t("expensesCategory")
-                              ? "redStrong"
-                              : metric.category === t("marginsCategory")
-                              ? "purple"
-                              : metric.category === t("efficiencyCategory")
-                              ? "orange"
-                              : "default"
+                                ? "blue"
+                                : metric.category === t("expensesCategory")
+                                  ? "redStrong"
+                                  : metric.category === t("marginsCategory")
+                                    ? "purple"
+                                    : metric.category ===
+                                        t("efficiencyCategory")
+                                      ? "orange"
+                                      : "default"
                           }
                         >
                           {metric.category}

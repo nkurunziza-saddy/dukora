@@ -1,14 +1,14 @@
 "use client";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 import {
   Select,
-  SelectPopup,
   SelectItem,
+  SelectPopup,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
 
 export function TimeRange() {
   const [timeRange, setTimeRange] = useState("1");

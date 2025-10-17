@@ -1,21 +1,18 @@
+import { sql } from "drizzle-orm";
 import {
+  check,
+  index,
   pgTable,
   text,
   timestamp,
   uniqueIndex,
-  index,
-  check,
 } from "drizzle-orm/pg-core";
 import { businessesTable } from "./businesses";
-import { sql } from "drizzle-orm";
 
 export const suppliersTable = pgTable(
   "suppliers",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     name: text("name").notNull(),
     email: text("email").notNull(),
     phone: text("phone").notNull(),
@@ -38,16 +35,16 @@ export const suppliersTable = pgTable(
   (table) => [
     uniqueIndex("suppliers_business_id_email").on(
       table.businessId,
-      table.email
+      table.email,
     ),
     uniqueIndex("suppliers_business_id_phone").on(
       table.businessId,
-      table.phone
+      table.phone,
     ),
     check(
       "email_format",
-      sql`${table.email} ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'`
+      sql`${table.email} ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'`,
     ),
     index("suppliers_business_id").on(table.businessId),
-  ]
+  ],
 );

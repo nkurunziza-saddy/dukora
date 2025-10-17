@@ -1,8 +1,19 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getTranslations } from "next-intl/server";
-import { ExtendedProductPayload } from "@/lib/schema/schema-types";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import type { ExtendedProductPayload } from "@/lib/schema/schema-types";
 
-export default async function ProductStockLevels({ warehouseItems }: { warehouseItems: ExtendedProductPayload["warehouseItems"] }) {
+export default async function ProductStockLevels({
+  warehouseItems,
+}: {
+  warehouseItems: ExtendedProductPayload["warehouseItems"];
+}) {
   const t = await getTranslations("product");
 
   return (

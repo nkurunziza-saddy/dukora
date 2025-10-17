@@ -1,20 +1,17 @@
+import { sql } from "drizzle-orm";
 import {
+  numeric,
   pgTable,
   text,
-  numeric,
   timestamp,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { businessesTable } from "./businesses";
-import { sql } from "drizzle-orm";
 
 export const metricsTable = pgTable(
   "metrics",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     businessId: text("business_id")
       .notNull()
       .references(() => businessesTable.id, { onDelete: "cascade" }),
@@ -31,7 +28,7 @@ export const metricsTable = pgTable(
       table.businessId,
       table.name,
       table.periodType,
-      table.period
+      table.period,
     ),
-  ]
+  ],
 );

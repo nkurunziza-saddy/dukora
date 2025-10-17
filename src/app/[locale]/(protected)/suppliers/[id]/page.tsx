@@ -1,10 +1,10 @@
-import { getSupplierById } from "@/server/actions/supplier-actions";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Tabs, TabsPanel, TabsList, TabsTab } from "@/components/ui/tabs";
-import SupplierSummaryCard from "./_components/supplier-summary-card";
-import SupplierProducts from "./_components/supplier-products";
+import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
 import { db } from "@/lib/db";
+import { getSupplierById } from "@/server/actions/supplier-actions";
+import SupplierProducts from "./_components/supplier-products";
+import SupplierSummaryCard from "./_components/supplier-summary-card";
 
 export async function generateStaticParams() {
   const res = await db.query.suppliersTable.findMany();

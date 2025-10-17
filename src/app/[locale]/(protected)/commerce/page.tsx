@@ -1,4 +1,3 @@
-import React from "react";
 import OnTopBlurOverlay from "@/components/on-top-blur";
 
 const commerce = () => {

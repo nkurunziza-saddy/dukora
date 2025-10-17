@@ -1,21 +1,21 @@
 "use client";
 
-import React, { FC, useState } from "react";
+import { format } from "date-fns";
 import { MoreHorizontal, Trash } from "lucide-react";
+import { useTranslations } from "next-intl";
+import React, { type FC, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Menu,
-  MenuTrigger,
-  MenuPopup,
-  MenuItem,
   MenuGroup,
   MenuGroupLabel,
+  MenuItem,
+  MenuPopup,
+  MenuTrigger,
 } from "@/components/ui/menu";
-import { toast } from "sonner";
-import { format } from "date-fns";
-import ConfirmDialog from "../shared/confirm-dialog";
 import type { ExtendedInvitationPayload } from "@/lib/schema/schema-types";
-import { useTranslations } from "next-intl";
+import ConfirmDialog from "../shared/confirm-dialog";
 
 export interface InvitationRowActionsProps {
   invitation: ExtendedInvitationPayload;

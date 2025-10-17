@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
 import { ScrollArea as ScrollAreaPrimitive } from "@base-ui-components/react/scroll-area";
+import React from "react";
 import { cn } from "@/lib/utils";
 
 const ScrollArea = React.forwardRef<
@@ -12,7 +12,7 @@ const ScrollArea = React.forwardRef<
   }
 >(function ScrollArea(
   { className, children, orientation = "vertical", ...props },
-  ref
+  ref,
 ) {
   return (
     <ScrollAreaPrimitive.Root className="min-h-0" {...props}>
@@ -21,7 +21,7 @@ const ScrollArea = React.forwardRef<
         data-slot="scroll-area-viewport"
         className={cn(
           "size-full overscroll-contain rounded-[inherit] transition-[box-shadow] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background",
-          className
+          className,
         )}
       >
         {children}
@@ -56,7 +56,7 @@ function ScrollBar({
       orientation={orientation}
       className={cn(
         "m-0.5 flex opacity-0 transition-opacity delay-300 data-hovering:opacity-100 data-hovering:delay-0 data-hovering:duration-100 data-scrolling:opacity-100 data-scrolling:delay-0 data-scrolling:duration-100 data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:flex-col data-[orientation=vertical]:w-1.5",
-        className
+        className,
       )}
       {...props}
     >

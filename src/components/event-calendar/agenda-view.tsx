@@ -1,16 +1,15 @@
 "use client";
 
-import { useMemo } from "react";
 import { addDays, format, isToday } from "date-fns";
-
+import { Calendar1 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useMemo } from "react";
 import {
   AgendaDaysToShow,
-  CalendarEvent,
+  type CalendarEvent,
   EventItem,
   getAgendaEventsForDay,
 } from "@/components/event-calendar";
-import { Calendar1 } from "lucide-react";
-import { useTranslations } from "next-intl";
 
 interface AgendaViewProps {
   currentDate: Date;
@@ -25,7 +24,7 @@ export function AgendaView({
 }: AgendaViewProps) {
   const days = useMemo(() => {
     return Array.from({ length: AgendaDaysToShow }, (_, i) =>
-      addDays(new Date(currentDate), i)
+      addDays(new Date(currentDate), i),
     );
   }, [currentDate]);
   const t = useTranslations("schedule");
@@ -35,7 +34,7 @@ export function AgendaView({
   };
 
   const hasEvents = days.some(
-    (day) => getAgendaEventsForDay(events, day).length > 0
+    (day) => getAgendaEventsForDay(events, day).length > 0,
   );
 
   return (

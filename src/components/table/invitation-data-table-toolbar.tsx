@@ -1,16 +1,14 @@
 "use client";
 
-import { Table } from "@tanstack/react-table";
+import type { Table } from "@tanstack/react-table";
 import { X } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-
-import { DataTableViewOptions } from "./data-table-view-options";
-import { DataTableDashFilter } from "./data-table-faceted-filter";
-import { DataTableSearch } from "@/components/table/data-table-search";
-import { DataTableExportPDF } from "@/components/table/data-table-export-pdf";
-import { userStatuses } from "@/utils/columns/user-column";
 import { useTranslations } from "next-intl";
+import { DataTableExportPDF } from "@/components/table/data-table-export-pdf";
+import { DataTableSearch } from "@/components/table/data-table-search";
+import { Button } from "@/components/ui/button";
+import { userStatuses } from "@/utils/columns/user-column";
+import { DataTableDashFilter } from "./data-table-faceted-filter";
+import { DataTableViewOptions } from "./data-table-view-options";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;

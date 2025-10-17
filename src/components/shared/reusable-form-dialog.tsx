@@ -1,17 +1,16 @@
+import { Plus } from "lucide-react";
 import type React from "react";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogPopup,
   DialogDescription,
   DialogHeader,
+  DialogPopup,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
-import { ScrollArea } from "../ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { ScrollArea } from "../ui/scroll-area";
 
 export function TriggerDialog({
   children,

@@ -1,9 +1,20 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { getTranslations } from "next-intl/server";
-import { ExtendedProductPayload } from "@/lib/schema/schema-types";
 import { format } from "date-fns";
+import { getTranslations } from "next-intl/server";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import type { ExtendedProductPayload } from "@/lib/schema/schema-types";
 
-export default async function ProductTransactions({ transactions }: { transactions: ExtendedProductPayload["transactions"] }) {
+export default async function ProductTransactions({
+  transactions,
+}: {
+  transactions: ExtendedProductPayload["transactions"];
+}) {
   const t = await getTranslations("product");
 
   return (
@@ -19,7 +30,9 @@ export default async function ProductTransactions({ transactions }: { transactio
       <TableBody>
         {transactions.map((transaction) => (
           <TableRow key={transaction.id}>
-            <TableCell>{format(new Date(transaction.createdAt), "PPP")}</TableCell>
+            <TableCell>
+              {format(new Date(transaction.createdAt), "PPP")}
+            </TableCell>
             <TableCell>{transaction.type}</TableCell>
             <TableCell>{transaction.quantity}</TableCell>
             <TableCell>{transaction.reference || "N/A"}</TableCell>

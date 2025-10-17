@@ -1,18 +1,18 @@
 "use server";
 
-import type { InsertSchedule } from "@/lib/schema/schema-types";
-import { Permission } from "@/server/constants/permissions";
-import { ErrorCode } from "@/server/constants/errors";
 import { revalidatePath } from "next/cache";
+import type { InsertSchedule } from "@/lib/schema/schema-types";
+import { ErrorCode } from "@/server/constants/errors";
+import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import {
+  create_many as createManySchedulesRepo,
+  create as createScheduleRepo,
   get_all_cached as getAllSchedulesRepo,
   get_overview as getOverviewSchedules,
   get_by_id as getScheduleByIdRepo,
-  create as createScheduleRepo,
-  update as updateScheduleRepo,
   remove as removeScheduleRepo,
-  create_many as createManySchedulesRepo,
+  update as updateScheduleRepo,
 } from "../repos/schedules-repo";
 
 export const getSchedules = createProtectedAction(
@@ -23,7 +23,7 @@ export const getSchedules = createProtectedAction(
       return { data: null, error: schedules.error };
     }
     return { data: schedules.data, error: null };
-  }
+  },
 );
 
 export const getSchedulesOverview = createProtectedAction(
@@ -32,13 +32,13 @@ export const getSchedulesOverview = createProtectedAction(
     const schedules = await getOverviewSchedules(
       user.businessId!,
       user.id,
-      limit
+      limit,
     );
     if (schedules.error) {
       return { data: null, error: schedules.error };
     }
     return { data: schedules.data, error: null };
-  }
+  },
 );
 
 export const getScheduleById = createProtectedAction(
@@ -52,7 +52,7 @@ export const getScheduleById = createProtectedAction(
       return { data: null, error: schedule.error };
     }
     return { data: schedule.data, error: null };
-  }
+  },
 );
 
 export const createSchedule = createProtectedAction(
@@ -73,7 +73,7 @@ export const createSchedule = createProtectedAction(
     revalidatePath("/scheduler");
     revalidatePath("/dashboard");
     return { data: res.data, error: null };
-  }
+  },
 );
 
 export const updateSchedule = createProtectedAction(
@@ -86,7 +86,7 @@ export const updateSchedule = createProtectedAction(
     }: {
       scheduleId: string;
       updates: Partial<Omit<InsertSchedule, "userId" | "businessId">>;
-    }
+    },
   ) => {
     if (!scheduleId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -95,7 +95,7 @@ export const updateSchedule = createProtectedAction(
       scheduleId,
       user.businessId!,
       user.id,
-      updates
+      updates,
     );
     if (updatedSchedule.error) {
       return { data: null, error: updatedSchedule.error };
@@ -103,7 +103,7 @@ export const updateSchedule = createProtectedAction(
     revalidatePath("/scheduler");
     revalidatePath("/dashboard");
     return { data: updatedSchedule.data, error: null };
-  }
+  },
 );
 
 export const deleteSchedule = createProtectedAction(
@@ -116,7 +116,7 @@ export const deleteSchedule = createProtectedAction(
     revalidatePath("/scheduler");
     revalidatePath("/dashboard");
     return { data: { success: true }, error: null };
-  }
+  },
 );
 
 export const createManySchedules = createProtectedAction(
@@ -133,5 +133,5 @@ export const createManySchedules = createProtectedAction(
     revalidatePath("/scheduler");
     revalidatePath("/dashboard");
     return { data: createdSchedules, error: null };
-  }
+  },
 );

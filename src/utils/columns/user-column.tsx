@@ -2,14 +2,14 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
-import type { SelectUser } from "@/lib/schema/schema-types";
 import { Circle, Timer } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
 import UserRowActions from "@/components/table/user-row-actions";
+import { Badge } from "@/components/ui/badge";
+import type { SelectUser } from "@/lib/schema/schema-types";
 
 export function UserColumn(
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<SelectUser>[] {
   return [
     {
@@ -19,7 +19,7 @@ export function UserColumn(
       ),
       cell: ({ row }) => {
         const role = userStatuses.find(
-          (s) => s.value === row.original.role.toLowerCase()
+          (s) => s.value === row.original.role.toLowerCase(),
         );
         if (!role) {
           return (
@@ -81,25 +81,25 @@ export const userStatuses = [
   {
     value: "OWNER",
     label: "Owner",
-    variant: "outline" as "secondary" | "destructive" | "outline",
+    variant: "outline" as "secondary" | "error" | "outline",
     icon: Circle,
   },
   {
     value: "ADMIN",
     label: "Admin",
-    variant: "secondary" as "secondary" | "destructive" | "outline",
+    variant: "secondary" as "secondary" | "error" | "outline",
     icon: Timer,
   },
   {
     value: "MEMBER",
     label: "Member",
-    variant: "secondary" as "secondary" | "destructive" | "outline",
+    variant: "secondary" as "secondary" | "error" | "outline",
     icon: Timer,
   },
   {
     value: "VIEW_ONLY",
     label: "View only",
-    variant: "destructive" as "secondary" | "destructive" | "outline",
+    variant: "error" as "secondary" | "error" | "outline",
     icon: Circle,
   },
 ];

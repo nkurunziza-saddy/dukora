@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import * as businessService from "@/server/actions/business-actions";
 
 export async function GET() {

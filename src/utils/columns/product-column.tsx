@@ -1,17 +1,17 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { Circle, Timer } from "lucide-react";
 // import { Checkbox } from "@/components/ui/checkbox";
 import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
+import { Circle, Timer } from "lucide-react";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
 import ProductRowActions from "@/components/table/product-row-actions";
-import { SelectProduct, ProductStatus } from "@/lib/schema/schema-types";
+import { Badge } from "@/components/ui/badge";
+import { ProductStatus, type SelectProduct } from "@/lib/schema/schema-types";
 // import { Button } from "@/components/ui/button";
 
 export function ProductColumn(
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<SelectProduct>[] {
   return [
     // {
@@ -77,7 +77,7 @@ export function ProductColumn(
       ),
       cell: ({ row }) => {
         const status = productStatuses.find(
-          (s) => s.value === row.original.status.toLowerCase()
+          (s) => s.value === row.original.status.toLowerCase(),
         );
         if (!status) {
           return (
@@ -171,19 +171,19 @@ export const productStatuses = [
   {
     value: ProductStatus.ACTIVE,
     label: "Active",
-    variant: "outline" as "secondary" | "destructive" | "outline",
+    variant: "outline" as "secondary" | "error" | "outline",
     icon: Circle,
   },
   {
     value: ProductStatus.INACTIVE,
     label: "Inactive",
-    variant: "secondary" as "secondary" | "destructive" | "outline",
+    variant: "secondary" as "secondary" | "error" | "outline",
     icon: Timer,
   },
   {
     value: ProductStatus.DISCONTINUED,
     label: "Discontinued",
-    variant: "destructive" as "secondary" | "destructive" | "outline",
+    variant: "error" as "secondary" | "error" | "outline",
     icon: Circle,
   },
 ];

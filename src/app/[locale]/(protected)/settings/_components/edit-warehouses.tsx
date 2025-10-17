@@ -1,16 +1,16 @@
 "use client";
 import { useForm } from "@tanstack/react-form";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Trash2, Plus, AlertCircle } from "lucide-react";
-import { z } from "zod";
+import { AlertCircle, Plus, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
+import { z } from "zod";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldGroup } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import type { SelectWarehouse } from "@/lib/schema/schema-types";
 import { createManyWarehouses } from "@/server/actions/warehouse-actions";
-import { toast } from "sonner";
-import { Field, FieldGroup, FieldError } from "@/components/ui/field";
 
 const WAREHOUSE_LIMIT = 10;
 const NAME_LIMIT = 100;
@@ -25,7 +25,7 @@ const formSchema = z
             .min(1, "Warehouse name is required")
             .max(NAME_LIMIT, `Name cannot exceed ${NAME_LIMIT} characters`),
           isDefault: z.boolean(),
-        })
+        }),
       )
       .min(1, "At least one warehouse is required")
       .max(WAREHOUSE_LIMIT, `You can have up to ${WAREHOUSE_LIMIT} warehouses`),
@@ -66,7 +66,7 @@ export function EditWarehouses({
       const expectedNames = new Set(value.warehouses.map((w) => w.name));
 
       const created = value.warehouses.filter(
-        (w) => !existingNames.has(w.name)
+        (w) => !existingNames.has(w.name),
       );
 
       const deleted = warehouses.filter((w) => !expectedNames.has(w.name));
@@ -182,7 +182,7 @@ export function EditWarehouses({
           {currentWarehouses.map(
             (
               warehouse: { name: string; isDefault: boolean },
-              index: number
+              index: number,
             ) => {
               const nameLength = warehouse.name?.length || 0;
               const nameRemaining = NAME_LIMIT - nameLength;
@@ -252,7 +252,7 @@ export function EditWarehouses({
                   </div>
                 </div>
               );
-            }
+            },
           )}
         </div>
       </FieldGroup>

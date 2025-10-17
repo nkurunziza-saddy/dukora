@@ -1,12 +1,12 @@
 "use server";
 
-import { eq, desc, and } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { revalidatePath, unstable_cache } from "next/cache";
+import { cache } from "react";
 import { db } from "@/lib/db";
+import { auditLogsTable, usersTable } from "@/lib/schema";
 import type { InsertAuditLog } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
-import { auditLogsTable, usersTable } from "@/lib/schema";
-import { cache } from "react";
 
 export const get_all = cache(async (businessId: string, userId: string) => {
   if (!businessId) {
@@ -20,8 +20,8 @@ export const get_all = cache(async (businessId: string, userId: string) => {
       .where(
         and(
           eq(auditLogsTable.businessId, businessId),
-          eq(auditLogsTable.performedBy, userId)
-        )
+          eq(auditLogsTable.performedBy, userId),
+        ),
       )
       .orderBy(desc(auditLogsTable.performedAt));
     return { data: auditLogs, error: null };
@@ -39,7 +39,7 @@ export const get_all_cached = unstable_cache(
   {
     tags: ["logs"],
     revalidate: 300,
-  }
+  },
 );
 
 export const get_overview = cache(
@@ -55,8 +55,8 @@ export const get_overview = cache(
         .where(
           and(
             eq(auditLogsTable.businessId, businessId),
-            eq(auditLogsTable.performedBy, userId)
-          )
+            eq(auditLogsTable.performedBy, userId),
+          ),
         )
         .innerJoin(usersTable, eq(auditLogsTable.performedBy, usersTable.id))
         .limit(limit ?? 5)
@@ -66,7 +66,7 @@ export const get_overview = cache(
       console.error("Failed to fetch auditLogs:", error);
       return { data: null, error: ErrorCode.FAILED_REQUEST };
     }
-  }
+  },
 );
 
 export async function get_by_id(auditLogId: string, businessId: string) {
@@ -78,7 +78,7 @@ export async function get_by_id(auditLogId: string, businessId: string) {
     const auditLog = await db.query.auditLogsTable.findFirst({
       where: and(
         eq(auditLogsTable.id, auditLogId),
-        eq(auditLogsTable.businessId, businessId)
+        eq(auditLogsTable.businessId, businessId),
       ),
     });
 
@@ -97,9 +97,9 @@ export async function get_by_id(auditLogId: string, businessId: string) {
 }
 
 export async function create(
-  businessId: string,
-  userId: string,
-  auditLog: InsertAuditLog
+  _businessId: string,
+  _userId: string,
+  auditLog: InsertAuditLog,
 ) {
   try {
     const [newAuditLog] = await db
@@ -133,8 +133,8 @@ export async function remove(auditLogId: string, businessId: string) {
       .where(
         and(
           eq(auditLogsTable.id, auditLogId),
-          eq(auditLogsTable.businessId, businessId)
-        )
+          eq(auditLogsTable.businessId, businessId),
+        ),
       )
       .returning();
 

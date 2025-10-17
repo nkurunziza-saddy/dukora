@@ -1,18 +1,18 @@
 "use client";
 
-import * as React from "react";
 import { useForm } from "@tanstack/react-form";
 import { XIcon } from "lucide-react";
+import type * as React from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardPanel,
   CardDescription,
   CardFooter,
   CardHeader,
+  CardPanel,
   CardTitle,
 } from "@/components/ui/card";
 import {
@@ -36,7 +36,7 @@ const formSchema = z.object({
     .array(
       z.object({
         address: z.string().email("Enter a valid email address."),
-      })
+      }),
     )
     .min(1, "Add at least one email address.")
     .max(5, "You can add up to 5 email addresses."),

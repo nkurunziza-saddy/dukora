@@ -1,14 +1,14 @@
 "use server";
 
 import type { InsertAuditLog } from "@/lib/schema/schema-types";
-import { Permission } from "@/server/constants/permissions";
 import { ErrorCode } from "@/server/constants/errors";
+import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import {
-  get_all_cached as getAllLogsRepo,
-  get_overview as getOverviewLogsRepo,
-  get_by_id as getLogByIdRepo,
   create as createLogRepo,
+  get_all_cached as getAllLogsRepo,
+  get_by_id as getLogByIdRepo,
+  get_overview as getOverviewLogsRepo,
   remove as removeLogRepo,
 } from "../repos/logs-repo";
 
@@ -20,7 +20,7 @@ export const getLogs = createProtectedAction(
       return { data: null, error: logs.error };
     }
     return { data: logs.data, error: null };
-  }
+  },
 );
 
 export const getLogsOverview = createProtectedAction(
@@ -31,7 +31,7 @@ export const getLogsOverview = createProtectedAction(
       return { data: null, error: logs.error };
     }
     return { data: logs.data, error: null };
-  }
+  },
 );
 
 export const getLogById = createProtectedAction(
@@ -45,7 +45,7 @@ export const getLogById = createProtectedAction(
       return { data: null, error: log.error };
     }
     return { data: log.data, error: null };
-  }
+  },
 );
 
 export const createLog = createProtectedAction(
@@ -61,7 +61,7 @@ export const createLog = createProtectedAction(
       return { data: null, error: res.error };
     }
     return { data: res.data, error: null };
-  }
+  },
 );
 
 export const deleteLog = createProtectedAction(
@@ -75,5 +75,5 @@ export const deleteLog = createProtectedAction(
       return { data: null, error: res.error };
     }
     return { data: res.data, error: null };
-  }
+  },
 );

@@ -1,5 +1,3 @@
-import React from "react";
-
 const OnTopBlurOverlay = ({
   title = "Coming soon",
   description = "This feature is coming soon",

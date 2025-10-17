@@ -1,38 +1,38 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
+import {
+  Building2,
+  MapPin,
+  Package,
+  Plus,
+  Settings,
+  Trash2,
+  Users,
+  X,
+} from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { toast } from "sonner";
 import z from "zod";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardPanel,
   CardDescription,
   CardHeader,
+  CardPanel,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
-  SelectPopup,
   SelectItem,
+  SelectPopup,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import {
-  Trash2,
-  Plus,
-  Building2,
-  Settings,
-  Users,
-  MapPin,
-  Package,
-  X,
-  User,
-} from "lucide-react";
 import {
   Stepper,
   StepperIndicator,
@@ -41,13 +41,12 @@ import {
   StepperTitle,
   StepperTrigger,
 } from "@/components/ui/stepper";
-import { defaultCategories, userRolesObject } from "@/utils/constants";
+import { Switch } from "@/components/ui/switch";
 import { USER_ROLES } from "@/lib/schema/models/enums";
-import { businessInitialization } from "@/server/actions/onboarding-actions";
-import { useTranslations } from "next-intl";
-import { toast } from "sonner";
-import LocaleSwitcher from "./language-switcher";
 import { UserRole } from "@/lib/schema/schema-types";
+import { businessInitialization } from "@/server/actions/onboarding-actions";
+import { defaultCategories, userRolesObject } from "@/utils/constants";
+import LocaleSwitcher from "./language-switcher";
 
 const CATEGORY_LIMIT = 10;
 const INVITATIONS_LIMIT = 5;
@@ -67,7 +66,7 @@ const onboardingSchema = z.object({
       z.object({
         email: z.string().email("Invalid email address"),
         role: z.enum([...USER_ROLES]),
-      })
+      }),
     )
     .max(INVITATIONS_LIMIT, `Maximum invitations is ${INVITATIONS_LIMIT}`),
   categories: z
@@ -78,11 +77,13 @@ const onboardingSchema = z.object({
       z.object({
         name: z.string().min(1, "Warehouse name is required"),
         isDefault: z.boolean(),
-      })
+      }),
     )
     .min(1, "At least one warehouse is required")
     .max(WAREHOUSES_LIMIT, `Allowed warehouses up to ${WAREHOUSES_LIMIT}`),
 });
+
+export type OnboardingFormData = z.infer<typeof onboardingSchema>;
 
 const steps = [
   {
@@ -213,7 +214,7 @@ export default function OnboardingFlow() {
     const currentMembers = form.state.values.teamMembers;
     form.setFieldValue(
       "teamMembers",
-      currentMembers.filter((_, i) => i !== index)
+      currentMembers.filter((_, i) => i !== index),
     );
   };
 
@@ -230,7 +231,7 @@ export default function OnboardingFlow() {
     if (currentWarehouses.length > 1) {
       form.setFieldValue(
         "warehouses",
-        currentWarehouses.filter((_, i) => i !== index)
+        currentWarehouses.filter((_, i) => i !== index),
       );
     }
   };
@@ -248,7 +249,7 @@ export default function OnboardingFlow() {
     const currentCategories = form.state.values.categories;
     form.setFieldValue(
       "categories",
-      currentCategories.filter((_, i) => i !== index)
+      currentCategories.filter((_, i) => i !== index),
     );
   };
 
@@ -340,7 +341,7 @@ export default function OnboardingFlow() {
                 <CardTitle className="flex items-center gap-2">
                   {(() => {
                     const currentStepData = steps.find(
-                      (s) => s.step === currentStep
+                      (s) => s.step === currentStep,
                     );
                     return <>{currentStepData?.title}</>;
                   })()}
@@ -510,12 +511,12 @@ export default function OnboardingFlow() {
                               onValueChange={(value) => {
                                 field.handleChange(value);
                                 const country = countries.find(
-                                  (c) => c.value === value
+                                  (c) => c.value === value,
                                 );
                                 if (country) {
                                   form.setFieldValue(
                                     "timezone",
-                                    country.timezone
+                                    country.timezone,
                                   );
                                 }
                               }}
@@ -620,7 +621,10 @@ export default function OnboardingFlow() {
                     {(field) => (
                       <div className="flex flex-row items-center justify-between rounded-lg border p-4">
                         <div className="space-y-0.5">
-                          <label className="text-base font-medium">
+                          <label
+                            htmlFor="pricesIncludeTax"
+                            className="text-base font-medium"
+                          >
                             Prices Include Tax
                           </label>
                           <p className="text-sm text-muted-foreground">
@@ -629,6 +633,7 @@ export default function OnboardingFlow() {
                           </p>
                         </div>
                         <Switch
+                          id="pricesIncludeTax"
                           checked={field.state.value}
                           onCheckedChange={(checked) =>
                             field.handleChange(checked)
@@ -782,13 +787,14 @@ export default function OnboardingFlow() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {defaultCategories.map((category) => {
                         const isSelected = form.state.values.categories.some(
-                          (cat) => cat === category
+                          (cat) => cat === category,
                         );
 
                         return (
-                          <div
+                          <button
+                            type="button"
                             key={category}
-                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors w-full text-left ${
                               isSelected ? "border bg-muted/70" : ""
                             }`}
                             onClick={() => {
@@ -798,8 +804,8 @@ export default function OnboardingFlow() {
                                 form.setFieldValue(
                                   "categories",
                                   currentCategories.filter(
-                                    (cat) => cat !== category
-                                  )
+                                    (cat) => cat !== category,
+                                  ),
                                 );
                               } else {
                                 form.setFieldValue("categories", [
@@ -816,7 +822,7 @@ export default function OnboardingFlow() {
                                 </h5>
                               </div>
                             </div>
-                          </div>
+                          </button>
                         );
                       })}
                     </div>
@@ -840,7 +846,7 @@ export default function OnboardingFlow() {
                               const categoryExists = currentCategories.some(
                                 (cat) =>
                                   cat.toLowerCase() ===
-                                  categoryName.toLowerCase()
+                                  categoryName.toLowerCase(),
                               );
 
                               if (!categoryExists) {
@@ -859,7 +865,7 @@ export default function OnboardingFlow() {
                         variant="outline"
                         onClick={() => {
                           const input = document.getElementById(
-                            "customCategoryInput"
+                            "customCategoryInput",
                           ) as HTMLInputElement;
                           const categoryName = input?.value.trim();
 
@@ -868,7 +874,8 @@ export default function OnboardingFlow() {
                               form.state.values.categories;
                             const categoryExists = currentCategories.some(
                               (cat) =>
-                                cat.toLowerCase() === categoryName.toLowerCase()
+                                cat.toLowerCase() ===
+                                categoryName.toLowerCase(),
                             );
 
                             if (!categoryExists) {
@@ -892,25 +899,29 @@ export default function OnboardingFlow() {
                           {form.state.values.categories.length}):
                         </p>
                         <div className="flex flex-wrap gap-2">
-                          {form.state.values.categories.map(
-                            (category, index) => (
-                              <Badge
-                                key={index}
-                                variant="secondary"
-                                className="flex items-center"
+                          {form.state.values.categories.map((category) => (
+                            <Badge
+                              key={category}
+                              variant="secondary"
+                              className="flex items-center"
+                            >
+                              {category}
+                              <Button
+                                type="button"
+                                variant={"ghost"}
+                                onClick={() =>
+                                  removeCategory(
+                                    form.state.values.categories.indexOf(
+                                      category,
+                                    ),
+                                  )
+                                }
+                                className="ml-0.5 px-0 rounded-full size-4"
                               >
-                                {category}
-                                <Button
-                                  type="button"
-                                  variant={"ghost"}
-                                  onClick={() => removeCategory(index)}
-                                  className="ml-0.5 px-0 rounded-full size-4"
-                                >
-                                  <X className="size-3" />
-                                </Button>
-                              </Badge>
-                            )
-                          )}
+                                <X className="size-3" />
+                              </Button>
+                            </Badge>
+                          ))}
                         </div>
                       </div>
                     )}

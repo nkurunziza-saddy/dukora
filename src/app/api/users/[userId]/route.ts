@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { getUserById } from "@/server/actions/user-actions";
 import { ErrorCode } from "@/server/constants/errors";
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ userId: string }> }
+  _request: NextRequest,
+  { params }: { params: Promise<{ userId: string }> },
 ) {
   try {
     const userDetails = await getUserById((await params).userId);

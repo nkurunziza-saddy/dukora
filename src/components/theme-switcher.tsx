@@ -1,11 +1,10 @@
 "use client";
 
-import { useId } from "react";
 import { CheckIcon, MinusIcon } from "lucide-react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useTheme } from "next-themes";
+import { useEffect, useId, useState } from "react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const themeItems = [
   { value: "light", label: "Light", image: "/ui-light.png" },
@@ -45,7 +44,13 @@ export function ThemeSwitcher() {
       {/* <legend className="text-foreground text-sm leading-none font-medium">
         Choose a theme
       </legend> */}
-      <RadioGroup className="flex gap-3" value={theme} onValueChange={setTheme}>
+      <RadioGroup
+        className="flex gap-3"
+        value={theme}
+        onValueChange={(value: unknown, _eventDetails) =>
+          setTheme(value as string)
+        }
+      >
         {themeItems.map((item) => (
           <label key={`${id}-${item.value}`} className="cursor-pointer">
             <RadioGroupItem
