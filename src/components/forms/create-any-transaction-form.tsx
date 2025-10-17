@@ -1,19 +1,16 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "@tanstack/react-form";
 import z from "zod";
-import { CheckIcon, Loader2, AlertCircle, ChevronDown } from "lucide-react";
+import { CheckIcon, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldError,
+  FieldDescription,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { TriggerDialog } from "../shared/reusable-form-dialog";
@@ -29,15 +26,14 @@ import {
 import { fetcher, cn } from "@/lib/utils";
 import useSwr from "swr";
 import { preload } from "swr";
-import { Popover, PopoverPopup, PopoverTrigger } from "../ui/popover";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../ui/command";
+  Autocomplete,
+  AutocompleteEmpty,
+  AutocompleteInput,
+  AutocompleteItem,
+  AutocompleteList,
+  AutocompletePopup,
+} from "../ui/autocomplete";
 import { toast } from "sonner";
 import { createTransaction } from "@/server/actions/transaction-actions";
 import { format } from "date-fns";
@@ -65,6 +61,7 @@ export default function AnyTransactionForm({
   const t = useTranslations("forms");
   const tCommon = useTranslations("common");
   const tInventory = useTranslations("inventory");
+
   const saleTransactionSchema = z.object({
     productId: z.string().min(1, t("productRequired")),
     warehouseItemId: z.string().min(1, t("warehouseRequired")),
@@ -72,9 +69,9 @@ export default function AnyTransactionForm({
     note: z.string().optional(),
     reference: z.string().optional(),
     type: z.enum([...TRANSACTION_TYPE]),
+    warehouseId: z.string().min(1, "Warehouse ID is required"),
   });
 
-  type SaleTransactionFormData = z.infer<typeof saleTransactionSchema>;
   const {
     data: productsData,
     error: productsError,
@@ -85,8 +82,7 @@ export default function AnyTransactionForm({
     dedupingInterval: 60000,
   });
 
-  const form = useForm<SaleTransactionFormData>({
-    resolver: zodResolver(saleTransactionSchema),
+  const form = useForm({
     defaultValues: {
       productId: transaction ? transaction.productId : "",
       warehouseItemId: transaction ? transaction.warehouseItemId : "",
@@ -94,16 +90,46 @@ export default function AnyTransactionForm({
       note: transaction ? transaction.note ?? "" : "",
       reference: transaction ? transaction.reference ?? "" : "",
       type: transaction ? transaction.type : "DAMAGE",
+      warehouseId: transaction ? transaction.warehouseId : "",
+    },
+    validators: {
+      onSubmit: saleTransactionSchema,
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        const formData: Omit<
+          InsertTransaction,
+          "id" | "businessId" | "createdBy"
+        > = {
+          productId: value.productId,
+          warehouseItemId: value.warehouseItemId,
+          quantity: value.quantity,
+          type: value.type,
+          warehouseId: value.warehouseId,
+          note: value.note,
+          reference: value.reference,
+        };
+        const req = await createTransaction(formData);
+        if (req.data) {
+          form.reset();
+          toast.success(t("transactionAdded"), {
+            description: format(new Date(), "MMM dd, yyyy"),
+          });
+        } else {
+          toast.error(tCommon("error"), {
+            description: req.error?.split("_").join(" ").toLowerCase(),
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error(tCommon("error"), {
+          description: t("transactionAddFailed"),
+        });
+      }
     },
   });
 
-  const formValues = form.watch(["productId", "warehouseItemId"]);
-
-  const [productId, warehouseItemId] = formValues;
-  const selectedProduct = useMemo(
-    () => productsData?.find((p) => p.id === productId),
-    [productsData, productId]
-  );
+  const productId = form.useStore((s) => s.values.productId);
 
   const {
     data: productDetailsData,
@@ -119,6 +145,7 @@ export default function AnyTransactionForm({
     }
   );
 
+  const warehouseItemId = form.useStore((s) => s.values.warehouseItemId);
   const selectedWarehouseItem = useMemo(
     () =>
       productDetailsData?.warehouseItems.find(
@@ -126,41 +153,6 @@ export default function AnyTransactionForm({
       ),
     [productDetailsData, warehouseItemId]
   );
-
-  const onSubmit = async (data: SaleTransactionFormData) => {
-    try {
-      const formData: Omit<
-        InsertTransaction,
-        "id" | "businessId" | "createdBy"
-      > = {
-        productId: data.productId,
-        warehouseItemId: data.warehouseItemId,
-        quantity: data.quantity,
-        type: data.type,
-        warehouseId: selectedWarehouseItem?.warehouseId ?? "",
-        note: data.note,
-        reference: data.reference,
-      };
-      const req = await createTransaction(formData);
-      if (req.data) {
-        form.reset();
-        toast.success(t("transactionAdded"), {
-          description: format(new Date(), "MMM dd, yyyy"),
-        });
-      } else {
-        toast.error(tCommon("error"), {
-          description: req.error?.split("_").join(" ").toLowerCase(),
-        });
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error(tCommon("error"), {
-        description: t("transactionAddFailed"),
-      });
-    }
-  };
-
-  const { isSubmitting } = form.formState;
 
   if (productsError) {
     return (
@@ -172,306 +164,272 @@ export default function AnyTransactionForm({
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="space-y-4">
-          <Separator />
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("type")}</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        form.handleSubmit();
+      }}
+      className="space-y-6"
+    >
+      <FieldGroup className="space-y-4">
+        <Separator />
+        <form.Field
+          name="type"
+          children={(field) => (
+            <Field>
+              <FieldLabel>{t("type")}</FieldLabel>
+              <Select
+                onValueChange={field.handleChange}
+                defaultValue={field.value}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectPopup>
+                  {transactionTypesObject.map((type) => (
+                    <SelectItem key={type.value} value={type.value}>
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectPopup>
+              </Select>
+              <FieldError errors={field.state.meta.errors} />
+            </Field>
+          )}
+        />
+        <form.Field
+          name="productId"
+          children={(field) => (
+            <Field>
+              <FieldLabel>{tInventory("productName")} *</FieldLabel>
+              {isProductsLoading ? (
+                <div className="flex items-center space-x-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span className="text-sm text-muted-foreground">
+                    {t("loadingProducts")}
+                  </span>
+                </div>
+              ) : productsData ? (
+                <Autocomplete
+                  items={productsData.map((p) => ({
+                    value: p.id,
+                    label: p.name,
+                    ...p,
+                  }))}
+                  onValueChange={(item) => {
+                    if (item) {
+                      field.handleChange(item.value);
+                      form.setFieldValue("warehouseItemId", "");
+                      form.setFieldValue("warehouseId", "");
+                    }
+                  }}
+                  value={field.state.value}
                 >
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectPopup>
-                    {transactionTypesObject.map((type) => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                      </SelectItem>
-                    ))}
-                  </SelectPopup>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="productId"
-            render={({ field }) => (
-              <FormItem className="flex flex-col space-y-2">
-                <FormLabel>{tInventory("productName")} *</FormLabel>
-                {isProductsLoading ? (
+                  <AutocompleteInput placeholder={t("searchProducts")} />
+                  <AutocompletePopup>
+                    <AutocompleteEmpty>{t("noProductsFound")}</AutocompleteEmpty>
+                    <AutocompleteList>
+                      {(product) => (
+                        <AutocompleteItem
+                          key={product.id}
+                          value={product}
+                        >
+                          <div className="flex items-center justify-between w-full">
+                            <div className="flex flex-col">
+                              <span className="font-medium">
+                                {product.name}
+                              </span>
+                              <span className="text-sm text-muted-foreground">
+                                {product.sku}
+                              </span>
+                            </div>
+                            <CheckIcon
+                              className={cn(
+                                "h-4 w-4",
+                                product.id === field.state.value
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                          </div>
+                        </AutocompleteItem>
+                      )}
+                    </AutocompleteList>
+                  </AutocompletePopup>
+                </Autocomplete>
+              ) : null}
+              <FieldError errors={field.state.meta.errors} />
+            </Field>
+          )}
+        />
+
+        {productId && (
+          <form.Field
+            name="warehouseItemId"
+            children={(field) => (
+              <Field>
+                <FieldLabel>{t("warehouseLocation")} *</FieldLabel>
+                {isProductDetailsLoading ? (
                   <div className="flex items-center space-x-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     <span className="text-sm text-muted-foreground">
-                      {t("loadingProducts")}
+                      {t("loadingWarehouses")}
                     </span>
                   </div>
-                ) : productsData ? (
-                  <Popover>
-                    <PopoverTrigger render={<FormControl />}>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        className={cn(
-                          "justify-between",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          <div className="flex items-center gap-2">
-                            <span>{selectedProduct?.name}</span>
-                            <Badge variant="secondary" className="text-xs">
-                              {selectedProduct?.sku}
-                            </Badge>
-                          </div>
-                        ) : (
-                          t("selectProduct")
-                        )}
-                        <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverPopup className="w-full p-0" align="start">
-                      <Command>
-                        <CommandInput placeholder={t("searchProducts")} />
-                        <CommandList>
-                          <CommandEmpty>{t("noProductsFound")}</CommandEmpty>
-                          <CommandGroup>
-                            {productsData.map((product) => (
-                              <CommandItem
-                                key={product.id}
-                                onSelect={() => {
-                                  form.setValue("productId", product.id);
-                                  form.setValue("warehouseItemId", "");
-                                }}
-                              >
-                                <div className="flex items-center justify-between w-full">
-                                  <div className="flex flex-col">
-                                    <span className="font-medium">
-                                      {product.name}
-                                    </span>
-                                    <span className="text-sm text-muted-foreground">
-                                      {product.sku}
-                                    </span>
-                                  </div>
-                                  <CheckIcon
-                                    className={cn(
-                                      "h-4 w-4",
-                                      product.id === field.value
-                                        ? "opacity-100"
-                                        : "opacity-0"
-                                    )}
-                                  />
-                                </div>
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverPopup>
-                  </Popover>
-                ) : null}
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {productId && (
-            <FormField
-              control={form.control}
-              name="warehouseItemId"
-              render={({ field }) => (
-                <FormItem className="flex flex-col space-y-2">
-                  <FormLabel>{t("warehouseLocation")} *</FormLabel>
-                  {isProductDetailsLoading ? (
-                    <div className="flex items-center space-x-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      <span className="text-sm text-muted-foreground">
-                        {t("loadingWarehouses")}
-                      </span>
-                    </div>
-                  ) : productDetailsData ? (
-                    <Popover>
-                      <PopoverTrigger render={<FormControl />}>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          className={cn(
-                            "justify-between",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            <div className="flex items-center gap-2">
-                              <span>
-                                {selectedWarehouseItem?.warehouse.name}
-                              </span>
-                              <Badge variant="outline" className="text-xs">
-                                {tInventory("onHand")}:{" "}
-                                {selectedWarehouseItem?.quantity || 0}
-                              </Badge>
+                ) : productDetailsData ? (
+                  <Autocomplete
+                    items={productDetailsData.warehouseItems.map((item) => ({
+                      value: item.id,
+                      label: item.warehouse.name,
+                      ...item,
+                    }))}
+                    onValueChange={(item) => {
+                      if (item) {
+                        field.handleChange(item.value);
+                        form.setFieldValue("warehouseId", item.warehouseId);
+                      }
+                    }}
+                    value={field.state.value}
+                  >
+                    <AutocompleteInput placeholder={t("searchWarehouses")} />
+                    <AutocompletePopup>
+                      <AutocompleteEmpty>
+                        {t("noWarehousesFound")}
+                      </AutocompleteEmpty>
+                      <AutocompleteList>
+                        {(item) => (
+                          <AutocompleteItem key={item.id} value={item}>
+                            <div className="flex items-center justify-between w-full">
+                              <div className="flex flex-col">
+                                <span className="font-medium">
+                                  {item.warehouse.name}
+                                </span>
+                                <span className="text-sm text-muted-foreground">
+                                  {tInventory("onHand")}: {item.quantity}
+                                </span>
+                              </div>
+                              <CheckIcon
+                                className={cn(
+                                  "h-4 w-4",
+                                  item.id === field.state.value
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
                             </div>
-                          ) : (
-                            tInventory("selectWarehouse")
-                          )}
-                          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverPopup className="w-full p-0" align="start">
-                        <Command>
-                          <CommandInput placeholder={t("searchWarehouses")} />
-                          <CommandList>
-                            <CommandEmpty>
-                              {t("noWarehousesFound")}
-                            </CommandEmpty>
-                            <CommandGroup>
-                              {productDetailsData.warehouseItems.map((item) => (
-                                <CommandItem
-                                  key={item.id}
-                                  onSelect={() => {
-                                    form.setValue("warehouseItemId", item.id);
-                                  }}
-                                >
-                                  <div className="flex items-center justify-between w-full">
-                                    <div className="flex flex-col">
-                                      <span className="font-medium">
-                                        {item.warehouse.name}
-                                      </span>
-                                      <span className="text-sm text-muted-foreground">
-                                        {tInventory("onHand")}: {item.quantity}
-                                      </span>
-                                    </div>
-                                    <CheckIcon
-                                      className={cn(
-                                        "h-4 w-4",
-                                        item.id === field.value
-                                          ? "opacity-100"
-                                          : "opacity-0"
-                                      )}
-                                    />
-                                  </div>
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverPopup>
-                    </Popover>
-                  ) : productDetailsError ? (
-                    <Alert variant="error">
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertDescription>
-                        {t("failedToLoadWarehouses")}
-                      </AlertDescription>
-                    </Alert>
-                  ) : null}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                          </AutocompleteItem>
+                        )}
+                      </AutocompleteList>
+                    </AutocompletePopup>
+                  </Autocomplete>
+                ) : productDetailsError ? (
+                  <Alert variant="error">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>
+                      {t("failedToLoadWarehouses")}
+                    </AlertDescription>
+                  </Alert>
+                ) : null}
+                <FieldError errors={field.state.meta.errors} />
+              </Field>
+            )}
+          />
+        )}
+
+        <form.Field
+          name="quantity"
+          children={(field) => (
+            <Field>
+              <FieldLabel>{tCommon("quantity")} *</FieldLabel>
+              <Input
+                {...field}
+                type="number"
+                placeholder={t("enterQuantity")}
+                min="1"
+                max={selectedWarehouseItem?.quantity || undefined}
+                step="1"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+              />
+              <FieldError errors={field.state.meta.errors} />
+            </Field>
           )}
+        />
 
-          <FormField
-            control={form.control}
-            name="quantity"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tCommon("quantity")} *</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    type="number"
-                    placeholder={t("enterQuantity")}
-                    min="1"
-                    max={selectedWarehouseItem?.quantity || undefined}
-                    step="1"
-                  />
-                </FormControl>
+        <form.Field
+          name="reference"
+          children={(field) => (
+            <Field>
+              <FieldLabel>
+                {tCommon("reference")} {t("poNumber")}
+              </FieldLabel>
+              <Input
+                placeholder={t("referencePlaceholder")}
+                {...field}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+              <FieldDescription>{t("referenceDescription")}</FieldDescription>
+              <FieldError errors={field.state.meta.errors} />
+            </Field>
+          )}
+        />
 
-                <FormMessage />
-              </FormItem>
+        <form.Field
+          name="note"
+          children={(field) => (
+            <Field>
+              <FieldLabel>{tCommon("note")}</FieldLabel>
+              <Textarea
+                placeholder={t("notePlaceholder")}
+                rows={3}
+                {...field}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+              <FieldDescription>{t("noteDescription")}</FieldDescription>
+              <FieldError errors={field.state.meta.errors} />
+            </Field>
+          )}
+        />
+      </FieldGroup>
+
+      <div className="flex justify-end pt-6 border-t">
+        <div className="flex gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              form.reset();
+            }}
+            disabled={form.state.isSubmitting}
+          >
+            {t("resetForm")}
+          </Button>
+          <Button
+            type="submit"
+            disabled={form.state.isSubmitting || !form.state.isValid}
+            className="min-w-[140px]"
+          >
+            {form.state.isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {transaction ? t("updating") : t("recording")}
+              </>
+            ) : (
+              <>
+                {transaction ? t("update") : t("record")}{" "}
+                {tInventory("title").split(" ")[0]}
+              </>
             )}
-          />
-
-          <FormField
-            control={form.control}
-            name="reference"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  {tCommon("reference")} {t("poNumber")}
-                </FormLabel>
-                <FormControl>
-                  <Input placeholder={t("referencePlaceholder")} {...field} />
-                </FormControl>
-                <FormDescription>{t("referenceDescription")}</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="note"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tCommon("note")}</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder={t("notePlaceholder")}
-                    rows={3}
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>{t("noteDescription")}</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          </Button>
         </div>
-
-        <div className="flex justify-end pt-6 border-t">
-          <div className="flex gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                form.reset();
-              }}
-              disabled={isSubmitting}
-            >
-              {t("resetForm")}
-            </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting || !form.formState.isValid}
-              className="min-w-[140px]"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {transaction ? t("updating") : t("recording")}
-                </>
-              ) : (
-                <>
-                  {transaction ? t("update") : t("record")}{" "}
-                  {tInventory("title").split(" ")[0]}
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-      </form>
-    </Form>
+      </div>
+    </form>
   );
 }
 

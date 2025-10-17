@@ -10,17 +10,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "@tanstack/react-form";
 import z from "zod";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldError,
+} from "@/components/ui/field";
 import { Loader2, AlertCircle } from "lucide-react";
 import { userRolesObject } from "@/utils/constants";
 import { format } from "date-fns";
@@ -28,6 +25,7 @@ import { createInvitation } from "@/server/actions/invitation-actions";
 import { USER_ROLES } from "@/lib/schema/models/enums";
 import { useTranslations } from "next-intl";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { UserRole } from "@/lib/schema/schema-types";
 
 export function InviteUserForm() {
   const t = useTranslations("forms");
@@ -37,105 +35,136 @@ export function InviteUserForm() {
     role: z.enum([...USER_ROLES]),
   });
 
-  type inviteUserFormData = z.infer<typeof supplierSchema>;
-  const form = useForm<inviteUserFormData>({
-    resolver: zodResolver(supplierSchema),
+  const form = useForm({
     defaultValues: {
       name: "",
       email: "",
-      role: "MEMBER",
+      role: UserRole.MEMBER,
+    },
+    validators: {
+      onSubmit: supplierSchema,
+      onChange: supplierSchema,
+      onBlur: supplierSchema,
+    },
+    onSubmit: async ({ value }) => {
+      const req = await createInvitation(value);
+      if (req.data) {
+        form.reset();
+        toast.success(t("invitationSent"), {
+          description: format(new Date(), "MMM dd, yyyy"),
+        });
+      } else {
+        toast.error(t("error"), {
+          description: req.error?.split("_").join(" ").toLowerCase(),
+        });
+      }
     },
   });
 
-  const onSubmit = async (values: inviteUserFormData) => {
-    const req = await createInvitation(values);
-    if (req.data) {
-      form.reset();
-      toast.success(t("invitationSent"), {
-        description: format(new Date(), "MMM dd, yyyy"),
-      });
-    } else {
-      toast.error(t("error"), {
-        description: req.error?.split("_").join(" ").toLowerCase(),
-      });
-    }
-  };
-
-  const { isSubmitting } = form.formState;
   return (
-    <Form {...form}>
+    <>
       <Alert variant="error">
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>{t("emailVerificationDown")}</AlertDescription>
       </Alert>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
+      <form
+        id="invite-user-form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        className="space-y-6"
+      >
+        <FieldGroup className="space-y-4">
+          <form.Field
             name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("userName")} *</FormLabel>
-                <FormControl>
-                  <Input placeholder={t("enterUserName")} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("userEmail")} *</FormLabel>
-                <FormControl>
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    {t("userName")} *
+                  </FieldLabel>
                   <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder={t("enterUserName")}
+                    aria-invalid={isInvalid}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          />
+          <form.Field
+            name="email"
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    {t("userEmail")} *
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
                     type="email"
                     placeholder={t("enterUserEmail")}
-                    {...field}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    aria-invalid={isInvalid}
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
           />
 
-          <FormField
-            control={form.control}
+          <form.Field
             name="role"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("role")}</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>{t("role")}</FieldLabel>
+                  <Select
+                    name={field.name}
+                    value={field.state.value}
+                    onValueChange={field.handleChange}
+                  >
                     <SelectTrigger className="w-full">
                       <SelectValue />
                     </SelectTrigger>
-                  </FormControl>
-                  <SelectPopup>
-                    {userRolesObject.map((role) => (
-                      <SelectItem key={role.value} value={role.value}>
-                        {role.label}
-                      </SelectItem>
-                    ))}
-                  </SelectPopup>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
+                    <SelectPopup>
+                      {userRolesObject.map((role) => (
+                        <SelectItem key={role.value} value={role.value}>
+                          {role.label}
+                        </SelectItem>
+                      ))}
+                    </SelectPopup>
+                  </Select>
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
           />
-        </div>
+        </FieldGroup>
         <div className="flex justify-end pt-2">
           <Button
             type="submit"
-            disabled={isSubmitting}
+            form="invite-user-form"
+            disabled={form.state.isSubmitting}
             className="min-w-[120px]"
           >
-            {isSubmitting ? (
+            {form.state.isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 {t("sending")} ...
@@ -146,6 +175,6 @@ export function InviteUserForm() {
           </Button>
         </div>
       </form>
-    </Form>
+    </>
   );
 }

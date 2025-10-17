@@ -1,19 +1,16 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "@tanstack/react-form";
 import z from "zod";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldError,
+  FieldDescription,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { TriggerDialog } from "../shared/reusable-form-dialog";
@@ -44,43 +41,46 @@ export default function SupplierForm({
       const digits = val.replace(/\D/g, "");
       return digits.length >= 10 && digits.length <= 15;
     }, t("phoneDigits")),
-    address: z.string().optional(),
-    note: z.string().optional(),
-    contactName: z.string().optional(),
+    address: z.string(),
+    note: z.string(),
+    contactName: z.string(),
   });
-  type SupplierFormData = z.infer<typeof supplierSchema>;
-  const form = useForm<SupplierFormData>({
-    resolver: zodResolver(supplierSchema),
+
+  const form = useForm({
     defaultValues: {
       name: supplier ? supplier.name : "",
       email: supplier ? supplier.email : "",
       phone: supplier ? supplier.phone : "",
-      address: supplier ? (supplier.address ?? "") : "",
-      note: supplier ? (supplier.note ?? "") : "",
-      contactName: supplier ? (supplier.contactName ?? "") : "",
+      address: supplier ? supplier.address ?? "" : "",
+      note: supplier ? supplier.note ?? "" : "",
+      contactName: supplier ? supplier.contactName ?? "" : "",
+    },
+    validators: {
+      onSubmit: supplierSchema,
+      onChange: supplierSchema,
+      onBlur: supplierSchema,
+    },
+    onSubmit: async ({ value }) => {
+      const req = supplier
+        ? await updateSupplier({ supplierId: supplier.id, updates: value })
+        : await createSupplier(value);
+      if (req.data) {
+        form.reset();
+        toast.success(
+          supplier
+            ? tCommon("edit") + " " + t("supplier") + " " + tCommon("confirm")
+            : t("supplier") + " " + tCommon("add") + " " + tCommon("confirm"),
+          {
+            description: format(new Date(), "MMM dd, yyyy"),
+          }
+        );
+      } else {
+        toast.error(tCommon("error"), {
+          description: req.error?.split("_").join(" ").toLowerCase(),
+        });
+      }
     },
   });
-
-  const onSubmit = async (data: SupplierFormData) => {
-    const req = supplier
-      ? await updateSupplier({ supplierId: supplier.id, updates: data })
-      : await createSupplier(data);
-    if (req.data) {
-      form.reset();
-      toast.success(
-        supplier
-          ? tCommon("edit") + " " + t("supplier") + " " + tCommon("confirm")
-          : t("supplier") + " " + tCommon("add") + " " + tCommon("confirm"),
-        {
-          description: format(new Date(), "MMM dd, yyyy"),
-        }
-      );
-    } else {
-      toast.error(tCommon("error"), {
-        description: req.error?.split("_").join(" ").toLowerCase(),
-      });
-    }
-  };
 
   const formatPhoneNumber = (value: string) => {
     const digits = value.replace(/\D/g, "");
@@ -89,168 +89,224 @@ export default function SupplierForm({
     return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
   };
 
-  const { isSubmitting } = form.formState;
-
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="space-y-4">
-          <Separator />
+    <form
+      id="supplier-form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        form.handleSubmit();
+      }}
+      className="space-y-6"
+    >
+      <FieldGroup className="space-y-4">
+        <Separator />
 
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
+        <form.Field
+          name="name"
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>
                   {t("supplier")} {tCommon("name")} *
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={t("enterSupplierCompanyName")}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                </FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  placeholder={t("enterSupplierCompanyName")}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  aria-invalid={isInvalid}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+          <form.Field
+            name="email"
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel
+                    htmlFor={field.name}
+                    className="flex items-center gap-2"
+                  >
                     {tCommon("email")} *
-                  </FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder={t("email")} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    type="email"
+                    placeholder={t("email")}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    aria-invalid={isInvalid}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          />
 
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center gap-2">
+          <form.Field
+            name="phone"
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel
+                    htmlFor={field.name}
+                    className="flex items-center gap-2"
+                  >
                     {tCommon("phone")} *
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t("phone")}
-                      {...field}
-                      onChange={(e) => {
-                        const formatted = formatPhoneNumber(e.target.value);
-                        field.onChange(formatted);
-                      }}
-                    />
-                  </FormControl>
-                  <FormDescription>{t("enterPhoneNumber")}</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+                  </FieldLabel>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    placeholder={t("phone")}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => {
+                      const formatted = formatPhoneNumber(e.target.value);
+                      field.handleChange(formatted);
+                    }}
+                    aria-invalid={isInvalid}
+                  />
+                  <FieldDescription>{t("enterPhoneNumber")}</FieldDescription>
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+          />
+        </div>
 
-          <FormField
-            control={form.control}
-            name="address"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="flex items-center gap-2">
+        <form.Field
+          name="address"
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel
+                  htmlFor={field.name}
+                  className="flex items-center gap-2"
+                >
                   {tCommon("address")}
-                </FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder={t("enterBusinessAddress")}
-                    className="min-h-[80px]"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+                </FieldLabel>
+                <Textarea
+                  id={field.name}
+                  name={field.name}
+                  placeholder={t("enterBusinessAddress")}
+                  className="min-h-[80px]"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  aria-invalid={isInvalid}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        />
+      </FieldGroup>
 
-        <div className="space-y-4">
-          <Separator />
+      <FieldGroup className="space-y-4">
+        <Separator />
 
-          <FormField
-            control={form.control}
-            name="contactName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("contactName")}</FormLabel>
-                <FormControl>
-                  <Input placeholder={t("enterContactName")} {...field} />
-                </FormControl>
-                <FormDescription>{t("contactDescription")}</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+        <form.Field
+          name="contactName"
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>{t("contactName")}</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  placeholder={t("enterContactName")}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  aria-invalid={isInvalid}
+                />
+                <FieldDescription>{t("contactDescription")}</FieldDescription>
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        />
+      </FieldGroup>
 
-        <div className="space-y-4">
-          <Separator />
+      <FieldGroup className="space-y-4">
+        <Separator />
 
-          <FormField
-            control={form.control}
-            name="note"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tCommon("note")}</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder={t("noteSupplierPlaceholder")}
-                    className="min-h-[100px]"
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>
+        <form.Field
+          name="note"
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>{tCommon("note")}</FieldLabel>
+                <Textarea
+                  id={field.name}
+                  name={field.name}
+                  placeholder={t("noteSupplierPlaceholder")}
+                  className="min-h-[100px]"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  aria-invalid={isInvalid}
+                />
+                <FieldDescription>
                   {t("noteSupplierDescription")}
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+                </FieldDescription>
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        />
+      </FieldGroup>
 
-        <div className="flex justify-end pt-6 border-t">
-          <div className="flex gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => form.reset()}
-              disabled={isSubmitting}
-            >
-              {t("resetForm")}
-            </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="min-w-[120px]"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {supplier ? t("updating") : t("creating")}
-                </>
-              ) : (
-                `${supplier ? t("updateSupplier") : t("createSupplier")}`
-              )}
-            </Button>
-          </div>
+      <div className="flex justify-end pt-6 border-t">
+        <div className="flex gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => form.reset()}
+            disabled={form.state.isSubmitting}
+          >
+            {t("resetForm")}
+          </Button>
+          <Button
+            type="submit"
+            form="supplier-form"
+            disabled={form.state.isSubmitting}
+            className="min-w-[120px]"
+          >
+            {form.state.isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {supplier ? t("updating") : t("creating")}
+              </>
+            ) : (
+              `${supplier ? t("updateSupplier") : t("createSupplier")}`
+            )}
+          </Button>
         </div>
-      </form>
-    </Form>
+      </div>
+    </form>
   );
 }
 

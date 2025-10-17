@@ -10,17 +10,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "@tanstack/react-form";
 import z from "zod";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldError,
+} from "@/components/ui/field";
 import { Loader2 } from "lucide-react";
 import { userRolesObject } from "@/utils/constants";
 import { format } from "date-fns";
@@ -41,78 +38,104 @@ export function UpdateUserForm({ user }: { user: SelectUser }) {
     role: z.enum([...USER_ROLES]),
   });
 
-  type updateUserFormData = z.infer<typeof supplierSchema>;
-  const form = useForm<updateUserFormData>({
-    resolver: zodResolver(supplierSchema),
+  const form = useForm({
     defaultValues: {
       name: user.name,
       email: user.email,
       role: user.role,
     },
+    validators: {
+      onSubmit: supplierSchema,
+    },
+    onSubmit: async ({ value }) => {
+      const req = await updateUser({ userId: user.id, userData: value });
+      if (req.data) {
+        form.reset();
+        toast.success(t("userUpdated"), {
+          description: format(new Date(), "MMM dd, yyyy"),
+        });
+      } else {
+        toast.error(tCommon("error"), {
+          description: req.error?.split("_").join(" ").toLowerCase(),
+        });
+      }
+    },
   });
-  const isSelf = user.id === session.data?.user.id;
-  const onSubmit = async (values: updateUserFormData) => {
-    const req = await updateUser({ userId: user.id, userData: values });
-    if (req.data) {
-      form.reset();
-      toast.success(t("userUpdated"), {
-        description: format(new Date(), "MMM dd, yyyy"),
-      });
-    } else {
-      toast.error(tCommon("error"), {
-        description: req.error?.split("_").join(" ").toLowerCase(),
-      });
-    }
-  };
-  const { isSubmitting } = form.formState;
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            disabled={!isSelf}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("userName")} *</FormLabel>
-                <FormControl>
-                  <Input placeholder={t("enterUserName")} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            disabled={!isSelf}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("userEmail")} *</FormLabel>
-                <FormControl>
-                  <Input type="email" placeholder={t("email")} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
-          <FormField
-            control={form.control}
-            name="role"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{tCommon("role")}</FormLabel>
+  const isSelf = user.id === session.data?.user.id;
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        form.handleSubmit();
+      }}
+      className="space-y-6"
+    >
+      <FieldGroup>
+        <form.Field
+          name="name"
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>{t("userName")} *</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  disabled={!isSelf}
+                  placeholder={t("enterUserName")}
+                  aria-invalid={isInvalid}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        />
+        <form.Field
+          name="email"
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>{t("userEmail")} *</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  disabled={!isSelf}
+                  type="email"
+                  placeholder={t("email")}
+                  aria-invalid={isInvalid}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        />
+        <form.Field
+          name="role"
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel>{tCommon("role")}</FieldLabel>
                 <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  value={field.state.value}
+                  onValueChange={field.handleChange}
                 >
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectPopup>
                     {userRolesObject.map((role) => (
                       <SelectItem key={role.value} value={role.value}>
@@ -121,28 +144,28 @@ export function UpdateUserForm({ user }: { user: SelectUser }) {
                     ))}
                   </SelectPopup>
                 </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="flex justify-end pt-2">
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="min-w-[120px]"
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {t("updating")} ...
-              </>
-            ) : (
-              t("update")
-            )}
-          </Button>
-        </div>
-      </form>
-    </Form>
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        />
+      </FieldGroup>
+      <div className="flex justify-end pt-2">
+        <Button
+          type="submit"
+          disabled={form.state.isSubmitting}
+          className="min-w-[120px]"
+        >
+          {form.state.isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {t("updating")} ...
+            </>
+          ) : (
+            t("update")
+          )}
+        </Button>
+      </div>
+    </form>
   );
 }

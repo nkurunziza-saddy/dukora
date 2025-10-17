@@ -1,20 +1,17 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "@tanstack/react-form";
 import z from "zod";
 import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldError,
+  FieldDescription,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -91,8 +88,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
     { value: "gal", label: t("unitGallons") },
   ];
 
-  const form = useForm<z.infer<typeof productSchema>>({
-    resolver: zodResolver(productSchema),
+  const form = useForm({
     defaultValues: {
       name: product ? product.name : "",
       description: product ? product.description ?? "" : "",
@@ -106,302 +102,316 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
       unit: product ? product.unit : "pcs",
       weight: product ? product.weight ?? "" : "",
     },
+    validators: {
+      onSubmit: productSchema,
+    },
+    onSubmit: async ({ value }) => {
+      const productData = {
+        ...value,
+        categoryId:
+          value.categoryId && value.categoryId.trim() !== ""
+            ? value.categoryId
+            : null,
+        reorderPoint: Number.parseInt(value.reorderPoint, 10),
+        maxStock: Number.parseInt(value.maxStock, 10),
+        weight:
+          value.weight && value.weight.trim() !== "" ? value.weight : null,
+      };
+      const req = product
+        ? await updateProduct({ productId: product.id, updates: productData })
+        : await createProduct(productData);
+      if (req.data) {
+        form.reset();
+        toast.success(
+          product
+            ? `${tCommon("edit")} ${t("productName")} ${tCommon("confirm")}`
+            : `${t("productName")} ${tCommon("add")} ${tCommon("confirm")}`,
+          {
+            description: format(new Date(), "MMM dd, yyyy"),
+          }
+        );
+      } else {
+        toast.error(tCommon("error"), {
+          description: req.error?.split("_").join(" ").toLowerCase(),
+        });
+      }
+    },
   });
 
-  const onSubmit = async (values: z.infer<typeof productSchema>) => {
-    const productData = {
-      ...values,
-      categoryId:
-        values.categoryId && values.categoryId.trim() !== ""
-          ? values.categoryId
-          : null,
-      reorderPoint: Number.parseInt(values.reorderPoint, 10),
-      maxStock: Number.parseInt(values.maxStock, 10),
-      weight:
-        values.weight && values.weight.trim() !== "" ? values.weight : null,
-    };
-    const req = product
-      ? await updateProduct({ productId: product.id, updates: productData })
-      : await createProduct(productData);
-    if (req.data) {
-      form.reset();
-      toast.success(
-        product
-          ? `${tCommon("edit")} ${t("productName")} ${tCommon("confirm")}`
-          : `${t("productName")} ${tCommon("add")} ${tCommon("confirm")}`,
-        {
-          description: format(new Date(), "MMM dd, yyyy"),
-        }
-      );
-    } else {
-      toast.error(tCommon("error"), {
-        description: req.error?.split("_").join(" ").toLowerCase(),
-      });
-    }
-  };
-
-  const { isSubmitting } = form.formState;
-
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="space-y-4">
-          <Separator />
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("productName")} *</FormLabel>
-                <FormControl>
-                  <Input placeholder={t("enterProductName")} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        form.handleSubmit();
+      }}
+      className="space-y-6"
+    >
+      <FieldGroup className="space-y-4">
+        <Separator />
+        <form.Field
+          name="name"
+          children={(field) => (
+            <Field>
+              <FieldLabel>{t("productName")} *</FieldLabel>
+              <Input
+                placeholder={t("enterProductName")}
+                {...field}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+              <FieldError errors={field.state.meta.errors} />
+            </Field>
+          )}
+        />
+
+        <form.Field
+          name="description"
+          children={(field) => (
+            <Field>
+              <FieldLabel>{t("description")}</FieldLabel>
+              <Textarea
+                placeholder={t("enterProductDescription")}
+                className="min-h-[80px]"
+                {...field}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+              <FieldError errors={field.state.meta.errors} />
+            </Field>
+          )}
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+          <form.Field
+            name="sku"
+            children={(field) => (
+              <Field>
+                <FieldLabel>{t("SKU")} *</FieldLabel>
+                <Input
+                  placeholder={t("SKUDescription")}
+                  {...field}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <FieldDescription>{t("SKUDescription")}</FieldDescription>
+                <FieldError errors={field.state.meta.errors} />
+              </Field>
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("description")}</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder={t("enterProductDescription")}
-                    className="min-h-[80px]"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+          <form.Field
+            name="barcode"
+            children={(field) => (
+              <Field>
+                <FieldLabel>{t("barcode")}</FieldLabel>
+                <Input
+                  placeholder={t("barcodePlaceholder")}
+                  {...field}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <FieldError errors={field.state.meta.errors} />
+              </Field>
+            )}
+          />
+        </div>
+        <form.Field
+          name="categoryId"
+          children={(field) => (
+            <Field>
+              <FieldLabel>{t("categoryId")}</FieldLabel>
+              <Select
+                onValueChange={field.handleChange}
+                defaultValue={field.state.value}
+              >
+                <SelectTrigger className="w-full sm:w-1/2">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectPopup>
+                  {isCategoriesLoading && <div>{t("loading")}...</div>}
+                  {categoriesError && <div>{t("errorLoading")}</div>}
+
+                  {categoriesData?.map((category) => (
+                    <SelectItem
+                      value={category.id}
+                      key={category.id}
+                      disabled={!category.isActive}
+                    >
+                      {category.value}
+                    </SelectItem>
+                  ))}
+                </SelectPopup>
+              </Select>
+              <FieldError errors={field.state.meta.errors} />
+            </Field>
+          )}
+        />
+      </FieldGroup>
+
+      <FieldGroup className="space-y-4">
+        <Separator />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form.Field
+            name="price"
+            children={(field) => (
+              <Field>
+                <FieldLabel>{t("price")} *</FieldLabel>
+                <Input
+                  type="number"
+                  step="0.01"
+                  placeholder={t("price")}
+                  {...field}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <FieldError errors={field.state.meta.errors} />
+              </Field>
             )}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-            <FormField
-              control={form.control}
-              name="sku"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("SKU")} *</FormLabel>
-                  <FormControl>
-                    <Input placeholder={t("SKUDescription")} {...field} />
-                  </FormControl>
-                  <FormDescription>{t("SKUDescription")}</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <form.Field
+            name="costPrice"
+            children={(field) => (
+              <Field>
+                <FieldLabel>{t("costPrice")} *</FieldLabel>
+                <Input
+                  type="number"
+                  step="0.01"
+                  placeholder={t("costPrice")}
+                  {...field}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <FieldError errors={field.state.meta.errors} />
+              </Field>
+            )}
+          />
+        </div>
+      </FieldGroup>
 
-            <FormField
-              control={form.control}
-              name="barcode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("barcode")}</FormLabel>
-                  <FormControl>
-                    <Input placeholder={t("barcodePlaceholder")} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <FormField
-            control={form.control}
-            name="categoryId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("categoryId")}</FormLabel>
+      <FieldGroup className="space-y-4">
+        <Separator />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+          <form.Field
+            name="reorderPoint"
+            children={(field) => (
+              <Field>
+                <FieldLabel>{t("reorderPoint")}</FieldLabel>
+                <Input
+                  type="number"
+                  {...field}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <FieldDescription>{t("reorderPoint")}</FieldDescription>
+                <FieldError errors={field.state.meta.errors} />
+              </Field>
+            )}
+          />
+
+          <form.Field
+            name="maxStock"
+            children={(field) => (
+              <Field>
+                <FieldLabel>{t("maxStock")}</FieldLabel>
+                <Input
+                  type="number"
+                  {...field}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <FieldDescription>{t("maxStockDescription")}</FieldDescription>
+                <FieldError errors={field.state.meta.errors} />
+              </Field>
+            )}
+          />
+        </div>
+        <Separator />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+          <form.Field
+            name="unit"
+            children={(field) => (
+              <Field>
+                <FieldLabel>{t("unit")}</FieldLabel>
                 <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  onValueChange={field.handleChange}
+                  defaultValue={field.state.value}
                 >
-                  <FormControl>
-                    <SelectTrigger className="w-full sm:w-1/2">
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectPopup>
-                    {isCategoriesLoading && <div>{t("loading")}...</div>}
-                    {categoriesError && <div>{t("errorLoading")}</div>}
-
-                    {categoriesData?.map((category) => (
-                      <SelectItem
-                        value={category.id}
-                        key={category.id}
-                        disabled={!category.isActive}
-                      >
-                        {category.value}
+                    {units.map((unit) => (
+                      <SelectItem key={unit.value} value={unit.value}>
+                        {unit.label}
                       </SelectItem>
                     ))}
                   </SelectPopup>
                 </Select>
-                <FormMessage />
-              </FormItem>
+                <FieldError errors={field.state.meta.errors} />
+              </Field>
+            )}
+          />
+          <form.Field
+            name="weight"
+            children={(field) => (
+              <Field>
+                <FieldLabel>{t("weight")}</FieldLabel>
+                <Input
+                  type="number"
+                  step="0.001"
+                  placeholder={t("weight")}
+                  {...field}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <FieldDescription>{t("weight")}</FieldDescription>
+                <FieldError errors={field.state.meta.errors} />
+              </Field>
             )}
           />
         </div>
+      </FieldGroup>
 
-        <div className="space-y-4">
-          <Separator />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("price")} *</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      placeholder={t("price")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="costPrice"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("costPrice")} *</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      placeholder={t("costPrice")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+      <div className="flex justify-end pt-6 border-t">
+        <div className="flex gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => form.reset()}
+            disabled={form.state.isSubmitting}
+          >
+            {tCommon("cancel")}
+          </Button>
+          <Button
+            type="submit"
+            disabled={form.state.isSubmitting}
+            className="min-w-[120px]"
+          >
+            {form.state.isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {product ? tCommon("edit") : tCommon("add")}...
+              </>
+            ) : (
+              `${product ? tCommon("edit") : tCommon("add")} ${t(
+                "productName"
+              )}`
+            )}
+          </Button>
         </div>
-
-        <div className="space-y-4">
-          <Separator />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-            <FormField
-              control={form.control}
-              name="reorderPoint"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("reorderPoint")}</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormDescription>{t("reorderPoint")}</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="maxStock"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("maxStock")}</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormDescription>{t("maxStockDescription")}</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <Separator />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-            <FormField
-              control={form.control}
-              name="unit"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("unit")}</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectPopup>
-                      {units.map((unit) => (
-                        <SelectItem key={unit.value} value={unit.value}>
-                          {unit.label}
-                        </SelectItem>
-                      ))}
-                    </SelectPopup>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="weight"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("weight")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step="0.001"
-                      placeholder={t("weight")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription>{t("weight")}</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-
-        <div className="flex justify-end pt-6 border-t">
-          <div className="flex gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => form.reset()}
-              disabled={isSubmitting}
-            >
-              {tCommon("cancel")}
-            </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="min-w-[120px]"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {product ? tCommon("edit") : tCommon("add")}...
-                </>
-              ) : (
-                `${product ? tCommon("edit") : tCommon("add")} ${t(
-                  "productName"
-                )}`
-              )}
-            </Button>
-          </div>
-        </div>
-      </form>
-    </Form>
+      </div>
+    </form>
   );
 }
 

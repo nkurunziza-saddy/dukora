@@ -1,18 +1,15 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "@tanstack/react-form";
 import z from "zod";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldError,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -33,80 +30,103 @@ export default function UserProfileForm({
     email: z.string().email(t("userEmailValid")),
   });
 
-  const form = useForm<z.infer<typeof userProfileSchema>>({
-    resolver: zodResolver(userProfileSchema),
+  const form = useForm({
     defaultValues: {
       name: user?.name || "",
       email: user?.email || "",
     },
+    validators: {
+      onSubmit: userProfileSchema,
+    },
+    onSubmit: async ({ value }) => {
+      if (!user?.id) return;
+      const req = await updateUser({ userId: user.id, userData: value });
+      if (req.data) {
+        toast.success(t("userUpdated"), {
+          description: format(new Date(), "MMM dd, yyyy"),
+        });
+      } else {
+        toast.error(tCommon("error"), {
+          description: t("userSettingsUpdateFailed"),
+        });
+      }
+    },
   });
 
-  const onSubmit = async (values: z.infer<typeof userProfileSchema>) => {
-    if (!user?.id) return;
-    const req = await updateUser({ userId: user.id, userData: values });
-    if (req.data) {
-      toast.success(t("userUpdated"), {
-        description: format(new Date(), "MMM dd, yyyy"),
-      });
-    } else {
-      toast.error(tCommon("error"), {
-        description: t("userSettingsUpdateFailed"),
-      });
-    }
-  };
-
-  const { isSubmitting } = form.formState;
-
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="space-y-4">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("userName")} *</FormLabel>
-                <FormControl>
-                  <Input placeholder={t("enterUserName")} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        form.handleSubmit();
+      }}
+      className="space-y-6"
+    >
+      <FieldGroup>
+        <form.Field
+          name="name"
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>{t("userName")} *</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder={t("enterUserName")}
+                  aria-invalid={isInvalid}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        />
 
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t("userEmail")} *</FormLabel>
-                <FormControl>
-                  <Input type="email" placeholder={t("email")} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+        <form.Field
+          name="email"
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>{t("userEmail")} *</FieldLabel>
+                <Input
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  type="email"
+                  placeholder={t("email")}
+                  aria-invalid={isInvalid}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+        />
+      </FieldGroup>
 
-        <div className="flex justify-end pt-6 border-t">
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="min-w-[120px]"
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {tCommon("saving")}...
-              </>
-            ) : (
-              tCommon("saveChanges")
-            )}
-          </Button>
-        </div>
-      </form>
-    </Form>
+      <div className="flex justify-end pt-6 border-t">
+        <Button
+          type="submit"
+          disabled={form.state.isSubmitting}
+          className="min-w-[120px]"
+        >
+          {form.state.isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {tCommon("saving")}...
+            </>
+          ) : (
+            tCommon("saveChanges")
+          )}
+        </Button>
+      </div>
+    </form>
   );
 }

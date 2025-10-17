@@ -1,17 +1,14 @@
 "use client";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "@tanstack/react-form";
 import z from "zod";
-import { Loader2, AlertCircle, ChevronDown, Check } from "lucide-react";
+import { Loader2, AlertCircle, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldError,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
@@ -23,15 +20,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Popover, PopoverPopup, PopoverTrigger } from "../ui/popover";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "../ui/command";
+  Autocomplete,
+  AutocompleteEmpty,
+  AutocompleteInput,
+  AutocompleteItem,
+  AutocompleteList,
+  AutocompletePopup,
+} from "../ui/autocomplete";
 import { SelectBusiness } from "@/lib/schema/schema-types";
 import { fetcher } from "@/lib/utils";
 import { preload } from "swr";
@@ -72,37 +68,34 @@ export default function InitiatePaymentForm() {
   });
 
   const form = useForm<PaymentFormValues>({
-    resolver: zodResolver(paymentSchema),
     defaultValues: {
       receiverBusinessId: "",
       amount: 0,
       currency: "USD",
       applicationFeeAmount: undefined,
     },
+    validators: {
+      onSubmit: paymentSchema,
+    },
+    onSubmit: async ({ value }) => {
+      const res = await initiateInterBusinessPayment({
+        ...value,
+        applicationFeeAmount: value.applicationFeeAmount
+          ? Number(value.applicationFeeAmount)
+          : undefined,
+      });
+      if (res.data) {
+        toast.success(tPayments("paymentInitiated"), {
+          description: tPayments("paymentInitiatedDescription"),
+        });
+        form.reset();
+      } else {
+        toast.error(tCommon("error"), {
+          description: res.error || tPayments("paymentInitiationFailed"),
+        });
+      }
+    },
   });
-
-  const onSubmit = async (values: PaymentFormValues) => {
-    const res = await initiateInterBusinessPayment({
-      ...values,
-      applicationFeeAmount:
-        typeof values.applicationFeeAmount === "string" &&
-        values.applicationFeeAmount === ""
-          ? undefined
-          : Number(values.applicationFeeAmount),
-    });
-    if (res.data) {
-      toast.success(tPayments("paymentInitiated"), {
-        description: tPayments("paymentInitiatedDescription"),
-      });
-      form.reset();
-    } else {
-      toast.error(tCommon("error"), {
-        description: res.error || tPayments("paymentInitiationFailed"),
-      });
-    }
-  };
-
-  const { isSubmitting } = form.formState;
 
   if (!businessesData || businessesError) {
     return (
@@ -114,14 +107,20 @@ export default function InitiatePaymentForm() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
-          control={form.control}
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        form.handleSubmit();
+      }}
+      className="space-y-6"
+    >
+      <FieldGroup>
+        <form.Field
           name="receiverBusinessId"
-          render={({ field }) => (
-            <FormItem className="flex flex-col space-y-2">
-              <FormLabel>{tPayments("receiverBusiness")} *</FormLabel>
+          children={(field) => (
+            <Field>
+              <FieldLabel>{tPayments("receiverBusiness")} *</FieldLabel>
               {isBusinessesLoading ? (
                 <div className="flex items-center space-x-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -130,156 +129,122 @@ export default function InitiatePaymentForm() {
                   </span>
                 </div>
               ) : businessesData ? (
-                <Popover>
-                  <PopoverTrigger render={<FormControl />}>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={
-                        !field.value
-                          ? "text-muted-foreground justify-between"
-                          : "justify-between"
-                      }
-                    >
-                      {field.value ? (
-                        <div className="flex gap-4">
-                          <span className="flex items-center gap-2">
-                            {
-                              businessesData.find((b) => b.id === field.value)
-                                ?.name
-                            }
-                          </span>
-
-                          <Badge
-                            className="flex items-center gap-2"
-                            variant={"secondary"}
-                          >
-                            {
-                              businessesData.find((b) => b.id === field.value)
-                                ?.id
-                            }
-                          </Badge>
-                        </div>
-                      ) : (
-                        tPayments("selectReceiverBusiness")
+                <Autocomplete
+                  items={businessesData.map((b) => ({
+                    value: b.id,
+                    label: b.name,
+                    ...b,
+                  }))}
+                  onValueChange={(item) => {
+                    if (item) {
+                      field.handleChange(item.value);
+                    }
+                  }}
+                  value={field.state.value}
+                >
+                  <AutocompleteInput
+                    placeholder={tPayments("searchBusinesses")}
+                  />
+                  <AutocompletePopup>
+                    <AutocompleteEmpty>
+                      {tPayments("noOtherBusinesses")}
+                    </AutocompleteEmpty>
+                    <AutocompleteList>
+                      {(business) => (
+                        <AutocompleteItem
+                          key={business.id}
+                          value={business}
+                        >
+                          <div className="flex items-center gap-8 justify-between w-full">
+                            <div className="flex gap-1">
+                              <span className="font-medium">
+                                {business.name}
+                              </span>
+                              -
+                              <span className="font-medium">
+                                {business.id}
+                              </span>
+                            </div>
+                            <Check
+                              className={
+                                business.id === field.state.value
+                                  ? "h-4 w-4 opacity-100"
+                                  : "h-4 w-4 opacity-0"
+                              }
+                            />
+                          </div>
+                        </AutocompleteItem>
                       )}
-                      <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverPopup className="w-full p-0" align="start">
-                    <Command>
-                      <CommandInput
-                        placeholder={tPayments("searchBusinesses")}
-                      />
-                      <CommandList>
-                        <CommandEmpty>
-                          {tPayments("noOtherBusinesses")}
-                        </CommandEmpty>
-                        <CommandGroup>
-                          {businessesData.map((business) => (
-                            <CommandItem
-                              key={business.id}
-                              onSelect={() => {
-                                form.setValue(
-                                  "receiverBusinessId",
-                                  business.id
-                                );
-                              }}
-                            >
-                              <div className="flex items-center gap-8 justify-between w-full">
-                                <div className="flex gap-1">
-                                  <span className="font-medium">
-                                    {business.name}
-                                  </span>
-                                  -
-                                  <span className="font-medium">
-                                    {business.id}
-                                  </span>
-                                </div>
-                                <Check
-                                  className={
-                                    business.id === field.value
-                                      ? "h-4 w-4 opacity-100"
-                                      : "h-4 w-4 opacity-0"
-                                  }
-                                />
-                              </div>
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverPopup>
-                </Popover>
+                    </AutocompleteList>
+                  </AutocompletePopup>
+                </Autocomplete>
               ) : null}
-              <FormMessage />
-            </FormItem>
+              <FieldError errors={field.state.meta.errors} />
+            </Field>
           )}
         />
 
-        <FormField
-          control={form.control}
+        <form.Field
           name="amount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tPayments("amount")}</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  step="0.01"
-                  placeholder={tPayments("enterAmount")}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          children={(field) => (
+            <Field>
+              <FieldLabel>{tPayments("amount")}</FieldLabel>
+              <Input
+                type="number"
+                step="0.01"
+                placeholder={tPayments("enterAmount")}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+              />
+              <FieldError errors={field.state.meta.errors} />
+            </Field>
           )}
         />
 
-        <FormField
-          control={form.control}
+        <form.Field
           name="currency"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tPayments("currency")}</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
+          children={(field) => (
+            <Field>
+              <FieldLabel>{tPayments("currency")}</FieldLabel>
+              <Select
+                onValueChange={field.handleChange}
+                defaultValue={field.state.value}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectPopup>
                   <SelectItem value="USD">USD</SelectItem>
                   <SelectItem value="EUR">EUR</SelectItem>
                   <SelectItem value="RWF">RWF</SelectItem>
                 </SelectPopup>
               </Select>
-              <FormMessage />
-            </FormItem>
+              <FieldError errors={field.state.meta.errors} />
+            </Field>
           )}
         />
 
-        <FormField
-          control={form.control}
+        <form.Field
           name="applicationFeeAmount"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{tPayments("applicationFee")}</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  step="0.01"
-                  placeholder={tPayments("enterApplicationFee")}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          children={(field) => (
+            <Field>
+              <FieldLabel>{tPayments("applicationFee")}</FieldLabel>
+              <Input
+                type="number"
+                step="0.01"
+                placeholder={tPayments("enterApplicationFee")}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+              />
+              <FieldError errors={field.state.meta.errors} />
+            </Field>
           )}
         />
 
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? (
+        <Button type="submit" disabled={form.state.isSubmitting}>
+          {form.state.isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               {tCommon("submitting")}...
@@ -288,7 +253,7 @@ export default function InitiatePaymentForm() {
             tPayments("initiatePayment")
           )}
         </Button>
-      </form>
-    </Form>
+      </FieldGroup>
+    </form>
   );
 }
