@@ -1,5 +1,5 @@
 "use client";
-import { useForm } from "react-hook-form";
+import { useForm } from "@tanstack/react-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -10,24 +10,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import { SelectBusiness } from "@/lib/schema/schema-types";
+import type { SelectBusiness } from "@/lib/schema/schema-types";
 import { updateBusiness } from "@/server/actions/business-actions";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldError,
+  FieldDescription,
+} from "@/components/ui/field";
 
 const LIMITS = {
   NAME_MIN: 2,
@@ -51,21 +48,16 @@ const formSchema = z.object({
     .regex(
       /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/,
       "Please enter a valid domain"
-    )
-    .optional()
-    .or(z.literal("")),
-  businessType: z.string().optional(),
-  description: z.string().optional(),
+    ),
+  businessType: z.string(),
+  description: z.string(),
   logoUrl: z
-    .string()
     .url("Please enter a valid URL")
     .max(
       LIMITS.LOGO_URL_MAX,
       `Logo URL cannot exceed ${LIMITS.LOGO_URL_MAX} characters`
-    )
-    .optional()
-    .or(z.literal("")),
-  registrationNumber: z.string().optional(),
+    ),
+  registrationNumber: z.string(),
   isActive: z.boolean(),
 });
 
@@ -76,8 +68,10 @@ export function EditBusinessDetails({
 }) {
   const t = useTranslations("forms");
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm({
+    validators: {
+      onSubmit: formSchema,
+    },
     defaultValues: {
       name: business?.name || "",
       domain: business?.domain || "",
@@ -87,16 +81,28 @@ export function EditBusinessDetails({
       registrationNumber: business?.registrationNumber || "",
       isActive: business?.isActive || false,
     },
+    onSubmit: async ({ value }) => {
+      const result = await updateBusiness({
+        businessId: business.id,
+        updates: value,
+      });
+      if (result.error) {
+        toast.error("Failed to update business details", {
+          description: result.error,
+        });
+        return;
+      }
+      toast.success("Business details updated successfully", {
+        description: "Your business details have been updated.",
+      });
+    },
   });
 
-  const {
-    watch,
-    formState: { errors, isSubmitting },
-  } = form;
+  const { name, domain, logoUrl } = form.state.values;
 
-  const nameValue = watch("name") || "";
-  const domainValue = watch("domain") || "";
-  const logoUrlValue = watch("logoUrl") || "";
+  const nameValue = name || "";
+  const domainValue = domain || "";
+  const logoUrlValue = logoUrl || "";
 
   const businessTypes = [
     { value: "retail", label: t("businessTypeRetail") },
@@ -115,243 +121,262 @@ export function EditBusinessDetails({
   const isDomainNearLimit = domainValue.length > LIMITS.DOMAIN_MAX * 0.8;
   const isLogoUrlNearLimit = logoUrlValue.length > LIMITS.LOGO_URL_MAX * 0.8;
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const result = await updateBusiness({
-      businessId: business.id,
-      updates: values,
-    });
-    if (result.error) {
-      toast.error("Failed to update business details", {
-        description: result.error,
-      });
-      return;
-    }
-    toast.success("Business details updated successfully", {
-      description: "Your business details have been updated.",
-    });
-  }
-
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-3 border rounded-lg">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium">Name</span>
-                <Badge
-                  variant={isNameNearLimit ? "destructive" : "secondary"}
-                  className="text-xs"
-                >
-                  {nameValue.length}/{LIMITS.NAME_MAX}
-                </Badge>
-              </div>
-            </div>
-            <div className="p-3 border rounded-lg">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium">Domain</span>
-                <Badge
-                  variant={isDomainNearLimit ? "destructive" : "secondary"}
-                  className="text-xs"
-                >
-                  {domainValue.length}/{LIMITS.DOMAIN_MAX}
-                </Badge>
-              </div>
-            </div>
-            <div className="p-3 border rounded-lg">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium">Logo URL</span>
-                <Badge
-                  variant={isLogoUrlNearLimit ? "destructive" : "secondary"}
-                  className="text-xs"
-                >
-                  {logoUrlValue.length}/{LIMITS.LOGO_URL_MAX}
-                </Badge>
-              </div>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        form.handleSubmit();
+      }}
+    >
+      <FieldGroup className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="p-3 border rounded-lg">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium">Name</span>
+              <Badge
+                variant={isNameNearLimit ? "error" : "secondary"}
+                className="text-xs"
+              >
+                {nameValue.length}/{LIMITS.NAME_MAX}
+              </Badge>
             </div>
           </div>
+          <div className="p-3 border rounded-lg">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium">Domain</span>
+              <Badge
+                variant={isDomainNearLimit ? "error" : "secondary"}
+                className="text-xs"
+              >
+                {domainValue.length}/{LIMITS.DOMAIN_MAX}
+              </Badge>
+            </div>
+          </div>
+          <div className="p-3 border rounded-lg">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium">Logo URL</span>
+              <Badge
+                variant={isLogoUrlNearLimit ? "error" : "secondary"}
+                className="text-xs"
+              >
+                {logoUrlValue.length}/{LIMITS.LOGO_URL_MAX}
+              </Badge>
+            </div>
+          </div>
+        </div>
 
-          {Object.keys(errors).length > 0 && (
-            <Alert variant="error">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>
-                Please fix the errors below before submitting.
-              </AlertDescription>
-            </Alert>
-          )}
+        <form.Subscribe selector={(state) => [state.isTouched, state.isValid]}>
+          {([isTouched, isValid]) =>
+            isTouched && !isValid ? (
+              <Alert variant="error">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  Please fix the errors below before submitting.
+                </AlertDescription>
+              </Alert>
+            ) : null
+          }
+        </form.Subscribe>
 
-          <div>
-            <h4 className="font-medium mb-4">{t("basicInformation")}</h4>
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("businessName")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={t("enterBusinessName")}
-                        maxLength={LIMITS.NAME_MAX}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
+        <div>
+          <h4 className="font-medium mb-4">{t("basicInformation")}</h4>
+          <div className="space-y-4">
+            <form.Field
+              name="name"
+              children={(field) => {
+                const isInvalid = field.state.meta.errors.length > 0;
+                return (
+                  <Field>
+                    <FieldLabel>{t("businessName")}</FieldLabel>
+                    <Input
+                      placeholder={t("enterBusinessName")}
+                      maxLength={LIMITS.NAME_MAX}
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                    />
+                    <FieldDescription>
                       {nameRemaining} characters remaining
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    </FieldDescription>
+                    <FieldError errors={field.state.meta.errors} />
+                  </Field>
+                );
+              }}
+            />
 
-              <FormField
-                control={form.control}
-                name="domain"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("domain")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={t("enterDomain")}
-                        maxLength={LIMITS.DOMAIN_MAX}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
+            <form.Field
+              name="domain"
+              children={(field) => {
+                const isInvalid = field.state.meta.errors.length > 0;
+                return (
+                  <Field>
+                    <FieldLabel>{t("domain")}</FieldLabel>
+                    <Input
+                      placeholder={t("enterDomain")}
+                      maxLength={LIMITS.DOMAIN_MAX}
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                      type="url"
+                    />
+                    <FieldDescription>
                       {domainRemaining} characters remaining •{" "}
                       {t("domainDescription")}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    </FieldDescription>
+                    <FieldError errors={field.state.meta.errors} />
+                  </Field>
+                );
+              }}
+            />
 
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("description")}</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder={t("enterBusinessDescription")}
-                        className="field-sizing-content max-h-29.5 min-h-0 resize-none py-1.75"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <form.Field
+              name="description"
+              children={(field) => {
+                const isInvalid = field.state.meta.errors.length > 0;
+                return (
+                  <Field>
+                    <FieldLabel>{t("description")}</FieldLabel>
+                    <Textarea
+                      placeholder={t("enterBusinessDescription")}
+                      className="field-sizing-content max-h-29.5 min-h-0 resize-none py-1.75"
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                    />
+                    <FieldError errors={field.state.meta.errors} />
+                  </Field>
+                );
+              }}
+            />
 
-              <FormField
-                control={form.control}
-                name="businessType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("businessType")}</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value || ""}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectPopup>
-                        {businessTypes.map((type) => (
-                          <SelectItem key={type.value} value={type.value}>
-                            {type.label}
-                          </SelectItem>
-                        ))}
-                      </SelectPopup>
-                    </Select>
-                    <FormDescription>
-                      {t("businessTypeDescription")}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <form.Field
+              name="businessType"
+              children={(field) => (
+                <Field>
+                  <FieldLabel>{t("businessType")}</FieldLabel>
+                  <Select
+                    onValueChange={field.handleChange}
+                    defaultValue={field.state.value || ""}
+                    items={businessTypes}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectPopup>
+                      {businessTypes.map((type) => (
+                        <SelectItem key={type.value} value={type.value}>
+                          {type.label}
+                        </SelectItem>
+                      ))}
+                    </SelectPopup>
+                  </Select>
+                  <FieldDescription>
+                    {t("businessTypeDescription")}
+                  </FieldDescription>
+                  <FieldError errors={field.state.meta.errors} />
+                </Field>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="logoUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("logoUrl")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="url"
-                        placeholder={t("enterLogoUrl")}
-                        maxLength={LIMITS.LOGO_URL_MAX}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
+            <form.Field
+              name="logoUrl"
+              children={(field) => {
+                const isInvalid = field.state.meta.errors.length > 0;
+                return (
+                  <Field>
+                    <FieldLabel>{t("logoUrl")}</FieldLabel>
+                    <Input
+                      type="url"
+                      placeholder={t("enterLogoUrl")}
+                      maxLength={LIMITS.LOGO_URL_MAX}
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                    />
+                    <FieldDescription>
                       {logoUrlRemaining} characters remaining
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                    </FieldDescription>
+                    <FieldError errors={field.state.meta.errors} />
+                  </Field>
+                );
+              }}
+            />
           </div>
+        </div>
 
-          <div>
-            <h4 className="font-medium mb-4 flex items-center gap-2">
-              {t("systemInformation")}
-            </h4>
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="registrationNumber"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("registrationNumber")}</FormLabel>
-                    <FormControl>
-                      <Input {...field} disabled />
-                    </FormControl>
-                    <FormDescription>
+        <div>
+          <h4 className="font-medium mb-4 flex items-center gap-2">
+            {t("systemInformation")}
+          </h4>
+          <div className="space-y-4">
+            <form.Field
+              name="registrationNumber"
+              children={(field) => {
+                const isInvalid = field.state.meta.errors.length > 0;
+                return (
+                  <Field>
+                    <FieldLabel>{t("registrationNumber")}</FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                    />
+                    <FieldDescription>
                       {t("registrationNumberDescription")}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    </FieldDescription>
+                    <FieldError errors={field.state.meta.errors} />
+                  </Field>
+                );
+              }}
+            />
 
-              <FormField
-                control={form.control}
-                name="isActive"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 bg-muted/30">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-base flex items-center gap-2">
-                        {t("accountStatus")}
-                      </FormLabel>
-                      <FormDescription>
-                        {t("accountStatusDescription")}
-                      </FormDescription>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant={field.value ? "default" : "secondary"}>
-                        {field.value ? t("active") : t("inactive")}
-                      </Badge>
-                    </div>
-                  </FormItem>
-                )}
-              />
-            </div>
+            <form.Field
+              name="isActive"
+              children={(field) => (
+                <div className="flex flex-row items-center justify-between rounded-lg border p-4 bg-muted/30">
+                  <div className="space-y-0.5">
+                    <p className="text-base flex items-center gap-2 font-medium">
+                      {t("accountStatus")}
+                    </p>
+                    <FieldDescription>
+                      {t("accountStatusDescription")}
+                    </FieldDescription>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      variant={field.state.value ? "default" : "secondary"}
+                    >
+                      {field.state.value ? t("active") : t("inactive")}
+                    </Badge>
+                  </div>
+                </div>
+              )}
+            />
           </div>
         </div>
+      </FieldGroup>
 
-        <div className="mt-6">
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? t("saving") : t("saveDetails")}
-          </Button>
-        </div>
-      </form>
-    </Form>
+      <div className="mt-6">
+        <Button type="submit" disabled={form.state.isSubmitting}>
+          {form.state.isSubmitting ? t("saving") : t("saveDetails")}
+        </Button>
+      </div>
+    </form>
   );
 }

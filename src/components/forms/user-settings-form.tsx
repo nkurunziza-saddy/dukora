@@ -1,4 +1,3 @@
-// import LocaleSwitcher from "../locale-switcher";
 import LocaleSwitcher from "../locale-switcher";
 import { ThemeSwitcher } from "../theme-switcher";
 

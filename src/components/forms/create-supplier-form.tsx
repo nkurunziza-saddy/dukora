@@ -33,10 +33,7 @@ export default function SupplierForm({
   const tCommon = useTranslations("common");
   const supplierSchema = z.object({
     name: z.string().min(1, t("supplierNameRequired")),
-    email: z
-      .string()
-      .min(1, t("supplierEmailRequired"))
-      .email(t("supplierEmailValid")),
+    email: z.email(t("supplierEmailValid")),
     phone: z.string().refine((val) => {
       const digits = val.replace(/\D/g, "");
       return digits.length >= 10 && digits.length <= 15;
@@ -57,8 +54,6 @@ export default function SupplierForm({
     },
     validators: {
       onSubmit: supplierSchema,
-      onChange: supplierSchema,
-      onBlur: supplierSchema,
     },
     onSubmit: async ({ value }) => {
       const req = supplier

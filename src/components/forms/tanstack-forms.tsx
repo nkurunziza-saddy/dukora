@@ -55,14 +55,8 @@ const formSchema = z.object({
     .string()
     .min(20, "Description must be at least 20 characters.")
     .max(100, "Description must be at most 100 characters."),
-  email: z.string().email("Invalid email"),
-  language: z
-    .string()
-    .min(1, "Please select your spoken language.")
-    .refine((val) => val !== "auto", {
-      message:
-        "Auto-detection is not allowed. Please select a specific language.",
-    }),
+  email: z.email("Invalid email"),
+  language: z.string().min(1, "Please select your spoken language."),
   username: z
     .string()
     .min(3, "Username must be at least 3 characters.")
@@ -90,8 +84,6 @@ export function BugReportForm() {
     },
     validators: {
       onSubmit: formSchema,
-      onChange: formSchema,
-      onBlur: formSchema,
     },
     onSubmit: async ({ value }) => {
       toast("You submitted the following values:", {
@@ -143,8 +135,8 @@ export function BugReportForm() {
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      type="email"
                       aria-invalid={isInvalid}
+                      type="email"
                     />
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
@@ -253,8 +245,17 @@ export function BugReportForm() {
               children={(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
+                const lans = [
+                  { label: "English", value: "en" },
+                  { label: "Spanish", value: "es" },
+                  { label: "French", value: "fr" },
+                  { label: "German", value: "de" },
+                  { label: "Italian", value: "it" },
+                  { label: "Chinese", value: "zh" },
+                  { label: "Japanese", value: "ja" },
+                ];
                 return (
-                  <Field orientation="responsive" data-invalid={isInvalid}>
+                  <Field data-invalid={isInvalid}>
                     <FieldContent>
                       <FieldLabel htmlFor="form-tanstack-select-language">
                         Spoken Language
@@ -270,15 +271,7 @@ export function BugReportForm() {
                       name={field.name}
                       value={field.state.value}
                       onValueChange={field.handleChange}
-                      items={[
-                        { label: "English", value: "en" },
-                        { label: "Spanish", value: "es" },
-                        { label: "French", value: "fr" },
-                        { label: "German", value: "de" },
-                        { label: "Italian", value: "it" },
-                        { label: "Chinese", value: "zh" },
-                        { label: "Japanese", value: "ja" },
-                      ]}
+                      items={lans}
                     >
                       <SelectTrigger
                         id="form-tanstack-select-language"
@@ -287,9 +280,12 @@ export function BugReportForm() {
                       >
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectPopup alignItemWithTrigger>
-                        <SelectItem value="auto">Auto</SelectItem>
-                        <SelectItem value="en">English</SelectItem>
+                      <SelectPopup>
+                        {lans.map((item) => (
+                          <SelectItem key={item.value} value={item.value}>
+                            {item.label}
+                          </SelectItem>
+                        ))}
                       </SelectPopup>
                     </Select>
                   </Field>
@@ -315,12 +311,14 @@ export function BugReportForm() {
                     <Autocomplete
                       name={field.name}
                       value={field.state.value}
-                      onValueChange={field.handleChange}
+                      onValueChange={(item) => {
+                        field.handleChange(item);
+                      }}
                       virtualized
                       items={[
-                        { label: "Dark", value: "dark" },
-                        { label: "Light", value: "light" },
-                        { label: "System", value: "system" },
+                        { label: "Dark", value: "dark", isTr: true },
+                        { label: "Light", value: "light", isTr: false },
+                        { label: "System", value: "system", isTr: false },
                       ]}
                     >
                       <AutocompleteInput placeholder="Theme" />

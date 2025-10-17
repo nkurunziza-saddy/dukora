@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "@tanstack/react-form";
 import z from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,15 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -41,6 +31,7 @@ import {
   MapPin,
   Package,
   X,
+  User,
 } from "lucide-react";
 import {
   Stepper,
@@ -56,9 +47,12 @@ import { businessInitialization } from "@/server/actions/onboarding-actions";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import LocaleSwitcher from "./language-switcher";
+import { UserRole } from "@/lib/schema/schema-types";
+
 const CATEGORY_LIMIT = 10;
 const INVITATIONS_LIMIT = 5;
 const WAREHOUSES_LIMIT = 5;
+
 const onboardingSchema = z.object({
   businessName: z.string().min(1, "Business name is required"),
   businessType: z.string().min(1, "Business type is required"),
@@ -66,10 +60,8 @@ const onboardingSchema = z.object({
   country: z.string().min(1, "Country is required"),
   timezone: z.string().min(1, "Timezone is required"),
   fiscalStartMonth: z.string().min(1, "Fiscal start month is required"),
-
   pricesIncludeTax: z.boolean(),
-  defaultVatRate: z.string().optional(),
-
+  defaultVatRate: z.string(),
   teamMembers: z
     .array(
       z.object({
@@ -77,11 +69,10 @@ const onboardingSchema = z.object({
         role: z.enum([...USER_ROLES]),
       })
     )
-    .max(INVITATIONS_LIMIT, `Maximum inivtations is ${INVITATIONS_LIMIT}`),
+    .max(INVITATIONS_LIMIT, `Maximum invitations is ${INVITATIONS_LIMIT}`),
   categories: z
     .array(z.string())
     .max(CATEGORY_LIMIT, `You can select up to ${CATEGORY_LIMIT} categories`),
-
   warehouses: z
     .array(
       z.object({
@@ -92,8 +83,6 @@ const onboardingSchema = z.object({
     .min(1, "At least one warehouse is required")
     .max(WAREHOUSES_LIMIT, `Allowed warehouses up to ${WAREHOUSES_LIMIT}`),
 });
-
-export type OnboardingFormData = z.infer<typeof onboardingSchema>;
 
 const steps = [
   {
@@ -172,8 +161,7 @@ export default function OnboardingFlow() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const form = useForm<OnboardingFormData>({
-    resolver: zodResolver(onboardingSchema),
+  const form = useForm({
     defaultValues: {
       businessName: "",
       businessType: "",
@@ -183,39 +171,64 @@ export default function OnboardingFlow() {
       fiscalStartMonth: "1",
       pricesIncludeTax: false,
       defaultVatRate: "",
-      teamMembers: [],
-      categories: [],
+      teamMembers: [{ email: "", role: UserRole.ADMIN }],
+      categories: [""],
       warehouses: [{ name: "Main Warehouse", isDefault: true }],
+    },
+    validators: {
+      onSubmit: onboardingSchema,
+    },
+    onSubmit: async ({ value }) => {
+      if (currentStep !== steps.length) {
+        return;
+      }
+      setIsSubmitting(true);
+      try {
+        const req = await businessInitialization(value);
+        if (req.data) {
+          form.reset();
+          toast.success(tCommon("redirecting"), {});
+        } else {
+          toast.error(tCommon("error"), {
+            description: req.error?.split("_").join(" ").toLowerCase(),
+          });
+        }
+      } catch (error) {
+        console.error("Onboarding error:", error);
+      } finally {
+        setIsSubmitting(false);
+      }
     },
   });
 
-  const { watch, setValue, getValues } = form;
-
   const addTeamMember = () => {
-    const currentMembers = getValues("teamMembers");
-    setValue("teamMembers", [...currentMembers, { email: "", role: "ADMIN" }]);
+    const currentMembers = form.state.values.teamMembers;
+    form.setFieldValue("teamMembers", [
+      ...currentMembers,
+      { email: "", role: UserRole.ADMIN },
+    ]);
   };
 
   const removeTeamMember = (index: number) => {
-    const currentMembers = getValues("teamMembers");
-    setValue(
+    const currentMembers = form.state.values.teamMembers;
+    form.setFieldValue(
       "teamMembers",
       currentMembers.filter((_, i) => i !== index)
     );
   };
 
   const addWarehouse = () => {
-    const currentWarehouses = getValues("warehouses");
-    setValue("warehouses", [
+    const currentWarehouses = form.state.values.warehouses;
+    form.setFieldValue("warehouses", [
       ...currentWarehouses,
       { name: "", isDefault: false },
     ]);
   };
 
   const removeWarehouse = (index: number) => {
-    const currentWarehouses = getValues("warehouses");
+    const currentWarehouses = form.state.values.warehouses;
     if (currentWarehouses.length > 1) {
-      setValue(
+      form.setFieldValue(
         "warehouses",
         currentWarehouses.filter((_, i) => i !== index)
       );
@@ -223,17 +236,17 @@ export default function OnboardingFlow() {
   };
 
   const setDefaultWarehouse = (index: number) => {
-    const currentWarehouses = getValues("warehouses");
+    const currentWarehouses = form.state.values.warehouses;
     const updatedWarehouses = currentWarehouses.map((warehouse, i) => ({
       ...warehouse,
       isDefault: i === index,
     }));
-    setValue("warehouses", updatedWarehouses);
+    form.setFieldValue("warehouses", updatedWarehouses);
   };
 
   const removeCategory = (index: number) => {
-    const currentCategories = getValues("categories");
-    setValue(
+    const currentCategories = form.state.values.categories;
+    form.setFieldValue(
       "categories",
       currentCategories.filter((_, i) => i !== index)
     );
@@ -241,7 +254,15 @@ export default function OnboardingFlow() {
 
   const nextStep = async () => {
     const fieldsToValidate = getFieldsForStep(currentStep);
-    const isValid = await form.trigger(fieldsToValidate);
+
+    let isValid = true;
+    for (const fieldName of fieldsToValidate) {
+      const field = form.getFieldMeta(fieldName as any);
+      if (field?.errors && field.errors.length > 0) {
+        isValid = false;
+        break;
+      }
+    }
 
     if (isValid && currentStep < 5) {
       setCurrentStep(currentStep + 1);
@@ -254,7 +275,7 @@ export default function OnboardingFlow() {
     }
   };
 
-  const getFieldsForStep = (step: number): (keyof OnboardingFormData)[] => {
+  const getFieldsForStep = (step: number) => {
     switch (step) {
       case 1:
         return [
@@ -275,28 +296,6 @@ export default function OnboardingFlow() {
         return ["warehouses"];
       default:
         return [];
-    }
-  };
-
-  const onSubmit = async (data: OnboardingFormData) => {
-    if (currentStep !== steps.length) {
-      return;
-    }
-    setIsSubmitting(true);
-    try {
-      const req = await businessInitialization(data);
-      if (req.data) {
-        form.reset();
-        toast.success(tCommon("redirecting"), {});
-      } else {
-        toast.error(tCommon("error"), {
-          description: req.error?.split("_").join(" ").toLowerCase(),
-        });
-      }
-    } catch (error) {
-      console.error("Onboarding error:", error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -322,7 +321,6 @@ export default function OnboardingFlow() {
                   <StepperIndicator />
                   <div className="text-center md:text-left">
                     <StepperTitle className="flex items-center gap-2">
-                      {/* <Icon className="h-4 w-4" /> */}
                       {title}
                     </StepperTitle>
                   </div>
@@ -344,13 +342,7 @@ export default function OnboardingFlow() {
                     const currentStepData = steps.find(
                       (s) => s.step === currentStep
                     );
-                    // const CurrentIcon = currentStepData?.icon;
-                    return (
-                      <>
-                        {/* {CurrentIcon && <CurrentIcon className="h-5 w-5" />} */}
-                        {currentStepData?.title}
-                      </>
-                    );
+                    return <>{currentStepData?.title}</>;
                   })()}
                 </CardTitle>
                 <CardDescription>
@@ -377,45 +369,67 @@ export default function OnboardingFlow() {
             </div>
           </CardHeader>
           <CardPanel>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6"
-              >
-                {currentStep === 1 && (
-                  <div className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="businessName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Business Name *</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Enter your business name"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="businessType"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Business Type *</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                form.handleSubmit();
+              }}
+              className="space-y-6"
+            >
+              {currentStep === 1 && (
+                <div className="space-y-4">
+                  <form.Field name="businessName">
+                    {(field) => {
+                      const isInvalid =
+                        field.state.meta.isTouched &&
+                        field.state.meta.errors.length > 0;
+                      return (
+                        <div className="space-y-2">
+                          <label
+                            htmlFor={field.name}
+                            className="text-sm font-medium"
                           >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue />{" "}
-                              </SelectTrigger>
-                            </FormControl>
+                            Business Name *
+                          </label>
+                          <Input
+                            id={field.name}
+                            name={field.name}
+                            value={field.state.value}
+                            onBlur={field.handleBlur}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            placeholder="Enter your business name"
+                            aria-invalid={isInvalid}
+                          />
+                          {isInvalid && (
+                            <p className="text-sm text-destructive">
+                              {field.state.meta.errors.join(", ")}
+                            </p>
+                          )}
+                        </div>
+                      );
+                    }}
+                  </form.Field>
+
+                  <form.Field name="businessType">
+                    {(field) => {
+                      const isInvalid =
+                        field.state.meta.isTouched &&
+                        field.state.meta.errors.length > 0;
+                      return (
+                        <div className="space-y-2">
+                          <label
+                            htmlFor={field.name}
+                            className="text-sm font-medium"
+                          >
+                            Business Type *
+                          </label>
+                          <Select
+                            value={field.state.value}
+                            onValueChange={(value) => field.handleChange(value)}
+                          >
+                            <SelectTrigger id={field.name}>
+                              <SelectValue />
+                            </SelectTrigger>
                             <SelectPopup>
                               {businessTypes.map((type) => (
                                 <SelectItem key={type.value} value={type.value}>
@@ -424,27 +438,39 @@ export default function OnboardingFlow() {
                               ))}
                             </SelectPopup>
                           </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                          {isInvalid && (
+                            <p className="text-sm text-destructive">
+                              {field.state.meta.errors.join(", ")}
+                            </p>
+                          )}
+                        </div>
+                      );
+                    }}
+                  </form.Field>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-4">
-                      <FormField
-                        control={form.control}
-                        name="currency"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Currency *</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
+                  <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-4">
+                    <form.Field name="currency">
+                      {(field) => {
+                        const isInvalid =
+                          field.state.meta.isTouched &&
+                          field.state.meta.errors.length > 0;
+                        return (
+                          <div className="space-y-2">
+                            <label
+                              htmlFor={field.name}
+                              className="text-sm font-medium"
                             >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue />{" "}
-                                </SelectTrigger>
-                              </FormControl>
+                              Currency *
+                            </label>
+                            <Select
+                              value={field.state.value}
+                              onValueChange={(value) =>
+                                field.handleChange(value)
+                              }
+                            >
+                              <SelectTrigger id={field.name}>
+                                <SelectValue />
+                              </SelectTrigger>
                               <SelectPopup>
                                 {currencies.map((currency) => (
                                   <SelectItem
@@ -456,34 +482,47 @@ export default function OnboardingFlow() {
                                 ))}
                               </SelectPopup>
                             </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                            {isInvalid && (
+                              <p className="text-sm text-destructive">
+                                {field.state.meta.errors.join(", ")}
+                              </p>
+                            )}
+                          </div>
+                        );
+                      }}
+                    </form.Field>
 
-                      <FormField
-                        control={form.control}
-                        name="country"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Country *</FormLabel>
+                    <form.Field name="country">
+                      {(field) => {
+                        const isInvalid =
+                          field.state.meta.isTouched &&
+                          field.state.meta.errors.length > 0;
+                        return (
+                          <div className="space-y-2">
+                            <label
+                              htmlFor={field.name}
+                              className="text-sm font-medium"
+                            >
+                              Country *
+                            </label>
                             <Select
+                              value={field.state.value}
                               onValueChange={(value) => {
-                                field.onChange(value);
+                                field.handleChange(value);
                                 const country = countries.find(
                                   (c) => c.value === value
                                 );
                                 if (country) {
-                                  setValue("timezone", country.timezone);
+                                  form.setFieldValue(
+                                    "timezone",
+                                    country.timezone
+                                  );
                                 }
                               }}
-                              defaultValue={field.value}
                             >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue />{" "}
-                                </SelectTrigger>
-                              </FormControl>
+                              <SelectTrigger id={field.name}>
+                                <SelectValue />
+                              </SelectTrigger>
                               <SelectPopup>
                                 {countries.map((country) => (
                                   <SelectItem
@@ -495,45 +534,62 @@ export default function OnboardingFlow() {
                                 ))}
                               </SelectPopup>
                             </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                            {isInvalid && (
+                              <p className="text-sm text-destructive">
+                                {field.state.meta.errors.join(", ")}
+                              </p>
+                            )}
+                          </div>
+                        );
+                      }}
+                    </form.Field>
+                  </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 items-start  gap-4">
-                      <FormField
-                        control={form.control}
-                        name="timezone"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Timezone</FormLabel>
-                            <FormControl>
-                              <Input {...field} disabled />
-                            </FormControl>
-                            <FormDescription>
-                              Auto-filled based on selected country
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                  <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-4">
+                    <form.Field name="timezone">
+                      {(field) => (
+                        <div className="space-y-2">
+                          <label
+                            htmlFor={field.name}
+                            className="text-sm font-medium"
+                          >
+                            Timezone
+                          </label>
+                          <Input
+                            id={field.name}
+                            name={field.name}
+                            value={field.state.value}
+                            disabled
+                          />
+                          <p className="text-sm text-muted-foreground">
+                            Auto-filled based on selected country
+                          </p>
+                        </div>
+                      )}
+                    </form.Field>
 
-                      <FormField
-                        control={form.control}
-                        name="fiscalStartMonth"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Fiscal Year Start Month *</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
+                    <form.Field name="fiscalStartMonth">
+                      {(field) => {
+                        const isInvalid =
+                          field.state.meta.isTouched &&
+                          field.state.meta.errors.length > 0;
+                        return (
+                          <div className="space-y-2">
+                            <label
+                              htmlFor={field.name}
+                              className="text-sm font-medium"
                             >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue />{" "}
-                                </SelectTrigger>
-                              </FormControl>
+                              Fiscal Year Start Month *
+                            </label>
+                            <Select
+                              value={field.state.value}
+                              onValueChange={(value) =>
+                                field.handleChange(value)
+                              }
+                            >
+                              <SelectTrigger id={field.name}>
+                                <SelectValue />
+                              </SelectTrigger>
                               <SelectPopup>
                                 {months.map((month) => (
                                   <SelectItem
@@ -545,235 +601,242 @@ export default function OnboardingFlow() {
                                 ))}
                               </SelectPopup>
                             </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {currentStep === 2 && (
-                  <div className="space-y-6">
-                    <FormField
-                      control={form.control}
-                      name="pricesIncludeTax"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                          <div className="space-y-0.5">
-                            <FormLabel className="text-base">
-                              Prices Include Tax
-                            </FormLabel>
-                            <FormDescription>
-                              Toggle whether your product prices include tax or
-                              are tax-exclusive
-                            </FormDescription>
+                            {isInvalid && (
+                              <p className="text-sm text-destructive">
+                                {field.state.meta.errors.join(", ")}
+                              </p>
+                            )}
                           </div>
-                          <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="defaultVatRate"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Default VAT Rate (%)</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              step="0.01"
-                              placeholder="e.g., 18"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            Optional: Set a default VAT rate for your products
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                        );
+                      }}
+                    </form.Field>
                   </div>
-                )}
+                </div>
+              )}
 
-                {currentStep === 3 && (
-                  <div className="space-y-6">
-                    {watch("teamMembers").length === 0 ? (
-                      <div className="text-center py-8 text-muted-foreground">
-                        <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                        <p>No team members added yet</p>
-                        <p className="text-sm">
-                          You can add team members now or skip this step
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="space-y-4">
-                        {watch("teamMembers").map((_, index) => (
-                          <div key={index} className="flex gap-4 items-start">
-                            <FormField
-                              control={form.control}
-                              name={`teamMembers.${index}.email`}
-                              render={({ field }) => (
-                                <FormItem className="flex-1">
-                                  <FormLabel>Email</FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      placeholder="team@example.com"
-                                      {...field}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={form.control}
-                              name={`teamMembers.${index}.role`}
-                              render={({ field }) => (
-                                <FormItem className="w-40">
-                                  <FormLabel>Role</FormLabel>
-                                  <div className="flex gap-2">
-                                    <Select
-                                      onValueChange={field.onChange}
-                                      defaultValue={field.value}
-                                    >
-                                      <FormControl>
-                                        <SelectTrigger>
-                                          <SelectValue />{" "}
-                                        </SelectTrigger>
-                                      </FormControl>
-                                      <SelectPopup>
-                                        {userRolesObject.map((role) => (
-                                          <SelectItem
-                                            key={role.value}
-                                            value={role.value}
-                                          >
-                                            {role.label}
-                                          </SelectItem>
-                                        ))}
-                                      </SelectPopup>
-                                    </Select>
-                                    <Button
-                                      type="button"
-                                      variant="outline"
-                                      size="icon"
-                                      onClick={() => removeTeamMember(index)}
-                                    >
-                                      <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                  </div>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-                        ))}
+              {currentStep === 2 && (
+                <div className="space-y-6">
+                  <form.Field name="pricesIncludeTax">
+                    {(field) => (
+                      <div className="flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="space-y-0.5">
+                          <label className="text-base font-medium">
+                            Prices Include Tax
+                          </label>
+                          <p className="text-sm text-muted-foreground">
+                            Toggle whether your product prices include tax or
+                            are tax-exclusive
+                          </p>
+                        </div>
+                        <Switch
+                          checked={field.state.value}
+                          onCheckedChange={(checked) =>
+                            field.handleChange(checked)
+                          }
+                        />
                       </div>
                     )}
-                  </div>
-                )}
+                  </form.Field>
 
-                {currentStep === 4 && (
-                  <div className="space-y-6">
-                    <div>
-                      <h4 className="font-medium mb-4">
-                        Choose from default categories:
-                      </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {defaultCategories.map((category) => {
-                          const isSelected = watch("categories").some(
-                            (cat) => cat === category
-                          );
+                  <form.Field name="defaultVatRate">
+                    {(field) => {
+                      const isInvalid =
+                        field.state.meta.isTouched &&
+                        field.state.meta.errors.length > 0;
+                      return (
+                        <div className="space-y-2">
+                          <label
+                            htmlFor={field.name}
+                            className="text-sm font-medium"
+                          >
+                            Default VAT Rate (%)
+                          </label>
+                          <Input
+                            id={field.name}
+                            name={field.name}
+                            type="number"
+                            step="0.01"
+                            value={field.state.value}
+                            onBlur={field.handleBlur}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            placeholder="e.g., 18"
+                          />
+                          <p className="text-sm text-muted-foreground">
+                            Optional: Set a default VAT rate for your products
+                          </p>
+                          {isInvalid && (
+                            <p className="text-sm text-destructive">
+                              {field.state.meta.errors.join(", ")}
+                            </p>
+                          )}
+                        </div>
+                      );
+                    }}
+                  </form.Field>
+                </div>
+              )}
 
-                          return (
-                            <div
-                              key={category}
-                              className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                                isSelected ? "border bg-muted/70" : ""
-                              }`}
-                              onClick={() => {
-                                const currentCategories =
-                                  getValues("categories");
-                                if (isSelected) {
-                                  setValue(
-                                    "categories",
-                                    currentCategories.filter(
-                                      (cat) => cat !== category
-                                    )
-                                  );
-                                } else {
-                                  setValue("categories", [
-                                    ...currentCategories,
-                                    category,
-                                  ]);
-                                }
-                              }}
-                            >
-                              <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                  <h5 className="font-medium text-sm">
-                                    {category}
-                                  </h5>
+              {currentStep === 3 && (
+                <div className="space-y-6">
+                  {form.state.values.teamMembers.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>No team members added yet</p>
+                      <p className="text-sm">
+                        You can add team members now or skip this step
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {form.state.values.teamMembers.map((_, index) => (
+                        <div key={index} className="flex gap-4 items-start">
+                          <form.Field name={`teamMembers[${index}].email`}>
+                            {(field) => {
+                              const isInvalid =
+                                field.state.meta.isTouched &&
+                                field.state.meta.errors.length > 0;
+                              return (
+                                <div className="flex-1 space-y-2">
+                                  <label
+                                    htmlFor={field.name}
+                                    className="text-sm font-medium"
+                                  >
+                                    Email
+                                  </label>
+                                  <Input
+                                    id={field.name}
+                                    name={field.name}
+                                    value={field.state.value}
+                                    onBlur={field.handleBlur}
+                                    onChange={(e) =>
+                                      field.handleChange(e.target.value)
+                                    }
+                                    placeholder="team@example.com"
+                                    aria-invalid={isInvalid}
+                                  />
+                                  {isInvalid && (
+                                    <p className="text-sm text-destructive">
+                                      {field.state.meta.errors.join(", ")}
+                                    </p>
+                                  )}
+                                </div>
+                              );
+                            }}
+                          </form.Field>
+
+                          <form.Field name={`teamMembers[${index}].role`}>
+                            {(field) => (
+                              <div className="w-40 space-y-2">
+                                <label
+                                  htmlFor={field.name}
+                                  className="text-sm font-medium"
+                                >
+                                  Role
+                                </label>
+                                <div className="flex gap-2">
+                                  <Select
+                                    value={field.state.value}
+                                    onValueChange={(value) =>
+                                      field.handleChange(value)
+                                    }
+                                  >
+                                    <SelectTrigger id={field.name}>
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectPopup>
+                                      {userRolesObject.map((role) => (
+                                        <SelectItem
+                                          key={role.value}
+                                          value={role.value}
+                                        >
+                                          {role.label}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectPopup>
+                                  </Select>
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => removeTeamMember(index)}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
                                 </div>
                               </div>
-                            </div>
-                          );
-                        })}
-                      </div>
+                            )}
+                          </form.Field>
+                        </div>
+                      ))}
                     </div>
+                  )}
+                </div>
+              )}
 
-                    <div>
-                      <h4 className="font-medium mb-4">
-                        Add custom categories:
-                      </h4>
-                      <div className="flex gap-2 mb-4">
-                        <Input
-                          id="customCategoryInput"
-                          placeholder="Enter category name"
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                              const input = e.target as HTMLInputElement;
-                              const categoryName = input.value.trim();
+              {currentStep === 4 && (
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="font-medium mb-4">
+                      Choose from default categories:
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {defaultCategories.map((category) => {
+                        const isSelected = form.state.values.categories.some(
+                          (cat) => cat === category
+                        );
 
-                              if (categoryName) {
-                                const currentCategories =
-                                  getValues("categories");
-                                const categoryExists = currentCategories.some(
-                                  (cat) =>
-                                    cat.toLowerCase() ===
-                                    categoryName.toLowerCase()
+                        return (
+                          <div
+                            key={category}
+                            className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                              isSelected ? "border bg-muted/70" : ""
+                            }`}
+                            onClick={() => {
+                              const currentCategories =
+                                form.state.values.categories;
+                              if (isSelected) {
+                                form.setFieldValue(
+                                  "categories",
+                                  currentCategories.filter(
+                                    (cat) => cat !== category
+                                  )
                                 );
-
-                                if (!categoryExists) {
-                                  setValue("categories", [
-                                    ...currentCategories,
-                                    categoryName,
-                                  ]);
-                                  input.value = "";
-                                }
+                              } else {
+                                form.setFieldValue("categories", [
+                                  ...currentCategories,
+                                  category,
+                                ]);
                               }
-                            }
-                          }}
-                        />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => {
-                            const input = document.getElementById(
-                              "customCategoryInput"
-                            ) as HTMLInputElement;
-                            const categoryName = input?.value.trim();
+                            }}
+                          >
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <h5 className="font-medium text-sm">
+                                  {category}
+                                </h5>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-medium mb-4">Add custom categories:</h4>
+                    <div className="flex gap-2 mb-4">
+                      <Input
+                        id="customCategoryInput"
+                        placeholder="Enter category name"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            const input = e.target as HTMLInputElement;
+                            const categoryName = input.value.trim();
 
                             if (categoryName) {
-                              const currentCategories = getValues("categories");
+                              const currentCategories =
+                                form.state.values.categories;
                               const categoryExists = currentCategories.some(
                                 (cat) =>
                                   cat.toLowerCase() ===
@@ -781,26 +844,56 @@ export default function OnboardingFlow() {
                               );
 
                               if (!categoryExists) {
-                                setValue("categories", [
+                                form.setFieldValue("categories", [
                                   ...currentCategories,
                                   categoryName,
                                 ]);
                                 input.value = "";
                               }
                             }
-                          }}
-                        >
-                          <Plus className="h-4 w-4" />
-                        </Button>
-                      </div>
+                          }
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          const input = document.getElementById(
+                            "customCategoryInput"
+                          ) as HTMLInputElement;
+                          const categoryName = input?.value.trim();
 
-                      {watch("categories").length > 0 && (
-                        <div className="space-y-2">
-                          <p className="text-sm font-medium">
-                            Selected categories ({watch("categories").length}):
-                          </p>
-                          <div className="flex flex-wrap gap-2">
-                            {watch("categories").map((category, index) => (
+                          if (categoryName) {
+                            const currentCategories =
+                              form.state.values.categories;
+                            const categoryExists = currentCategories.some(
+                              (cat) =>
+                                cat.toLowerCase() === categoryName.toLowerCase()
+                            );
+
+                            if (!categoryExists) {
+                              form.setFieldValue("categories", [
+                                ...currentCategories,
+                                categoryName,
+                              ]);
+                              input.value = "";
+                            }
+                          }
+                        }}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    {form.state.values.categories.length > 0 && (
+                      <div className="space-y-2">
+                        <p className="text-sm font-medium">
+                          Selected categories (
+                          {form.state.values.categories.length}):
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {form.state.values.categories.map(
+                            (category, index) => (
                               <Badge
                                 key={index}
                                 variant="secondary"
@@ -816,94 +909,107 @@ export default function OnboardingFlow() {
                                   <X className="size-3" />
                                 </Button>
                               </Badge>
-                            ))}
-                          </div>
+                            )
+                          )}
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
-                )}
-                {currentStep === 5 && (
-                  <div className="space-y-6">
-                    <div className="space-y-4">
-                      {watch("warehouses").map((warehouse, index) => (
-                        <div
-                          key={index}
-                          className="flex gap-4 items-start p-4 border rounded-lg"
-                        >
-                          <FormField
-                            control={form.control}
-                            name={`warehouses.${index}.name`}
-                            render={({ field }) => (
-                              <FormItem className="flex-1">
-                                <FormControl>
-                                  <Input
-                                    placeholder="Warehouse/Branch name"
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <div className="flex items-center gap-2">
-                            {warehouse.isDefault && (
-                              <Badge variant="default">Default</Badge>
-                            )}
-                            {!warehouse.isDefault && (
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setDefaultWarehouse(index)}
-                              >
-                                Set Default
-                              </Button>
-                            )}
-                            {watch("warehouses").length > 1 && (
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="icon"
-                                onClick={() => removeWarehouse(index)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <Separator />
-
-                <div className="flex justify-between">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={prevStep}
-                    disabled={currentStep === 1}
-                  >
-                    Previous
-                  </Button>
-
-                  {currentStep < 5 && (
-                    <Button type="button" onClick={nextStep}>
-                      Next
-                    </Button>
-                  )}
-
-                  {currentStep === 5 && (
-                    <Button type="submit" disabled={isSubmitting}>
-                      {isSubmitting ? "Setting up..." : "Complete Setup"}
-                    </Button>
-                  )}
                 </div>
-              </form>
-            </Form>
+              )}
+
+              {currentStep === 5 && (
+                <div className="space-y-6">
+                  <div className="space-y-4">
+                    {form.state.values.warehouses.map((warehouse, index) => (
+                      <div
+                        key={index}
+                        className="flex gap-4 items-start p-4 border rounded-lg"
+                      >
+                        <form.Field name={`warehouses[${index}].name`}>
+                          {(field) => {
+                            const isInvalid =
+                              field.state.meta.isTouched &&
+                              field.state.meta.errors.length > 0;
+                            return (
+                              <div className="flex-1 space-y-2">
+                                <Input
+                                  id={field.name}
+                                  name={field.name}
+                                  value={field.state.value}
+                                  onBlur={field.handleBlur}
+                                  onChange={(e) =>
+                                    field.handleChange(e.target.value)
+                                  }
+                                  placeholder="Warehouse/Branch name"
+                                  aria-invalid={isInvalid}
+                                />
+                                {isInvalid && (
+                                  <p className="text-sm text-destructive">
+                                    {field.state.meta.errors.join(", ")}
+                                  </p>
+                                )}
+                              </div>
+                            );
+                          }}
+                        </form.Field>
+
+                        <div className="flex items-center gap-2">
+                          {warehouse.isDefault && (
+                            <Badge variant="default">Default</Badge>
+                          )}
+                          {!warehouse.isDefault && (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setDefaultWarehouse(index)}
+                            >
+                              Set Default
+                            </Button>
+                          )}
+                          {form.state.values.warehouses.length > 1 && (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              onClick={() => removeWarehouse(index)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <Separator />
+
+              <div className="flex justify-between">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={prevStep}
+                  disabled={currentStep === 1}
+                >
+                  Previous
+                </Button>
+
+                {currentStep < 5 && (
+                  <Button type="button" onClick={nextStep}>
+                    Next
+                  </Button>
+                )}
+
+                {currentStep === 5 && (
+                  <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? "Setting up..." : "Complete Setup"}
+                  </Button>
+                )}
+              </div>
+            </form>
           </CardPanel>
         </Card>
       </div>

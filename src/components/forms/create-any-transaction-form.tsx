@@ -16,8 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { TriggerDialog } from "../shared/reusable-form-dialog";
 import { Separator } from "../ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import {
+import type {
   SelectTransaction,
   SelectProduct,
   ExtendedProductPayload,
@@ -65,9 +64,9 @@ export default function AnyTransactionForm({
   const saleTransactionSchema = z.object({
     productId: z.string().min(1, t("productRequired")),
     warehouseItemId: z.string().min(1, t("warehouseRequired")),
-    quantity: z.coerce.number().positive(t("quantityPositive")),
-    note: z.string().optional(),
-    reference: z.string().optional(),
+    quantity: z.number().positive(t("quantityPositive")),
+    note: z.string(),
+    reference: z.string(),
     type: z.enum([...TRANSACTION_TYPE]),
     warehouseId: z.string().min(1, "Warehouse ID is required"),
   });
@@ -106,8 +105,8 @@ export default function AnyTransactionForm({
           quantity: value.quantity,
           type: value.type,
           warehouseId: value.warehouseId,
-          note: value.note,
-          reference: value.reference,
+          note: value.note || undefined,
+          reference: value.reference || undefined,
         };
         const req = await createTransaction(formData);
         if (req.data) {
@@ -129,7 +128,7 @@ export default function AnyTransactionForm({
     },
   });
 
-  const productId = form.useStore((s) => s.values.productId);
+  const productId = form.state.values.productId;
 
   const {
     data: productDetailsData,
@@ -145,7 +144,7 @@ export default function AnyTransactionForm({
     }
   );
 
-  const warehouseItemId = form.useStore((s) => s.values.warehouseItemId);
+  const warehouseItemId = form.state.values.warehouseItemId;
   const selectedWarehouseItem = useMemo(
     () =>
       productDetailsData?.warehouseItems.find(
@@ -181,7 +180,8 @@ export default function AnyTransactionForm({
               <FieldLabel>{t("type")}</FieldLabel>
               <Select
                 onValueChange={field.handleChange}
-                defaultValue={field.value}
+                defaultValue={field.state.value}
+                items={transactionTypesObject}
               >
                 <SelectTrigger className="w-full">
                   <SelectValue />
@@ -219,22 +219,21 @@ export default function AnyTransactionForm({
                   }))}
                   onValueChange={(item) => {
                     if (item) {
-                      field.handleChange(item.value);
+                      field.handleChange(item);
                       form.setFieldValue("warehouseItemId", "");
                       form.setFieldValue("warehouseId", "");
                     }
                   }}
-                  value={field.state.value}
+                  value={field.state.value || undefined}
                 >
                   <AutocompleteInput placeholder={t("searchProducts")} />
                   <AutocompletePopup>
-                    <AutocompleteEmpty>{t("noProductsFound")}</AutocompleteEmpty>
+                    <AutocompleteEmpty>
+                      {t("noProductsFound")}
+                    </AutocompleteEmpty>
                     <AutocompleteList>
                       {(product) => (
-                        <AutocompleteItem
-                          key={product.id}
-                          value={product}
-                        >
+                        <AutocompleteItem key={product.id} value={product}>
                           <div className="flex items-center justify-between w-full">
                             <div className="flex flex-col">
                               <span className="font-medium">
@@ -286,11 +285,20 @@ export default function AnyTransactionForm({
                     }))}
                     onValueChange={(item) => {
                       if (item) {
-                        field.handleChange(item.value);
-                        form.setFieldValue("warehouseId", item.warehouseId);
+                        field.handleChange(item);
+                        const warehouseId =
+                          typeof item === "string"
+                            ? productDetailsData?.warehouseItems.find(
+                                (w) => w.id === item
+                              )?.warehouseId
+                            : (item as any).warehouseId;
+                        if (warehouseId) {
+                          form.setFieldValue("warehouseId", warehouseId);
+                        }
                       }
                     }}
-                    value={field.state.value}
+                    value={field.state.value || undefined}
+                    virtualized
                   >
                     <AutocompleteInput placeholder={t("searchWarehouses")} />
                     <AutocompletePopup>
@@ -343,7 +351,6 @@ export default function AnyTransactionForm({
             <Field>
               <FieldLabel>{tCommon("quantity")} *</FieldLabel>
               <Input
-                {...field}
                 type="number"
                 placeholder={t("enterQuantity")}
                 min="1"
@@ -367,7 +374,6 @@ export default function AnyTransactionForm({
               </FieldLabel>
               <Input
                 placeholder={t("referencePlaceholder")}
-                {...field}
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
@@ -386,7 +392,6 @@ export default function AnyTransactionForm({
               <Textarea
                 placeholder={t("notePlaceholder")}
                 rows={3}
-                {...field}
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}

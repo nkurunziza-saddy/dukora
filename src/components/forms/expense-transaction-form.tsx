@@ -46,8 +46,6 @@ export default function ExpenseTransactionForm({
     },
     validators: {
       onSubmit: expenseTransactionSchema,
-      onChange: expenseTransactionSchema,
-      onBlur: expenseTransactionSchema,
     },
     onSubmit: async ({ value }) => {
       try {

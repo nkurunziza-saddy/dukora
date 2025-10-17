@@ -47,9 +47,9 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
 
   const productSchema = z.object({
     name: z.string().min(1, t("productNameRequired")),
-    description: z.string().optional(),
+    description: z.string(),
     sku: z.string().min(1, t("skuRequired")),
-    barcode: z.string().optional(),
+    barcode: z.string(),
     price: z.string().refine((val) => {
       const num = Number.parseFloat(val);
       return !isNaN(num) && num >= 0;
@@ -58,7 +58,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
       const num = Number.parseFloat(val);
       return !isNaN(num) && num >= 0;
     }, t("costPricePositive")),
-    categoryId: z.string().optional(),
+    categoryId: z.string(),
     reorderPoint: z.string().refine((val) => {
       const num = Number.parseInt(val);
       return !isNaN(num) && num >= 0;
@@ -68,14 +68,11 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
       return !isNaN(num) && num > 0;
     }, t("maxStockPositive")),
     unit: z.string(),
-    weight: z
-      .string()
-      .optional()
-      .refine((val) => {
-        if (val === undefined || val === "") return true;
-        const num = Number.parseFloat(val);
-        return !isNaN(num);
-      }, t("weightMustBeNumber")),
+    weight: z.string().refine((val) => {
+      if (val === "") return true;
+      const num = Number.parseFloat(val);
+      return !isNaN(num);
+    }, t("weightMustBeNumber")),
   });
 
   const units = [
@@ -156,7 +153,6 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               <FieldLabel>{t("productName")} *</FieldLabel>
               <Input
                 placeholder={t("enterProductName")}
-                {...field}
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
@@ -174,7 +170,6 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               <Textarea
                 placeholder={t("enterProductDescription")}
                 className="min-h-[80px]"
-                {...field}
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
@@ -192,7 +187,6 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
                 <FieldLabel>{t("SKU")} *</FieldLabel>
                 <Input
                   placeholder={t("SKUDescription")}
-                  {...field}
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -210,7 +204,6 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
                 <FieldLabel>{t("barcode")}</FieldLabel>
                 <Input
                   placeholder={t("barcodePlaceholder")}
-                  {...field}
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -227,7 +220,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               <FieldLabel>{t("categoryId")}</FieldLabel>
               <Select
                 onValueChange={field.handleChange}
-                defaultValue={field.state.value}
+                defaultValue={field.state.value || undefined}
               >
                 <SelectTrigger className="w-full sm:w-1/2">
                   <SelectValue />
@@ -265,7 +258,6 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
                   type="number"
                   step="0.01"
                   placeholder={t("price")}
-                  {...field}
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -284,7 +276,6 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
                   type="number"
                   step="0.01"
                   placeholder={t("costPrice")}
-                  {...field}
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -306,7 +297,6 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
                 <FieldLabel>{t("reorderPoint")}</FieldLabel>
                 <Input
                   type="number"
-                  {...field}
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -324,7 +314,6 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
                 <FieldLabel>{t("maxStock")}</FieldLabel>
                 <Input
                   type="number"
-                  {...field}
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -345,6 +334,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
                 <Select
                   onValueChange={field.handleChange}
                   defaultValue={field.state.value}
+                  items={units}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue />
@@ -370,7 +360,6 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
                   type="number"
                   step="0.001"
                   placeholder={t("weight")}
-                  {...field}
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -416,7 +405,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
 }
 
 export const CreateProductDialog = () => {
-  // comment: No translation for dialog title/trigger/description
+  // TODO: No translation for dialog title/trigger/description
   return (
     <TriggerDialog
       title="Create New Product"

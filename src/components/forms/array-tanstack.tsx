@@ -48,7 +48,7 @@ export function FormTanstackArray() {
       emails: [{ address: "" }],
     },
     validators: {
-      onBlur: formSchema,
+      onSubmit: formSchema,
     },
     onSubmit: async ({ value }) => {
       toast("You submitted the following values:", {

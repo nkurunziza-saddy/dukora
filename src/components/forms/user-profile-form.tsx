@@ -27,7 +27,7 @@ export default function UserProfileForm({
 
   const userProfileSchema = z.object({
     name: z.string().min(1, t("userNameRequired")),
-    email: z.string().email(t("userEmailValid")),
+    email: z.email(t("userEmailValid")),
   });
 
   const form = useForm({

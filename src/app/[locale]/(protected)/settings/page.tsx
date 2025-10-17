@@ -41,7 +41,7 @@ export default async function SettingsPage() {
   if (!businessId || !userId) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Alert variant="destructive" className="max-w-md">
+        <Alert variant="error" className="max-w-md">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             Business or user not found. Please check your session.
@@ -103,7 +103,7 @@ export default async function SettingsPage() {
   if (!business) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Alert variant="destructive" className="max-w-md">
+        <Alert variant="error" className="max-w-md">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             Business data is not available. Please try refreshing the page.

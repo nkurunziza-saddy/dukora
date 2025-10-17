@@ -16,8 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { TriggerDialog } from "../shared/reusable-form-dialog";
 import { Separator } from "../ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import {
+import type {
   SelectTransaction,
   SelectProduct,
   ExtendedProductPayload,
@@ -56,9 +55,9 @@ export default function SaleTransactionForm({
   const saleTransactionSchema = z.object({
     productId: z.string().min(1, t("productRequired")),
     warehouseItemId: z.string().min(1, t("warehouseRequired")),
-    quantity: z.coerce.number().positive(t("quantityPositive")),
-    note: z.string().optional(),
-    reference: z.string().optional(),
+    quantity: z.number().positive(t("quantityPositive")),
+    note: z.string(),
+    reference: z.string(),
     warehouseId: z.string().min(1, "Warehouse ID is required"),
   });
 
@@ -95,8 +94,8 @@ export default function SaleTransactionForm({
           quantity: value.quantity,
           type: "SALE",
           warehouseId: value.warehouseId,
-          note: value.note,
-          reference: value.reference,
+          note: value.note || undefined,
+          reference: value.reference || undefined,
         };
         const req = await createTransaction(formData);
         if (req.data) {
@@ -118,7 +117,7 @@ export default function SaleTransactionForm({
     },
   });
 
-  const productId = form.useStore((s) => s.values.productId);
+  const productId = form.state.values.productId;
 
   const {
     data: productDetailsData,
@@ -134,8 +133,8 @@ export default function SaleTransactionForm({
     }
   );
 
-  const warehouseItemId = form.useStore((s) => s.values.warehouseItemId);
-  const quantity = form.useStore((s) => s.values.quantity);
+  const warehouseItemId = form.state.values.warehouseItemId;
+  const quantity = form.state.values.quantity;
 
   const selectedWarehouseItem = useMemo(
     () =>
@@ -192,22 +191,22 @@ export default function SaleTransactionForm({
                   }))}
                   onValueChange={(item) => {
                     if (item) {
-                      field.handleChange(item.value);
+                      field.handleChange(item);
                       form.setFieldValue("warehouseItemId", "");
                       form.setFieldValue("warehouseId", "");
                     }
                   }}
-                  value={field.state.value}
+                  value={field.state.value || undefined}
+                  virtualized
                 >
                   <AutocompleteInput placeholder={t("searchProducts")} />
                   <AutocompletePopup>
-                    <AutocompleteEmpty>{t("noProductsFound")}</AutocompleteEmpty>
+                    <AutocompleteEmpty>
+                      {t("noProductsFound")}
+                    </AutocompleteEmpty>
                     <AutocompleteList>
                       {(product) => (
-                        <AutocompleteItem
-                          key={product.id}
-                          value={product}
-                        >
+                        <AutocompleteItem key={product.id} value={product}>
                           <div className="flex items-center justify-between w-full">
                             <div className="flex flex-col">
                               <span className="font-medium">
@@ -259,11 +258,23 @@ export default function SaleTransactionForm({
                     }))}
                     onValueChange={(item) => {
                       if (item) {
-                        field.handleChange(item.value);
-                        form.setFieldValue("warehouseId", item.warehouseId);
+                        field.handleChange(item);
+                        if (item) {
+                          field.handleChange(item);
+                          const warehouseId =
+                            typeof item === "string"
+                              ? productDetailsData?.warehouseItems.find(
+                                  (w) => w.id === item
+                                )?.warehouseId
+                              : (item as any).warehouseId;
+                          if (warehouseId) {
+                            form.setFieldValue("warehouseId", warehouseId);
+                          }
+                        }
                       }
                     }}
-                    value={field.state.value}
+                    value={field.state.value || undefined}
+                    virtualized
                   >
                     <AutocompleteInput placeholder={t("searchWarehouses")} />
                     <AutocompletePopup>
@@ -318,7 +329,6 @@ export default function SaleTransactionForm({
             <Field>
               <FieldLabel>{tCommon("quantity")} *</FieldLabel>
               <Input
-                {...field}
                 type="number"
                 placeholder={t("enterQuantity")}
                 min="1"
@@ -368,7 +378,6 @@ export default function SaleTransactionForm({
               </FieldLabel>
               <Input
                 placeholder={t("referencePlaceholder")}
-                {...field}
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
@@ -387,7 +396,6 @@ export default function SaleTransactionForm({
               <Textarea
                 placeholder={t("notePlaceholder")}
                 rows={3}
-                {...field}
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}

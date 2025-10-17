@@ -43,8 +43,6 @@ export function InviteUserForm() {
     },
     validators: {
       onSubmit: supplierSchema,
-      onChange: supplierSchema,
-      onBlur: supplierSchema,
     },
     onSubmit: async ({ value }) => {
       const req = await createInvitation(value);
@@ -139,6 +137,7 @@ export function InviteUserForm() {
                     name={field.name}
                     value={field.state.value}
                     onValueChange={field.handleChange}
+                    items={userRolesObject}
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue />

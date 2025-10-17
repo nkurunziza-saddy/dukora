@@ -178,7 +178,7 @@ export default async function InventoryDashboard() {
                       <TableCell className="text-right">
                         {item.warehouse_items.quantity <
                         item.products.reorderPoint ? (
-                          <Badge variant="destructive">{t("lowStock")}</Badge>
+                          <Badge variant="error">{t("lowStock")}</Badge>
                         ) : item.warehouse_items.quantity <=
                           item.products.reorderPoint * 1.5 ? (
                           <Badge variant="outline">{t("medium")}</Badge>

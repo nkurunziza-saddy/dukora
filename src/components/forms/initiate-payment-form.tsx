@@ -28,12 +28,11 @@ import {
   AutocompleteList,
   AutocompletePopup,
 } from "../ui/autocomplete";
-import { SelectBusiness } from "@/lib/schema/schema-types";
+import type { SelectBusiness } from "@/lib/schema/schema-types";
 import { fetcher } from "@/lib/utils";
 import { preload } from "swr";
 import useSwr from "swr";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "../ui/badge";
 
 if (typeof window !== "undefined") {
   preload("/api/businesses", fetcher);
@@ -41,16 +40,12 @@ if (typeof window !== "undefined") {
 
 const paymentSchema = z.object({
   receiverBusinessId: z.string().min(1, "Receiver business is required"),
-  amount: z.coerce.number().positive("Amount must be a positive number"),
+  amount: z.number().positive("Amount must be a positive number"),
   currency: z.string().min(1, "Currency is required"),
-  applicationFeeAmount: z.coerce
+  applicationFeeAmount: z
     .number()
-    .positive("Application fee must be a positive number")
-    .optional()
-    .or(z.literal("")),
+    .positive("Application fee must be a positive number"),
 });
-
-type PaymentFormValues = z.infer<typeof paymentSchema>;
 
 export default function InitiatePaymentForm() {
   const t = useTranslations("forms");
@@ -67,12 +62,12 @@ export default function InitiatePaymentForm() {
     dedupingInterval: 60000,
   });
 
-  const form = useForm<PaymentFormValues>({
+  const form = useForm({
     defaultValues: {
       receiverBusinessId: "",
       amount: 0,
       currency: "USD",
-      applicationFeeAmount: undefined,
+      applicationFeeAmount: 0,
     },
     validators: {
       onSubmit: paymentSchema,
@@ -80,9 +75,7 @@ export default function InitiatePaymentForm() {
     onSubmit: async ({ value }) => {
       const res = await initiateInterBusinessPayment({
         ...value,
-        applicationFeeAmount: value.applicationFeeAmount
-          ? Number(value.applicationFeeAmount)
-          : undefined,
+        applicationFeeAmount: value.applicationFeeAmount || undefined,
       });
       if (res.data) {
         toast.success(tPayments("paymentInitiated"), {
@@ -137,10 +130,11 @@ export default function InitiatePaymentForm() {
                   }))}
                   onValueChange={(item) => {
                     if (item) {
-                      field.handleChange(item.value);
+                      field.handleChange(item);
                     }
                   }}
-                  value={field.state.value}
+                  value={field.state.value || undefined}
+                  virtualized
                 >
                   <AutocompleteInput
                     placeholder={tPayments("searchBusinesses")}
@@ -151,19 +145,14 @@ export default function InitiatePaymentForm() {
                     </AutocompleteEmpty>
                     <AutocompleteList>
                       {(business) => (
-                        <AutocompleteItem
-                          key={business.id}
-                          value={business}
-                        >
+                        <AutocompleteItem key={business.id} value={business}>
                           <div className="flex items-center gap-8 justify-between w-full">
                             <div className="flex gap-1">
                               <span className="font-medium">
                                 {business.name}
                               </span>
                               -
-                              <span className="font-medium">
-                                {business.id}
-                              </span>
+                              <span className="font-medium">{business.id}</span>
                             </div>
                             <Check
                               className={
