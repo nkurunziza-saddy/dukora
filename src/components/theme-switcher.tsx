@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useTheme } from "next-themes";
 import { useEffect, useId, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { FieldLegend, FieldSet } from "./ui/field";
 
 const themeItems = [
   { value: "light", label: "Light", image: "/ui-light.png" },
@@ -23,10 +24,13 @@ export function ThemeSwitcher() {
 
   if (!mounted) {
     return (
-      <fieldset className="space-y-4">
-        <legend className="text-foreground text-sm leading-none font-medium">
+      <FieldSet className="space-y-4">
+        <FieldLegend
+          variant="label"
+          className="text-foreground text-sm leading-none font-medium"
+        >
           Choose a theme
-        </legend>
+        </FieldLegend>
         <div className="flex gap-3">
           {themeItems.map((item) => (
             <div key={item.value} className="animate-pulse">
@@ -35,15 +39,12 @@ export function ThemeSwitcher() {
             </div>
           ))}
         </div>
-      </fieldset>
+      </FieldSet>
     );
   }
 
   return (
-    <fieldset className="space-y-4">
-      {/* <legend className="text-foreground text-sm leading-none font-medium">
-        Choose a theme
-      </legend> */}
+    <FieldSet className="space-y-4">
       <RadioGroup
         className="flex gap-3"
         value={theme}
@@ -81,6 +82,6 @@ export function ThemeSwitcher() {
           </label>
         ))}
       </RadioGroup>
-    </fieldset>
+    </FieldSet>
   );
 }

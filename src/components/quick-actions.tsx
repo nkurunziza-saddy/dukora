@@ -15,6 +15,7 @@ import * as React from "react";
 import SupplierForm from "@/components/forms/create-supplier-form";
 import PurchaseTransactionForm from "@/components/forms/purchase-transaction-form";
 import {
+  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -143,73 +144,95 @@ export default function QuickActions() {
         <Zap className="size-3 sm:hidden" />
       </Button>
 
-      <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput
-          value={search}
-          onValueChange={setSearch}
-          placeholder={t("searchActionsPlaceholder")}
-          onKeyDown={handleKeyDown}
-        />
-        <CommandList>
-          <CommandEmpty>{t("noResultsFound")}</CommandEmpty>
+      <Command>
+        <CommandDialog open={open} onOpenChange={setOpen}>
+          <CommandInput
+            value={search}
+            onValueChange={setSearch}
+            placeholder={t("searchActionsPlaceholder")}
+            onKeyDown={handleKeyDown}
+          />
+          <CommandList>
+            <CommandEmpty>{t("noResultsFound")}</CommandEmpty>
 
-          <CommandGroup heading={t("quickActionsGroup")}>
-            <CommandItem onSelect={() => handleDialogAction("create-product")}>
-              <Package size={16} className="opacity-60" aria-hidden="true" />
-              <span>{t("createNewProduct")}</span>
-              <CommandShortcut className="justify-center">⇧⌘P</CommandShortcut>
-            </CommandItem>
-            <CommandItem onSelect={() => handleDialogAction("create-supplier")}>
-              <ShoppingCart
-                size={16}
-                className="opacity-60"
-                aria-hidden="true"
-              />
-              <span>{t("createNewSupplier")}</span>
-              <CommandShortcut className="justify-center">⇧⌘S</CommandShortcut>
-            </CommandItem>
-            <CommandItem onSelect={() => handleDialogAction("record-sale")}>
-              <Plus size={16} className="opacity-60" aria-hidden="true" />
-              <span>{t("recordSaleTransaction")}</span>
-              <CommandShortcut className="justify-center">⇧⌘T</CommandShortcut>
-            </CommandItem>
-            <CommandItem onSelect={() => handleDialogAction("record-purchase")}>
-              <Plus size={16} className="opacity-60" aria-hidden="true" />
-              <span>{t("recordPurchaseTransaction")}</span>
-              <CommandShortcut className="justify-center">⇧⌘B</CommandShortcut>
-            </CommandItem>
-            <CommandItem onSelect={() => handleDialogAction("record-expense")}>
-              <Plus size={16} className="opacity-60" aria-hidden="true" />
-              <span>{t("recordExpenseTransaction")}</span>
-              <CommandShortcut className="justify-center">⇧⌘B</CommandShortcut>
-            </CommandItem>
-            <CommandItem
-              onSelect={() => handleDialogAction("record-transaction")}
-            >
-              <Plus size={16} className="opacity-60" aria-hidden="true" />
-              <span>{t("recordAnyTransaction")}</span>
-              <CommandShortcut className="justify-center">⇧⌘B</CommandShortcut>
-            </CommandItem>
-          </CommandGroup>
+            <CommandGroup heading={t("quickActionsGroup")}>
+              <CommandItem
+                onSelect={() => handleDialogAction("create-product")}
+              >
+                <Package size={16} className="opacity-60" aria-hidden="true" />
+                <span>{t("createNewProduct")}</span>
+                <CommandShortcut className="justify-center">
+                  ⇧⌘P
+                </CommandShortcut>
+              </CommandItem>
+              <CommandItem
+                onSelect={() => handleDialogAction("create-supplier")}
+              >
+                <ShoppingCart
+                  size={16}
+                  className="opacity-60"
+                  aria-hidden="true"
+                />
+                <span>{t("createNewSupplier")}</span>
+                <CommandShortcut className="justify-center">
+                  ⇧⌘S
+                </CommandShortcut>
+              </CommandItem>
+              <CommandItem onSelect={() => handleDialogAction("record-sale")}>
+                <Plus size={16} className="opacity-60" aria-hidden="true" />
+                <span>{t("recordSaleTransaction")}</span>
+                <CommandShortcut className="justify-center">
+                  ⇧⌘T
+                </CommandShortcut>
+              </CommandItem>
+              <CommandItem
+                onSelect={() => handleDialogAction("record-purchase")}
+              >
+                <Plus size={16} className="opacity-60" aria-hidden="true" />
+                <span>{t("recordPurchaseTransaction")}</span>
+                <CommandShortcut className="justify-center">
+                  ⇧⌘B
+                </CommandShortcut>
+              </CommandItem>
+              <CommandItem
+                onSelect={() => handleDialogAction("record-expense")}
+              >
+                <Plus size={16} className="opacity-60" aria-hidden="true" />
+                <span>{t("recordExpenseTransaction")}</span>
+                <CommandShortcut className="justify-center">
+                  ⇧⌘B
+                </CommandShortcut>
+              </CommandItem>
+              <CommandItem
+                onSelect={() => handleDialogAction("record-transaction")}
+              >
+                <Plus size={16} className="opacity-60" aria-hidden="true" />
+                <span>{t("recordAnyTransaction")}</span>
+                <CommandShortcut className="justify-center">
+                  ⇧⌘B
+                </CommandShortcut>
+              </CommandItem>
+            </CommandGroup>
 
-          <CommandSeparator />
+            <CommandSeparator />
 
-          <CommandGroup heading={t("managementGroup")}>
-            <CommandItem onSelect={() => handleNavigation("/products")}>
-              <FileText size={16} className="opacity-60" aria-hidden="true" />
-              <span>{t("productManagement")}</span>
-            </CommandItem>
-            <CommandItem onSelect={() => handleNavigation("/suppliers")}>
-              <Users size={16} className="opacity-60" aria-hidden="true" />
-              <span>{t("supplierManagement")}</span>
-            </CommandItem>
-            <CommandItem onSelect={() => handleNavigation("/settings")}>
-              <Settings size={16} className="opacity-60" aria-hidden="true" />
-              <span>{t("settings")}</span>
-            </CommandItem>
-          </CommandGroup>
-        </CommandList>
-      </CommandDialog>
+            <CommandGroup heading={t("managementGroup")}>
+              <CommandItem onSelect={() => handleNavigation("/products")}>
+                <FileText size={16} className="opacity-60" aria-hidden="true" />
+                <span>{t("productManagement")}</span>
+              </CommandItem>
+              <CommandItem onSelect={() => handleNavigation("/suppliers")}>
+                <Users size={16} className="opacity-60" aria-hidden="true" />
+                <span>{t("supplierManagement")}</span>
+              </CommandItem>
+              <CommandItem onSelect={() => handleNavigation("/settings")}>
+                <Settings size={16} className="opacity-60" aria-hidden="true" />
+                <span>{t("settings")}</span>
+              </CommandItem>
+            </CommandGroup>
+          </CommandList>
+        </CommandDialog>
+      </Command>
 
       <StateDialog
         title={t("createNewProduct")}
