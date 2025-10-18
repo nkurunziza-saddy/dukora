@@ -32,9 +32,11 @@ import { EditBusinessDetails } from "./_components/edit-business-details";
 import { EditBusinessSettings } from "./_components/edit-business-settings";
 import { EditCategories } from "./_components/edit-categories";
 import { EditWarehouses } from "./_components/edit-warehouses";
+import { getTranslations } from "next-intl/server";
 
 export default async function SettingsPage() {
   const session = await getCurrentSession();
+  const tStripe = await getTranslations("stripe");
   const businessId = session?.user.businessId;
   const userId = session?.user.id;
 
@@ -224,6 +226,12 @@ export default async function SettingsPage() {
 
             <TabsPanel value="stripe" className="m-0">
               <Card>
+                <CardHeader>
+                  <CardTitle>{tStripe("stripeIntegration")}</CardTitle>
+                  <CardDescription>
+                    {tStripe("stripeIntegrationDescription")}
+                  </CardDescription>
+                </CardHeader>
                 <CardPanel>
                   <ConnectStripe
                     stripeAccountId={business.stripeAccountId ?? undefined}

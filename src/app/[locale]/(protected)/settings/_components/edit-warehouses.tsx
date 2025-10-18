@@ -3,7 +3,6 @@ import { useForm } from "@tanstack/react-form";
 import { AlertCircle, Plus, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { z } from "zod";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,31 +10,7 @@ import { Field, FieldError, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { SelectWarehouse } from "@/lib/schema/schema-types";
 import { createManyWarehouses } from "@/server/actions/warehouse-actions";
-
-const WAREHOUSE_LIMIT = 10;
-const NAME_LIMIT = 100;
-
-const formSchema = z
-  .object({
-    warehouses: z
-      .array(
-        z.object({
-          name: z
-            .string()
-            .min(1, "Warehouse name is required")
-            .max(NAME_LIMIT, `Name cannot exceed ${NAME_LIMIT} characters`),
-          isDefault: z.boolean(),
-        }),
-      )
-      .min(1, "At least one warehouse is required")
-      .max(WAREHOUSE_LIMIT, `You can have up to ${WAREHOUSE_LIMIT} warehouses`),
-  })
-  .refine((data) => data.warehouses.filter((w) => w.isDefault).length === 1, {
-    message: "Exactly one warehouse must be set as default",
-    path: ["warehouses"],
-  });
-
-type WarehouseFormData = z.infer<typeof formSchema>;
+import { warehousesSchema, LIMITS } from "./settings-utils";
 
 export function EditWarehouses({
   warehouses,
@@ -45,7 +20,7 @@ export function EditWarehouses({
   const t = useTranslations("forms");
   const form = useForm({
     validators: {
-      onSubmit: formSchema,
+      onBlur: warehousesSchema,
     },
     defaultValues: {
       warehouses: warehouses
@@ -88,177 +63,148 @@ export function EditWarehouses({
     },
   });
 
-  const currentWarehouses = form.state.values.warehouses;
-  const isAtLimit = currentWarehouses.length >= WAREHOUSE_LIMIT;
-  const remainingSlots = WAREHOUSE_LIMIT - currentWarehouses.length;
-
-  const addWarehouse = () => {
-    if (isAtLimit) return;
-
-    const currentWarehouses = form.state.values.warehouses;
-    form.setFieldValue("warehouses", [
-      ...currentWarehouses,
-      {
-        name: "",
-        isDefault: false,
-      },
-    ]);
-  };
-
-  const removeWarehouse = (index: number) => {
-    const currentWarehouses = form.state.values.warehouses;
-    if (currentWarehouses.length <= 1) return;
-
-    const warehouseToRemove = currentWarehouses[index];
-    const updatedWarehouses = currentWarehouses.filter((_, i) => i !== index);
-
-    if (warehouseToRemove.isDefault && updatedWarehouses.length > 0) {
-      updatedWarehouses[0].isDefault = true;
-    }
-
-    form.setFieldValue("warehouses", updatedWarehouses);
-  };
-
-  const setDefaultWarehouse = (index: number) => {
-    const currentWarehouses = form.state.values.warehouses;
-    const updatedWarehouses = currentWarehouses.map((warehouse, i) => ({
-      ...warehouse,
-      isDefault: i === index,
-    }));
-    form.setFieldValue("warehouses", updatedWarehouses);
-  };
-
   return (
     <form
+      id="edit-warehouses-form"
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
         form.handleSubmit();
       }}
     >
-      <FieldGroup className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs text-muted-foreground mt-1">
-              {remainingSlots > 0
-                ? `${remainingSlots} ${
-                    remainingSlots === 1 ? "slot" : "slots"
-                  } remaining`
-                : "Warehouse limit reached"}
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Badge variant={isAtLimit ? "error" : "secondary"}>
-              {currentWarehouses.length}/{WAREHOUSE_LIMIT}
-            </Badge>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={addWarehouse}
-              disabled={isAtLimit}
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              {t("addLocation")}
-            </Button>
-          </div>
-        </div>
+      <form.Field name="warehouses" mode="array">
+        {(field) => {
+          const currentWarehouses = field.state.value;
+          const isAtLimit = currentWarehouses.length >= LIMITS.WAREHOUSE_LIMIT;
+          const remainingSlots = LIMITS.WAREHOUSE_LIMIT - currentWarehouses.length;
 
-        {isAtLimit && (
-          <Alert variant="error">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              You&apos;ve reached the maximum limit of {WAREHOUSE_LIMIT}{" "}
-              warehouses. Remove some warehouses to add new ones.
-            </AlertDescription>
-          </Alert>
-        )}
+          const setDefaultWarehouse = (index: number) => {
+            const updatedWarehouses = currentWarehouses.map((warehouse, i) => ({
+              ...warehouse,
+              isDefault: i === index,
+            }));
+            field.setValue(updatedWarehouses);
+          };
 
-        <form.Field
-          name="warehouses"
-          children={(field) => <FieldError errors={field.state.meta.errors} />}
-        />
-
-        <div className="space-y-4">
-          {currentWarehouses.map(
-            (
-              warehouse: { name: string; isDefault: boolean },
-              index: number,
-            ) => {
-              const nameLength = warehouse.name?.length || 0;
-              const nameRemaining = NAME_LIMIT - nameLength;
-              const isNameNearLimit = nameLength > NAME_LIMIT * 0.8;
-
-              return (
-                <div
-                  key={index}
-                  className="flex gap-4 items-start p-4 border rounded-lg"
-                >
-                  <div className="flex-1 space-y-2">
-                    <form.Field
-                      name={`warehouses[${index}].name` as const}
-                      children={(field) => (
-                        <Field>
-                          <Input
-                            placeholder={t("warehousePlaceholder")}
-                            maxLength={NAME_LIMIT}
-                            id={field.name}
-                            name={field.name}
-                            value={field.state.value}
-                            onBlur={field.handleBlur}
-                            onChange={(e) => field.handleChange(e.target.value)}
-                          />
-                          <div className="flex items-center justify-between text-xs text-muted-foreground">
-                            <span>{nameRemaining} characters remaining</span>
-                            <Badge
-                              variant={isNameNearLimit ? "error" : "secondary"}
-                              className="text-xs"
-                            >
-                              {nameLength}/{NAME_LIMIT}
-                            </Badge>
-                          </div>
-                          <FieldError errors={field.state.meta.errors} />
-                        </Field>
-                      )}
-                    />
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    {warehouse.isDefault && (
-                      <Badge variant="default">{t("default")}</Badge>
-                    )}
-
-                    {!warehouse.isDefault && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setDefaultWarehouse(index)}
-                      >
-                        {t("setDefault")}
-                      </Button>
-                    )}
-
-                    {currentWarehouses.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        onClick={() => removeWarehouse(index)}
-                        className="text-destructive hover:text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
+          return (
+            <FieldGroup className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {remainingSlots > 0
+                      ? `${remainingSlots} ${
+                          remainingSlots === 1 ? "slot" : "slots"
+                        } remaining`
+                      : "Warehouse limit reached"}
+                  </p>
                 </div>
-              );
-            },
-          )}
-        </div>
-      </FieldGroup>
+                <div className="flex items-center gap-2">
+                  <Badge variant={isAtLimit ? "error" : "secondary"}>
+                    {currentWarehouses.length}/{LIMITS.WAREHOUSE_LIMIT}
+                  </Badge>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => field.pushValue({ name: "", isDefault: false })}
+                    disabled={isAtLimit}
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    {t("addLocation")}
+                  </Button>
+                </div>
+              </div>
 
+              {isAtLimit && (
+                <Alert variant="error">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    You've reached the maximum limit of {LIMITS.WAREHOUSE_LIMIT}{" "}
+                    warehouses. Remove some warehouses to add new ones.
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              <FieldError errors={field.state.meta.errors} />
+
+              <div className="space-y-4">
+                {currentWarehouses.map((warehouse, index) => {
+                  const nameLength = warehouse.name?.length || 0;
+                  const nameRemaining = LIMITS.NAME_MAX - nameLength;
+                  const isNameNearLimit = nameLength > LIMITS.NAME_MAX * 0.8;
+
+                  return (
+                    <div
+                      key={index}
+                      className="flex gap-4 items-start p-4 border rounded-lg"
+                    >
+                      <div className="flex-1 space-y-2">
+                        <form.Field
+                          name={`warehouses[${index}].name` as const}
+                        >
+                          {(subField) => (
+                            <Field>
+                              <Input
+                                placeholder={t("warehousePlaceholder")}
+                                maxLength={LIMITS.NAME_MAX}
+                                id={subField.name}
+                                name={subField.name}
+                                value={subField.state.value}
+                                onBlur={subField.handleBlur}
+                                onChange={(e) => subField.handleChange(e.target.value)}
+                              />
+                              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                <span>{nameRemaining} characters remaining</span>
+                                <Badge
+                                  variant={isNameNearLimit ? "error" : "secondary"}
+                                  className="text-xs"
+                                >
+                                  {nameLength}/{LIMITS.NAME_MAX}
+                                </Badge>
+                              </div>
+                              <FieldError errors={subField.state.meta.errors} />
+                            </Field>
+                          )}
+                        </form.Field>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {warehouse.isDefault && (
+                          <Badge variant="default">{t("default")}</Badge>
+                        )}
+
+                        {!warehouse.isDefault && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setDefaultWarehouse(index)}
+                          >
+                            {t("setDefault")}
+                          </Button>
+                        )}
+
+                        {currentWarehouses.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() => field.removeValue(index)}
+                            className="text-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </FieldGroup>
+          );
+        }}
+      </form.Field>
       <div className="mt-6">
-        <Button type="submit" disabled={form.state.isSubmitting}>
+        <Button type="submit" form="edit-warehouses-form" disabled={form.state.isSubmitting}>
           {form.state.isSubmitting ? t("saving") : t("saveWarehouses")}
         </Button>
       </div>

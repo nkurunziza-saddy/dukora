@@ -34,17 +34,18 @@ export default function ExpenseTransactionForm({
       const num = Number.parseFloat(val);
       return !Number.isNaN(num) && num >= 0;
     }, t("amountPositive")),
-    note: z.string(),
-    reference: z.string(),
+    note: z.string().optional(),
+    reference: z.string().optional(),
   });
 
   const form = useForm({
     defaultValues: {
       amount: expenseTransaction ? expenseTransaction.amount : "",
-      note: expenseTransaction ? (expenseTransaction.note ?? "") : "",
-      reference: expenseTransaction ? (expenseTransaction.reference ?? "") : "",
+      note: expenseTransaction ? expenseTransaction.note ?? "" : "",
+      reference: expenseTransaction ? expenseTransaction.reference ?? "" : "",
     },
     validators: {
+      // @ts-expect-error
       onSubmit: expenseTransactionSchema,
     },
     onSubmit: async ({ value }) => {

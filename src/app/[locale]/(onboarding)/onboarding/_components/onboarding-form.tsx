@@ -107,6 +107,21 @@ export default function OnboardingFlow() {
         toast.error("Setup failed. Check console for details.");
       }
     },
+    onSubmitInvalid({ formApi }) {
+      const errorMap = formApi.state.errorMap.onChange!;
+      const inputs = Array.from(
+        document.querySelectorAll("#onboarding-form input")
+      ) as HTMLInputElement[];
+
+      let firstInput: HTMLInputElement | undefined;
+      for (const input of inputs) {
+        if (!!errorMap[input.name]) {
+          firstInput = input;
+          break;
+        }
+      }
+      firstInput?.focus();
+    },
   });
 
   const nextStep = async () => {

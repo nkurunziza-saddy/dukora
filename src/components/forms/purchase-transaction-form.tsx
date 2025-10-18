@@ -53,8 +53,8 @@ export default function PurchaseTransactionForm({
     supplierId: z.string().min(1, t("supplierRequired")),
     warehouseId: z.string().min(1, t("warehouseRequired")),
     quantity: z.number().positive(t("quantityPositive")),
-    note: z.string(),
-    reference: z.string(),
+    note: z.string().optional(),
+    reference: z.string().optional(),
   });
 
   const {
@@ -83,6 +83,7 @@ export default function PurchaseTransactionForm({
       reference: purchaseTransaction ? purchaseTransaction.reference ?? "" : "",
     },
     validators: {
+      // @ts-expect-error
       onSubmit: purchaseTransactionSchema,
     },
     onSubmit: async ({ value }) => {

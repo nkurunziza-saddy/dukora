@@ -4,7 +4,6 @@ import { format } from "date-fns";
 import { AlertCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { z } from "zod";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,6 @@ import {
   FieldDescription,
   FieldError,
   FieldGroup,
-  FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -29,39 +27,7 @@ import { Switch } from "@/components/ui/switch";
 import type { SelectBusinessSetting } from "@/lib/schema/schema-types";
 import { upsertBusinessSettings } from "@/server/actions/business-settings-actions";
 import { countries, currencies, months } from "@/utils/constants";
-
-const LIMITS = {
-  VAT_RATE_MIN: 0,
-  VAT_RATE_MAX: 100,
-  BUSINESS_NAME_MAX: 100,
-  DESCRIPTION_MAX: 500,
-};
-
-const formSchema = z.object({
-  currency: z.string().min(1, "Currency is required"),
-  country: z.string().min(1, "Country is required"),
-  timezone: z.string().min(1, "Timezone is required"),
-  fiscalStartMonth: z.string().min(1, "Fiscal start month is required"),
-  pricesIncludeTax: z.boolean(),
-  defaultVatRate: z
-    .number()
-    .min(
-      LIMITS.VAT_RATE_MIN,
-      `VAT rate must be at least ${LIMITS.VAT_RATE_MIN}%`,
-    )
-    .max(LIMITS.VAT_RATE_MAX, `VAT rate cannot exceed ${LIMITS.VAT_RATE_MAX}%`),
-  businessDescription: z
-    .string()
-    .max(
-      LIMITS.DESCRIPTION_MAX,
-      `Description cannot exceed ${LIMITS.DESCRIPTION_MAX} characters`,
-    )
-    .default(""),
-  invoicePrefix: z
-    .string()
-    .max(10, "Invoice prefix cannot exceed 10 characters"),
-  invoiceNumberStart: z.number().min(1, "Invoice number must start from 1"),
-});
+import { LIMITS, settingsSchema } from "./settings-utils";
 
 export function EditBusinessSettings({
   settings,
@@ -73,7 +39,7 @@ export function EditBusinessSettings({
 
   const form = useForm({
     validators: {
-      onSubmit: formSchema,
+      onBlur: settingsSchema,
     },
     defaultValues: {
       currency:
@@ -83,7 +49,7 @@ export function EditBusinessSettings({
       timezone:
         (settings.find((s) => s.key === "timezone")?.value as string) || "",
       fiscalStartMonth:
-        (settings.find((s) => s.key === "fiscalStartMonth")?.value as string) ||
+        String(settings.find((s) => s.key === "fiscalStartMonth")?.value || "") ||
         "",
       pricesIncludeTax:
         (settings.find((s) => s.key === "pricesIncludeTax")
@@ -127,6 +93,7 @@ export function EditBusinessSettings({
 
   return (
     <form
+      id="edit-business-settings-form"
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -178,14 +145,15 @@ export function EditBusinessSettings({
         <div>
           <h4 className="font-medium mb-4">{t("regionalSettings")}</h4>
           <div className="space-y-4">
-            <form.Field
-              name="currency"
-              children={(field) => (
+            <form.Field name="currency">
+              {(field) => (
                 <Field>
-                  <FieldLabel>{t("currency")} *</FieldLabel>
+                  <label htmlFor={field.name} className="text-sm font-medium">
+                    {t("currency")} *
+                  </label>
                   <Select
                     onValueChange={field.handleChange}
-                    defaultValue={field.state.value}
+                    value={field.state.value}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -201,13 +169,14 @@ export function EditBusinessSettings({
                   <FieldError errors={field.state.meta.errors} />
                 </Field>
               )}
-            />
+            </form.Field>
 
-            <form.Field
-              name="country"
-              children={(field) => (
+            <form.Field name="country">
+              {(field) => (
                 <Field>
-                  <FieldLabel>{t("country")} *</FieldLabel>
+                  <label htmlFor={field.name} className="text-sm font-medium">
+                    {t("country")} *
+                  </label>
                   <Select
                     onValueChange={(value) => {
                       field.handleChange(value);
@@ -216,7 +185,7 @@ export function EditBusinessSettings({
                         form.setFieldValue("timezone", country.timezone);
                       }
                     }}
-                    defaultValue={field.state.value}
+                    value={field.state.value}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -232,38 +201,39 @@ export function EditBusinessSettings({
                   <FieldError errors={field.state.meta.errors} />
                 </Field>
               )}
-            />
+            </form.Field>
 
             <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-4">
-              <form.Field
-                name="timezone"
-                children={(field) => (
+              <form.Field name="timezone">
+                {(field) => (
                   <Field>
-                    <FieldLabel>{t("timezone")}</FieldLabel>
+                    <label htmlFor={field.name} className="text-sm font-medium">
+                      {t("timezone")}
+                    </label>
                     <Input
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      type="datetime-local"
+                      disabled
                     />
                     <FieldDescription>{t("timezoneAutoFill")}</FieldDescription>
                     <FieldError errors={field.state.meta.errors} />
                   </Field>
                 )}
-              />
+              </form.Field>
 
-              <form.Field
-                name="fiscalStartMonth"
-                children={(field) => (
+              <form.Field name="fiscalStartMonth">
+                {(field) => (
                   <Field>
-                    <FieldLabel>{t("fiscalStartMonth")} *</FieldLabel>
+                    <label htmlFor={field.name} className="text-sm font-medium">
+                      {t("fiscalStartMonth")} *
+                    </label>
                     <Select
                       onValueChange={field.handleChange}
-                      defaultValue={field.state.value}
+                      value={field.state.value}
+                      items={months}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger id={field.name}>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectPopup>
@@ -277,7 +247,7 @@ export function EditBusinessSettings({
                     <FieldError errors={field.state.meta.errors} />
                   </Field>
                 )}
-              />
+              </form.Field>
             </div>
           </div>
         </div>
@@ -285,17 +255,16 @@ export function EditBusinessSettings({
         <div>
           <h4 className="font-medium mb-4">{t("taxSettings")}</h4>
           <div className="space-y-4">
-            <form.Field
-              name="pricesIncludeTax"
-              children={(field) => (
+            <form.Field name="pricesIncludeTax">
+              {(field) => (
                 <Field
                   orientation="horizontal"
                   className="flex flex-row items-center justify-between rounded-lg border p-4"
                 >
                   <FieldContent>
-                    <FieldLabel className="text-base">
+                    <label className="text-base font-medium">
                       {t("pricesIncludeTax")}
-                    </FieldLabel>
+                    </label>
                     <FieldDescription>
                       {t("pricesIncludeTaxDescription")}
                     </FieldDescription>
@@ -306,13 +275,14 @@ export function EditBusinessSettings({
                   />
                 </Field>
               )}
-            />
+            </form.Field>
 
-            <form.Field
-              name="defaultVatRate"
-              children={(field) => (
+            <form.Field name="defaultVatRate">
+              {(field) => (
                 <Field>
-                  <FieldLabel>{t("defaultVatRate")}</FieldLabel>
+                  <label htmlFor={field.name} className="text-sm font-medium">
+                    {t("defaultVatRate")}
+                  </label>
                   <Input
                     type="number"
                     step="0.01"
@@ -341,18 +311,19 @@ export function EditBusinessSettings({
                   <FieldError errors={field.state.meta.errors} />
                 </Field>
               )}
-            />
+            </form.Field>
           </div>
         </div>
 
         <div>
           <h4 className="font-medium mb-4">{t("invoiceSettings")}</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <form.Field
-              name="invoicePrefix"
-              children={(field) => (
+            <form.Field name="invoicePrefix">
+              {(field) => (
                 <Field>
-                  <FieldLabel>{t("invoicePrefix")}</FieldLabel>
+                  <label htmlFor={field.name} className="text-sm font-medium">
+                    {t("invoicePrefix")}
+                  </label>
                   <Input
                     placeholder={t("invoicePrefixPlaceholder")}
                     maxLength={10}
@@ -360,6 +331,7 @@ export function EditBusinessSettings({
                     name={field.name}
                     value={field.state.value}
                     onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
                   />
                   <FieldDescription>
                     {10 - invoicePrefixLength} characters remaining
@@ -367,13 +339,14 @@ export function EditBusinessSettings({
                   <FieldError errors={field.state.meta.errors} />
                 </Field>
               )}
-            />
+            </form.Field>
 
-            <form.Field
-              name="invoiceNumberStart"
-              children={(field) => (
+            <form.Field name="invoiceNumberStart">
+              {(field) => (
                 <Field>
-                  <FieldLabel>{t("invoiceNumberStart")}</FieldLabel>
+                  <label htmlFor={field.name} className="text-sm font-medium">
+                    {t("invoiceNumberStart")}
+                  </label>
                   <Input
                     type="number"
                     min={1}
@@ -392,7 +365,7 @@ export function EditBusinessSettings({
                   <FieldError errors={field.state.meta.errors} />
                 </Field>
               )}
-            />
+            </form.Field>
           </div>
         </div>
       </FieldGroup>

@@ -49,8 +49,8 @@ export default function SaleTransactionForm({
     productId: z.string().min(1, t("productRequired")),
     warehouseItemId: z.string().min(1, t("warehouseRequired")),
     quantity: z.number().positive(t("quantityPositive")),
-    note: z.string(),
-    reference: z.string(),
+    note: z.string().optional(),
+    reference: z.string().optional(),
     warehouseId: z.string().min(1, "Warehouse ID is required"),
   });
 
@@ -70,6 +70,7 @@ export default function SaleTransactionForm({
       warehouseId: saleTransaction ? saleTransaction.warehouseId : "",
     },
     validators: {
+      // @ts-expect-error
       onSubmit: saleTransactionSchema,
     },
     onSubmit: async ({ value }) => {

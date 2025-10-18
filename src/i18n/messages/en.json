@@ -122,6 +122,7 @@
     "longNoEvent": "There are no events scheduled for this time period."
   },
   "forms": {
+    "saveCategories": "Save Categories",
     "productName": "Product Name",
     "warehouseLocation": "Warehouse Location",
     "description": "Description",

@@ -39,8 +39,8 @@ export default function SupplierForm({
       return digits.length >= 10 && digits.length <= 15;
     }, t("phoneDigits")),
     address: z.string(),
-    note: z.string(),
-    contactName: z.string(),
+    note: z.string().optional(),
+    contactName: z.string().optional(),
   });
 
   const form = useForm({
@@ -48,11 +48,12 @@ export default function SupplierForm({
       name: supplier ? supplier.name : "",
       email: supplier ? supplier.email : "",
       phone: supplier ? supplier.phone : "",
-      address: supplier ? (supplier.address ?? "") : "",
-      note: supplier ? (supplier.note ?? "") : "",
-      contactName: supplier ? (supplier.contactName ?? "") : "",
+      address: supplier ? supplier.address ?? "" : "",
+      note: supplier ? supplier.note ?? "" : "",
+      contactName: supplier ? supplier.contactName ?? "" : "",
     },
     validators: {
+      // @ts-expect-error
       onSubmit: supplierSchema,
     },
     onSubmit: async ({ value }) => {
@@ -67,7 +68,7 @@ export default function SupplierForm({
             : `${t("supplier")} ${tCommon("add")} ${tCommon("confirm")}`,
           {
             description: format(new Date(), "MMM dd, yyyy"),
-          },
+          }
         );
       } else {
         toast.error(tCommon("error"), {

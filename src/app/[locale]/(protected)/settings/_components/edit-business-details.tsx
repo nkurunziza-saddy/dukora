@@ -3,7 +3,6 @@ import { useForm } from "@tanstack/react-form";
 import { AlertCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { z } from "zod";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,6 @@ import {
   FieldDescription,
   FieldError,
   FieldGroup,
-  FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -25,41 +23,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import type { SelectBusiness } from "@/lib/schema/schema-types";
 import { updateBusiness } from "@/server/actions/business-actions";
-
-const LIMITS = {
-  NAME_MIN: 2,
-  NAME_MAX: 100,
-  DOMAIN_MAX: 253,
-  LOGO_URL_MAX: 500,
-  REGISTRATION_NUMBER_MAX: 50,
-};
-
-const formSchema = z.object({
-  name: z
-    .string()
-    .min(LIMITS.NAME_MIN, `Name must be at least ${LIMITS.NAME_MIN} characters`)
-    .max(LIMITS.NAME_MAX, `Name cannot exceed ${LIMITS.NAME_MAX} characters`),
-  domain: z
-    .string()
-    .max(
-      LIMITS.DOMAIN_MAX,
-      `Domain cannot exceed ${LIMITS.DOMAIN_MAX} characters`,
-    )
-    .regex(
-      /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/,
-      "Please enter a valid domain",
-    ),
-  businessType: z.string(),
-  description: z.string(),
-  logoUrl: z
-    .url("Please enter a valid URL")
-    .max(
-      LIMITS.LOGO_URL_MAX,
-      `Logo URL cannot exceed ${LIMITS.LOGO_URL_MAX} characters`,
-    ),
-  registrationNumber: z.string(),
-  isActive: z.boolean(),
-});
+import { businessDetailsSchema, LIMITS } from "./settings-utils";
 
 export function EditBusinessDetails({
   business,
@@ -70,7 +34,8 @@ export function EditBusinessDetails({
 
   const form = useForm({
     validators: {
-      onSubmit: formSchema,
+      // @ts-expect-error
+      onBlur: businessDetailsSchema,
     },
     defaultValues: {
       name: business?.name || "",
@@ -123,6 +88,7 @@ export function EditBusinessDetails({
 
   return (
     <form
+      id="edit-business-details-form"
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -182,91 +148,86 @@ export function EditBusinessDetails({
         <div>
           <h4 className="font-medium mb-4">{t("basicInformation")}</h4>
           <div className="space-y-4">
-            <form.Field
-              name="name"
-              children={(field) => {
-                const isInvalid = field.state.meta.errors.length > 0;
-                return (
-                  <Field>
-                    <FieldLabel>{t("businessName")}</FieldLabel>
-                    <Input
-                      placeholder={t("enterBusinessName")}
-                      maxLength={LIMITS.NAME_MAX}
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
-                    />
-                    <FieldDescription>
-                      {nameRemaining} characters remaining
-                    </FieldDescription>
-                    <FieldError errors={field.state.meta.errors} />
-                  </Field>
-                );
-              }}
-            />
-
-            <form.Field
-              name="domain"
-              children={(field) => {
-                const isInvalid = field.state.meta.errors.length > 0;
-                return (
-                  <Field>
-                    <FieldLabel>{t("domain")}</FieldLabel>
-                    <Input
-                      placeholder={t("enterDomain")}
-                      maxLength={LIMITS.DOMAIN_MAX}
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
-                      type="url"
-                    />
-                    <FieldDescription>
-                      {domainRemaining} characters remaining •{" "}
-                      {t("domainDescription")}
-                    </FieldDescription>
-                    <FieldError errors={field.state.meta.errors} />
-                  </Field>
-                );
-              }}
-            />
-
-            <form.Field
-              name="description"
-              children={(field) => {
-                const isInvalid = field.state.meta.errors.length > 0;
-                return (
-                  <Field>
-                    <FieldLabel>{t("description")}</FieldLabel>
-                    <Textarea
-                      placeholder={t("enterBusinessDescription")}
-                      className="field-sizing-content max-h-29.5 min-h-0 resize-none py-1.75"
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
-                    />
-                    <FieldError errors={field.state.meta.errors} />
-                  </Field>
-                );
-              }}
-            />
-
-            <form.Field
-              name="businessType"
-              children={(field) => (
+            <form.Field name="name">
+              {(field) => (
                 <Field>
-                  <FieldLabel>{t("businessType")}</FieldLabel>
+                  <label htmlFor={field.name} className="text-sm font-medium">
+                    {t("businessName")}
+                  </label>
+                  <Input
+                    placeholder={t("enterBusinessName")}
+                    maxLength={LIMITS.NAME_MAX}
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    aria-invalid={field.state.meta.errors.length > 0}
+                  />
+                  <FieldDescription>
+                    {nameRemaining} characters remaining
+                  </FieldDescription>
+                  <FieldError errors={field.state.meta.errors} />
+                </Field>
+              )}
+            </form.Field>
+
+            <form.Field name="domain">
+              {(field) => (
+                <Field>
+                  <label htmlFor={field.name} className="text-sm font-medium">
+                    {t("domain")}
+                  </label>
+                  <Input
+                    placeholder={t("enterDomain")}
+                    maxLength={LIMITS.DOMAIN_MAX}
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    aria-invalid={field.state.meta.errors.length > 0}
+                    type="url"
+                  />
+                  <FieldDescription>
+                    {domainRemaining} characters remaining •{" "}
+                    {t("domainDescription")}
+                  </FieldDescription>
+                  <FieldError errors={field.state.meta.errors} />
+                </Field>
+              )}
+            </form.Field>
+
+            <form.Field name="description">
+              {(field) => (
+                <Field>
+                  <label htmlFor={field.name} className="text-sm font-medium">
+                    {t("description")}
+                  </label>
+                  <Textarea
+                    placeholder={t("enterBusinessDescription")}
+                    className="field-sizing-content max-h-29.5 min-h-0 resize-none py-1.75"
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    aria-invalid={field.state.meta.errors.length > 0}
+                  />
+                  <FieldError errors={field.state.meta.errors} />
+                </Field>
+              )}
+            </form.Field>
+
+            <form.Field name="businessType">
+              {(field) => (
+                <Field>
+                  <label htmlFor={field.name} className="text-sm font-medium">
+                    {t("businessType")}
+                  </label>
                   <Select
                     onValueChange={field.handleChange}
-                    defaultValue={field.state.value || ""}
+                    value={field.state.value || ""}
                     items={businessTypes}
                   >
                     <SelectTrigger>
@@ -286,34 +247,32 @@ export function EditBusinessDetails({
                   <FieldError errors={field.state.meta.errors} />
                 </Field>
               )}
-            />
+            </form.Field>
 
-            <form.Field
-              name="logoUrl"
-              children={(field) => {
-                const isInvalid = field.state.meta.errors.length > 0;
-                return (
-                  <Field>
-                    <FieldLabel>{t("logoUrl")}</FieldLabel>
-                    <Input
-                      type="url"
-                      placeholder={t("enterLogoUrl")}
-                      maxLength={LIMITS.LOGO_URL_MAX}
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
-                    />
-                    <FieldDescription>
-                      {logoUrlRemaining} characters remaining
-                    </FieldDescription>
-                    <FieldError errors={field.state.meta.errors} />
-                  </Field>
-                );
-              }}
-            />
+            <form.Field name="logoUrl">
+              {(field) => (
+                <Field>
+                  <label htmlFor={field.name} className="text-sm font-medium">
+                    {t("logoUrl")}
+                  </label>
+                  <Input
+                    type="url"
+                    placeholder={t("enterLogoUrl")}
+                    maxLength={LIMITS.LOGO_URL_MAX}
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    aria-invalid={field.state.meta.errors.length > 0}
+                  />
+                  <FieldDescription>
+                    {logoUrlRemaining} characters remaining
+                  </FieldDescription>
+                  <FieldError errors={field.state.meta.errors} />
+                </Field>
+              )}
+            </form.Field>
           </div>
         </div>
 
@@ -322,33 +281,30 @@ export function EditBusinessDetails({
             {t("systemInformation")}
           </h4>
           <div className="space-y-4">
-            <form.Field
-              name="registrationNumber"
-              children={(field) => {
-                const isInvalid = field.state.meta.errors.length > 0;
-                return (
-                  <Field>
-                    <FieldLabel>{t("registrationNumber")}</FieldLabel>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
-                    />
-                    <FieldDescription>
-                      {t("registrationNumberDescription")}
-                    </FieldDescription>
-                    <FieldError errors={field.state.meta.errors} />
-                  </Field>
-                );
-              }}
-            />
+            <form.Field name="registrationNumber">
+              {(field) => (
+                <Field>
+                  <label htmlFor={field.name} className="text-sm font-medium">
+                    {t("registrationNumber")}
+                  </label>
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    aria-invalid={field.state.meta.errors.length > 0}
+                  />
+                  <FieldDescription>
+                    {t("registrationNumberDescription")}
+                  </FieldDescription>
+                  <FieldError errors={field.state.meta.errors} />
+                </Field>
+              )}
+            </form.Field>
 
-            <form.Field
-              name="isActive"
-              children={(field) => (
+            <form.Field name="isActive">
+              {(field) => (
                 <div className="flex flex-row items-center justify-between rounded-lg border p-4 bg-muted/30">
                   <div className="space-y-0.5">
                     <p className="text-base flex items-center gap-2 font-medium">
@@ -367,13 +323,17 @@ export function EditBusinessDetails({
                   </div>
                 </div>
               )}
-            />
+            </form.Field>
           </div>
         </div>
       </FieldGroup>
 
       <div className="mt-6">
-        <Button type="submit" disabled={form.state.isSubmitting}>
+        <Button
+          type="submit"
+          form="edit-business-details-form"
+          disabled={form.state.isSubmitting}
+        >
           {form.state.isSubmitting ? t("saving") : t("saveDetails")}
         </Button>
       </div>

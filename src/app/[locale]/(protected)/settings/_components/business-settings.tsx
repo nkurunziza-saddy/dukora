@@ -25,7 +25,7 @@ interface BusinessSettingsProps {
   business?: BusinessPayload;
 }
 
-export function BusinessSettingsForm({ business }: BusinessSettingsProps) {
+export function BusinessSettings({ business }: BusinessSettingsProps) {
   if (!business) {
     return (
       <Alert variant="error">
@@ -48,10 +48,10 @@ export function BusinessSettingsForm({ business }: BusinessSettingsProps) {
   const totalSections = Object.keys(completionStats).length;
   const completedSections = Object.values(completionStats).reduce(
     (sum, status) => sum + status,
-    0,
+    0
   );
   const completionPercentage = Math.round(
-    (completedSections / totalSections) * 100,
+    (completedSections / totalSections) * 100
   );
 
   return (
@@ -210,11 +210,11 @@ export function BusinessSettingsForm({ business }: BusinessSettingsProps) {
       </div>
 
       {/* {completionPercentage === 100 && ( */}
-      <div className="p-6 bg-green-50 border border-green-200 rounded-lg dark:bg-green-950 dark:border-green-800">
+      <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-lg dark:bg-emerald-950 dark:border-emerald-800">
         <div className="flex items-center gap-2 mb-2">
-          <Badge variant="default">🎉 Setup Complete</Badge>
+          <Badge variant="default">Setup Complete</Badge>
         </div>
-        <p className="text-sm text-green-800 dark:text-green-200">
+        <p className="text-sm text-emerald-800 dark:text-emerald-200">
           Congratulations! Your business setup is complete. All systems are
           configured and ready for use.
         </p>
