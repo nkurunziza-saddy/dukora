@@ -26,6 +26,8 @@
     "@openrouter/ai-sdk-provider": "^1.2.0",
     "@react-email/render": "^1.4.0",
     "@tanstack/react-form": "^1.23.7",
+    "@tanstack/react-query": "^5.90.5",
+    "@tanstack/react-query-devtools": "^5.90.2",
     "@tanstack/react-table": "^8.21.3",
     "@vercel/analytics": "^1.5.0",
     "ai": "^5.0.74",
@@ -54,7 +56,6 @@
     "resend": "^6.1.3",
     "sonner": "^2.0.7",
     "stripe": "^19.1.0",
-    "swr": "^2.3.6",
     "tailwind-merge": "^3.3.1",
     "vaul": "^1.1.2",
     "zod": "^4.1.12"

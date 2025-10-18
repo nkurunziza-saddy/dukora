@@ -3,7 +3,6 @@ import { useForm } from "@tanstack/react-form";
 import { AlertCircle, Check, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import useSwr, { preload } from "swr";
 import z from "zod";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -21,9 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { SelectBusiness } from "@/lib/schema/schema-types";
-import { fetcher } from "@/lib/utils";
 import { initiateInterBusinessPayment } from "@/server/actions/payment-actions";
+import { useBusinesses } from "@/lib/hooks/use-queries";
 import {
   Autocomplete,
   AutocompleteEmpty,
@@ -32,10 +30,6 @@ import {
   AutocompleteList,
   AutocompletePopup,
 } from "../ui/autocomplete";
-
-if (typeof window !== "undefined") {
-  preload("/api/businesses", fetcher);
-}
 
 const paymentSchema = z.object({
   receiverBusinessId: z.string().min(1, "Receiver business is required"),
@@ -55,11 +49,7 @@ export default function InitiatePaymentForm() {
     data: businessesData,
     error: businessesError,
     isLoading: isBusinessesLoading,
-  } = useSwr<SelectBusiness[]>("/api/businesses", fetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    dedupingInterval: 60000,
-  });
+  } = useBusinesses();
 
   const form = useForm({
     defaultValues: {

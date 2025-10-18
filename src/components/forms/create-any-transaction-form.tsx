@@ -6,7 +6,6 @@ import { AlertCircle, CheckIcon, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { toast } from "sonner";
-import useSwr, { preload } from "swr";
 import z from "zod";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -28,14 +27,13 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { TRANSACTION_TYPE } from "@/lib/schema";
 import type {
-  ExtendedProductPayload,
   InsertTransaction,
-  SelectProduct,
   SelectTransaction,
 } from "@/lib/schema/schema-types";
-import { cn, fetcher } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { createTransaction } from "@/server/actions/transaction-actions";
 import { transactionTypesObject } from "@/utils/constants";
+import { useProducts, useProductDetails } from "@/lib/hooks/use-queries";
 import { TriggerDialog } from "../shared/reusable-form-dialog";
 import {
   Autocomplete,
@@ -46,10 +44,6 @@ import {
   AutocompletePopup,
 } from "../ui/autocomplete";
 import { Separator } from "../ui/separator";
-
-if (typeof window !== "undefined") {
-  preload("/api/products", fetcher);
-}
 
 export default function AnyTransactionForm({
   transaction,
@@ -74,19 +68,14 @@ export default function AnyTransactionForm({
     data: productsData,
     error: productsError,
     isLoading: isProductsLoading,
-  } = useSwr<SelectProduct[]>("/api/products", fetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    dedupingInterval: 60000,
-  });
-
+  } = useProducts();
   const form = useForm({
     defaultValues: {
       productId: transaction ? transaction.productId : "",
       warehouseItemId: transaction ? transaction.warehouseItemId : "",
       quantity: transaction ? Math.abs(transaction.quantity) : 1,
-      note: transaction ? (transaction.note ?? "") : "",
-      reference: transaction ? (transaction.reference ?? "") : "",
+      note: transaction ? transaction.note ?? "" : "",
+      reference: transaction ? transaction.reference ?? "" : "",
       type: transaction ? transaction.type : "DAMAGE",
       warehouseId: transaction ? transaction.warehouseId : "",
     },
@@ -133,23 +122,14 @@ export default function AnyTransactionForm({
     data: productDetailsData,
     error: productDetailsError,
     isLoading: isProductDetailsLoading,
-  } = useSwr<ExtendedProductPayload>(
-    productId ? `/api/products/${productId}` : null,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      dedupingInterval: 60000,
-    },
-  );
-
+  } = useProductDetails(productId);
   const warehouseItemId = form.state.values.warehouseItemId;
   const selectedWarehouseItem = useMemo(
     () =>
       productDetailsData?.warehouseItems.find(
-        (item) => item.id === warehouseItemId,
+        (item: any) => item.id === warehouseItemId
       ),
-    [productDetailsData, warehouseItemId],
+    [productDetailsData, warehouseItemId]
   );
 
   if (productsError) {
@@ -211,7 +191,7 @@ export default function AnyTransactionForm({
                 </div>
               ) : productsData ? (
                 <Autocomplete
-                  items={productsData.map((p) => ({
+                  items={productsData.map((p: any) => ({
                     value: p.id,
                     label: p.name,
                     ...p,
@@ -224,6 +204,7 @@ export default function AnyTransactionForm({
                     }
                   }}
                   value={field.state.value || undefined}
+                  virtualized
                 >
                   <AutocompleteInput placeholder={t("searchProducts")} />
                   <AutocompletePopup>
@@ -247,7 +228,7 @@ export default function AnyTransactionForm({
                                 "h-4 w-4",
                                 product.id === field.state.value
                                   ? "opacity-100"
-                                  : "opacity-0",
+                                  : "opacity-0"
                               )}
                             />
                           </div>
@@ -277,18 +258,20 @@ export default function AnyTransactionForm({
                   </div>
                 ) : productDetailsData ? (
                   <Autocomplete
-                    items={productDetailsData.warehouseItems.map((item) => ({
-                      value: item.id,
-                      label: item.warehouse.name,
-                      ...item,
-                    }))}
+                    items={productDetailsData.warehouseItems.map(
+                      (item: any) => ({
+                        value: item.id,
+                        label: item.warehouse.name,
+                        ...item,
+                      })
+                    )}
                     onValueChange={(item) => {
                       if (item) {
                         field.handleChange(item);
                         const warehouseId =
                           typeof item === "string"
                             ? productDetailsData?.warehouseItems.find(
-                                (w) => w.id === item,
+                                (w: any) => w.id === item
                               )?.warehouseId
                             : (item as any).warehouseId;
                         if (warehouseId) {
@@ -321,7 +304,7 @@ export default function AnyTransactionForm({
                                   "h-4 w-4",
                                   item.id === field.state.value
                                     ? "opacity-100"
-                                    : "opacity-0",
+                                    : "opacity-0"
                                 )}
                               />
                             </div>

@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import ClientBody from "@/components/providers/client-body";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { QueryProvider } from "@/lib/providers/query-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { locales } from "@/i18n/config";
 import { routing } from "@/i18n/routing";
@@ -53,17 +54,19 @@ export default async function RootLayout({
         className={`scrollbar ${geistSans.variable} ${geistMono.variable}`}
       >
         <NextIntlClientProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <ClientBody>
-              {children}
-              <Toaster />
-            </ClientBody>
-          </ThemeProvider>
+          <QueryProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <ClientBody>
+                {children}
+                <Toaster />
+              </ClientBody>
+            </ThemeProvider>
+          </QueryProvider>
         </NextIntlClientProvider>
         <Analytics />
       </body>

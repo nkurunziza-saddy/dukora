@@ -5,7 +5,6 @@ import { format } from "date-fns";
 import { AlertCircle, CheckIcon, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import useSwr, { preload } from "swr";
 import z from "zod";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -20,13 +19,15 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type {
   InsertTransaction,
-  SelectProduct,
-  SelectSupplier,
   SelectTransaction,
-  SelectWarehouse,
 } from "@/lib/schema/schema-types";
-import { cn, fetcher } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { createTransactionAndWarehouseItem } from "@/server/actions/transaction-actions";
+import {
+  useProducts,
+  useWarehouses,
+  useSuppliers,
+} from "@/lib/hooks/use-queries";
 import { TriggerDialog } from "../shared/reusable-form-dialog";
 import {
   Autocomplete,
@@ -37,11 +38,6 @@ import {
   AutocompletePopup,
 } from "../ui/autocomplete";
 import { Separator } from "../ui/separator";
-
-if (typeof window !== "undefined") {
-  preload("/api/products", fetcher);
-  preload("/api/suppliers", fetcher);
-}
 
 export default function PurchaseTransactionForm({
   purchaseTransaction,
@@ -65,36 +61,26 @@ export default function PurchaseTransactionForm({
     data: productsData,
     error: productsError,
     isLoading: isProductsLoading,
-  } = useSwr<SelectProduct[]>("/api/products", fetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    dedupingInterval: 60000,
-  });
+  } = useProducts();
 
   const {
     data: suppliersData,
     error: suppliersError,
     isLoading: supplierLoading,
-  } = useSwr<SelectSupplier[]>("/api/suppliers", fetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    dedupingInterval: 60000,
-  });
+  } = useSuppliers();
 
   const form = useForm({
     defaultValues: {
       productId: purchaseTransaction ? purchaseTransaction.productId : "",
       supplierId: purchaseTransaction
-        ? (purchaseTransaction.supplierId ?? "")
+        ? purchaseTransaction.supplierId ?? ""
         : "",
       warehouseId: purchaseTransaction ? purchaseTransaction.warehouseId : "",
       quantity: purchaseTransaction
         ? Math.abs(purchaseTransaction.quantity)
         : 1,
-      note: purchaseTransaction ? (purchaseTransaction.note ?? "") : "",
-      reference: purchaseTransaction
-        ? (purchaseTransaction.reference ?? "")
-        : "",
+      note: purchaseTransaction ? purchaseTransaction.note ?? "" : "",
+      reference: purchaseTransaction ? purchaseTransaction.reference ?? "" : "",
     },
     validators: {
       onSubmit: purchaseTransactionSchema,
@@ -137,11 +123,7 @@ export default function PurchaseTransactionForm({
     data: warehousesData,
     error: warehousesError,
     isLoading: isWarehousesLoading,
-  } = useSwr<SelectWarehouse[]>(`/api/warehouses`, fetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    dedupingInterval: 60000,
-  });
+  } = useWarehouses();
 
   if (productsError) {
     return (
@@ -225,7 +207,7 @@ export default function PurchaseTransactionForm({
                                 "h-4 w-4",
                                 product.id === field.state.value
                                   ? "opacity-100"
-                                  : "opacity-0",
+                                  : "opacity-0"
                               )}
                             />
                           </div>
@@ -289,7 +271,7 @@ export default function PurchaseTransactionForm({
                                   "h-4 w-4",
                                   item.id === field.state.value
                                     ? "opacity-100"
-                                    : "opacity-0",
+                                    : "opacity-0"
                                 )}
                               />
                             </div>
@@ -358,7 +340,7 @@ export default function PurchaseTransactionForm({
                                 "h-4 w-4",
                                 supplier.id === field.state.value
                                   ? "opacity-100"
-                                  : "opacity-0",
+                                  : "opacity-0"
                               )}
                             />
                           </div>

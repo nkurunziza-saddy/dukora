@@ -1,25 +1,15 @@
 "use client";
 
 import { useForm } from "@tanstack/react-form";
-import {
-  Building2,
-  MapPin,
-  Package,
-  Plus,
-  Settings,
-  Trash2,
-  Users,
-  X,
-} from "lucide-react";
+import { XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
-import z from "zod";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardPanel,
   CardTitle,
@@ -42,125 +32,43 @@ import {
   StepperTrigger,
 } from "@/components/ui/stepper";
 import { Switch } from "@/components/ui/switch";
-import { USER_ROLES } from "@/lib/schema/models/enums";
 import { UserRole } from "@/lib/schema/schema-types";
-import { businessInitialization } from "@/server/actions/onboarding-actions";
 import { defaultCategories, userRolesObject } from "@/utils/constants";
 import LocaleSwitcher from "./language-switcher";
+import {
+  getBusinessTypes,
+  getCountries,
+  getCurrencies,
+  getMonths,
+  INVITATIONS_LIMIT,
+  onboardingSchema,
+  steps,
+  WAREHOUSES_LIMIT,
+} from "./onboarding-utils";
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldSet,
+} from "@/components/ui/field";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { businessInitialization } from "@/server/actions/onboarding-actions";
 
 const CATEGORY_LIMIT = 10;
-const INVITATIONS_LIMIT = 5;
-const WAREHOUSES_LIMIT = 5;
-
-const onboardingSchema = z.object({
-  businessName: z.string().min(1, "Business name is required"),
-  businessType: z.string().min(1, "Business type is required"),
-  currency: z.string().min(1, "Currency is required"),
-  country: z.string().min(1, "Country is required"),
-  timezone: z.string().min(1, "Timezone is required"),
-  fiscalStartMonth: z.string().min(1, "Fiscal start month is required"),
-  pricesIncludeTax: z.boolean(),
-  defaultVatRate: z.string(),
-  teamMembers: z
-    .array(
-      z.object({
-        email: z.string().email("Invalid email address"),
-        role: z.enum([...USER_ROLES]),
-      }),
-    )
-    .max(INVITATIONS_LIMIT, `Maximum invitations is ${INVITATIONS_LIMIT}`),
-  categories: z
-    .array(z.string())
-    .max(CATEGORY_LIMIT, `You can select up to ${CATEGORY_LIMIT} categories`),
-  warehouses: z
-    .array(
-      z.object({
-        name: z.string().min(1, "Warehouse name is required"),
-        isDefault: z.boolean(),
-      }),
-    )
-    .min(1, "At least one warehouse is required")
-    .max(WAREHOUSES_LIMIT, `Allowed warehouses up to ${WAREHOUSES_LIMIT}`),
-});
-
-export type OnboardingFormData = z.infer<typeof onboardingSchema>;
-
-const steps = [
-  {
-    step: 1,
-    title: "Business Profile",
-    description: "Set up your business identity",
-    icon: Building2,
-  },
-  {
-    step: 2,
-    title: "Tax Settings",
-    description: "Configure pricing and taxes",
-    icon: Settings,
-  },
-  {
-    step: 3,
-    title: "Team Setup",
-    description: "Invite your team members",
-    icon: Users,
-  },
-  {
-    step: 4,
-    title: "Categories",
-    description: "Choose product categories",
-    icon: Package,
-  },
-  {
-    step: 5,
-    title: "Warehouses/Branches",
-    description: "Set up your business branches and warehouses management",
-    icon: MapPin,
-  },
-];
 
 export default function OnboardingFlow() {
   const t = useTranslations("forms");
   const tCommon = useTranslations("common");
-  const businessTypes = [
-    { value: "retail", label: t("businessTypeRetail") },
-    { value: "wholesale", label: t("businessTypeWholesale") },
-    { value: "restaurant", label: t("businessTypeRestaurant") },
-    { value: "manufacturing", label: t("businessTypeManufacturing") },
-    { value: "service", label: t("businessTypeService") },
-    { value: "other", label: t("businessTypeOther") },
-  ];
-
-  const currencies = [
-    { value: "RWF", label: t("currencyRWF") },
-    { value: "USD", label: t("currencyUSD") },
-    { value: "EUR", label: t("currencyEUR") },
-    { value: "GBP", label: t("currencyGBP") },
-  ];
-
-  const countries = [
-    { value: "RW", label: t("countryRW"), timezone: "Africa/Kigali" },
-    { value: "US", label: t("countryUS"), timezone: "America/New_York" },
-    { value: "GB", label: t("countryGB"), timezone: "Europe/London" },
-    { value: "DE", label: t("countryDE"), timezone: "Europe/Berlin" },
-  ];
-
-  const months = [
-    { value: "1", label: t("monthJanuary") },
-    { value: "2", label: t("monthFebruary") },
-    { value: "3", label: t("monthMarch") },
-    { value: "4", label: t("monthApril") },
-    { value: "5", label: t("monthMay") },
-    { value: "6", label: t("monthJune") },
-    { value: "7", label: t("monthJuly") },
-    { value: "8", label: t("monthAugust") },
-    { value: "9", label: t("monthSeptember") },
-    { value: "10", label: t("monthOctober") },
-    { value: "11", label: t("monthNovember") },
-    { value: "12", label: t("monthDecember") },
-  ];
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [newCategory, setNewCategory] = useState("");
 
   const form = useForm({
     defaultValues: {
@@ -172,18 +80,18 @@ export default function OnboardingFlow() {
       fiscalStartMonth: "1",
       pricesIncludeTax: false,
       defaultVatRate: "",
-      teamMembers: [{ email: "", role: UserRole.ADMIN }],
-      categories: [""],
+      teamMembers: [] as Array<{ email: string; role: string }>,
+      categories: [] as string[],
       warehouses: [{ name: "Main Warehouse", isDefault: true }],
     },
     validators: {
-      onSubmit: onboardingSchema,
+      onBlur: onboardingSchema,
     },
     onSubmit: async ({ value }) => {
       if (currentStep !== steps.length) {
         return;
       }
-      setIsSubmitting(true);
+
       try {
         const req = await businessInitialization(value);
         if (req.data) {
@@ -196,62 +104,10 @@ export default function OnboardingFlow() {
         }
       } catch (error) {
         console.error("Onboarding error:", error);
-      } finally {
-        setIsSubmitting(false);
+        toast.error("Setup failed. Check console for details.");
       }
     },
   });
-
-  const addTeamMember = () => {
-    const currentMembers = form.state.values.teamMembers;
-    form.setFieldValue("teamMembers", [
-      ...currentMembers,
-      { email: "", role: UserRole.ADMIN },
-    ]);
-  };
-
-  const removeTeamMember = (index: number) => {
-    const currentMembers = form.state.values.teamMembers;
-    form.setFieldValue(
-      "teamMembers",
-      currentMembers.filter((_, i) => i !== index),
-    );
-  };
-
-  const addWarehouse = () => {
-    const currentWarehouses = form.state.values.warehouses;
-    form.setFieldValue("warehouses", [
-      ...currentWarehouses,
-      { name: "", isDefault: false },
-    ]);
-  };
-
-  const removeWarehouse = (index: number) => {
-    const currentWarehouses = form.state.values.warehouses;
-    if (currentWarehouses.length > 1) {
-      form.setFieldValue(
-        "warehouses",
-        currentWarehouses.filter((_, i) => i !== index),
-      );
-    }
-  };
-
-  const setDefaultWarehouse = (index: number) => {
-    const currentWarehouses = form.state.values.warehouses;
-    const updatedWarehouses = currentWarehouses.map((warehouse, i) => ({
-      ...warehouse,
-      isDefault: i === index,
-    }));
-    form.setFieldValue("warehouses", updatedWarehouses);
-  };
-
-  const removeCategory = (index: number) => {
-    const currentCategories = form.state.values.categories;
-    form.setFieldValue(
-      "categories",
-      currentCategories.filter((_, i) => i !== index),
-    );
-  };
 
   const nextStep = async () => {
     const fieldsToValidate = getFieldsForStep(currentStep);
@@ -265,15 +121,13 @@ export default function OnboardingFlow() {
       }
     }
 
-    if (isValid && currentStep < 5) {
-      setCurrentStep(currentStep + 1);
+    if (isValid && currentStep < steps.length) {
+      setCurrentStep((s) => s + 1);
     }
   };
 
   const prevStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
+    setCurrentStep((s) => Math.max(1, s - 1));
   };
 
   const getFieldsForStep = (step: number) => {
@@ -304,8 +158,8 @@ export default function OnboardingFlow() {
     <div className="min-h-screen py-8">
       <div className="max-w-5xl mx-auto px-4">
         <CardHeader className="mb-8 px-0">
-          <CardTitle className="">Welcome to Your Inventory System</CardTitle>
-          <CardDescription className="">
+          <CardTitle>Welcome to Your Inventory System</CardTitle>
+          <CardDescription>
             Let&apos;s set up your business in just a few steps
           </CardDescription>
         </CardHeader>
@@ -318,7 +172,7 @@ export default function OnboardingFlow() {
                 step={step}
                 className="not-last:flex-1 max-md:items-start"
               >
-                <StepperTrigger className="rounded max-md:flex-col">
+                <StepperTrigger className="rounded hover:cursor-pointer max-md:flex-col">
                   <StepperIndicator />
                   <div className="text-center md:text-left">
                     <StepperTitle className="flex items-center gap-2">
@@ -339,44 +193,24 @@ export default function OnboardingFlow() {
             <div className="flex justify-between">
               <div className="flex flex-col gap-2">
                 <CardTitle className="flex items-center gap-2">
-                  {(() => {
-                    const currentStepData = steps.find(
-                      (s) => s.step === currentStep,
-                    );
-                    return <>{currentStepData?.title}</>;
-                  })()}
+                  {steps.find((s) => s.step === currentStep)?.title}
                 </CardTitle>
                 <CardDescription>
                   {steps.find((s) => s.step === currentStep)?.description}
                 </CardDescription>
               </div>
-              {currentStep === 3 && (
-                <Button
-                  type="button"
-                  size={"sm"}
-                  variant="outline"
-                  onClick={addTeamMember}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Member
-                </Button>
-              )}
-              {currentStep === 5 && (
-                <Button type="button" variant="outline" onClick={addWarehouse}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Location
-                </Button>
-              )}
             </div>
           </CardHeader>
-          <CardPanel>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                form.handleSubmit();
-              }}
-              className="space-y-6"
-            >
+
+          <form
+            id="onboarding-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              form.handleSubmit();
+            }}
+            className="space-y-6"
+          >
+            <CardPanel>
               {currentStep === 1 && (
                 <div className="space-y-4">
                   <form.Field name="businessName">
@@ -400,6 +234,7 @@ export default function OnboardingFlow() {
                             onChange={(e) => field.handleChange(e.target.value)}
                             placeholder="Enter your business name"
                             aria-invalid={isInvalid}
+                            autoComplete="off"
                           />
                           {isInvalid && (
                             <p className="text-sm text-destructive">
@@ -416,6 +251,7 @@ export default function OnboardingFlow() {
                       const isInvalid =
                         field.state.meta.isTouched &&
                         field.state.meta.errors.length > 0;
+
                       return (
                         <div className="space-y-2">
                           <label
@@ -427,12 +263,13 @@ export default function OnboardingFlow() {
                           <Select
                             value={field.state.value}
                             onValueChange={(value) => field.handleChange(value)}
+                            items={getBusinessTypes(t)}
                           >
                             <SelectTrigger id={field.name}>
                               <SelectValue />
                             </SelectTrigger>
-                            <SelectPopup>
-                              {businessTypes.map((type) => (
+                            <SelectPopup alignItemWithTrigger={false}>
+                              {getBusinessTypes(t).map((type) => (
                                 <SelectItem key={type.value} value={type.value}>
                                   {type.label}
                                 </SelectItem>
@@ -449,7 +286,7 @@ export default function OnboardingFlow() {
                     }}
                   </form.Field>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-4">
+                  <FieldGroup className="grid grid-cols-1 md:grid-cols-2 items-start gap-4">
                     <form.Field name="currency">
                       {(field) => {
                         const isInvalid =
@@ -468,12 +305,13 @@ export default function OnboardingFlow() {
                               onValueChange={(value) =>
                                 field.handleChange(value)
                               }
+                              items={getCurrencies(t)}
                             >
                               <SelectTrigger id={field.name}>
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectPopup>
-                                {currencies.map((currency) => (
+                                {getCurrencies(t).map((currency) => (
                                   <SelectItem
                                     key={currency.value}
                                     value={currency.value}
@@ -510,22 +348,23 @@ export default function OnboardingFlow() {
                               value={field.state.value}
                               onValueChange={(value) => {
                                 field.handleChange(value);
-                                const country = countries.find(
-                                  (c) => c.value === value,
+                                const country = getCountries(t).find(
+                                  (c) => c.value === value
                                 );
                                 if (country) {
                                   form.setFieldValue(
                                     "timezone",
-                                    country.timezone,
+                                    country.timezone
                                   );
                                 }
                               }}
+                              items={getCountries(t)}
                             >
                               <SelectTrigger id={field.name}>
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectPopup>
-                                {countries.map((country) => (
+                                {getCountries(t).map((country) => (
                                   <SelectItem
                                     key={country.value}
                                     value={country.value}
@@ -544,9 +383,9 @@ export default function OnboardingFlow() {
                         );
                       }}
                     </form.Field>
-                  </div>
+                  </FieldGroup>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-4">
+                  <FieldGroup className="grid grid-cols-1 md:grid-cols-2 items-start gap-4">
                     <form.Field name="timezone">
                       {(field) => (
                         <div className="space-y-2">
@@ -587,12 +426,13 @@ export default function OnboardingFlow() {
                               onValueChange={(value) =>
                                 field.handleChange(value)
                               }
+                              items={getMonths(t)}
                             >
                               <SelectTrigger id={field.name}>
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectPopup>
-                                {months.map((month) => (
+                                {getMonths(t).map((month) => (
                                   <SelectItem
                                     key={month.value}
                                     value={month.value}
@@ -611,12 +451,12 @@ export default function OnboardingFlow() {
                         );
                       }}
                     </form.Field>
-                  </div>
+                  </FieldGroup>
                 </div>
               )}
 
               {currentStep === 2 && (
-                <div className="space-y-6">
+                <FieldGroup className="space-y-6">
                   <form.Field name="pricesIncludeTax">
                     {(field) => (
                       <div className="flex flex-row items-center justify-between rounded-lg border p-4">
@@ -678,327 +518,436 @@ export default function OnboardingFlow() {
                       );
                     }}
                   </form.Field>
-                </div>
+                </FieldGroup>
               )}
 
               {currentStep === 3 && (
-                <div className="space-y-6">
-                  {form.state.values.teamMembers.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground">
-                      <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                      <p>No team members added yet</p>
-                      <p className="text-sm">
-                        You can add team members now or skip this step
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {form.state.values.teamMembers.map((_, index) => (
-                        <div key={index} className="flex gap-4 items-start">
-                          <form.Field name={`teamMembers[${index}].email`}>
-                            {(field) => {
-                              const isInvalid =
-                                field.state.meta.isTouched &&
-                                field.state.meta.errors.length > 0;
-                              return (
-                                <div className="flex-1 space-y-2">
-                                  <label
-                                    htmlFor={field.name}
-                                    className="text-sm font-medium"
-                                  >
-                                    Email
-                                  </label>
-                                  <Input
-                                    id={field.name}
-                                    name={field.name}
-                                    value={field.state.value}
-                                    onBlur={field.handleBlur}
-                                    onChange={(e) =>
-                                      field.handleChange(e.target.value)
-                                    }
-                                    placeholder="team@example.com"
-                                    aria-invalid={isInvalid}
-                                  />
-                                  {isInvalid && (
-                                    <p className="text-sm text-destructive">
-                                      {field.state.meta.errors.join(", ")}
-                                    </p>
+                <form.Field name="teamMembers" mode="array">
+                  {(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid;
+                    return (
+                      <FieldSet className="gap-4">
+                        <FieldDescription>
+                          Add up to {INVITATIONS_LIMIT} team invitations.
+                        </FieldDescription>
+
+                        <FieldGroup className="gap-4">
+                          {(field.state.value || []).map(
+                            (_: any, index: number) => (
+                              <div
+                                key={index}
+                                className="flex gap-1 items-start"
+                              >
+                                <form.Field
+                                  name={`teamMembers[${index}].email` as any}
+                                >
+                                  {(subField) => {
+                                    const isSubFieldInvalid =
+                                      subField.state.meta.isTouched &&
+                                      !subField.state.meta.isValid;
+                                    return (
+                                      <Field
+                                        orientation="horizontal"
+                                        data-invalid={isSubFieldInvalid}
+                                      >
+                                        <FieldContent>
+                                          <InputGroup>
+                                            <InputGroupInput
+                                              id={`onboarding-form-teamMember-email-${index}`}
+                                              name={subField.name}
+                                              value={subField.state.value}
+                                              onBlur={subField.handleBlur}
+                                              aria-invalid={isSubFieldInvalid}
+                                              onChange={(e) =>
+                                                subField.handleChange(
+                                                  e.target.value as any
+                                                )
+                                              }
+                                              placeholder="name@example.com"
+                                              type="email"
+                                              autoComplete="email"
+                                            />
+                                          </InputGroup>
+                                          {isSubFieldInvalid && (
+                                            <FieldError
+                                              errors={
+                                                subField.state.meta.errors
+                                              }
+                                            />
+                                          )}
+                                        </FieldContent>
+                                      </Field>
+                                    );
+                                  }}
+                                </form.Field>
+
+                                <form.Field
+                                  name={`teamMembers[${index}].role` as any}
+                                >
+                                  {(subField) => {
+                                    const isSubFieldInvalid =
+                                      subField.state.meta.isTouched &&
+                                      !subField.state.meta.isValid;
+                                    return (
+                                      <Field
+                                        orientation="horizontal"
+                                        data-invalid={isSubFieldInvalid}
+                                        className="w-48"
+                                      >
+                                        <FieldContent>
+                                          <Select
+                                            value={subField.state.value}
+                                            onValueChange={(value) =>
+                                              subField.handleChange(
+                                                value as any
+                                              )
+                                            }
+                                          >
+                                            <SelectTrigger id={subField.name}>
+                                              <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectPopup
+                                              alignItemWithTrigger={false}
+                                            >
+                                              {userRolesObject.map((role) => (
+                                                <SelectItem
+                                                  key={role.value}
+                                                  value={role.value}
+                                                >
+                                                  {role.label}
+                                                </SelectItem>
+                                              ))}
+                                            </SelectPopup>
+                                          </Select>
+                                          {isSubFieldInvalid && (
+                                            <FieldError
+                                              errors={
+                                                subField.state.meta.errors
+                                              }
+                                            />
+                                          )}
+                                        </FieldContent>
+                                      </Field>
+                                    );
+                                  }}
+                                </form.Field>
+
+                                <div>
+                                  {(field.state.value || []).length > 1 && (
+                                    <InputGroupAddon align="inline-end">
+                                      <InputGroupButton
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon-xs"
+                                        onClick={() => field.removeValue(index)}
+                                        aria-label={`Remove teammember ${
+                                          index + 1
+                                        }`}
+                                      >
+                                        <XIcon />
+                                      </InputGroupButton>
+                                    </InputGroupAddon>
                                   )}
                                 </div>
-                              );
-                            }}
-                          </form.Field>
-
-                          <form.Field name={`teamMembers[${index}].role`}>
-                            {(field) => (
-                              <div className="w-40 space-y-2">
-                                <label
-                                  htmlFor={field.name}
-                                  className="text-sm font-medium"
-                                >
-                                  Role
-                                </label>
-                                <div className="flex gap-2">
-                                  <Select
-                                    value={field.state.value}
-                                    onValueChange={(value) =>
-                                      field.handleChange(value)
-                                    }
-                                  >
-                                    <SelectTrigger id={field.name}>
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectPopup>
-                                      {userRolesObject.map((role) => (
-                                        <SelectItem
-                                          key={role.value}
-                                          value={role.value}
-                                        >
-                                          {role.label}
-                                        </SelectItem>
-                                      ))}
-                                    </SelectPopup>
-                                  </Select>
-                                  <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="icon"
-                                    onClick={() => removeTeamMember(index)}
-                                  >
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
-                                </div>
                               </div>
-                            )}
-                          </form.Field>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                            )
+                          )}
+
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="w-fit"
+                            onClick={() =>
+                              field.pushValue({
+                                email: "",
+                                role: UserRole.MEMBER,
+                              })
+                            }
+                            disabled={
+                              (field.state.value || []).length >=
+                              INVITATIONS_LIMIT
+                            }
+                          >
+                            Add member
+                          </Button>
+                        </FieldGroup>
+
+                        {isInvalid && (
+                          <FieldError errors={field.state.meta.errors} />
+                        )}
+                      </FieldSet>
+                    );
+                  }}
+                </form.Field>
               )}
 
               {currentStep === 4 && (
-                <div className="space-y-6">
-                  <div>
-                    <h4 className="font-medium mb-4">
-                      Choose from default categories:
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {defaultCategories.map((category) => {
-                        const isSelected = form.state.values.categories.some(
-                          (cat) => cat === category,
+                <form.Field name="categories" mode="array">
+                  {(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid;
+                    const currentCategories = field.state.value || [];
+
+                    const toggleCategory = (category: string) => {
+                      const idx = currentCategories.indexOf(category);
+                      if (idx >= 0) {
+                        field.removeValue(idx);
+                      } else {
+                        if (currentCategories.length >= CATEGORY_LIMIT) {
+                          toast.error(
+                            `You can select up to ${CATEGORY_LIMIT} categories.`
+                          );
+                          return;
+                        }
+                        field.pushValue(category);
+                      }
+                    };
+
+                    const handleAddCustom = () => {
+                      const trimmed = newCategory.trim();
+                      if (!trimmed) return;
+                      if (currentCategories.includes(trimmed)) {
+                        toast.error("Category already added");
+                        return;
+                      }
+                      if (currentCategories.length >= CATEGORY_LIMIT) {
+                        toast.error(
+                          `You can select up to ${CATEGORY_LIMIT} categories.`
                         );
+                        return;
+                      }
+                      field.pushValue(trimmed);
+                      setNewCategory("");
+                    };
 
-                        return (
-                          <button
-                            type="button"
-                            key={category}
-                            className={`p-4 border rounded-lg cursor-pointer transition-colors w-full text-left ${
-                              isSelected ? "border bg-muted/70" : ""
-                            }`}
-                            onClick={() => {
-                              const currentCategories =
-                                form.state.values.categories;
-                              if (isSelected) {
-                                form.setFieldValue(
-                                  "categories",
-                                  currentCategories.filter(
-                                    (cat) => cat !== category,
-                                  ),
-                                );
-                              } else {
-                                form.setFieldValue("categories", [
-                                  ...currentCategories,
-                                  category,
-                                ]);
-                              }
-                            }}
-                          >
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
-                                <h5 className="font-medium text-sm">
-                                  {category}
-                                </h5>
-                              </div>
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
+                    return (
+                      <FieldSet className="gap-4">
+                        <FieldDescription>
+                          Make your own product categories
+                        </FieldDescription>
 
-                  <div>
-                    <h4 className="font-medium mb-4">Add custom categories:</h4>
-                    <div className="flex gap-2 mb-4">
-                      <Input
-                        id="customCategoryInput"
-                        placeholder="Enter category name"
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            e.preventDefault();
-                            const input = e.target as HTMLInputElement;
-                            const categoryName = input.value.trim();
-
-                            if (categoryName) {
-                              const currentCategories =
-                                form.state.values.categories;
-                              const categoryExists = currentCategories.some(
-                                (cat) =>
-                                  cat.toLowerCase() ===
-                                  categoryName.toLowerCase(),
+                        <FieldGroup className="gap-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {defaultCategories.map((category) => {
+                              const isSelected = currentCategories.some(
+                                (c: any) => c === category
                               );
+                              return (
+                                <button
+                                  type="button"
+                                  key={category}
+                                  className={`p-4 border rounded-lg cursor-pointer transition-colors w-full text-left flex items-center justify-between ${
+                                    isSelected ? "border bg-muted/70" : ""
+                                  }`}
+                                  onClick={() => toggleCategory(category)}
+                                  aria-pressed={isSelected}
+                                >
+                                  <div className="flex-1">
+                                    <h5 className="font-medium text-sm">
+                                      {category}
+                                    </h5>
+                                  </div>
+                                  <div className="ml-3 text-sm">
+                                    {isSelected ? "Selected" : "Add"}
+                                  </div>
+                                </button>
+                              );
+                            })}
+                          </div>
 
-                              if (!categoryExists) {
-                                form.setFieldValue("categories", [
-                                  ...currentCategories,
-                                  categoryName,
-                                ]);
-                                input.value = "";
-                              }
-                            }
-                          }
-                        }}
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => {
-                          const input = document.getElementById(
-                            "customCategoryInput",
-                          ) as HTMLInputElement;
-                          const categoryName = input?.value.trim();
-
-                          if (categoryName) {
-                            const currentCategories =
-                              form.state.values.categories;
-                            const categoryExists = currentCategories.some(
-                              (cat) =>
-                                cat.toLowerCase() ===
-                                categoryName.toLowerCase(),
-                            );
-
-                            if (!categoryExists) {
-                              form.setFieldValue("categories", [
-                                ...currentCategories,
-                                categoryName,
-                              ]);
-                              input.value = "";
-                            }
-                          }
-                        }}
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
-
-                    {form.state.values.categories.length > 0 && (
-                      <div className="space-y-2">
-                        <p className="text-sm font-medium">
-                          Selected categories (
-                          {form.state.values.categories.length}):
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {form.state.values.categories.map((category) => (
-                            <Badge
-                              key={category}
-                              variant="secondary"
-                              className="flex items-center"
-                            >
-                              {category}
-                              <Button
-                                type="button"
-                                variant={"ghost"}
-                                onClick={() =>
-                                  removeCategory(
-                                    form.state.values.categories.indexOf(
-                                      category,
-                                    ),
-                                  )
+                          <div className="flex gap-2 items-center">
+                            <Input
+                              id="new-category"
+                              value={newCategory}
+                              onChange={(e) => setNewCategory(e.target.value)}
+                              placeholder="Add custom category (e.g., Food)"
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  handleAddCustom();
                                 }
-                                className="ml-0.5 px-0 rounded-full size-4"
-                              >
-                                <X className="size-3" />
-                              </Button>
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                              }}
+                            />
+                            <Button
+                              type="button"
+                              onClick={handleAddCustom}
+                              variant="outline"
+                              size="sm"
+                            >
+                              Add
+                            </Button>
+                          </div>
+                          <div className="ml-auto text-sm text-muted-foreground tabular-nums">
+                            {currentCategories.length} / {CATEGORY_LIMIT}
+                          </div>
+                          {currentCategories.length > 0 && (
+                            <div className="flex gap-0.5 flex-wrap">
+                              {currentCategories.map(
+                                (cat: any, idx: number) => (
+                                  <Button
+                                    key={`${cat}-${idx}`}
+                                    type="button"
+                                    variant="outline"
+                                    size="xs"
+                                    onClick={() => field.removeValue(idx)}
+                                    aria-label={`Remove category ${idx + 1}`}
+                                  >
+                                    <span className="">
+                                      {cat}{" "}
+                                      <XIcon className="inline-block ml-1" />
+                                    </span>
+                                  </Button>
+                                )
+                              )}
+                            </div>
+                          )}
+                        </FieldGroup>
+
+                        {isInvalid && (
+                          <FieldError errors={field.state.meta.errors} />
+                        )}
+                      </FieldSet>
+                    );
+                  }}
+                </form.Field>
               )}
 
               {currentStep === 5 && (
-                <div className="space-y-6">
-                  <div className="space-y-4">
-                    {form.state.values.warehouses.map((warehouse, index) => (
-                      <div
-                        key={index}
-                        className="flex gap-4 items-start p-4 border rounded-lg"
-                      >
-                        <form.Field name={`warehouses[${index}].name`}>
-                          {(field) => {
-                            const isInvalid =
-                              field.state.meta.isTouched &&
-                              field.state.meta.errors.length > 0;
-                            return (
-                              <div className="flex-1 space-y-2">
-                                <Input
-                                  id={field.name}
-                                  name={field.name}
-                                  value={field.state.value}
-                                  onBlur={field.handleBlur}
-                                  onChange={(e) =>
-                                    field.handleChange(e.target.value)
-                                  }
-                                  placeholder="Warehouse/Branch name"
-                                  aria-invalid={isInvalid}
-                                />
-                                {isInvalid && (
-                                  <p className="text-sm text-destructive">
-                                    {field.state.meta.errors.join(", ")}
-                                  </p>
+                <form.Field name="warehouses" mode="array">
+                  {(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid;
+                    const handleSetDefault = (index: number) => {
+                      const newArr = (field.state.value || []).map(
+                        (w: any, i: number) => ({
+                          ...w,
+                          isDefault: i === index,
+                        })
+                      );
+                      if (!newArr.some((w: any) => w.isDefault)) {
+                        newArr[0].isDefault = true;
+                      }
+                      field.setValue(newArr);
+                    };
+
+                    return (
+                      <FieldSet className="gap-4">
+                        <FieldDescription>
+                          Add up to {WAREHOUSES_LIMIT} warehouses.
+                        </FieldDescription>
+
+                        <FieldGroup className="gap-4">
+                          {field.state.value.map((_, index) => (
+                            <div
+                              key={index}
+                              className="flex gap-1 items-center"
+                            >
+                              <form.Field name={`warehouses[${index}].name`}>
+                                {(subField) => {
+                                  const isSubFieldInvalid =
+                                    subField.state.meta.isTouched &&
+                                    !subField.state.meta.isValid;
+                                  return (
+                                    <Field
+                                      orientation="horizontal"
+                                      data-invalid={isSubFieldInvalid}
+                                    >
+                                      <FieldContent>
+                                        <InputGroup>
+                                          <InputGroupInput
+                                            id={`onboarding-form-warehouse-name-${index}`}
+                                            name={subField.name}
+                                            value={subField.state.value}
+                                            onBlur={subField.handleBlur}
+                                            onChange={(e) =>
+                                              subField.handleChange(
+                                                e.target.value
+                                              )
+                                            }
+                                            aria-invalid={isSubFieldInvalid}
+                                            placeholder="Gishushu Branch"
+                                          />
+                                        </InputGroup>
+                                        {isSubFieldInvalid && (
+                                          <FieldError
+                                            errors={subField.state.meta.errors}
+                                          />
+                                        )}
+                                      </FieldContent>
+                                    </Field>
+                                  );
+                                }}
+                              </form.Field>
+
+                              <Button
+                                id={`warehouse-default-${index}`}
+                                type="button"
+                                variant={
+                                  field.state.value[index]?.isDefault === true
+                                    ? "default"
+                                    : "outline"
+                                }
+                                className="w-fit"
+                                size="sm"
+                                onClick={() => handleSetDefault(index)}
+                              >
+                                {field.state.value[index]?.isDefault === true
+                                  ? "Is Default"
+                                  : "Set Default"}
+                              </Button>
+
+                              <div>
+                                {(field.state.value || []).length > 1 && (
+                                  <InputGroupAddon align="inline-end">
+                                    <InputGroupButton
+                                      type="button"
+                                      variant="ghost"
+                                      size="icon-xs"
+                                      onClick={() => field.removeValue(index)}
+                                      aria-label={`Remove warehouse ${
+                                        index + 1
+                                      }`}
+                                    >
+                                      <XIcon />
+                                    </InputGroupButton>
+                                  </InputGroupAddon>
                                 )}
                               </div>
-                            );
-                          }}
-                        </form.Field>
+                            </div>
+                          ))}
 
-                        <div className="flex items-center gap-2">
-                          {warehouse.isDefault && (
-                            <Badge variant="default">Default</Badge>
-                          )}
-                          {!warehouse.isDefault && (
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => setDefaultWarehouse(index)}
-                            >
-                              Set Default
-                            </Button>
-                          )}
-                          {form.state.values.warehouses.length > 1 && (
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="icon"
-                              onClick={() => removeWarehouse(index)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="w-fit"
+                            onClick={() =>
+                              field.pushValue({ name: "", isDefault: false })
+                            }
+                            disabled={
+                              (field.state.value || []).length >=
+                              WAREHOUSES_LIMIT
+                            }
+                          >
+                            Add warehouse
+                          </Button>
+                        </FieldGroup>
+
+                        {isInvalid && (
+                          <FieldError errors={field.state.meta.errors} />
+                        )}
+                      </FieldSet>
+                    );
+                  }}
+                </form.Field>
               )}
 
-              <Separator />
-
-              <div className="flex justify-between">
+              <Separator className={"my-4"} />
+            </CardPanel>
+            <CardFooter>
+              <Field orientation="horizontal" className="flex justify-between">
                 <Button
                   type="button"
                   variant="outline"
@@ -1008,22 +957,29 @@ export default function OnboardingFlow() {
                   Previous
                 </Button>
 
-                {currentStep < 5 && (
+                {currentStep < steps.length && (
                   <Button type="button" onClick={nextStep}>
                     Next
                   </Button>
                 )}
 
-                {currentStep === 5 && (
-                  <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? "Setting up..." : "Complete Setup"}
+                {currentStep === steps.length && (
+                  <Button
+                    type="submit"
+                    form="onboarding-form"
+                    disabled={form.state.isSubmitting}
+                  >
+                    {form.state.isSubmitting
+                      ? "Setting up..."
+                      : "Complete Setup"}
                   </Button>
                 )}
-              </div>
-            </form>
-          </CardPanel>
+              </Field>
+            </CardFooter>
+          </form>
         </Card>
       </div>
+
       <div className="absolute bottom-2 right-2">
         <LocaleSwitcher />
       </div>

@@ -23,11 +23,7 @@ export function CurrentPage() {
       return (
         <Fragment key={segment.toString()}>
           <BreadcrumbItem key={href}>
-            <BreadcrumbLink>
-              <Link href={href} prefetch>
-                {formattedSegment}
-              </Link>
-            </BreadcrumbLink>
+            <BreadcrumbLink href={href}>{formattedSegment}</BreadcrumbLink>
           </BreadcrumbItem>
           {segments.length - 1 !== index + 1 && <BreadcrumbSeparator />}
         </Fragment>
@@ -40,11 +36,7 @@ export function CurrentPage() {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink>
-              <Link href="/" prefetch>
-                /
-              </Link>
-            </BreadcrumbLink>
+            <BreadcrumbLink href="/">/</BreadcrumbLink>
           </BreadcrumbItem>
           {pathname !== "/" && <BreadcrumbSeparator />}
           {generateBreadcrumbs()}

@@ -5,7 +5,6 @@ import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import useSwr, { preload } from "swr";
 import z from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,22 +23,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import type { SelectCategory, SelectProduct } from "@/lib/schema/schema-types";
-import { fetcher } from "@/lib/utils";
+import type { SelectProduct } from "@/lib/schema/schema-types";
 import { createProduct, updateProduct } from "@/server/actions/product-actions";
+import { useCategories } from "@/lib/hooks/use-queries";
 import { TriggerDialog } from "../shared/reusable-form-dialog";
 import { Separator } from "../ui/separator";
-
-if (typeof window !== "undefined") {
-  preload("/api/categories", fetcher);
-}
 
 export default function ProductForm({ product }: { product?: SelectProduct }) {
   const {
     data: categoriesData,
     error: categoriesError,
     isLoading: isCategoriesLoading,
-  } = useSwr<SelectCategory[]>("/api/categories", fetcher);
+  } = useCategories();
 
   const t = useTranslations("forms");
   const tCommon = useTranslations("common");
@@ -87,16 +82,16 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
   const form = useForm({
     defaultValues: {
       name: product ? product.name : "",
-      description: product ? (product.description ?? "") : "",
+      description: product ? product.description ?? "" : "",
       sku: product ? product.sku : "",
-      barcode: product ? (product.barcode ?? "") : "",
+      barcode: product ? product.barcode ?? "" : "",
       price: product ? product.price : "",
       costPrice: product ? product.costPrice : "",
-      categoryId: product ? (product.categoryId ?? "") : "",
+      categoryId: product ? product.categoryId ?? "" : "",
       reorderPoint: product ? product.reorderPoint.toString() : "10",
       maxStock: product ? product.maxStock.toString() : "1000",
       unit: product ? product.unit : "pcs",
-      weight: product ? (product.weight ?? "") : "",
+      weight: product ? product.weight ?? "" : "",
     },
     validators: {
       onSubmit: productSchema,
@@ -124,7 +119,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
             : `${t("productName")} ${tCommon("add")} ${tCommon("confirm")}`,
           {
             description: format(new Date(), "MMM dd, yyyy"),
-          },
+          }
         );
       } else {
         toast.error(tCommon("error"), {
@@ -393,7 +388,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               </>
             ) : (
               `${product ? tCommon("edit") : tCommon("add")} ${t(
-                "productName",
+                "productName"
               )}`
             )}
           </Button>

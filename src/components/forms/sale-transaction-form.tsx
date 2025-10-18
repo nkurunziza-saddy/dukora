@@ -6,7 +6,6 @@ import { AlertCircle, CheckIcon, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { toast } from "sonner";
-import useSwr, { preload } from "swr";
 import z from "zod";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -20,13 +19,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type {
-  ExtendedProductPayload,
   InsertTransaction,
-  SelectProduct,
   SelectTransaction,
 } from "@/lib/schema/schema-types";
-import { cn, fetcher } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { createTransaction } from "@/server/actions/transaction-actions";
+import { useProducts, useProductDetails } from "@/lib/hooks/use-queries";
 import { TriggerDialog } from "../shared/reusable-form-dialog";
 import {
   Autocomplete,
@@ -37,10 +35,6 @@ import {
   AutocompletePopup,
 } from "../ui/autocomplete";
 import { Separator } from "../ui/separator";
-
-if (typeof window !== "undefined") {
-  preload("/api/products", fetcher);
-}
 
 export default function SaleTransactionForm({
   saleTransaction,
@@ -64,19 +58,15 @@ export default function SaleTransactionForm({
     data: productsData,
     error: productsError,
     isLoading: isProductsLoading,
-  } = useSwr<SelectProduct[]>("/api/products", fetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    dedupingInterval: 60000,
-  });
+  } = useProducts();
 
   const form = useForm({
     defaultValues: {
       productId: saleTransaction ? saleTransaction.productId : "",
       warehouseItemId: saleTransaction ? saleTransaction.warehouseItemId : "",
       quantity: saleTransaction ? Math.abs(saleTransaction.quantity) : 1,
-      note: saleTransaction ? (saleTransaction.note ?? "") : "",
-      reference: saleTransaction ? (saleTransaction.reference ?? "") : "",
+      note: saleTransaction ? saleTransaction.note ?? "" : "",
+      reference: saleTransaction ? saleTransaction.reference ?? "" : "",
       warehouseId: saleTransaction ? saleTransaction.warehouseId : "",
     },
     validators: {
@@ -122,15 +112,7 @@ export default function SaleTransactionForm({
     data: productDetailsData,
     error: productDetailsError,
     isLoading: isProductDetailsLoading,
-  } = useSwr<ExtendedProductPayload>(
-    productId ? `/api/products/${productId}` : null,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      dedupingInterval: 60000,
-    },
-  );
+  } = useProductDetails(productId);
 
   const warehouseItemId = form.state.values.warehouseItemId;
   const quantity = form.state.values.quantity;
@@ -138,14 +120,14 @@ export default function SaleTransactionForm({
   const selectedWarehouseItem = useMemo(
     () =>
       productDetailsData?.warehouseItems.find(
-        (item) => item.id === warehouseItemId,
+        (item) => item.id === warehouseItemId
       ),
-    [productDetailsData?.warehouseItems, warehouseItemId],
+    [productDetailsData?.warehouseItems, warehouseItemId]
   );
 
   const hasInsufficientStock = useMemo(
     () => selectedWarehouseItem && quantity > selectedWarehouseItem.quantity,
-    [selectedWarehouseItem, quantity],
+    [selectedWarehouseItem, quantity]
   );
 
   if (productsError) {
@@ -220,7 +202,7 @@ export default function SaleTransactionForm({
                                 "h-4 w-4",
                                 product.id === field.state.value
                                   ? "opacity-100"
-                                  : "opacity-0",
+                                  : "opacity-0"
                               )}
                             />
                           </div>
@@ -263,7 +245,7 @@ export default function SaleTransactionForm({
                           const warehouseId =
                             typeof item === "string"
                               ? productDetailsData?.warehouseItems.find(
-                                  (w) => w.id === item,
+                                  (w) => w.id === item
                                 )?.warehouseId
                               : (item as any).warehouseId;
                           if (warehouseId) {
@@ -299,7 +281,7 @@ export default function SaleTransactionForm({
                                   "h-4 w-4",
                                   item.id === field.state.value
                                     ? "opacity-100"
-                                    : "opacity-0",
+                                    : "opacity-0"
                                 )}
                               />
                             </div>
@@ -346,7 +328,7 @@ export default function SaleTransactionForm({
                       "text-sm font-medium",
                       hasInsufficientStock
                         ? "text-destructive"
-                        : "text-muted-foreground",
+                        : "text-muted-foreground"
                     )}
                   >
                     {tInventory("onHand")}: {selectedWarehouseItem.quantity}
