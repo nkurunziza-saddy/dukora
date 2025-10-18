@@ -1,11 +1,11 @@
-import { Bot, Check, Copy, Trash2, User } from "lucide-react";
+import { Check, Copy, Trash2 } from "lucide-react";
 import { memo, useCallback, useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import { Button } from "@/components/ui/button";
-import { formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { markdownComponents } from "./markdown-components";
 
 const Message = memo(
@@ -28,7 +28,7 @@ const Message = memo(
         (_match, number) => {
           const num = Number.parseFloat(number.replace(/,/g, ""));
           return formatCurrency(num);
-        },
+        }
       );
     }, []);
 
@@ -41,7 +41,7 @@ const Message = memo(
 
     const processedContent = useMemo(
       () => processMessage(textContent),
-      [textContent, processMessage],
+      [textContent, processMessage]
     );
 
     return (
@@ -52,25 +52,16 @@ const Message = memo(
           }`}
         >
           <div
-            className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
-              message.role === "user"
-                ? "bg-foreground text-background"
-                : "bg-muted"
-            }`}
-          >
-            {message.role === "user" ? (
-              <User className="w-3.5 h-3.5" />
-            ) : (
-              <Bot className="w-3.5 h-3.5 text-muted-foreground" />
+            className={cn(
+              "flex-1  space-y-2",
+              message.role === "user" ? "max-w-[75%]" : "max-w-[85%]"
             )}
-          </div>
-
-          <div className="flex-1 max-w-[85%] space-y-2">
+          >
             <div
               className={`px-4 py-3 rounded-lg ${
                 message.role === "user"
-                  ? "bg-foreground text-background ml-auto"
-                  : "bg-muted/50 text-foreground"
+                  ? "bg-muted/40 text-background ml-auto"
+                  : "bg-background text-foreground"
               }`}
             >
               <div className="prose prose-sm max-w-none dark:prose-invert [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
@@ -115,7 +106,7 @@ const Message = memo(
         </div>
       </div>
     );
-  },
+  }
 );
 Message.displayName = "Message";
 
