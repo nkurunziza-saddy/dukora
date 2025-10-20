@@ -1,6 +1,5 @@
 "use server";
 
-import type { OnboardingFormData } from "@/app/[locale]/(onboarding)/onboarding/_components/onboarding-form";
 import { createManyInvitations } from "@/server/actions/invitation-actions";
 import { ErrorCode } from "../constants/errors";
 import { Permission } from "../constants/permissions";
@@ -9,6 +8,7 @@ import { createBusiness } from "./business-actions";
 import { upsertManyBusinessSettings } from "./business-settings-actions";
 import { upsertManyCategories } from "./category-actions";
 import { createManyWarehouses } from "./warehouse-actions";
+import { OnboardingFormData } from "@/app/[locale]/(onboarding)/onboarding/_components/onboarding-utils";
 
 export async function businessInitialization(data: OnboardingFormData) {
   const currentUser = await getUserIfHasPermission(Permission.PRODUCT_VIEW);
@@ -32,7 +32,7 @@ export async function businessInitialization(data: OnboardingFormData) {
       (item) => ({
         key: item[0],
         value: item[1],
-      }),
+      })
     );
 
     const business = await createBusiness(businessData);

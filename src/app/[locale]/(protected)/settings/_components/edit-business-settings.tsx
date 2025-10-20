@@ -26,8 +26,12 @@ import {
 import { Switch } from "@/components/ui/switch";
 import type { SelectBusinessSetting } from "@/lib/schema/schema-types";
 import { upsertBusinessSettings } from "@/server/actions/business-settings-actions";
-import { countries, currencies, months } from "@/utils/constants";
 import { LIMITS, settingsSchema } from "./settings-utils";
+import {
+  getCountries,
+  getCurrencies,
+  getMonths,
+} from "@/app/[locale]/(onboarding)/onboarding/_components/onboarding-utils";
 
 export function EditBusinessSettings({
   settings,
@@ -49,8 +53,9 @@ export function EditBusinessSettings({
       timezone:
         (settings.find((s) => s.key === "timezone")?.value as string) || "",
       fiscalStartMonth:
-        String(settings.find((s) => s.key === "fiscalStartMonth")?.value || "") ||
-        "",
+        String(
+          settings.find((s) => s.key === "fiscalStartMonth")?.value || ""
+        ) || "",
       pricesIncludeTax:
         (settings.find((s) => s.key === "pricesIncludeTax")
           ?.value as boolean) || false,
@@ -154,12 +159,13 @@ export function EditBusinessSettings({
                   <Select
                     onValueChange={field.handleChange}
                     value={field.state.value}
+                    items={getCurrencies(t)}
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectPopup>
-                      {currencies.map((currency) => (
+                      {getCurrencies(t).map((currency) => (
                         <SelectItem key={currency.value} value={currency.value}>
                           {t(currency.label)}
                         </SelectItem>
@@ -180,7 +186,9 @@ export function EditBusinessSettings({
                   <Select
                     onValueChange={(value) => {
                       field.handleChange(value);
-                      const country = countries.find((c) => c.value === value);
+                      const country = getCountries(t).find(
+                        (c) => c.value === value
+                      );
                       if (country) {
                         form.setFieldValue("timezone", country.timezone);
                       }
@@ -191,7 +199,7 @@ export function EditBusinessSettings({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectPopup>
-                      {countries.map((country) => (
+                      {getCountries(t).map((country) => (
                         <SelectItem key={country.value} value={country.value}>
                           {t(country.label)}
                         </SelectItem>
@@ -231,13 +239,13 @@ export function EditBusinessSettings({
                     <Select
                       onValueChange={field.handleChange}
                       value={field.state.value}
-                      items={months}
+                      items={getMonths(t)}
                     >
                       <SelectTrigger id={field.name}>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectPopup>
-                        {months.map((month) => (
+                        {getMonths(t).map((month) => (
                           <SelectItem key={month.value} value={month.value}>
                             {t(month.label)}
                           </SelectItem>

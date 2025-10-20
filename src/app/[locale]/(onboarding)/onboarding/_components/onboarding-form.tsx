@@ -80,7 +80,7 @@ export default function OnboardingFlow() {
       fiscalStartMonth: "1",
       pricesIncludeTax: false,
       defaultVatRate: "",
-      teamMembers: [] as Array<{ email: string; role: string }>,
+      teamMembers: [] as Array<{ email: string; role: UserRole }>,
       categories: [] as string[],
       warehouses: [{ name: "Main Warehouse", isDefault: true }],
     },
