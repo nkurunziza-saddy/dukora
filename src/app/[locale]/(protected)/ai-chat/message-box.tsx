@@ -28,7 +28,7 @@ const Message = memo(
         (_match, number) => {
           const num = Number.parseFloat(number.replace(/,/g, ""));
           return formatCurrency(num);
-        }
+        },
       );
     }, []);
 
@@ -41,7 +41,7 @@ const Message = memo(
 
     const processedContent = useMemo(
       () => processMessage(textContent),
-      [textContent, processMessage]
+      [textContent, processMessage],
     );
 
     return (
@@ -54,7 +54,7 @@ const Message = memo(
           <div
             className={cn(
               "flex-1  space-y-2",
-              message.role === "user" ? "max-w-[75%]" : "max-w-[85%]"
+              message.role === "user" ? "max-w-[75%]" : "max-w-[85%]",
             )}
           >
             <div
@@ -106,7 +106,7 @@ const Message = memo(
         </div>
       </div>
     );
-  }
+  },
 );
 Message.displayName = "Message";
 

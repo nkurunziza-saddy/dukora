@@ -73,14 +73,16 @@ export default function PurchaseTransactionForm({
     defaultValues: {
       productId: purchaseTransaction ? purchaseTransaction.productId : "",
       supplierId: purchaseTransaction
-        ? purchaseTransaction.supplierId ?? ""
+        ? (purchaseTransaction.supplierId ?? "")
         : "",
       warehouseId: purchaseTransaction ? purchaseTransaction.warehouseId : "",
       quantity: purchaseTransaction
         ? Math.abs(purchaseTransaction.quantity)
         : 1,
-      note: purchaseTransaction ? purchaseTransaction.note ?? "" : "",
-      reference: purchaseTransaction ? purchaseTransaction.reference ?? "" : "",
+      note: purchaseTransaction ? (purchaseTransaction.note ?? "") : "",
+      reference: purchaseTransaction
+        ? (purchaseTransaction.reference ?? "")
+        : "",
     },
     validators: {
       // @ts-expect-error
@@ -153,7 +155,7 @@ export default function PurchaseTransactionForm({
       }}
       className="space-y-6"
     >
-      <FieldGroup className="space-y-4">
+      <FieldGroup>
         <Separator />
 
         <form.Field
@@ -208,7 +210,7 @@ export default function PurchaseTransactionForm({
                                 "h-4 w-4",
                                 product.id === field.state.value
                                   ? "opacity-100"
-                                  : "opacity-0"
+                                  : "opacity-0",
                               )}
                             />
                           </div>
@@ -272,7 +274,7 @@ export default function PurchaseTransactionForm({
                                   "h-4 w-4",
                                   item.id === field.state.value
                                     ? "opacity-100"
-                                    : "opacity-0"
+                                    : "opacity-0",
                                 )}
                               />
                             </div>
@@ -341,7 +343,7 @@ export default function PurchaseTransactionForm({
                                 "h-4 w-4",
                                 supplier.id === field.state.value
                                   ? "opacity-100"
-                                  : "opacity-0"
+                                  : "opacity-0",
                               )}
                             />
                           </div>
@@ -437,7 +439,7 @@ export default function PurchaseTransactionForm({
           >
             {form.state.isSubmitting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-3.5 animate-spin" />
                 {purchaseTransaction ? tCommon("edit") : tCommon("add")}...
               </>
             ) : purchaseTransaction ? (

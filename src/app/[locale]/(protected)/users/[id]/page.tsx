@@ -32,7 +32,9 @@ export default async function UserDetailsPage({
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">{user.name}</h1>
+      <h1 className="text-2xl font-semibold">
+        {user.name} - {user.business?.name}
+      </h1>
       <UserSummaryCard user={user} />
       <Tabs defaultValue="schedules">
         <TabsList>

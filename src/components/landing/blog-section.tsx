@@ -28,7 +28,7 @@ const posts = [
 export function BlogSection() {
   return (
     <section id="insights" className="py-24 md:py-32 bg-surface">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="max-w-7xl mx-auto px-4 lg:px-12">
         <div className="mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
             Latest insights

@@ -32,7 +32,7 @@ export async function businessInitialization(data: OnboardingFormData) {
       (item) => ({
         key: item[0],
         value: item[1],
-      })
+      }),
     );
 
     const business = await createBusiness(businessData);

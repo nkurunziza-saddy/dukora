@@ -32,7 +32,7 @@ export function CurrentPage() {
   };
 
   return (
-    <div className="flex justify-between items-center gap-6">
+    <div className="flex justify-between items-center gap-4">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>

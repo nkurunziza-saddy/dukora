@@ -91,7 +91,7 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
               onClick={() => setIsUpdateDialogOpen(true)}
               className="cursor-pointer"
             >
-              <Edit className="mr-2 h-4 w-4" />
+              <Edit className="size-3.5" />
               {t_common("edit")}
             </MenuItem>
             <MenuItem
@@ -99,7 +99,7 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
               onClick={() => setIsDeleteDialogOpen(true)}
               className="cursor-pointer"
             >
-              <Trash className="mr-2 h-4 w-4" />
+              <Trash className="size-3.5" />
               {t_common("delete")}
             </MenuItem>
           </MenuGroup>

@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export function VATCalculator() {
-  const t = useTranslations("FinancialCalculator");
+  const t = useTranslations("financial_calculator");
 
   const [salesAmount, setSalesAmount] = useState(0);
   const [purchasesAmount, setPurchasesAmount] = useState(0);

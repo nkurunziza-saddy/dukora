@@ -154,20 +154,20 @@ export function DataTableExportPDF<TData>({
       >
         {isExporting ? (
           <>
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+            <div className="animate-spin rounded-full size-3.5 border-b-2 border-current"></div>
             {t("exporting")}
           </>
         ) : (
           <>
-            <Download className="h-4 w-4" />
-            {t("exportPDF")}
+            <Download className="size-3.5" />
+            {t("export")}
           </>
         )}
       </MenuTrigger>
       <MenuPopup align="end" className="w-56">
         <MenuGroup>
           <MenuGroupLabel className="flex items-center gap-2">
-            <FileText className="h-4 w-4" />
+            <FileText className="size-3.5" />
             {t("exportOptions")}
           </MenuGroupLabel>
 

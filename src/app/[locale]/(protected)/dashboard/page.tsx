@@ -24,7 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatCurrency, formatKeys, formatNumber } from "@/lib/utils";
+import { cn, formatCurrency, formatKeys, formatNumber } from "@/lib/utils";
 import { getLogsOverview } from "@/server/actions/logs-actions";
 import { getOverviewProducts } from "@/server/actions/product-actions";
 import { getLowStockAlertProducts } from "@/server/actions/product-items-actions";
@@ -51,7 +51,6 @@ export default async function InventoryDashboard() {
   const lowStockItems = (await getLowStockAlertProducts({})).data;
   const t = await getTranslations("inventory");
   const t_com = await getTranslations("common");
-
   const inventoryStats = [
     {
       title: t("totalSKUs"),
@@ -155,7 +154,7 @@ export default async function InventoryDashboard() {
                 </TableHeader>
                 <TableBody>
                   {inventoryItems.map((item) => (
-                    <TableRow key={item.products.sku}>
+                    <TableRow key={item.products.sku + item.warehouses.name}>
                       <TableCell className="font-medium">
                         {item.products.sku}
                       </TableCell>
@@ -218,38 +217,46 @@ export default async function InventoryDashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {schedules.map((schedule) => (
-                    <TableRow key={schedule.id}>
-                      <TableCell className="flex items-center">
-                        <span
-                          className="inline-block w-2 opacity-60 h-2 rounded-md mr-2 align-middle"
-                          style={{ backgroundColor: schedule.color }}
-                        />
-                        {schedule.title}
-                      </TableCell>
-                      <TableCell>
-                        {schedule.category ? (
-                          <Badge variant="secondary">{schedule.category}</Badge>
-                        ) : (
-                          "-"
-                        )}
-                      </TableCell>
-                      <TableCell>{schedule.location}</TableCell>
-                      <TableCell>
-                        {schedule.all_day ? t_com("yes") : t_com("no")}
-                      </TableCell>
-                      <TableCell>
-                        {schedule.start
-                          ? new Date(schedule.start).toLocaleString()
-                          : "-"}
-                      </TableCell>
-                      <TableCell>
-                        {schedule.end
-                          ? new Date(schedule.end).toLocaleString()
-                          : "-"}
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {schedules.map((schedule) => {
+                    const colorClass = `bg-${schedule.color}-400`;
+                    return (
+                      <TableRow key={schedule.id}>
+                        <TableCell className="flex items-center">
+                          <span
+                            className={cn(
+                              "inline-block size-2.5 rounded-md mr-2 align-middle opacity-60",
+                              colorClass,
+                            )}
+                            aria-hidden="true"
+                          />
+                          {schedule.title}
+                        </TableCell>
+                        <TableCell>
+                          {schedule.category ? (
+                            <Badge variant="secondary">
+                              {schedule.category}
+                            </Badge>
+                          ) : (
+                            "-"
+                          )}
+                        </TableCell>
+                        <TableCell>{schedule.location}</TableCell>
+                        <TableCell>
+                          {schedule.all_day ? t_com("yes") : t_com("no")}
+                        </TableCell>
+                        <TableCell>
+                          {schedule.start
+                            ? new Date(schedule.start).toLocaleString()
+                            : "-"}
+                        </TableCell>
+                        <TableCell>
+                          {schedule.end
+                            ? new Date(schedule.end).toLocaleString()
+                            : "-"}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </CardPanel>

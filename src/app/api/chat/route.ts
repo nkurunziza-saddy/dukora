@@ -21,7 +21,6 @@ export async function POST(req: Request) {
 
       onFinish: async ({ messages, responseMessage }) => {
         // TODO: Save to database
-        console.log("Chat completed:", responseMessage);
       },
     });
   } catch (error) {

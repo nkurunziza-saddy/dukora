@@ -128,7 +128,7 @@ export default async function SettingsPage() {
         <Tabs
           defaultValue="business-details"
           orientation="vertical"
-          className="w-full flex-row gap-6"
+          className="w-full flex-row gap-4"
         >
           <div className="w-60 flex-shrink-0">
             <div className="sticky top-6">

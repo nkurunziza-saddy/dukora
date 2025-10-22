@@ -67,8 +67,8 @@ export default async function SalesTracking() {
         ))}
       </div>
 
-      <Card>
-        <CardHeader>
+      <Card className="bg-transparent border-0 px-0">
+        <CardHeader className="px-0">
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>{t("weeklySalesRevenue")}</CardTitle>
@@ -76,7 +76,7 @@ export default async function SalesTracking() {
             </div>
           </div>
         </CardHeader>
-        <CardPanel>
+        <CardPanel className="px-0">
           <ColumnWrapper
             column={TransactionColumn}
             data={transactions.data}

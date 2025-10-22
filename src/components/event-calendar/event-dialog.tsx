@@ -4,7 +4,11 @@ import { format, isBefore } from "date-fns";
 import { Calendar1, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { CalendarEvent, EventColor } from "@/components/event-calendar";
+import {
+  COLOR_OPTIONS,
+  type CalendarEvent,
+  type EventColor,
+} from "@/components/event-calendar";
 import {
   DefaultEndHour,
   DefaultStartHour,
@@ -164,9 +168,6 @@ export function EventDialog({
       start,
       end,
       all_day: allDay,
-      // allDay,
-      // start_time: allDay ? null : startTime,
-      // end_time: allDay ? null : endTime,
       location,
       color,
     });
@@ -177,50 +178,6 @@ export function EventDialog({
       onDelete(event.id);
     }
   };
-
-  const colorOptions: Array<{
-    value: EventColor;
-    label: string;
-    bgClass: string;
-    borderClass: string;
-  }> = [
-    {
-      value: "sky",
-      label: "Sky",
-      bgClass: "bg-sky-400 data-[state=checked]:bg-sky-400",
-      borderClass: "border-sky-400 data-[state=checked]:border-sky-400",
-    },
-    {
-      value: "amber",
-      label: "Amber",
-      bgClass: "bg-amber-400 data-[state=checked]:bg-amber-400",
-      borderClass: "border-amber-400 data-[state=checked]:border-amber-400",
-    },
-    {
-      value: "violet",
-      label: "Violet",
-      bgClass: "bg-violet-400 data-[state=checked]:bg-violet-400",
-      borderClass: "border-violet-400 data-[state=checked]:border-violet-400",
-    },
-    {
-      value: "rose",
-      label: "Rose",
-      bgClass: "bg-rose-400 data-[state=checked]:bg-rose-400",
-      borderClass: "border-rose-400 data-[state=checked]:border-rose-400",
-    },
-    {
-      value: "emerald",
-      label: "Emerald",
-      bgClass: "bg-emerald-400 data-[state=checked]:bg-emerald-400",
-      borderClass: "border-emerald-400 data-[state=checked]:border-emerald-400",
-    },
-    {
-      value: "orange",
-      label: "Orange",
-      bgClass: "bg-orange-400 data-[state=checked]:bg-orange-400",
-      borderClass: "border-orange-400 data-[state=checked]:border-orange-400",
-    },
-  ];
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -417,11 +374,11 @@ export function EventDialog({
             </legend>
             <RadioGroup
               className="flex gap-1.5"
-              defaultValue={colorOptions[0]?.value}
+              defaultValue={COLOR_OPTIONS[0]?.value}
               value={color}
               onValueChange={(value: unknown) => setColor(value as EventColor)}
             >
-              {colorOptions.map((colorOption) => (
+              {COLOR_OPTIONS.map((colorOption) => (
                 <RadioGroupItem
                   key={colorOption.value}
                   id={`color-${colorOption.value}`}

@@ -32,6 +32,7 @@ import {
   getCurrencies,
   getMonths,
 } from "@/app/[locale]/(onboarding)/onboarding/_components/onboarding-utils";
+import { Label } from "@/components/ui/label";
 
 export function EditBusinessSettings({
   settings,
@@ -54,7 +55,7 @@ export function EditBusinessSettings({
         (settings.find((s) => s.key === "timezone")?.value as string) || "",
       fiscalStartMonth:
         String(
-          settings.find((s) => s.key === "fiscalStartMonth")?.value || ""
+          settings.find((s) => s.key === "fiscalStartMonth")?.value || "",
         ) || "",
       pricesIncludeTax:
         (settings.find((s) => s.key === "pricesIncludeTax")
@@ -153,9 +154,9 @@ export function EditBusinessSettings({
             <form.Field name="currency">
               {(field) => (
                 <Field>
-                  <label htmlFor={field.name} className="text-sm font-medium">
+                  <Label htmlFor={field.name} className="text-sm font-medium">
                     {t("currency")} *
-                  </label>
+                  </Label>
                   <Select
                     onValueChange={field.handleChange}
                     value={field.state.value}
@@ -167,7 +168,7 @@ export function EditBusinessSettings({
                     <SelectPopup>
                       {getCurrencies(t).map((currency) => (
                         <SelectItem key={currency.value} value={currency.value}>
-                          {t(currency.label)}
+                          {currency.label}
                         </SelectItem>
                       ))}
                     </SelectPopup>
@@ -180,14 +181,14 @@ export function EditBusinessSettings({
             <form.Field name="country">
               {(field) => (
                 <Field>
-                  <label htmlFor={field.name} className="text-sm font-medium">
+                  <Label htmlFor={field.name} className="text-sm font-medium">
                     {t("country")} *
-                  </label>
+                  </Label>
                   <Select
                     onValueChange={(value) => {
                       field.handleChange(value);
                       const country = getCountries(t).find(
-                        (c) => c.value === value
+                        (c) => c.value === value,
                       );
                       if (country) {
                         form.setFieldValue("timezone", country.timezone);
@@ -201,7 +202,7 @@ export function EditBusinessSettings({
                     <SelectPopup>
                       {getCountries(t).map((country) => (
                         <SelectItem key={country.value} value={country.value}>
-                          {t(country.label)}
+                          {country.label}
                         </SelectItem>
                       ))}
                     </SelectPopup>
@@ -215,9 +216,9 @@ export function EditBusinessSettings({
               <form.Field name="timezone">
                 {(field) => (
                   <Field>
-                    <label htmlFor={field.name} className="text-sm font-medium">
+                    <Label htmlFor={field.name} className="text-sm font-medium">
                       {t("timezone")}
-                    </label>
+                    </Label>
                     <Input
                       id={field.name}
                       name={field.name}
@@ -233,9 +234,9 @@ export function EditBusinessSettings({
               <form.Field name="fiscalStartMonth">
                 {(field) => (
                   <Field>
-                    <label htmlFor={field.name} className="text-sm font-medium">
+                    <Label htmlFor={field.name} className="text-sm font-medium">
                       {t("fiscalStartMonth")} *
-                    </label>
+                    </Label>
                     <Select
                       onValueChange={field.handleChange}
                       value={field.state.value}
@@ -247,7 +248,7 @@ export function EditBusinessSettings({
                       <SelectPopup>
                         {getMonths(t).map((month) => (
                           <SelectItem key={month.value} value={month.value}>
-                            {t(month.label)}
+                            {month.label}
                           </SelectItem>
                         ))}
                       </SelectPopup>
@@ -270,9 +271,9 @@ export function EditBusinessSettings({
                   className="flex flex-row items-center justify-between rounded-lg border p-4"
                 >
                   <FieldContent>
-                    <label className="text-base font-medium">
+                    <Label className="text-base font-medium">
                       {t("pricesIncludeTax")}
-                    </label>
+                    </Label>
                     <FieldDescription>
                       {t("pricesIncludeTaxDescription")}
                     </FieldDescription>
@@ -288,9 +289,9 @@ export function EditBusinessSettings({
             <form.Field name="defaultVatRate">
               {(field) => (
                 <Field>
-                  <label htmlFor={field.name} className="text-sm font-medium">
+                  <Label htmlFor={field.name} className="text-sm font-medium">
                     {t("defaultVatRate")}
-                  </label>
+                  </Label>
                   <Input
                     type="number"
                     step="0.01"
@@ -329,9 +330,9 @@ export function EditBusinessSettings({
             <form.Field name="invoicePrefix">
               {(field) => (
                 <Field>
-                  <label htmlFor={field.name} className="text-sm font-medium">
+                  <Label htmlFor={field.name} className="text-sm font-medium">
                     {t("invoicePrefix")}
-                  </label>
+                  </Label>
                   <Input
                     placeholder={t("invoicePrefixPlaceholder")}
                     maxLength={10}
@@ -352,9 +353,9 @@ export function EditBusinessSettings({
             <form.Field name="invoiceNumberStart">
               {(field) => (
                 <Field>
-                  <label htmlFor={field.name} className="text-sm font-medium">
+                  <Label htmlFor={field.name} className="text-sm font-medium">
                     {t("invoiceNumberStart")}
-                  </label>
+                  </Label>
                   <Input
                     type="number"
                     min={1}

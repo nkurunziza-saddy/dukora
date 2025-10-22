@@ -37,7 +37,7 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
             retryDelay: 1000,
           },
         },
-      })
+      }),
   );
 
   return (

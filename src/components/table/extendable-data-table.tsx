@@ -93,8 +93,8 @@ export function ExtendableDataTable<TData, TValue>({
 
   return (
     <div className="flex flex-col gap-4 overflow-x-auto rounded-lg">
-      <Table className="min-w-full border-separate border-spacing-0">
-        <TableHeader>
+      <Table className="min-w-full border border-separate border-spacing-0">
+        <TableHeader className="bg-muted/50 backdrop-blur-xs">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="hover:bg-transparent">
               {headerGroup.headers.map((header) => {
@@ -102,7 +102,7 @@ export function ExtendableDataTable<TData, TValue>({
                   <TableHead
                     key={header.id}
                     colSpan={header.colSpan}
-                    className="bg-muted/50 border-b border-border text-foreground font-semibold text-sm"
+                    className="text-foreground font-semibold text-sm"
                   >
                     {header.isPlaceholder
                       ? null

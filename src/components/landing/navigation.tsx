@@ -9,7 +9,7 @@ export function Navigation() {
 
   return (
     <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="max-w-7xl mx-auto px-4 lg:px-12">
         <div className="flex h-14 items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-sm font-semibold text-foreground">
@@ -17,7 +17,7 @@ export function Navigation() {
             </span>
           </div>
 
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-4">
             <a
               href="#features"
               className="text-xs text-text-secondary hover:text-foreground transition"

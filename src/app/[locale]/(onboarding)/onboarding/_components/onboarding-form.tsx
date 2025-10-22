@@ -110,7 +110,7 @@ export default function OnboardingFlow() {
     onSubmitInvalid({ formApi }) {
       const errorMap = formApi.state.errorMap.onChange!;
       const inputs = Array.from(
-        document.querySelectorAll("#onboarding-form input")
+        document.querySelectorAll("#onboarding-form input"),
       ) as HTMLInputElement[];
 
       let firstInput: HTMLInputElement | undefined;
@@ -364,12 +364,12 @@ export default function OnboardingFlow() {
                               onValueChange={(value) => {
                                 field.handleChange(value);
                                 const country = getCountries(t).find(
-                                  (c) => c.value === value
+                                  (c) => c.value === value,
                                 );
                                 if (country) {
                                   form.setFieldValue(
                                     "timezone",
-                                    country.timezone
+                                    country.timezone,
                                   );
                                 }
                               }}
@@ -576,7 +576,7 @@ export default function OnboardingFlow() {
                                               aria-invalid={isSubFieldInvalid}
                                               onChange={(e) =>
                                                 subField.handleChange(
-                                                  e.target.value as any
+                                                  e.target.value as any,
                                                 )
                                               }
                                               placeholder="name@example.com"
@@ -615,7 +615,7 @@ export default function OnboardingFlow() {
                                             value={subField.state.value}
                                             onValueChange={(value) =>
                                               subField.handleChange(
-                                                value as any
+                                                value as any,
                                               )
                                             }
                                           >
@@ -666,7 +666,7 @@ export default function OnboardingFlow() {
                                   )}
                                 </div>
                               </div>
-                            )
+                            ),
                           )}
 
                           <Button
@@ -712,7 +712,7 @@ export default function OnboardingFlow() {
                       } else {
                         if (currentCategories.length >= CATEGORY_LIMIT) {
                           toast.error(
-                            `You can select up to ${CATEGORY_LIMIT} categories.`
+                            `You can select up to ${CATEGORY_LIMIT} categories.`,
                           );
                           return;
                         }
@@ -729,7 +729,7 @@ export default function OnboardingFlow() {
                       }
                       if (currentCategories.length >= CATEGORY_LIMIT) {
                         toast.error(
-                          `You can select up to ${CATEGORY_LIMIT} categories.`
+                          `You can select up to ${CATEGORY_LIMIT} categories.`,
                         );
                         return;
                       }
@@ -747,7 +747,7 @@ export default function OnboardingFlow() {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {defaultCategories.map((category) => {
                               const isSelected = currentCategories.some(
-                                (c: any) => c === category
+                                (c: any) => c === category,
                               );
                               return (
                                 <button
@@ -814,7 +814,7 @@ export default function OnboardingFlow() {
                                       <XIcon className="inline-block ml-1" />
                                     </span>
                                   </Button>
-                                )
+                                ),
                               )}
                             </div>
                           )}
@@ -839,7 +839,7 @@ export default function OnboardingFlow() {
                         (w: any, i: number) => ({
                           ...w,
                           isDefault: i === index,
-                        })
+                        }),
                       );
                       if (!newArr.some((w: any) => w.isDefault)) {
                         newArr[0].isDefault = true;
@@ -878,7 +878,7 @@ export default function OnboardingFlow() {
                                             onBlur={subField.handleBlur}
                                             onChange={(e) =>
                                               subField.handleChange(
-                                                e.target.value
+                                                e.target.value,
                                               )
                                             }
                                             aria-invalid={isSubFieldInvalid}

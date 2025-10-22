@@ -85,7 +85,7 @@ const InvitationRowActions: FC<InvitationRowActionsProps> = ({
               onClick={() => setIsDeleteDialogOpen(true)}
               className="cursor-pointer"
             >
-              <Trash className="mr-2 h-4 w-4" />
+              <Trash className="size-3.5" />
               {t("delete")}
             </MenuItem>
           </MenuGroup>

@@ -71,8 +71,8 @@ export default async function users() {
         <div />
         <div className="flex gap-2">
           <Dialog>
-            <DialogTrigger render={<Button />}>
-              <Plus className="mr-2 h-4 w-4" />
+            <DialogTrigger render={<Button size={"sm"} />}>
+              <Plus className="size-3.5" />
               {t("inviteUserButton")}
             </DialogTrigger>
             <DialogPopup>
@@ -105,12 +105,12 @@ export default async function users() {
           <TabsTab value="permissions">{t("tabsPermissions")}</TabsTab>
         </TabsList>
         <TabsPanel value="users">
-          <Card>
-            <CardHeader>
+          <Card className="bg-transparent border-0 px-0">
+            <CardHeader className="px-0">
               <CardTitle>{t("tabsUsers")}</CardTitle>
               <CardDescription>{t("usersListDescription")}</CardDescription>
             </CardHeader>
-            <CardPanel>
+            <CardPanel className="px-0">
               <ColumnWrapper
                 column={UserColumn}
                 data={users.data ?? []}
@@ -121,14 +121,14 @@ export default async function users() {
         </TabsPanel>
         <TabsPanel value="invitations">
           {invitations.data && (
-            <Card>
-              <CardHeader>
+            <Card className="bg-transparent border-0 px-0">
+              <CardHeader className="px-0">
                 <CardTitle>{t("tabsInvitations")}</CardTitle>
                 <CardDescription>
                   {t("invitationsListDescription")}
                 </CardDescription>
               </CardHeader>
-              <CardPanel>
+              <CardPanel className="px-0">
                 <ColumnWrapper
                   column={InvitationColumn}
                   data={invitations.data}
@@ -139,12 +139,12 @@ export default async function users() {
           )}
         </TabsPanel>
         <TabsPanel value="permissions">
-          <Card>
-            <CardHeader>
+          <Card className="bg-transparent border-0 px-0">
+            <CardHeader className="px-0">
               <CardTitle>{t("tabsPermissions")}</CardTitle>
               <CardDescription>{t("permissionsDescription")}</CardDescription>
             </CardHeader>
-            <CardPanel>
+            <CardPanel className="px-0">
               <div>
                 <Table className="min-w-full text-sm border">
                   <TableHeader>

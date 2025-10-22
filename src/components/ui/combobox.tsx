@@ -127,7 +127,7 @@ function ComboboxPopup({
         sideOffset={sideOffset}
         anchor={chipsRef}
       >
-        <span className="relative flex max-h-full origin-(--transform-origin) rounded-lg border bg-popover bg-clip-padding transition-[scale,opacity] before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] before:shadow-lg has-data-starting-style:scale-98 has-data-starting-style:opacity-0 dark:bg-clip-border">
+        <span className="relative flex max-h-full origin-(--transform-origin) rounded-lg border bg-popover transition-[scale,opacity] has-data-starting-style:scale-98 has-data-starting-style:opacity-0">
           <ComboboxPrimitive.Popup
             data-slot="combobox-popup"
             className={cn(
@@ -299,7 +299,7 @@ function ComboboxChips({ className, ...props }: ComboboxPrimitive.Chips.Props) {
       ref={chipsRef}
       data-slot="combobox-chips"
       className={cn(
-        "relative inline-flex min-h-8 w-full flex-wrap gap-1 rounded-lg border border-input bg-background bg-clip-padding p-[calc(--spacing(1)-1px)] text-base/5 ring-ring/24 transition-[color,background-color,box-shadow,border-color] outline-none *:min-h-6 before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] not-has-disabled:not-aria-invalid:before:shadow-sm focus-within:border-ring focus-within:ring-[3px] has-disabled:pointer-events-none has-disabled:opacity-64 has-aria-invalid:border-destructive/36 focus-within:has-aria-invalid:border-destructive/64 focus-within:has-aria-invalid:ring-destructive/16 has-data-[size=lg]:min-h-9 has-data-[size=lg]:*:min-h-7 has-data-[size=sm]:min-h-7 has-data-[size=sm]:*:min-h-5 sm:text-sm dark:bg-clip-border dark:shadow-black/24 dark:not-has-disabled:bg-input/32 dark:not-has-disabled:shadow-sm dark:not-has-disabled:not-aria-invalid:before:shadow-[0_-1px_--theme(--color-white/8%)] dark:has-aria-invalid:ring-destructive/24",
+        "relative inline-flex min-h-8 w-full flex-wrap gap-1 rounded-lg border border-input bg-background p-[calc(--spacing(1)-1px)] text-base/5 ring-ring/24 transition-[color,background-color,box-shadow,border-color] outline-none *:min-h-6 focus-within:border-ring focus-within:ring-[3px] has-disabled:pointer-events-none has-disabled:opacity-64 has-aria-invalid:border-destructive/36 focus-within:has-aria-invalid:border-destructive/64 focus-within:has-aria-invalid:ring-destructive/16 has-data-[size=lg]:min-h-9 has-data-[size=lg]:*:min-h-7 has-data-[size=sm]:min-h-7 has-data-[size=sm]:*:min-h-5 sm:text-sm dark:not-has-disabled:bg-input/32 dark:has-aria-invalid:ring-destructive/24",
         className,
       )}
       {...props}

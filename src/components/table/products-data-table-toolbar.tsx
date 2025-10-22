@@ -34,7 +34,8 @@ export function ProductsDataTableToolbar<TData>({
         {isFiltered && (
           <Button
             variant="ghost"
-            size="sm"
+            size="xs"
+            className=""
             onClick={() => table.resetColumnFilters()}
           >
             {t("reset")}

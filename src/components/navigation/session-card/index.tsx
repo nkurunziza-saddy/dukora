@@ -100,9 +100,6 @@ const SessionCard = memo(() => {
               />
             }
           >
-            <div className="bg-muted text-xs font-medium text-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-              <Briefcase className="size-4" />
-            </div>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium truncate">
                 {computedData.userName}

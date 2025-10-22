@@ -101,12 +101,9 @@
   --foreground: #fafafa;
   --surface: #171717;
   --surface-elevated: #1f1f1f;
-  --card: color-mix(
-    in srgb,
-    oklch(0.21 0.006 285.885) 80%,
-    oklch(0.141 0.005 285.823)
-  );
+  --card: color-mix(in srgb, oklch(0.205 0 0) 80%, oklch(0.205 0 0) 20%);
   --card-foreground: oklch(0.967 0.001 286.375);
+  /* --card: oklch(0.205 0 0); */
   --popover: oklch(0.205 0 0);
   --popover-foreground: #fafafa;
   --primary: oklch(0.922 0 0);

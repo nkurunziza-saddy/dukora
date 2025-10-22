@@ -24,14 +24,14 @@ export const settingsSchema = z.object({
     .number()
     .min(
       LIMITS.VAT_RATE_MIN,
-      `VAT rate must be at least ${LIMITS.VAT_RATE_MIN}%`
+      `VAT rate must be at least ${LIMITS.VAT_RATE_MIN}%`,
     )
     .max(LIMITS.VAT_RATE_MAX, `VAT rate cannot exceed ${LIMITS.VAT_RATE_MAX}%`),
   businessDescription: z
     .string()
     .max(
       LIMITS.DESCRIPTION_MAX,
-      `Description cannot exceed ${LIMITS.DESCRIPTION_MAX} characters`
+      `Description cannot exceed ${LIMITS.DESCRIPTION_MAX} characters`,
     )
     .optional(),
   invoicePrefix: z
@@ -54,7 +54,7 @@ export const businessDetailsSchema = z.object({
     .string()
     .max(
       LIMITS.DOMAIN_MAX,
-      `Domain cannot exceed ${LIMITS.DOMAIN_MAX} characters`
+      `Domain cannot exceed ${LIMITS.DOMAIN_MAX} characters`,
     ),
   // TODO: Enble regex checking
   // .regex(
@@ -68,7 +68,7 @@ export const businessDetailsSchema = z.object({
     .string("Please enter a valid URL")
     .max(
       LIMITS.LOGO_URL_MAX,
-      `Logo URL cannot exceed ${LIMITS.LOGO_URL_MAX} characters`
+      `Logo URL cannot exceed ${LIMITS.LOGO_URL_MAX} characters`,
     ),
   registrationNumber: z.string().optional(),
   isActive: z.boolean(),
@@ -79,7 +79,7 @@ export const categoriesSchema = z.object({
     .array(z.string())
     .max(
       LIMITS.CATEGORY_LIMIT,
-      `You can select up to ${LIMITS.CATEGORY_LIMIT} categories`
+      `You can select up to ${LIMITS.CATEGORY_LIMIT} categories`,
     ),
 });
 
@@ -93,15 +93,15 @@ export const warehousesSchema = z
             .min(1, "Warehouse name is required")
             .max(
               LIMITS.NAME_MAX,
-              `Name cannot exceed ${LIMITS.NAME_MAX} characters`
+              `Name cannot exceed ${LIMITS.NAME_MAX} characters`,
             ),
           isDefault: z.boolean(),
-        })
+        }),
       )
       .min(1, "At least one warehouse is required")
       .max(
         LIMITS.WAREHOUSE_LIMIT,
-        `You can have up to ${LIMITS.WAREHOUSE_LIMIT} warehouses`
+        `You can have up to ${LIMITS.WAREHOUSE_LIMIT} warehouses`,
       ),
   })
   .refine((data) => data.warehouses.filter((w) => w.isDefault).length === 1, {

@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 
 export function PAYECalculator() {
-  const t = useTranslations("FinancialCalculator");
+  const t = useTranslations("financial_calculator");
 
   const [monthlyIncome, setMonthlyIncome] = useState(0);
   const [employeeType, setEmployeeType] = useState("permanent"); // 'permanent' or 'casual'

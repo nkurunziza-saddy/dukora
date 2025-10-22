@@ -82,16 +82,16 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
   const form = useForm({
     defaultValues: {
       name: product ? product.name : "",
-      description: product ? product.description ?? "" : "",
+      description: product ? (product.description ?? "") : "",
       sku: product ? product.sku : "",
-      barcode: product ? product.barcode ?? "" : "",
+      barcode: product ? (product.barcode ?? "") : "",
       price: product ? product.price : "",
       costPrice: product ? product.costPrice : "",
-      categoryId: product ? product.categoryId ?? "" : "",
+      categoryId: product ? (product.categoryId ?? "") : "",
       reorderPoint: product ? product.reorderPoint.toString() : "10",
       maxStock: product ? product.maxStock.toString() : "1000",
       unit: product ? product.unit : "pcs",
-      weight: product ? product.weight ?? "" : "",
+      weight: product ? (product.weight ?? "") : "",
     },
     validators: {
       onSubmit: productSchema,
@@ -119,7 +119,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
             : `${t("productName")} ${tCommon("add")} ${tCommon("confirm")}`,
           {
             description: format(new Date(), "MMM dd, yyyy"),
-          }
+          },
         );
       } else {
         toast.error(tCommon("error"), {
@@ -138,7 +138,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
       }}
       className="space-y-6"
     >
-      <FieldGroup className="space-y-4">
+      <FieldGroup>
         <Separator />
         <form.Field
           name="name"
@@ -240,7 +240,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
         />
       </FieldGroup>
 
-      <FieldGroup className="space-y-4">
+      <FieldGroup>
         <Separator />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <form.Field
@@ -281,7 +281,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
         </div>
       </FieldGroup>
 
-      <FieldGroup className="space-y-4">
+      <FieldGroup>
         <Separator />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
           <form.Field
@@ -383,12 +383,12 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
           >
             {form.state.isSubmitting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-3.5 animate-spin" />
                 {product ? tCommon("edit") : tCommon("add")}...
               </>
             ) : (
               `${product ? tCommon("edit") : tCommon("add")} ${t(
-                "productName"
+                "productName",
               )}`
             )}
           </Button>

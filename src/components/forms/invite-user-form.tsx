@@ -63,7 +63,11 @@ export function InviteUserForm() {
     <>
       <Alert variant="error">
         <AlertCircle className="h-4 w-4" />
-        <AlertDescription>{t("emailVerificationDown")}</AlertDescription>
+        <AlertDescription>
+          {t("emailVerificationDown", {
+            moreContent: "Their email won't be verified for now.",
+          })}
+        </AlertDescription>
       </Alert>
       <form
         id="invite-user-form"
@@ -74,7 +78,7 @@ export function InviteUserForm() {
         }}
         className="space-y-6"
       >
-        <FieldGroup className="space-y-4">
+        <FieldGroup>
           <form.Field
             name="name"
             children={(field) => {
@@ -165,7 +169,7 @@ export function InviteUserForm() {
           >
             {form.state.isSubmitting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-3.5 animate-spin" />
                 {t("sending")} ...
               </>
             ) : (

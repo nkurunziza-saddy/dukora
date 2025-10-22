@@ -76,7 +76,8 @@ export function EditWarehouses({
         {(field) => {
           const currentWarehouses = field.state.value;
           const isAtLimit = currentWarehouses.length >= LIMITS.WAREHOUSE_LIMIT;
-          const remainingSlots = LIMITS.WAREHOUSE_LIMIT - currentWarehouses.length;
+          const remainingSlots =
+            LIMITS.WAREHOUSE_LIMIT - currentWarehouses.length;
 
           const setDefaultWarehouse = (index: number) => {
             const updatedWarehouses = currentWarehouses.map((warehouse, i) => ({
@@ -105,7 +106,9 @@ export function EditWarehouses({
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => field.pushValue({ name: "", isDefault: false })}
+                    onClick={() =>
+                      field.pushValue({ name: "", isDefault: false })
+                    }
                     disabled={isAtLimit}
                   >
                     <Plus className="h-4 w-4 mr-2" />
@@ -138,9 +141,7 @@ export function EditWarehouses({
                       className="flex gap-4 items-start p-4 border rounded-lg"
                     >
                       <div className="flex-1 space-y-2">
-                        <form.Field
-                          name={`warehouses[${index}].name` as const}
-                        >
+                        <form.Field name={`warehouses[${index}].name` as const}>
                           {(subField) => (
                             <Field>
                               <Input
@@ -150,12 +151,18 @@ export function EditWarehouses({
                                 name={subField.name}
                                 value={subField.state.value}
                                 onBlur={subField.handleBlur}
-                                onChange={(e) => subField.handleChange(e.target.value)}
+                                onChange={(e) =>
+                                  subField.handleChange(e.target.value)
+                                }
                               />
                               <div className="flex items-center justify-between text-xs text-muted-foreground">
-                                <span>{nameRemaining} characters remaining</span>
+                                <span>
+                                  {nameRemaining} characters remaining
+                                </span>
                                 <Badge
-                                  variant={isNameNearLimit ? "error" : "secondary"}
+                                  variant={
+                                    isNameNearLimit ? "error" : "secondary"
+                                  }
                                   className="text-xs"
                                 >
                                   {nameLength}/{LIMITS.NAME_MAX}
@@ -204,7 +211,11 @@ export function EditWarehouses({
         }}
       </form.Field>
       <div className="mt-6">
-        <Button type="submit" form="edit-warehouses-form" disabled={form.state.isSubmitting}>
+        <Button
+          type="submit"
+          form="edit-warehouses-form"
+          disabled={form.state.isSubmitting}
+        >
           {form.state.isSubmitting ? t("saving") : t("saveWarehouses")}
         </Button>
       </div>

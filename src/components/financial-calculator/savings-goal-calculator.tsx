@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export function SavingsGoalCalculator() {
-  const t = useTranslations("FinancialCalculator");
+  const t = useTranslations("financial_calculator");
 
   const [targetAmount, setTargetAmount] = useState(0);
   const [currentSavings, setCurrentSavings] = useState(0);

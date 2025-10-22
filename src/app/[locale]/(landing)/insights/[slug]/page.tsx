@@ -220,7 +220,7 @@ export default function InsightPage({ params }: { params: { slug: string } }) {
   return (
     <main className="min-h-screen">
       <header className="border-b border-border">
-        <div className="max-w-4xl mx-auto px-6 py-4">
+        <div className="max-w-4xl mx-auto px-4 py-4">
           <Link
             href="/"
             className="inline-flex items-center gap-2 text-xs text-secondary hover:text-foreground transition"
@@ -231,7 +231,7 @@ export default function InsightPage({ params }: { params: { slug: string } }) {
       </header>
 
       <article className="py-16 md:py-24">
-        <div className="max-w-3xl mx-auto px-6">
+        <div className="max-w-3xl mx-auto px-4">
           <div className="mb-8 space-y-4">
             <div className="flex items-center gap-3 text-xs text-foreground/80">
               <span className="uppercase tracking-wider">{post.category}</span>

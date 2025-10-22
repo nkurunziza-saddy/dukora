@@ -65,8 +65,8 @@ export default function SaleTransactionForm({
       productId: saleTransaction ? saleTransaction.productId : "",
       warehouseItemId: saleTransaction ? saleTransaction.warehouseItemId : "",
       quantity: saleTransaction ? Math.abs(saleTransaction.quantity) : 1,
-      note: saleTransaction ? saleTransaction.note ?? "" : "",
-      reference: saleTransaction ? saleTransaction.reference ?? "" : "",
+      note: saleTransaction ? (saleTransaction.note ?? "") : "",
+      reference: saleTransaction ? (saleTransaction.reference ?? "") : "",
       warehouseId: saleTransaction ? saleTransaction.warehouseId : "",
     },
     validators: {
@@ -121,14 +121,14 @@ export default function SaleTransactionForm({
   const selectedWarehouseItem = useMemo(
     () =>
       productDetailsData?.warehouseItems.find(
-        (item) => item.id === warehouseItemId
+        (item) => item.id === warehouseItemId,
       ),
-    [productDetailsData?.warehouseItems, warehouseItemId]
+    [productDetailsData?.warehouseItems, warehouseItemId],
   );
 
   const hasInsufficientStock = useMemo(
     () => selectedWarehouseItem && quantity > selectedWarehouseItem.quantity,
-    [selectedWarehouseItem, quantity]
+    [selectedWarehouseItem, quantity],
   );
 
   if (productsError) {
@@ -149,7 +149,7 @@ export default function SaleTransactionForm({
       }}
       className="space-y-6"
     >
-      <FieldGroup className="space-y-4">
+      <FieldGroup>
         <Separator />
 
         <form.Field
@@ -203,7 +203,7 @@ export default function SaleTransactionForm({
                                 "h-4 w-4",
                                 product.id === field.state.value
                                   ? "opacity-100"
-                                  : "opacity-0"
+                                  : "opacity-0",
                               )}
                             />
                           </div>
@@ -246,7 +246,7 @@ export default function SaleTransactionForm({
                           const warehouseId =
                             typeof item === "string"
                               ? productDetailsData?.warehouseItems.find(
-                                  (w) => w.id === item
+                                  (w) => w.id === item,
                                 )?.warehouseId
                               : (item as any).warehouseId;
                           if (warehouseId) {
@@ -282,7 +282,7 @@ export default function SaleTransactionForm({
                                   "h-4 w-4",
                                   item.id === field.state.value
                                     ? "opacity-100"
-                                    : "opacity-0"
+                                    : "opacity-0",
                                 )}
                               />
                             </div>
@@ -329,7 +329,7 @@ export default function SaleTransactionForm({
                       "text-sm font-medium",
                       hasInsufficientStock
                         ? "text-destructive"
-                        : "text-muted-foreground"
+                        : "text-muted-foreground",
                     )}
                   >
                     {tInventory("onHand")}: {selectedWarehouseItem.quantity}
@@ -412,7 +412,7 @@ export default function SaleTransactionForm({
           >
             {form.state.isSubmitting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-3.5 animate-spin" />
                 {saleTransaction ? t("updating") : t("recording")}
               </>
             ) : (

@@ -41,8 +41,8 @@ export default function ExpenseTransactionForm({
   const form = useForm({
     defaultValues: {
       amount: expenseTransaction ? expenseTransaction.amount : "",
-      note: expenseTransaction ? expenseTransaction.note ?? "" : "",
-      reference: expenseTransaction ? expenseTransaction.reference ?? "" : "",
+      note: expenseTransaction ? (expenseTransaction.note ?? "") : "",
+      reference: expenseTransaction ? (expenseTransaction.reference ?? "") : "",
     },
     validators: {
       // @ts-expect-error
@@ -80,7 +80,7 @@ export default function ExpenseTransactionForm({
       }}
       className="space-y-6"
     >
-      <FieldGroup className="space-y-4">
+      <FieldGroup>
         <Separator />
 
         <form.Field
@@ -182,7 +182,7 @@ export default function ExpenseTransactionForm({
           >
             {form.state.isSubmitting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-3.5 animate-spin" />
                 {expenseTransaction ? t("updating") : t("recording")}
               </>
             ) : (

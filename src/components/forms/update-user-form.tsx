@@ -158,7 +158,7 @@ export function UpdateUserForm({ user }: { user: SelectUser }) {
         >
           {form.state.isSubmitting ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="size-3.5 animate-spin" />
               {t("updating")} ...
             </>
           ) : (

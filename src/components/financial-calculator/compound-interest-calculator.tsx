@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export function CompoundInterestCalculator() {
-  const t = useTranslations("FinancialCalculator");
+  const t = useTranslations("financial_calculator");
 
   const [principal, setPrincipal] = useState(0);
   const [annualRate, setAnnualRate] = useState(0);

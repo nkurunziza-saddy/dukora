@@ -3,7 +3,7 @@ import Link from "next/link";
 export function HeroSection() {
   return (
     <section className="pt-10 pb-24 md:pt-16 md:pb-32 lg:pt-20 lg:pb-40">
-      <div className="max-w-6xl mx-auto px-6 lg:px-12">
+      <div className="max-w-6xl mx-auto px-4 lg:px-12">
         <div className="max-w-3xl mx-auto text-center space-y-8">
           <div className="inline-flex items-center gap-2 px-3 py-1 border border-border text-xs text-text-secondary">
             Open Source & Free

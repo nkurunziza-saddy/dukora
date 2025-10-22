@@ -73,7 +73,7 @@ function AutocompletePopup({
         className="z-50 select-none"
         sideOffset={sideOffset}
       >
-        <span className="relative flex max-h-full origin-(--transform-origin) rounded-lg border bg-popover bg-clip-padding transition-[scale,opacity] before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] before:shadow-lg has-data-starting-style:scale-98 has-data-starting-style:opacity-0 dark:bg-clip-border">
+        <span className="relative flex max-h-full origin-(--transform-origin) rounded-lg border bg-popover transition-[scale,opacity] has-data-starting-style:scale-98 has-data-starting-style:opacity-0">
           <AutocompletePrimitive.Popup
             data-slot="autocomplete-popup"
             className={cn(

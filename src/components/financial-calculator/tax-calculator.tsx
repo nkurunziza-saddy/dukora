@@ -7,7 +7,7 @@ import { PAYECalculator } from "./paye-calculator";
 import { VATCalculator } from "./vat-calculator";
 
 export function TaxCalculator() {
-  const t = useTranslations("FinancialCalculator");
+  const t = useTranslations("financial_calculator");
 
   return (
     <Tabs defaultValue="pit">

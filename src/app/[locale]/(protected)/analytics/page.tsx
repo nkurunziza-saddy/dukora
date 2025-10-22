@@ -254,7 +254,7 @@ const analytics = async (props: {
   ];
 
   return (
-    <div className="space-y-8 p-6">
+    <div className="space-y-8 p-4">
       <div className="flex items-center justify-between">
         <div className="">
           <h1 className="font-medium tracking-tight">{t("title")}</h1>
@@ -272,7 +272,7 @@ const analytics = async (props: {
           <CardTitle>{t("revenueProfitability")}</CardTitle>
           <Badge variant="secondary">{t("keyMetrics")}</Badge>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {revenueMetrics.map((metric) => {
             return (
               <StatCard
@@ -292,7 +292,7 @@ const analytics = async (props: {
           <CardTitle>{t("operatingPerformance")}</CardTitle>
           <Badge variant="outline">{t("cashFlow")}</Badge>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {operatingMetrics.map((metric) => {
             return (
               <StatCard

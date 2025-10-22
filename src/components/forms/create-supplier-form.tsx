@@ -48,9 +48,9 @@ export default function SupplierForm({
       name: supplier ? supplier.name : "",
       email: supplier ? supplier.email : "",
       phone: supplier ? supplier.phone : "",
-      address: supplier ? supplier.address ?? "" : "",
-      note: supplier ? supplier.note ?? "" : "",
-      contactName: supplier ? supplier.contactName ?? "" : "",
+      address: supplier ? (supplier.address ?? "") : "",
+      note: supplier ? (supplier.note ?? "") : "",
+      contactName: supplier ? (supplier.contactName ?? "") : "",
     },
     validators: {
       // @ts-expect-error
@@ -68,7 +68,7 @@ export default function SupplierForm({
             : `${t("supplier")} ${tCommon("add")} ${tCommon("confirm")}`,
           {
             description: format(new Date(), "MMM dd, yyyy"),
-          }
+          },
         );
       } else {
         toast.error(tCommon("error"), {
@@ -95,7 +95,7 @@ export default function SupplierForm({
       }}
       className="space-y-6"
     >
-      <FieldGroup className="space-y-4">
+      <FieldGroup>
         <Separator />
 
         <form.Field
@@ -216,7 +216,7 @@ export default function SupplierForm({
         />
       </FieldGroup>
 
-      <FieldGroup className="space-y-4">
+      <FieldGroup>
         <Separator />
 
         <form.Field
@@ -244,7 +244,7 @@ export default function SupplierForm({
         />
       </FieldGroup>
 
-      <FieldGroup className="space-y-4">
+      <FieldGroup>
         <Separator />
 
         <form.Field
@@ -293,7 +293,7 @@ export default function SupplierForm({
           >
             {form.state.isSubmitting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-3.5 animate-spin" />
                 {supplier ? t("updating") : t("creating")}
               </>
             ) : (

@@ -74,7 +74,7 @@ export function EditCategories({
             } else {
               if (currentCategories.length >= LIMITS.CATEGORY_LIMIT) {
                 toast.error(
-                  `You can select up to ${LIMITS.CATEGORY_LIMIT} categories.`
+                  `You can select up to ${LIMITS.CATEGORY_LIMIT} categories.`,
                 );
                 return;
               }
@@ -91,7 +91,7 @@ export function EditCategories({
             }
             if (currentCategories.length >= LIMITS.CATEGORY_LIMIT) {
               toast.error(
-                `You can select up to ${LIMITS.CATEGORY_LIMIT} categories.`
+                `You can select up to ${LIMITS.CATEGORY_LIMIT} categories.`,
               );
               return;
             }
@@ -133,7 +133,7 @@ export function EditCategories({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {defaultCategories.map((category) => {
                     const isSelected = currentCategories.some(
-                      (cat) => cat === category
+                      (cat) => cat === category,
                     );
                     const canSelect = !isAtLimit || isSelected;
 
@@ -145,8 +145,8 @@ export function EditCategories({
                           isSelected
                             ? "border-input bg-muted/70"
                             : canSelect
-                            ? "cursor-pointer hover:bg-muted/50"
-                            : "opacity-50 cursor-not-allowed"
+                              ? "cursor-pointer hover:bg-muted/50"
+                              : "opacity-50 cursor-not-allowed"
                         }`}
                         onClick={() => canSelect && toggleCategory(category)}
                       >

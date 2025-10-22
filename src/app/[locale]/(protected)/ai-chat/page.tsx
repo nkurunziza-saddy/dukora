@@ -37,7 +37,7 @@ export default function AIChat() {
     (id: string) => {
       setMessages((prev) => prev.filter((message) => message.id !== id));
     },
-    [setMessages]
+    [setMessages],
   );
 
   const handleCopyMessage = useCallback(
@@ -46,7 +46,7 @@ export default function AIChat() {
       setCopiedMessageId(messageId);
       setTimeout(() => setCopiedMessageId(null), 2000);
     },
-    []
+    [],
   );
 
   const handleSuggestionClick = useCallback((suggestion: string) => {
@@ -61,7 +61,7 @@ export default function AIChat() {
       sendMessage({ text: input });
       setInput("");
     },
-    [input, isLoading, sendMessage]
+    [input, isLoading, sendMessage],
   );
 
   const handleClear = useCallback(() => {
@@ -99,7 +99,7 @@ export default function AIChat() {
           <WelcomeScreen onSuggestionClick={handleSuggestionClick} />
         ) : (
           <ScrollArea ref={scrollAreaRef} className="h-full">
-            <div className="p-6 space-y-4">
+            <div className="p-4 space-y-4">
               {messages.map((message) => (
                 <Message
                   key={message.id}
@@ -123,7 +123,7 @@ export default function AIChat() {
         className="fixed bottom-0 right-0 border-t border-border/50 bg-background/95 backdrop-blur-sm flex justify-center"
         style={{ left: isMobile ? 0 : SIDEBAR_WIDTH }}
       >
-        <div className="input-div max-w-4xl w-full p-6 mx-auto">
+        <div className="input-div max-w-4xl w-full p-4 mx-auto">
           {error && (
             <div className="mb-4 p-3 bg-destructive/5 border border-destructive/20 rounded-lg">
               <p className="text-sm text-destructive mb-2">

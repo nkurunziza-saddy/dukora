@@ -27,7 +27,7 @@ export default async function UserSummaryCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{t("summary")}</CardTitle>
+        <CardTitle>{t("about")}</CardTitle>
       </CardHeader>
       <CardPanel className="grid grid-cols-2 gap-4">
         <div>

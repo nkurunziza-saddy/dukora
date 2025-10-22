@@ -48,10 +48,10 @@ export function BusinessSettings({ business }: BusinessSettingsProps) {
   const totalSections = Object.keys(completionStats).length;
   const completedSections = Object.values(completionStats).reduce(
     (sum, status) => sum + status,
-    0
+    0,
   );
   const completionPercentage = Math.round(
-    (completedSections / totalSections) * 100
+    (completedSections / totalSections) * 100,
   );
 
   return (
@@ -210,7 +210,7 @@ export function BusinessSettings({ business }: BusinessSettingsProps) {
       </div>
 
       {/* {completionPercentage === 100 && ( */}
-      <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-lg dark:bg-emerald-950 dark:border-emerald-800">
+      <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg dark:bg-emerald-950 dark:border-emerald-800">
         <div className="flex items-center gap-2 mb-2">
           <Badge variant="default">Setup Complete</Badge>
         </div>

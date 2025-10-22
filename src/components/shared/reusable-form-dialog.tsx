@@ -37,7 +37,7 @@ export function TriggerDialog({
           />
         }
       >
-        <Plus className="w-4 h-4 mr-2 " />
+        <Plus className="size-3.5 " />
         {triggerText ?? title}
       </DialogTrigger>
       <DialogPopup className="sm:max-w-4xl max-h-[90vh] flex flex-col">

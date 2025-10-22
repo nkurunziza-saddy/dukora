@@ -559,7 +559,7 @@
     "thinking": "Thinking",
     "title": "AI Chat"
   },
-  "FinancialCalculator": {
+  "financial_calculator": {
     "compound_calculator": {
       "annual_rate_label": "Annual Interest Rate (%)",
       "compounding_frequency_label": "Compounding Frequency (per year)",

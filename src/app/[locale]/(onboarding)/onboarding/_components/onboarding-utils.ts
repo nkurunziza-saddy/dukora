@@ -20,7 +20,7 @@ export const onboardingSchema = z.object({
       z.object({
         email: z.string().email("Invalid email address"),
         role: z.enum([...USER_ROLES]),
-      })
+      }),
     )
     .max(INVITATIONS_LIMIT, `Maximum invitations is ${INVITATIONS_LIMIT}`),
   categories: z
@@ -31,7 +31,7 @@ export const onboardingSchema = z.object({
       z.object({
         name: z.string().min(1, "Warehouse name is required"),
         isDefault: z.boolean(),
-      })
+      }),
     )
     .min(1, "At least one warehouse is required")
     .max(WAREHOUSES_LIMIT, `Allowed warehouses up to ${WAREHOUSES_LIMIT}`),

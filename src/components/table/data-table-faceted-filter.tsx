@@ -40,10 +40,10 @@ export function DataTableDashFilter<TData, TValue>({
     <Popover>
       <PopoverTrigger
         render={
-          <Button variant="outline" size="sm" className="h-8 border-dashed" />
+          <Button variant="outline" size="sm" className="border-dashed" />
         }
       >
-        <PlusCircle />
+        <PlusCircle className="size-3.5" />
         {title}
         {selectedValues?.size > 0 && (
           <>

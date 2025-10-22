@@ -1,7 +1,7 @@
 export function Footer() {
   return (
     <footer id="contact" className="border-t border-border bg-background">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-16">
+      <div className="max-w-7xl mx-auto px-4 lg:px-12 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-12">
           <div>
             <div className="flex items-center gap-2 mb-4">
@@ -126,7 +126,7 @@ export function Footer() {
           <p className="text-xs text-text-tertiary">
             © 2025 Dukora. Open source.
           </p>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
             <a
               href="https://github.com/nkurunziza-saddy/dukora"
               target="_blank"

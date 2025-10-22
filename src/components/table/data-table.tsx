@@ -103,19 +103,19 @@ export function DataTable<TData, TValue>({
   }
 
   return (
-    <div className="flex flex-col gap-4 overflow-x-auto rounded-lg">
+    <div className="sticky z-10 flex flex-col gap-4 py-4">
       {renderToolbar()}
-      <div className="">
+      <div className="rounded-lg border overflow-auto">
         <Table className="min-w-full border-separate border-spacing-0">
-          <TableHeader className="bg-muted/50 sticky top-0 z-10 backdrop-blur-xs">
+          <TableHeader className="bg-muted/50 backdrop-blur-xs">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="bg-transparent">
+              <TableRow key={headerGroup.id} className="hover:bg-transparent">
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
                       key={header.id}
                       colSpan={header.colSpan}
-                      className="bg-muted/50 border-b border-border text-foreground font-semibold text-sm"
+                      className="text-foreground font-semibold text-sm"
                     >
                       {header.isPlaceholder
                         ? null
@@ -129,7 +129,6 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <tbody aria-hidden="true" className="table-row h-2"></tbody>
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row, idx) => (

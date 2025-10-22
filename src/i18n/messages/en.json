@@ -134,6 +134,7 @@
     "enterProductName": "Enter product name",
     "barcode": "Barcode",
     "enterUserName": "Enter user name",
+    "enterUserEmail": "Enter user email",
     "barcodePlaceholder": "Enter barcode",
     "price": "Price",
     "selectCurrency": "Select country",
@@ -673,7 +674,7 @@
     "autoSync": "Auto Sync",
     "overallSyncHealth": "Overall Sync Health"
   },
-  "FinancialCalculator": {
+  "financial_calculator": {
     "meta_title": "Financial Calculator",
     "simple_calculator": {
       "title": "Simple Interest Calculator",
@@ -740,6 +741,7 @@
   },
   "table": {
     "wait": "Wait...",
+    "export": "Export",
     "sortAsc": "Asc",
     "sortDesc": "Desc",
     "reset": "Reset",
@@ -969,6 +971,7 @@
     "totalUsers": "Total Users",
     "activeUsers": "Active Users",
     "admins": "Admins",
+    "about": "About",
     "pending": "Pending Invitations",
     "inviteUserButton": "Invite User",
     "inviteUserTitle": "Invite a New User",

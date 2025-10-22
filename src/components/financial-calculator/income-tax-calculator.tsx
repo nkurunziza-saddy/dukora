@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export function IncomeTaxCalculator() {
-  const t = useTranslations("FinancialCalculator");
+  const t = useTranslations("financial_calculator");
 
   const [annualIncome, setAnnualIncome] = useState(0);
   const [annualTax, setAnnualTax] = useState(0);

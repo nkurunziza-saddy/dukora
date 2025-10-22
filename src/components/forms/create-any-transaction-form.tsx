@@ -74,8 +74,8 @@ export default function AnyTransactionForm({
       productId: transaction ? transaction.productId : "",
       warehouseItemId: transaction ? transaction.warehouseItemId : "",
       quantity: transaction ? Math.abs(transaction.quantity) : 1,
-      note: transaction ? transaction.note ?? "" : "",
-      reference: transaction ? transaction.reference ?? "" : "",
+      note: transaction ? (transaction.note ?? "") : "",
+      reference: transaction ? (transaction.reference ?? "") : "",
       type: transaction ? transaction.type : "DAMAGE",
       warehouseId: transaction ? transaction.warehouseId : "",
     },
@@ -128,9 +128,9 @@ export default function AnyTransactionForm({
   const selectedWarehouseItem = useMemo(
     () =>
       productDetailsData?.warehouseItems.find(
-        (item: any) => item.id === warehouseItemId
+        (item: any) => item.id === warehouseItemId,
       ),
-    [productDetailsData, warehouseItemId]
+    [productDetailsData, warehouseItemId],
   );
 
   if (productsError) {
@@ -151,7 +151,7 @@ export default function AnyTransactionForm({
       }}
       className="space-y-6"
     >
-      <FieldGroup className="space-y-4">
+      <FieldGroup>
         <Separator />
         <form.Field
           name="type"
@@ -229,7 +229,7 @@ export default function AnyTransactionForm({
                                 "h-4 w-4",
                                 product.id === field.state.value
                                   ? "opacity-100"
-                                  : "opacity-0"
+                                  : "opacity-0",
                               )}
                             />
                           </div>
@@ -264,7 +264,7 @@ export default function AnyTransactionForm({
                         value: item.id,
                         label: item.warehouse.name,
                         ...item,
-                      })
+                      }),
                     )}
                     onValueChange={(item) => {
                       if (item) {
@@ -272,7 +272,7 @@ export default function AnyTransactionForm({
                         const warehouseId =
                           typeof item === "string"
                             ? productDetailsData?.warehouseItems.find(
-                                (w: any) => w.id === item
+                                (w: any) => w.id === item,
                               )?.warehouseId
                             : (item as any).warehouseId;
                         if (warehouseId) {
@@ -305,7 +305,7 @@ export default function AnyTransactionForm({
                                   "h-4 w-4",
                                   item.id === field.state.value
                                     ? "opacity-100"
-                                    : "opacity-0"
+                                    : "opacity-0",
                                 )}
                               />
                             </div>
@@ -405,7 +405,7 @@ export default function AnyTransactionForm({
           >
             {form.state.isSubmitting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="size-3.5 animate-spin" />
                 {transaction ? t("updating") : t("recording")}
               </>
             ) : (

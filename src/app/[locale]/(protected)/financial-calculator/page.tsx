@@ -7,14 +7,14 @@ import { TaxCalculator } from "@/components/financial-calculator/tax-calculator"
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
 
 export async function generateMetadata() {
-  const t = await getTranslations("FinancialCalculator");
+  const t = await getTranslations("financial_calculator");
 
   return {
     title: t("meta_title"),
   };
 }
 
-export default function FinancialCalculatorPage() {
+export default function financial_calculatorPage() {
   return (
     <div className="flex flex-col gap-y-4">
       <Tabs defaultValue="simple">

@@ -29,11 +29,11 @@ export function DataTableViewOptions<TData>({
           <Button
             variant="outline"
             size="sm"
-            className="ml-auto hidden h-8 lg:flex"
+            className="ml-auto hidden lg:flex"
           />
         }
       >
-        <Settings2 />
+        <Settings2 className="size-3.5" />
         {t("view")}
       </MenuTrigger>
       <MenuPopup align="end" className="w-[150px]">
