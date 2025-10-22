@@ -146,24 +146,23 @@ const SessionCard = memo(() => {
               <MenuSeparator />
 
               <div className="p-1">
-                <MenuItem>
-                  <Link
-                    href={`/users/${computedData.userId}`}
-                    className="flex items-center cursor-pointer"
-                  >
-                    <UserIcon className="mr-3 h-4 w-4" />
-                    <span>{t("profile")}</span>
-                  </Link>
+                <MenuItem
+                  render={
+                    <Link
+                      href={`/users/${computedData.userId}`}
+                      className="cursor-pointer"
+                    />
+                  }
+                >
+                  <UserIcon className="size-3.5" />
+                  <span>{t("profile")}</span>
                 </MenuItem>
 
-                <MenuItem>
-                  <Link
-                    href="/settings"
-                    className="flex items-center cursor-pointer"
-                  >
-                    <SettingsIcon className="mr-3 h-4 w-4" />
-                    <span>{t("settings")}</span>
-                  </Link>
+                <MenuItem
+                  render={<Link href="/settings" className="cursor-pointer" />}
+                >
+                  <SettingsIcon className="size-3.5" />
+                  <span>{t("settings")}</span>
                 </MenuItem>
               </div>
 
@@ -171,7 +170,7 @@ const SessionCard = memo(() => {
 
               <div className="p-1">
                 <MenuItem onClick={handleLogout} variant="destructive">
-                  <LogOutIcon className="mr-3 h-4 w-4" />
+                  <LogOutIcon className="size-3.5" />
                   <span>{t("signOut")}</span>
                 </MenuItem>
               </div>
