@@ -1,16 +1,16 @@
 import {
-  AlertCircle,
-  AlertTriangle,
-  BarChart3,
-  Calculator,
-  CheckCircle,
-  DollarSign,
-  Info,
-  Package,
-  ShoppingCart,
-  TrendingDown,
-  TrendingUp,
-  Wallet,
+  AlertCircleIcon,
+  AlertTriangleIcon,
+  BarChart3Icon,
+  CalculatorIcon,
+  CheckCircleIcon,
+  DollarSignIcon,
+  InfoIcon,
+  PackageIcon,
+  ShoppingCartIcon,
+  TrendingDownIcon,
+  TrendingUpIcon,
+  WalletIcon,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import StatCard from "@/components/shared/stat-card";
@@ -56,7 +56,7 @@ const analytics = async (props: {
   if (metrics.error) {
     return (
       <Alert variant="error">
-        <AlertCircle className="h-4 w-4" />
+        <AlertCircleIcon className="h-4 w-4" />
         <AlertDescription>{formatKeys(metrics.error)}</AlertDescription>
       </Alert>
     );
@@ -68,21 +68,21 @@ const analytics = async (props: {
     {
       title: t("totalRevenue"),
       value: formatCurrency(data?.grossRevenue || 0),
-      icon: DollarSign,
+      icon: DollarSignIcon,
       trend: data?.grossRevenue && data.grossRevenue > 0 ? "up" : "neutral",
       description: t("totalRevenueDesc"),
     },
     {
       title: t("netRevenue"),
       value: formatCurrency(data?.netRevenue || 0),
-      icon: TrendingUp,
+      icon: TrendingUpIcon,
       trend: data?.netRevenue && data.netRevenue > 0 ? "up" : "neutral",
       description: t("netRevenueDesc"),
     },
     {
       title: t("grossProfit"),
       value: formatCurrency(data?.grossProfit || 0),
-      icon: BarChart3,
+      icon: BarChart3Icon,
       trend:
         data?.grossProfit && data.grossProfit > 0
           ? "up"
@@ -94,7 +94,7 @@ const analytics = async (props: {
     {
       title: t("netIncome"),
       value: formatCurrency(data?.netIncome || 0),
-      icon: Wallet,
+      icon: WalletIcon,
       trend:
         data?.netIncome && data.netIncome > 0
           ? "up"
@@ -109,7 +109,7 @@ const analytics = async (props: {
     {
       title: t("operatingIncome"),
       value: formatCurrency(data?.operatingIncome || 0),
-      icon: Calculator,
+      icon: CalculatorIcon,
       trend:
         data?.operatingIncome && data.operatingIncome > 0
           ? "up"
@@ -121,14 +121,14 @@ const analytics = async (props: {
     {
       title: t("operatingExpenses"),
       value: formatCurrency(data?.operatingExpenses || 0),
-      icon: TrendingDown,
+      icon: TrendingDownIcon,
       trend: "neutral",
       description: t("operatingExpensesDesc"),
     },
     {
       title: t("expenseRatio"),
       value: `${data?.expenseRatio || 0}%`,
-      icon: BarChart3,
+      icon: BarChart3Icon,
       trend:
         data?.expenseRatio && data.expenseRatio < 30
           ? "up"
@@ -144,31 +144,31 @@ const analytics = async (props: {
       label: t("transactionCount"),
       value: formatNumber(data?.transactionCount || 0),
       category: t("salesCategory"),
-      icon: ShoppingCart,
+      icon: ShoppingCartIcon,
     },
     {
       label: t("averageOrderValue"),
       value: formatCurrency(data?.averageOrderValue || 0),
       category: t("salesCategory"),
-      icon: DollarSign,
+      icon: DollarSignIcon,
     },
     {
       label: t("uniqueProductsSold"),
       value: formatNumber(data?.uniqueProductsSold || 0),
       category: t("salesCategory"),
-      icon: Package,
+      icon: PackageIcon,
     },
     {
       label: t("returns"),
       value: formatCurrency(data?.returns || 0),
       category: t("salesCategory"),
-      icon: TrendingDown,
+      icon: TrendingDownIcon,
     },
     {
       label: t("returnRate"),
       value: `${data?.returnRate || 0}%`,
       category: t("salesCategory"),
-      icon: AlertTriangle,
+      icon: AlertTriangleIcon,
     },
   ];
 
@@ -177,37 +177,37 @@ const analytics = async (props: {
       label: t("openingStock"),
       value: formatCurrency(data?.openingStock || 0),
       category: t("inventoryCategory"),
-      icon: Package,
+      icon: PackageIcon,
     },
     {
       label: t("closingStock"),
       value: formatCurrency(data?.closingStock || 0),
       category: t("inventoryCategory"),
-      icon: Package,
+      icon: PackageIcon,
     },
     {
       label: t("purchases"),
       value: formatCurrency(data?.purchases || 0),
       category: t("inventoryCategory"),
-      icon: ShoppingCart,
+      icon: ShoppingCartIcon,
     },
     {
       label: t("costOfGoodsSold"),
       value: formatCurrency(data?.costOfGoodsSold || 0),
       category: t("inventoryCategory"),
-      icon: Calculator,
+      icon: CalculatorIcon,
     },
     {
       label: t("inventoryTurnover"),
       value: formatNumber(data?.inventoryTurnover || 0),
       category: t("inventoryCategory"),
-      icon: TrendingUp,
+      icon: TrendingUpIcon,
     },
     {
       label: t("daysOnHand"),
       value: `${data?.daysOnHand || 0} days`,
       category: t("inventoryCategory"),
-      icon: Info,
+      icon: InfoIcon,
     },
     {
       label: t("inventoryGrowth"),
@@ -215,8 +215,8 @@ const analytics = async (props: {
       category: t("inventoryCategory"),
       icon:
         data?.inventoryGrowth && data.inventoryGrowth > 0
-          ? TrendingUp
-          : TrendingDown,
+          ? TrendingUpIcon
+          : TrendingDownIcon,
     },
   ];
 
@@ -225,25 +225,25 @@ const analytics = async (props: {
       label: t("grossMargin"),
       value: `${data?.grossMargin || 0}%`,
       category: t("marginsCategory"),
-      icon: BarChart3,
+      icon: BarChart3Icon,
     },
     {
       label: t("netMargin"),
       value: `${data?.netMargin || 0}%`,
       category: t("marginsCategory"),
-      icon: BarChart3,
+      icon: BarChart3Icon,
     },
     {
       label: t("operatingMargin"),
       value: `${data?.operatingMargin || 0}%`,
       category: t("marginsCategory"),
-      icon: BarChart3,
+      icon: BarChart3Icon,
     },
     {
       label: t("assetTurnover"),
       value: formatNumber(data?.assetTurnover || 0),
       category: t("efficiencyCategory"),
-      icon: TrendingUp,
+      icon: TrendingUpIcon,
     },
   ];
 
@@ -312,7 +312,7 @@ const analytics = async (props: {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-green-600" />
+              <CheckCircleIcon className="h-5 w-5 text-green-600" />
               {t("dataQuality")}
             </CardTitle>
           </CardHeader>
@@ -374,7 +374,7 @@ const analytics = async (props: {
               </TableHeader>
               <TableBody>
                 {allDetailedMetrics.map((metric) => {
-                  const IconComponent = metric.icon || Info;
+                  const IconComponent = metric.icon || InfoIcon;
                   return (
                     <TableRow key={metric.label} className="hover:bg-muted/50">
                       <TableCell className="font-medium">

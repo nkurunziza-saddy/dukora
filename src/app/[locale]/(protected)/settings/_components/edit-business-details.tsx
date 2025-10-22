@@ -1,6 +1,6 @@
 "use client";
 import { useForm } from "@tanstack/react-form";
-import { AlertCircle } from "lucide-react";
+import { AlertCircleIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -136,7 +136,7 @@ export function EditBusinessDetails({
           {([isTouched, isValid]) =>
             isTouched && !isValid ? (
               <Alert variant="error">
-                <AlertCircle className="h-4 w-4" />
+                <AlertCircleIcon className="h-4 w-4" />
                 <AlertDescription>
                   Please fix the errors below before submitting.
                 </AlertDescription>

@@ -1,4 +1,4 @@
-import { Check, Copy } from "lucide-react";
+import { CheckIcon, CopyIcon } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -201,9 +201,9 @@ function CodeBlock({
             onClick={copyToClipboard}
           >
             {copied ? (
-              <Check className="h-3 w-3" />
+              <CheckIcon className="h-3 w-3" />
             ) : (
-              <Copy className="h-3 w-3" />
+              <CopyIcon className="h-3 w-3" />
             )}
           </Button>
         </div>

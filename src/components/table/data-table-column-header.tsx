@@ -1,5 +1,10 @@
 import type { Column } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff } from "lucide-react";
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  ChevronsUpDownIcon,
+  EyeOffIcon,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,25 +46,25 @@ export function DataTableColumnHeader<TData, TValue>({
         >
           <span>{title}</span>
           {column.getIsSorted() === "desc" ? (
-            <ArrowDown className="size-3.5" />
+            <ArrowDownIcon className="size-3.5" />
           ) : column.getIsSorted() === "asc" ? (
-            <ArrowUp className="size-3.5" />
+            <ArrowUpIcon className="size-3.5" />
           ) : (
-            <ChevronsUpDown className="size-3.5" />
+            <ChevronsUpDownIcon className="size-3.5" />
           )}
         </MenuTrigger>
         <MenuPopup align="start">
           <MenuItem onClick={() => column.toggleSorting(false)}>
-            <ArrowUp />
+            <ArrowUpIcon />
             {t("sortAsc")}
           </MenuItem>
           <MenuItem onClick={() => column.toggleSorting(true)}>
-            <ArrowDown />
+            <ArrowDownIcon />
             {t("sortDesc")}
           </MenuItem>
           <MenuSeparator />
           <MenuItem onClick={() => column.toggleVisibility(false)}>
-            <EyeOff />
+            <EyeOffIcon />
             {t("hide")}
           </MenuItem>
         </MenuPopup>

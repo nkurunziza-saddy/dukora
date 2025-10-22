@@ -12,7 +12,7 @@ import {
   subWeeks,
 } from "date-fns";
 import {
-  Calendar1,
+  Calendar1Icon,
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -274,7 +274,7 @@ export function EventCalendar({
               className="max-[479px]:p-0!"
               onClick={handleToday}
             >
-              <Calendar1
+              <Calendar1Icon
                 className="min-[480px]:hidden"
                 size={16}
                 aria-hidden="true"

@@ -1,4 +1,4 @@
-import { Plus, Users } from "lucide-react";
+import { PlusIcon, UsersIcon } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { InviteUserForm } from "@/components/forms/invite-user-form";
 import ColumnWrapper from "@/components/providers/column-wrapper";
@@ -44,24 +44,24 @@ export default async function users() {
     {
       title: t("totalUsers"),
       value: users.data ? users.data.length : 0,
-      icon: Users,
+      icon: UsersIcon,
     },
     {
       title: t("activeUsers"),
       value: users.data ? users.data.filter((user) => user.isActive).length : 0,
-      icon: Users,
+      icon: UsersIcon,
     },
     {
       title: t("admins"),
       value: users.data
         ? users.data.filter((user) => user.role === "ADMIN").length
         : 0,
-      icon: Users,
+      icon: UsersIcon,
     },
     {
       title: t("pending"),
       value: invitations.data ? invitations.data.length : 0,
-      icon: Users,
+      icon: UsersIcon,
     },
   ];
 
@@ -72,7 +72,7 @@ export default async function users() {
         <div className="flex gap-2">
           <Dialog>
             <DialogTrigger render={<Button size={"sm"} />}>
-              <Plus className="size-3.5" />
+              <PlusIcon className="size-3.5" />
               {t("inviteUserButton")}
             </DialogTrigger>
             <DialogPopup>

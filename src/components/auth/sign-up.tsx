@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircleIcon, Loader2Icon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -41,7 +41,7 @@ export default function SignUp() {
       <CardPanel>
         <div className="mb-6">
           <Alert variant="error">
-            <AlertCircle className="h-4 w-4" />
+            <AlertCircleIcon className="h-4 w-4" />
             <AlertDescription>
               {t_form("emailVerificationDown", {
                 moreContent:
@@ -145,7 +145,7 @@ export default function SignUp() {
             }}
           >
             {loading ? (
-              <Loader2 size={16} className="animate-spin" />
+              <Loader2Icon size={16} className="animate-spin" />
             ) : (
               t("signUp.createAccountButton")
             )}

@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
-import { CheckCircle } from "lucide-react";
+import { CheckCircleIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
@@ -206,7 +206,7 @@ export function ConnectStripe({
                 variant="default"
                 className="flex items-center gap-2 px-3 py-1"
               >
-                <CheckCircle className="h-4 w-4" />
+                <CheckCircleIcon className="h-4 w-4" />
                 {tStripe("connected")}
               </Badge>
 

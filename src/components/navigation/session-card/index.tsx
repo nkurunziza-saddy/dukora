@@ -1,11 +1,10 @@
 "use client";
 
 import {
-  Briefcase,
-  ChevronsUpDown,
-  LogOut,
-  Settings,
-  User,
+  ChevronsUpDownIcon,
+  LogOutIcon,
+  SettingsIcon,
+  UserIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -108,7 +107,7 @@ const SessionCard = memo(() => {
                 {computedData.businessName}
               </p>
             </div>
-            <ChevronsUpDown className="ml-auto" />
+            <ChevronsUpDownIcon className="ml-auto" />
           </MenuTrigger>
           <MenuPopup
             className="min-w-64 rounded-lg"
@@ -152,7 +151,7 @@ const SessionCard = memo(() => {
                     href={`/users/${computedData.userId}`}
                     className="flex items-center cursor-pointer"
                   >
-                    <User className="mr-3 h-4 w-4" />
+                    <UserIcon className="mr-3 h-4 w-4" />
                     <span>{t("profile")}</span>
                   </Link>
                 </MenuItem>
@@ -162,7 +161,7 @@ const SessionCard = memo(() => {
                     href="/settings"
                     className="flex items-center cursor-pointer"
                   >
-                    <Settings className="mr-3 h-4 w-4" />
+                    <SettingsIcon className="mr-3 h-4 w-4" />
                     <span>{t("settings")}</span>
                   </Link>
                 </MenuItem>
@@ -172,7 +171,7 @@ const SessionCard = memo(() => {
 
               <div className="p-1">
                 <MenuItem onClick={handleLogout} variant="destructive">
-                  <LogOut className="mr-3 h-4 w-4" />
+                  <LogOutIcon className="mr-3 h-4 w-4" />
                   <span>{t("signOut")}</span>
                 </MenuItem>
               </div>

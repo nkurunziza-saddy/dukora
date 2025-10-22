@@ -1,13 +1,13 @@
 import {
-  AlertCircle,
-  Bell,
-  Building2,
-  CreditCard,
-  Settings,
-  Shield,
-  Tags,
-  User,
-  Warehouse,
+  AlertCircleIcon,
+  BellIcon,
+  Building2Icon,
+  CreditCardIcon,
+  SettingsIcon,
+  ShieldIcon,
+  TagsIcon,
+  UserIcon,
+  WarehouseIcon,
 } from "lucide-react";
 import UserProfileForm from "@/components/forms/user-profile-form";
 import { UserSettingsForm } from "@/components/forms/user-settings-form";
@@ -44,7 +44,7 @@ export default async function SettingsPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <Alert variant="error" className="max-w-md">
-          <AlertCircle className="h-4 w-4" />
+          <AlertCircleIcon className="h-4 w-4" />
           <AlertDescription>
             Business or user not found. Please check your session.
           </AlertDescription>
@@ -56,41 +56,46 @@ export default async function SettingsPage() {
   const tabConfig = [
     {
       section: "Business",
-      icon: Building2,
+      icon: Building2Icon,
       tabs: [
         {
           value: "business-details",
           label: "Business Details",
-          icon: Building2,
+          icon: Building2Icon,
         },
         {
           value: "business-settings",
           label: "Business Settings",
-          icon: Settings,
+          icon: SettingsIcon,
         },
-        { value: "categories", label: "Categories", icon: Tags },
-        { value: "warehouses", label: "Warehouses", icon: Warehouse },
+        { value: "categories", label: "Categories", icon: TagsIcon },
+        { value: "warehouses", label: "Warehouses", icon: WarehouseIcon },
         {
           value: "stripe",
           label: "Payments",
-          icon: CreditCard,
+          icon: CreditCardIcon,
           disabled: true,
         },
       ],
     },
     {
       section: "Account",
-      icon: User,
+      icon: UserIcon,
       tabs: [
-        { value: "user-details", label: "Profile", icon: User },
-        { value: "user-settings", label: "Preferences", icon: Settings },
+        { value: "user-details", label: "Profile", icon: UserIcon },
+        { value: "user-settings", label: "Preferences", icon: SettingsIcon },
         {
           value: "notifications",
           label: "Notifications",
-          icon: Bell,
+          icon: BellIcon,
           disabled: true,
         },
-        { value: "security", label: "Security", icon: Shield, disabled: true },
+        {
+          value: "security",
+          label: "Security",
+          icon: ShieldIcon,
+          disabled: true,
+        },
       ],
     },
   ];
@@ -106,7 +111,7 @@ export default async function SettingsPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <Alert variant="error" className="max-w-md">
-          <AlertCircle className="h-4 w-4" />
+          <AlertCircleIcon className="h-4 w-4" />
           <AlertDescription>
             Business data is not available. Please try refreshing the page.
           </AlertDescription>

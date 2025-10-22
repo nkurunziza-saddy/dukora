@@ -2,7 +2,7 @@
 
 import { useForm } from "@tanstack/react-form";
 import { format } from "date-fns";
-import { AlertCircle, CheckIcon, Loader2 } from "lucide-react";
+import { AlertCircleIcon, CheckIcon, Loader2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { toast } from "sonner";
@@ -134,7 +134,7 @@ export default function SaleTransactionForm({
   if (productsError) {
     return (
       <Alert variant="error">
-        <AlertCircle className="h-4 w-4" />
+        <AlertCircleIcon className="h-4 w-4" />
         <AlertDescription>{t("failedToLoadProducts")}</AlertDescription>
       </Alert>
     );
@@ -159,7 +159,7 @@ export default function SaleTransactionForm({
               <FieldLabel>{tInventory("productName")} *</FieldLabel>
               {isProductsLoading ? (
                 <div className="flex items-center space-x-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2Icon className="h-4 w-4 animate-spin" />
                   <span className="text-sm text-muted-foreground">
                     {t("loadingProducts")}
                   </span>
@@ -226,7 +226,7 @@ export default function SaleTransactionForm({
                 <FieldLabel>{t("warehouseLocation")} *</FieldLabel>
                 {isProductDetailsLoading ? (
                   <div className="flex items-center space-x-2">
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2Icon className="h-4 w-4 animate-spin" />
                     <span className="text-sm text-muted-foreground">
                       {t("loadingWarehouses")}
                     </span>
@@ -293,7 +293,7 @@ export default function SaleTransactionForm({
                   </Autocomplete>
                 ) : productDetailsError ? (
                   <Alert variant="error">
-                    <AlertCircle className="h-4 w-4" />
+                    <AlertCircleIcon className="h-4 w-4" />
                     <AlertDescription>
                       {t("failedToLoadWarehouses")}
                     </AlertDescription>
@@ -338,7 +338,7 @@ export default function SaleTransactionForm({
               </FieldDescription>
               {hasInsufficientStock && (
                 <Alert variant="error">
-                  <AlertCircle className="h-4 w-4" />
+                  <AlertCircleIcon className="h-4 w-4" />
                   <AlertDescription>
                     {t("insufficientStock", {
                       count: selectedWarehouseItem?.quantity || 0,
@@ -412,7 +412,7 @@ export default function SaleTransactionForm({
           >
             {form.state.isSubmitting ? (
               <>
-                <Loader2 className="size-3.5 animate-spin" />
+                <Loader2Icon className="size-3.5 animate-spin" />
                 {saleTransaction ? t("updating") : t("recording")}
               </>
             ) : (

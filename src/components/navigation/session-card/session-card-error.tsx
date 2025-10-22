@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Frame, User } from "lucide-react";
+import { UserIcon } from "lucide-react";
 import { memo } from "react";
 
 const SessionCardError = memo(() => (
@@ -9,7 +9,7 @@ const SessionCardError = memo(() => (
     </div>
     <Avatar className="rounded-lg">
       <AvatarFallback>
-        <User className="size-3" />
+        <UserIcon className="size-3" />
       </AvatarFallback>
     </Avatar>
   </div>

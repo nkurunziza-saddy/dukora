@@ -1,7 +1,7 @@
 "use client";
 
 import type { Table } from "@tanstack/react-table";
-import { X } from "lucide-react";
+import { XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { CreateSupplierDialog } from "@/components/forms/create-supplier-form";
 import { DataTableExportPDF } from "@/components/table/data-table-export-pdf";
@@ -29,7 +29,7 @@ export function SuppliersDataTableToolbar<TData>({
             onClick={() => table.resetColumnFilters()}
           >
             {t("reset")}
-            <X />
+            <XIcon />
           </Button>
         )}
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import type { Table } from "@tanstack/react-table";
-import { X } from "lucide-react";
+import { XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { DataTableViewOptions } from "./data-table-view-options";
@@ -25,7 +25,7 @@ export function DefaultDataTableToolbar<TData>({
             onClick={() => table.resetColumnFilters()}
           >
             {t("reset")}
-            <X />
+            <XIcon />
           </Button>
         )}
       </div>

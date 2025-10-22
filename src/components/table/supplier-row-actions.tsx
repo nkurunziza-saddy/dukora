@@ -1,7 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
-import { Edit, MoreHorizontal, Trash } from "lucide-react";
+import { EditIcon, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import React, { type FC, useState } from "react";
@@ -76,7 +76,7 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
           render={<Button variant={"ghost"} className="h-8 w-8 p-0" />}
         >
           <span className="sr-only">{t_common("openMenu")}</span>
-          <MoreHorizontal className="h-4 w-4" />
+          <MoreHorizontalIcon className="h-4 w-4" />
         </MenuTrigger>
         <MenuPopup align="end">
           <MenuGroup>
@@ -91,7 +91,7 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
               onClick={() => setIsUpdateDialogOpen(true)}
               className="cursor-pointer"
             >
-              <Edit className="size-3.5" />
+              <EditIcon className="size-3.5" />
               {t_common("edit")}
             </MenuItem>
             <MenuItem
@@ -99,7 +99,7 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
               onClick={() => setIsDeleteDialogOpen(true)}
               className="cursor-pointer"
             >
-              <Trash className="size-3.5" />
+              <Trash2Icon className="size-3.5" />
               {t_common("delete")}
             </MenuItem>
           </MenuGroup>

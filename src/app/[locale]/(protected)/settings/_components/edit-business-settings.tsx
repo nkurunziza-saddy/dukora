@@ -1,7 +1,7 @@
 "use client";
 import { useForm } from "@tanstack/react-form";
 import { format } from "date-fns";
-import { AlertCircle } from "lucide-react";
+import { AlertCircleIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -140,7 +140,7 @@ export function EditBusinessSettings({
 
         {isVatRateAtLimit && (
           <Alert variant="error">
-            <AlertCircle className="h-4 w-4" />
+            <AlertCircleIcon className="h-4 w-4" />
             <AlertDescription>
               VAT rate has reached the maximum limit of {LIMITS.VAT_RATE_MAX}% .
               Please verify this rate is correct.

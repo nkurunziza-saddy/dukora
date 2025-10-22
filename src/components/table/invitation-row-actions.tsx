@@ -1,7 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
-import { MoreHorizontal, Trash } from "lucide-react";
+import { MoreHorizontalIcon, Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import React, { type FC, useState } from "react";
 import { toast } from "sonner";
@@ -74,7 +74,7 @@ const InvitationRowActions: FC<InvitationRowActionsProps> = ({
           render={<Button variant={"ghost"} className="h-8 w-8 p-0" />}
         >
           <span className="sr-only">{t_common("openMenu")}</span>
-          <MoreHorizontal className="h-4 w-4" />
+          <MoreHorizontalIcon className="h-4 w-4" />
         </MenuTrigger>
         <MenuPopup align="end">
           <MenuGroup>
@@ -85,7 +85,7 @@ const InvitationRowActions: FC<InvitationRowActionsProps> = ({
               onClick={() => setIsDeleteDialogOpen(true)}
               className="cursor-pointer"
             >
-              <Trash className="size-3.5" />
+              <Trash2Icon className="size-3.5" />
               {t("delete")}
             </MenuItem>
           </MenuGroup>

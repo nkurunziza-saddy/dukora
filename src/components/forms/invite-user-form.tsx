@@ -2,7 +2,7 @@
 
 import { useForm } from "@tanstack/react-form";
 import { format } from "date-fns";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircleIcon, Loader2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import z from "zod";
@@ -62,7 +62,7 @@ export function InviteUserForm() {
   return (
     <>
       <Alert variant="error">
-        <AlertCircle className="h-4 w-4" />
+        <AlertCircleIcon className="h-4 w-4" />
         <AlertDescription>
           {t("emailVerificationDown", {
             moreContent: "Their email won't be verified for now.",
@@ -169,7 +169,7 @@ export function InviteUserForm() {
           >
             {form.state.isSubmitting ? (
               <>
-                <Loader2 className="size-3.5 animate-spin" />
+                <Loader2Icon className="size-3.5 animate-spin" />
                 {t("sending")} ...
               </>
             ) : (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { RotateCcw, Send, Square } from "lucide-react";
+import { RotateCcwIcon, SendIcon, SquareIcon } from "lucide-react";
 import type React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -135,7 +135,7 @@ export default function AIChat() {
                 onClick={() => regenerate()}
                 className="h-7 px-2 text-xs"
               >
-                <RotateCcw className="w-3 h-3 mr-1" />
+                <RotateCcwIcon className="w-3 h-3 mr-1" />
                 Retry
               </Button>
             </div>
@@ -150,7 +150,7 @@ export default function AIChat() {
                   onClick={stop}
                   className="h-7 px-3 text-xs"
                 >
-                  <Square className="w-3 h-3 mr-1" />
+                  <SquareIcon className="w-3 h-3 mr-1" />
                   Stop
                 </Button>
               )}
@@ -163,7 +163,7 @@ export default function AIChat() {
                     disabled={isLoading}
                     className="h-7 px-3 text-xs"
                   >
-                    <RotateCcw className="w-3 h-3 mr-1" />
+                    <RotateCcwIcon className="w-3 h-3 mr-1" />
                     Regenerate
                   </Button>
                   <Button
@@ -193,7 +193,7 @@ export default function AIChat() {
               disabled={isLoading || !input.trim()}
               className="h-11 w-11 p-0 flex-shrink-0"
             >
-              <Send className="w-4 h-4" />
+              <SendIcon className="w-4 h-4" />
             </Button>
           </form>
         </div>

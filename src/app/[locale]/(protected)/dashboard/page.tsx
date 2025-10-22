@@ -1,9 +1,9 @@
 import {
-  AlertCircle,
-  AlertTriangle,
-  Package,
-  TrendingUp,
-  Warehouse,
+  AlertCircleIcon,
+  AlertTriangleIcon,
+  PackageIcon,
+  TrendingUpIcon,
+  WarehouseIcon,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import StatCard from "@/components/shared/stat-card";
@@ -56,13 +56,13 @@ export default async function InventoryDashboard() {
       title: t("totalSKUs"),
       subText: t("totalSku"),
       value: formatNumber(totalSKUs.data ?? 0),
-      icon: Package,
+      icon: PackageIcon,
     },
     {
       title: t("warehouse"),
       subText: t("activeLocations"),
       value: formatNumber(totalWarehouses.data ?? 0),
-      icon: Warehouse,
+      icon: WarehouseIcon,
     },
     {
       title: t("lowStockAlerts"),
@@ -71,13 +71,13 @@ export default async function InventoryDashboard() {
           ? t("requiringAttention")
           : t("healthyInventory"),
       value: formatNumber(lowStockCount.data ?? 0),
-      icon: AlertTriangle,
+      icon: AlertTriangleIcon,
     },
     {
       title: t("totalValue"),
       subText: t("currentStockValue"),
       value: formatCurrency(inventoryValue.data ?? 0),
-      icon: TrendingUp,
+      icon: TrendingUpIcon,
     },
   ];
   if ((totalSKUs.data ?? 0) === 0 && (inventoryValue.data ?? 0) === 0) {
@@ -92,7 +92,7 @@ export default async function InventoryDashboard() {
       <div className="space-y-6">
         {lowStockItems && lowStockItems.length > 0 && (
           <Alert variant="error">
-            <AlertCircle />
+            <AlertCircleIcon />
             <AlertTitle>{t("lowStockAlerts")}</AlertTitle>
             <AlertDescription>
               <ul className="list-inside list-disc text-sm">

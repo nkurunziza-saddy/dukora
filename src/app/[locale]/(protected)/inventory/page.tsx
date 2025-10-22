@@ -1,4 +1,4 @@
-import { Layers, Warehouse } from "lucide-react";
+import { LayersIcon, WarehouseIcon } from "lucide-react";
 import StatCard from "@/components/shared/stat-card";
 import { getProducts } from "@/server/actions/product-actions";
 import { getWarehouses } from "@/server/actions/warehouse-actions";
@@ -20,19 +20,19 @@ export default async function WarehousePage() {
       title: "Warehouses",
       value: warehouses.length,
       subText: "Total number of warehouses",
-      icon: Warehouse,
+      icon: WarehouseIcon,
     },
     {
       title: "Warehouse Items",
       value: warehouseItems.length,
       subText: "Total items across all warehouses",
-      icon: Warehouse,
+      icon: WarehouseIcon,
     },
     {
       title: "Products",
       value: products.length,
       subText: "Total number of products in warehouses",
-      icon: Layers,
+      icon: LayersIcon,
     },
   ];
 

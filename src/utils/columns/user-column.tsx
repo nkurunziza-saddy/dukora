@@ -2,7 +2,7 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { Circle, Timer } from "lucide-react";
+import { CircleIcon, TimerIcon } from "lucide-react";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
 import UserRowActions from "@/components/table/user-row-actions";
 import { Badge } from "@/components/ui/badge";
@@ -82,24 +82,24 @@ export const userStatuses = [
     value: "OWNER",
     label: "Owner",
     variant: "outline" as "secondary" | "error" | "outline",
-    icon: Circle,
+    icon: CircleIcon,
   },
   {
     value: "ADMIN",
     label: "Admin",
     variant: "secondary" as "secondary" | "error" | "outline",
-    icon: Timer,
+    icon: TimerIcon,
   },
   {
     value: "MEMBER",
     label: "Member",
     variant: "secondary" as "secondary" | "error" | "outline",
-    icon: Timer,
+    icon: TimerIcon,
   },
   {
     value: "VIEW_ONLY",
     label: "View only",
     variant: "error" as "secondary" | "error" | "outline",
-    icon: Circle,
+    icon: CircleIcon,
   },
 ];

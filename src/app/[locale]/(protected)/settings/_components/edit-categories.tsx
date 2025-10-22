@@ -1,6 +1,6 @@
 "use client";
 import { useForm } from "@tanstack/react-form";
-import { AlertCircle, Plus, X, XIcon } from "lucide-react";
+import { AlertCircleIcon, PlusIcon, XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -118,7 +118,7 @@ export function EditCategories({
 
               {isAtLimit && (
                 <Alert variant="error">
-                  <AlertCircle className="h-4 w-4" />
+                  <AlertCircleIcon className="h-4 w-4" />
                   <AlertDescription>
                     You've reached the maximum limit of {LIMITS.CATEGORY_LIMIT}{" "}
                     categories. Remove some categories to add new ones.
@@ -183,7 +183,7 @@ export function EditCategories({
                     onClick={handleAddCustom}
                     disabled={isAtLimit}
                   >
-                    <Plus className="h-4 w-4" />
+                    <PlusIcon className="h-4 w-4" />
                   </Button>
                 </div>
 

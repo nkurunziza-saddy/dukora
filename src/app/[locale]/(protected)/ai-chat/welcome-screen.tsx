@@ -1,4 +1,9 @@
-import { Brain, MessageSquare, Sparkles, Zap } from "lucide-react";
+import {
+  BrainIcon,
+  MessageSquareIcon,
+  SparklesIcon,
+  ZapIcon,
+} from "lucide-react";
 import { memo } from "react";
 
 const WelcomeScreen = memo(
@@ -9,22 +14,22 @@ const WelcomeScreen = memo(
   }) => {
     const suggestions = [
       {
-        icon: <Brain className="size-4" />,
+        icon: <BrainIcon className="size-4" />,
         title: "Explain an accounting concept",
         description: "What is double-entry bookkeeping?",
       },
       {
-        icon: <Sparkles className="size-4" />,
+        icon: <SparklesIcon className="size-4" />,
         title: "Financial analysis",
         description: "How do I analyze a balance sheet?",
       },
       {
-        icon: <Zap className="size-4" />,
+        icon: <ZapIcon className="size-4" />,
         title: "Tax guidance",
         description: "What expenses are tax-deductible for small businesses?",
       },
       {
-        icon: <MessageSquare className="size-4" />,
+        icon: <MessageSquareIcon className="size-4" />,
         title: "Investment advice",
         description: "What are the basics of stock market investing?",
       },

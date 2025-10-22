@@ -3,7 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 // import { Checkbox } from "@/components/ui/checkbox";
 import { format } from "date-fns";
-import { Circle, Timer } from "lucide-react";
+import { CircleIcon, TimerIcon } from "lucide-react";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
 import ProductRowActions from "@/components/table/product-row-actions";
 import { Badge } from "@/components/ui/badge";
@@ -172,18 +172,18 @@ export const productStatuses = [
     value: ProductStatus.ACTIVE,
     label: "Active",
     variant: "outline" as "secondary" | "error" | "outline",
-    icon: Circle,
+    icon: CircleIcon,
   },
   {
     value: ProductStatus.INACTIVE,
     label: "Inactive",
     variant: "secondary" as "secondary" | "error" | "outline",
-    icon: Timer,
+    icon: TimerIcon,
   },
   {
     value: ProductStatus.DISCONTINUED,
     label: "Discontinued",
     variant: "error" as "secondary" | "error" | "outline",
-    icon: Circle,
+    icon: CircleIcon,
   },
 ];

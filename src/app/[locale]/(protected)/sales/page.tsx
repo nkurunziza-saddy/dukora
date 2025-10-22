@@ -1,5 +1,5 @@
 import { subDays } from "date-fns";
-import { DollarSign, ShoppingCart, TrendingUp } from "lucide-react";
+import { DollarSignIcon, ShoppingCartIcon, TrendingUpIcon } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import ColumnWrapper from "@/components/providers/column-wrapper";
 import StatCard from "@/components/shared/stat-card";
@@ -27,25 +27,25 @@ export default async function SalesTracking() {
       title: t("todaysSales"),
       subText: t("saleFromYesterday"),
       value: statData.data?.current?.totalSales ?? 0,
-      icon: ShoppingCart,
+      icon: ShoppingCartIcon,
     },
     {
       title: t("todayExpenses"),
       subText: t("saleFromYesterday"),
       value: statData.data?.current?.totalExpenses ?? 0,
-      icon: DollarSign,
+      icon: DollarSignIcon,
     },
     {
       title: t("todaysProfit"),
       subText: t("profitFromYesterday"),
       value: statData.data?.current?.netProfit ?? 0,
-      icon: DollarSign,
+      icon: DollarSignIcon,
     },
     {
       title: t("transactionCount"),
       subText: t("transactionFromYesterday"),
       value: statData.data?.current?.transactionCount ?? 0,
-      icon: TrendingUp,
+      icon: TrendingUpIcon,
     },
   ];
 

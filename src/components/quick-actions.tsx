@@ -1,13 +1,13 @@
 "use client";
 
 import {
-  FileText,
-  Package,
-  Plus,
-  Settings,
-  ShoppingCart,
-  Users,
-  Zap,
+  FileTextIcon,
+  PackageIcon,
+  PlusIcon,
+  SettingsIcon,
+  ShoppingCartIcon,
+  UsersIcon,
+  ZapIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -141,7 +141,7 @@ export default function QuickActions() {
         <kbd className="hidden bg-background text-muted-foreground/70 ms-8 -me-1 sm:inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
           ⌘K
         </kbd>
-        <Zap className="size-3 sm:hidden" />
+        <ZapIcon className="size-3 sm:hidden" />
       </Button>
 
       <Command>
@@ -159,7 +159,11 @@ export default function QuickActions() {
               <CommandItem
                 onSelect={() => handleDialogAction("create-product")}
               >
-                <Package size={16} className="opacity-60" aria-hidden="true" />
+                <PackageIcon
+                  size={16}
+                  className="opacity-60"
+                  aria-hidden="true"
+                />
                 <span>{t("createNewProduct")}</span>
                 <CommandShortcut className="justify-center">
                   ⇧⌘P
@@ -168,7 +172,7 @@ export default function QuickActions() {
               <CommandItem
                 onSelect={() => handleDialogAction("create-supplier")}
               >
-                <ShoppingCart
+                <ShoppingCartIcon
                   size={16}
                   className="opacity-60"
                   aria-hidden="true"
@@ -179,7 +183,7 @@ export default function QuickActions() {
                 </CommandShortcut>
               </CommandItem>
               <CommandItem onSelect={() => handleDialogAction("record-sale")}>
-                <Plus size={16} className="opacity-60" aria-hidden="true" />
+                <PlusIcon size={16} className="opacity-60" aria-hidden="true" />
                 <span>{t("recordSaleTransaction")}</span>
                 <CommandShortcut className="justify-center">
                   ⇧⌘T
@@ -188,7 +192,7 @@ export default function QuickActions() {
               <CommandItem
                 onSelect={() => handleDialogAction("record-purchase")}
               >
-                <Plus size={16} className="opacity-60" aria-hidden="true" />
+                <PlusIcon size={16} className="opacity-60" aria-hidden="true" />
                 <span>{t("recordPurchaseTransaction")}</span>
                 <CommandShortcut className="justify-center">
                   ⇧⌘B
@@ -197,7 +201,7 @@ export default function QuickActions() {
               <CommandItem
                 onSelect={() => handleDialogAction("record-expense")}
               >
-                <Plus size={16} className="opacity-60" aria-hidden="true" />
+                <PlusIcon size={16} className="opacity-60" aria-hidden="true" />
                 <span>{t("recordExpenseTransaction")}</span>
                 <CommandShortcut className="justify-center">
                   ⇧⌘B
@@ -206,7 +210,7 @@ export default function QuickActions() {
               <CommandItem
                 onSelect={() => handleDialogAction("record-transaction")}
               >
-                <Plus size={16} className="opacity-60" aria-hidden="true" />
+                <PlusIcon size={16} className="opacity-60" aria-hidden="true" />
                 <span>{t("recordAnyTransaction")}</span>
                 <CommandShortcut className="justify-center">
                   ⇧⌘B
@@ -218,15 +222,27 @@ export default function QuickActions() {
 
             <CommandGroup heading={t("managementGroup")}>
               <CommandItem onSelect={() => handleNavigation("/products")}>
-                <FileText size={16} className="opacity-60" aria-hidden="true" />
+                <FileTextIcon
+                  size={16}
+                  className="opacity-60"
+                  aria-hidden="true"
+                />
                 <span>{t("productManagement")}</span>
               </CommandItem>
               <CommandItem onSelect={() => handleNavigation("/suppliers")}>
-                <Users size={16} className="opacity-60" aria-hidden="true" />
+                <UsersIcon
+                  size={16}
+                  className="opacity-60"
+                  aria-hidden="true"
+                />
                 <span>{t("supplierManagement")}</span>
               </CommandItem>
               <CommandItem onSelect={() => handleNavigation("/settings")}>
-                <Settings size={16} className="opacity-60" aria-hidden="true" />
+                <SettingsIcon
+                  size={16}
+                  className="opacity-60"
+                  aria-hidden="true"
+                />
                 <span>{t("settings")}</span>
               </CommandItem>
             </CommandGroup>

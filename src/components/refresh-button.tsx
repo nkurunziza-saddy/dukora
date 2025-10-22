@@ -1,6 +1,6 @@
 "use client";
 
-import { RefreshCw } from "lucide-react";
+import { RefreshCwIcon } from "lucide-react";
 import { useState } from "react";
 import { handleRefresh } from "@/server/helpers/general-purpose";
 import { Button } from "./ui/button";
@@ -25,7 +25,7 @@ export function RefreshButton() {
       onClick={reloadAction}
       disabled={loading}
     >
-      <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
+      <RefreshCwIcon size={16} className={loading ? "animate-spin" : ""} />
     </Button>
   );
 }

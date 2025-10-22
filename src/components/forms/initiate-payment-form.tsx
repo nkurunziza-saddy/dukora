@@ -1,6 +1,6 @@
 "use client";
 import { useForm } from "@tanstack/react-form";
-import { AlertCircle, Check, Loader2 } from "lucide-react";
+import { AlertCircleIcon, Check, Loader2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import z from "zod";
@@ -82,7 +82,7 @@ export default function InitiatePaymentForm() {
   if (!businessesData || businessesError) {
     return (
       <Alert variant="error">
-        <AlertCircle className="h-4 w-4" />
+        <AlertCircleIcon className="h-4 w-4" />
         <AlertDescription>{t("failedToLoadBusinesses")}</AlertDescription>
       </Alert>
     );
@@ -105,7 +105,7 @@ export default function InitiatePaymentForm() {
               <FieldLabel>{tPayments("receiverBusiness")} *</FieldLabel>
               {isBusinessesLoading ? (
                 <div className="flex items-center space-x-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2Icon className="h-4 w-4 animate-spin" />
                   <span className="text-sm text-muted-foreground">
                     {tCommon("loading")}
                   </span>
@@ -224,7 +224,7 @@ export default function InitiatePaymentForm() {
         <Button type="submit" disabled={form.state.isSubmitting}>
           {form.state.isSubmitting ? (
             <>
-              <Loader2 className="size-3.5 animate-spin" />
+              <Loader2Icon className="size-3.5 animate-spin" />
               {tCommon("submitting")}...
             </>
           ) : (

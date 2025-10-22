@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import type React from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,7 +37,7 @@ export function TriggerDialog({
           />
         }
       >
-        <Plus className="size-3.5 " />
+        <PlusIcon className="size-3.5 " />
         {triggerText ?? title}
       </DialogTrigger>
       <DialogPopup className="sm:max-w-4xl max-h-[90vh] flex flex-col">

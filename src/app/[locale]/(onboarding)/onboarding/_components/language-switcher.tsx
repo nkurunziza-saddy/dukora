@@ -1,6 +1,6 @@
 "use client";
 
-import { Settings } from "lucide-react";
+import { SettingsIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useEffect, useId, useState } from "react";
@@ -35,7 +35,7 @@ export default function LocaleSwitcher() {
   return (
     <Menu>
       <MenuTrigger render={<Button size="icon" variant="ghost" />}>
-        <Settings size={16} />
+        <SettingsIcon size={16} />
       </MenuTrigger>
       <MenuPopup align="end">
         {languageItems.map((item) => (

@@ -2,7 +2,13 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { ArrowDown, ArrowUp, Redo2, Undo2, XCircle } from "lucide-react";
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  Redo2Icon,
+  Undo2Icon,
+  XCircleIcon,
+} from "lucide-react";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -101,30 +107,30 @@ export const transactionStatuses = [
     value: TransactionType.PURCHASE,
     label: "Purchase",
     variant: "outline" as "secondary" | "error" | "outline",
-    icon: ArrowDown,
+    icon: ArrowDownIcon,
   },
   {
     value: TransactionType.SALE,
     label: "Sale",
     variant: "secondary" as "secondary" | "error" | "outline",
-    icon: ArrowUp,
+    icon: ArrowUpIcon,
   },
   {
     value: TransactionType.DAMAGE,
     label: "Damage",
     variant: "error" as "secondary" | "error" | "outline",
-    icon: XCircle,
+    icon: XCircleIcon,
   },
   {
     value: TransactionType.RETURN_SALE,
     label: "Return Sale",
     variant: "secondary" as "secondary" | "error" | "outline",
-    icon: Undo2,
+    icon: Undo2Icon,
   },
   {
     value: TransactionType.RETURN_PURCHASE,
     label: "Return Purchase",
     variant: "secondary" as "secondary" | "error" | "outline",
-    icon: Redo2,
+    icon: Redo2Icon,
   },
 ];

@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { Loader2Icon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -102,7 +102,7 @@ export default function SetPassword() {
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? (
-              <Loader2 size={16} className="animate-spin" />
+              <Loader2Icon size={16} className="animate-spin" />
             ) : (
               t("setPassword.setPasswordButton")
             )}

@@ -1,7 +1,7 @@
 "use client";
 
 import type { Table } from "@tanstack/react-table";
-import { Settings2 } from "lucide-react";
+import { Settings2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
@@ -33,7 +33,7 @@ export function DataTableViewOptions<TData>({
           />
         }
       >
-        <Settings2 className="size-3.5" />
+        <Settings2Icon className="size-3.5" />
         {t("view")}
       </MenuTrigger>
       <MenuPopup align="end" className="w-[150px]">

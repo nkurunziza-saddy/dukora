@@ -1,19 +1,19 @@
 "use client";
 
 import {
-  ArrowRightLeft,
-  BarChart3,
-  Bot,
-  Calculator,
-  Calendar,
-  CreditCard,
-  Layers,
-  Package,
-  ShoppingCart,
-  Store,
-  Truck,
-  Users,
-  Warehouse,
+  ArrowRightLeftIcon,
+  BarChart3Icon,
+  BotIcon,
+  CalculatorIcon,
+  CalendarIcon,
+  CreditCardIcon,
+  LayersIcon,
+  PackageIcon,
+  ShoppingCartIcon,
+  StoreIcon,
+  TruckIcon,
+  UsersIcon,
+  WarehouseIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -41,27 +41,27 @@ export const data = {
         {
           title: "Dashboard",
           url: "/dashboard",
-          icon: Layers,
+          icon: LayersIcon,
         },
         {
           title: "Inventory Overview",
           url: "/inventory",
-          icon: Warehouse,
+          icon: WarehouseIcon,
         },
         {
           title: "Product Catalog",
           url: "/products",
-          icon: Package,
+          icon: PackageIcon,
         },
         {
           title: "Supplier Management",
           url: "/suppliers",
-          icon: Truck,
+          icon: TruckIcon,
         },
         {
           title: "Business transactions",
           url: "/transactions",
-          icon: ArrowRightLeft,
+          icon: ArrowRightLeftIcon,
         },
       ],
     },
@@ -71,17 +71,17 @@ export const data = {
         {
           title: "Sales Tracking",
           url: "/sales",
-          icon: ShoppingCart,
+          icon: ShoppingCartIcon,
         },
         {
           title: "Analytics",
           url: "/analytics",
-          icon: BarChart3,
+          icon: BarChart3Icon,
         },
         {
           title: "Payments & Invoices",
           url: "/payments",
-          icon: CreditCard,
+          icon: CreditCardIcon,
           disabled: true,
         },
       ],
@@ -92,18 +92,18 @@ export const data = {
         {
           title: "Users & Permissions",
           url: "/users",
-          icon: Users,
+          icon: UsersIcon,
         },
 
         {
           title: "Scheduler",
           url: "/scheduler",
-          icon: Calendar,
+          icon: CalendarIcon,
         },
         {
           title: "E-commerce Sync",
           url: "/commerce",
-          icon: Store,
+          icon: StoreIcon,
           disabled: true,
         },
       ],
@@ -114,12 +114,12 @@ export const data = {
         {
           title: "AI Chat",
           url: "/ai-chat",
-          icon: Bot,
+          icon: BotIcon,
         },
         {
           title: "Financial calculator",
           url: "/financial-calculator",
-          icon: Calculator,
+          icon: CalculatorIcon,
         },
       ],
     },

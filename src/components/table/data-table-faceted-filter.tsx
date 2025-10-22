@@ -1,5 +1,5 @@
 import type { Column } from "@tanstack/react-table";
-import { Check, PlusCircle } from "lucide-react";
+import { CheckIcon, PlusCircleIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type * as React from "react";
 import { Badge } from "@/components/ui/badge";
@@ -43,7 +43,7 @@ export function DataTableDashFilter<TData, TValue>({
           <Button variant="outline" size="sm" className="border-dashed" />
         }
       >
-        <PlusCircle className="size-3.5" />
+        <PlusCircleIcon className="size-3.5" />
         {title}
         {selectedValues?.size > 0 && (
           <>
@@ -110,7 +110,7 @@ export function DataTableDashFilter<TData, TValue>({
                           : "border-input [&_svg]:invisible",
                       )}
                     >
-                      <Check className="text-primary-foreground size-3.5" />
+                      <CheckIcon className="text-primary-foreground size-3.5" />
                     </div>
                     {option.icon && (
                       <option.icon className="text-muted-foreground size-4" />

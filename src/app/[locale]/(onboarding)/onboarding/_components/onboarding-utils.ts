@@ -1,6 +1,12 @@
 import { USER_ROLES } from "@/lib/schema/models/enums";
 import z from "zod";
-import { Building2, MapPin, Package, Settings, Users } from "lucide-react";
+import {
+  Building2Icon,
+  MapPinIcon,
+  PackageIcon,
+  SettingsIcon,
+  UsersIcon,
+} from "lucide-react";
 
 export const CATEGORY_LIMIT = 10;
 export const INVITATIONS_LIMIT = 5;
@@ -44,31 +50,31 @@ export const steps = [
     step: 1,
     title: "Business Profile",
     description: "Set up your business identity",
-    icon: Building2,
+    icon: Building2Icon,
   },
   {
     step: 2,
-    title: "Tax Settings",
+    title: "Tax SettingsIcon",
     description: "Configure pricing and taxes",
-    icon: Settings,
+    icon: SettingsIcon,
   },
   {
     step: 3,
     title: "Team Setup",
     description: "Invite your team members",
-    icon: Users,
+    icon: UsersIcon,
   },
   {
     step: 4,
     title: "Categories",
     description: "Choose product categories",
-    icon: Package,
+    icon: PackageIcon,
   },
   {
     step: 5,
     title: "Warehouses/Branches",
     description: "Set up your business branches and warehouses management",
-    icon: MapPin,
+    icon: MapPinIcon,
   },
 ];
 

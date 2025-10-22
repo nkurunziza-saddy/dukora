@@ -2,7 +2,7 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDownIcon, ChevronRightIcon } from "lucide-react";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
 import type { SelectWarehouse } from "@/lib/schema/schema-types";
@@ -25,9 +25,9 @@ export function WarehouseColumn(
             }}
           >
             {row.getIsExpanded() ? (
-              <ChevronDown size={14} />
+              <ChevronDownIcon size={14} />
             ) : (
-              <ChevronRight size={14} />
+              <ChevronRightIcon size={14} />
             )}
           </button>
         ) : null,

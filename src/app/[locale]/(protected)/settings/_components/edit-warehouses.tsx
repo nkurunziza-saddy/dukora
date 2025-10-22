@@ -1,6 +1,6 @@
 "use client";
 import { useForm } from "@tanstack/react-form";
-import { AlertCircle, Plus, Trash2 } from "lucide-react";
+import { AlertCircleIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -111,7 +111,7 @@ export function EditWarehouses({
                     }
                     disabled={isAtLimit}
                   >
-                    <Plus className="h-4 w-4 mr-2" />
+                    <PlusIcon className="h-4 w-4 mr-2" />
                     {t("addLocation")}
                   </Button>
                 </div>
@@ -119,7 +119,7 @@ export function EditWarehouses({
 
               {isAtLimit && (
                 <Alert variant="error">
-                  <AlertCircle className="h-4 w-4" />
+                  <AlertCircleIcon className="h-4 w-4" />
                   <AlertDescription>
                     You've reached the maximum limit of {LIMITS.WAREHOUSE_LIMIT}{" "}
                     warehouses. Remove some warehouses to add new ones.
@@ -198,7 +198,7 @@ export function EditWarehouses({
                             onClick={() => field.removeValue(index)}
                             className="text-destructive hover:text-destructive"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2Icon className="h-4 w-4" />
                           </Button>
                         )}
                       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import type { Table } from "@tanstack/react-table";
-import { Download, FileText, Users } from "lucide-react";
+import { DownloadIcon, FileTextIcon, UsersIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -159,7 +159,7 @@ export function DataTableExportPDF<TData>({
           </>
         ) : (
           <>
-            <Download className="size-3.5" />
+            <DownloadIcon className="size-3.5" />
             {t("export")}
           </>
         )}
@@ -167,14 +167,14 @@ export function DataTableExportPDF<TData>({
       <MenuPopup align="end" className="w-56">
         <MenuGroup>
           <MenuGroupLabel className="flex items-center gap-2">
-            <FileText className="size-3.5" />
+            <FileTextIcon className="size-3.5" />
             {t("exportOptions")}
           </MenuGroupLabel>
 
           <MenuSeparator />
           <div className="px-2 py-1">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Users className="h-3 w-3" />
+              <UsersIcon className="h-3 w-3" />
               <span>{t("availableRecords", { count: totalRows })}</span>
             </div>
           </div>

@@ -2,7 +2,7 @@
 
 import { useForm } from "@tanstack/react-form";
 import { format } from "date-fns";
-import { Loader2 } from "lucide-react";
+import { Loader2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import z from "zod";
@@ -158,7 +158,7 @@ export function UpdateUserForm({ user }: { user: SelectUser }) {
         >
           {form.state.isSubmitting ? (
             <>
-              <Loader2 className="size-3.5 animate-spin" />
+              <Loader2Icon className="size-3.5 animate-spin" />
               {t("updating")} ...
             </>
           ) : (

@@ -1,5 +1,5 @@
 "use client";
-import { AlertCircle } from "lucide-react";
+import { AlertCircleIcon } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -29,7 +29,7 @@ export function BusinessSettings({ business }: BusinessSettingsProps) {
   if (!business) {
     return (
       <Alert variant="error">
-        <AlertCircle className="h-4 w-4" />
+        <AlertCircleIcon className="h-4 w-4" />
         <AlertDescription>
           Business data is not available. Please try refreshing the page.
         </AlertDescription>
@@ -131,7 +131,7 @@ export function BusinessSettings({ business }: BusinessSettingsProps) {
 
         {completionPercentage < 100 && (
           <Alert>
-            <AlertCircle className="h-4 w-4" />
+            <AlertCircleIcon className="h-4 w-4" />
             <AlertDescription>
               Complete all sections to unlock full business functionality.
               Missing sections may limit some features.

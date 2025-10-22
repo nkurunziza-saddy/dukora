@@ -2,7 +2,7 @@
 
 import { useForm } from "@tanstack/react-form";
 import { format } from "date-fns";
-import { AlertCircle, CheckIcon, Loader2 } from "lucide-react";
+import { AlertCircleIcon, CheckIcon, Loader2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import z from "zod";
@@ -131,7 +131,7 @@ export default function PurchaseTransactionForm({
   if (productsError) {
     return (
       <Alert variant="error">
-        <AlertCircle className="h-4 w-4" />
+        <AlertCircleIcon className="h-4 w-4" />
         <AlertDescription>{t("failedToLoadProducts")}</AlertDescription>
       </Alert>
     );
@@ -140,7 +140,7 @@ export default function PurchaseTransactionForm({
   if (suppliersError) {
     return (
       <Alert variant="error">
-        <AlertCircle className="h-4 w-4" />
+        <AlertCircleIcon className="h-4 w-4" />
         <AlertDescription>{t("failedToLoadSuppliers")}</AlertDescription>
       </Alert>
     );
@@ -165,7 +165,7 @@ export default function PurchaseTransactionForm({
               <FieldLabel>{tInventory("productName")} *</FieldLabel>
               {isProductsLoading ? (
                 <div className="flex items-center space-x-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2Icon className="h-4 w-4 animate-spin" />
                   <span className="text-sm text-muted-foreground">
                     {t("loadingProducts")}
                   </span>
@@ -233,7 +233,7 @@ export default function PurchaseTransactionForm({
                 <FieldLabel>{tInventory("warehouse")} *</FieldLabel>
                 {isWarehousesLoading ? (
                   <div className="flex items-center space-x-2">
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2Icon className="h-4 w-4 animate-spin" />
                     <span className="text-sm text-muted-foreground">
                       {t("loadingWarehouses")}
                     </span>
@@ -285,7 +285,7 @@ export default function PurchaseTransactionForm({
                   </Autocomplete>
                 ) : warehousesError ? (
                   <Alert variant="error">
-                    <AlertCircle className="h-4 w-4" />
+                    <AlertCircleIcon className="h-4 w-4" />
                     <AlertDescription>
                       {t("failedToLoadWarehouses")}
                     </AlertDescription>
@@ -304,7 +304,7 @@ export default function PurchaseTransactionForm({
               <FieldLabel>{tInventory("supplierName")} *</FieldLabel>
               {supplierLoading ? (
                 <div className="flex items-center space-x-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2Icon className="h-4 w-4 animate-spin" />
                   <span className="text-sm text-muted-foreground">
                     {t("loadingSuppliers")}
                   </span>
@@ -439,7 +439,7 @@ export default function PurchaseTransactionForm({
           >
             {form.state.isSubmitting ? (
               <>
-                <Loader2 className="size-3.5 animate-spin" />
+                <Loader2Icon className="size-3.5 animate-spin" />
                 {purchaseTransaction ? tCommon("edit") : tCommon("add")}...
               </>
             ) : purchaseTransaction ? (

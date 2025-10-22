@@ -1,4 +1,4 @@
-import { Check, Copy, Trash2 } from "lucide-react";
+import { CheckIcon, CopyIcon, Trash2Icon } from "lucide-react";
 import { memo, useCallback, useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeKatex from "rehype-katex";
@@ -87,9 +87,9 @@ const Message = memo(
                 onClick={() => onCopy(textContent, message.id)}
               >
                 {isCopied ? (
-                  <Check className="w-3 h-3" />
+                  <CheckIcon className="w-3 h-3" />
                 ) : (
-                  <Copy className="w-3 h-3" />
+                  <CopyIcon className="w-3 h-3" />
                 )}
               </Button>
               <Button
@@ -99,7 +99,7 @@ const Message = memo(
                 onClick={() => onDelete(message.id)}
                 disabled={isLoading}
               >
-                <Trash2 className="w-3 h-3" />
+                <Trash2Icon className="w-3 h-3" />
               </Button>
             </div>
           </div>

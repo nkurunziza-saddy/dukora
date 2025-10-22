@@ -1,9 +1,9 @@
 import type { Table } from "@tanstack/react-table";
 import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronsLeftIcon,
+  ChevronsRightIcon,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -66,7 +66,7 @@ export function DataTablePagination<TData>({
             disabled={!table.getCanPreviousPage()}
           >
             <span className="sr-only">{t("goToFirstPage")}</span>
-            <ChevronsLeft />
+            <ChevronsLeftIcon />
           </Button>
           <Button
             variant="outline"
@@ -76,7 +76,7 @@ export function DataTablePagination<TData>({
             disabled={!table.getCanPreviousPage()}
           >
             <span className="sr-only">{t("goToPreviousPage")}</span>
-            <ChevronLeft />
+            <ChevronLeftIcon />
           </Button>
           <Button
             variant="outline"
@@ -86,7 +86,7 @@ export function DataTablePagination<TData>({
             disabled={!table.getCanNextPage()}
           >
             <span className="sr-only">{t("goToNextPage")}</span>
-            <ChevronRight />
+            <ChevronRightIcon />
           </Button>
           <Button
             variant="outline"
@@ -96,7 +96,7 @@ export function DataTablePagination<TData>({
             disabled={!table.getCanNextPage()}
           >
             <span className="sr-only">{t("goToLastPage")}</span>
-            <ChevronsRight />
+            <ChevronsRightIcon />
           </Button>
         </div>
       </div>
