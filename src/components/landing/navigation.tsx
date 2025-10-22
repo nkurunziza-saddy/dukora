@@ -62,33 +62,31 @@ export function Navigation() {
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-border">
             <nav className="flex flex-col gap-3">
-              <a
+              <Link
                 href="#features"
                 className="text-xs text-text-secondary hover:text-foreground transition"
               >
                 Features
-              </a>
-              <a
+              </Link>
+              <Link
                 href="#about"
                 className="text-xs text-text-secondary hover:text-foreground transition"
               >
                 About
-              </a>
-              <a
+              </Link>
+              <Link
                 href="#insights"
                 className="text-xs text-text-secondary hover:text-foreground transition"
               >
                 Insights
-              </a>
+              </Link>
               <div className="pt-3 border-t border-border">
-                <a
-                  href="https://github.com/nkurunziza-saddy/dukora"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/auth/sign-up"
                   className="block px-4 py-1.5 text-xs font-medium text-center text-foreground border border-border hover:bg-surface transition"
                 >
-                  Contribute
-                </a>
+                  Sign up
+                </Link>
               </div>
             </nav>
           </div>
