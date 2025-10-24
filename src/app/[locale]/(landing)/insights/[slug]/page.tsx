@@ -52,7 +52,7 @@ const posts = {
       },
       {
         type: "paragraph",
-        text: "As an open-source project, we welcome contributions to improve the AI models. Check out our GitHub repository to learn more about the implementation and how you can help make it even better.",
+        text: "As an open-source project, we welcome contributions to improve application. Check out our GitHub repository to learn more about the implementation and how you can help make it even better.",
       },
     ],
   },
@@ -223,7 +223,7 @@ export default function InsightPage({ params }: { params: { slug: string } }) {
         <div className="max-w-4xl mx-auto px-4 py-4">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-xs text-secondary hover:text-foreground transition"
+            className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground/80 transition"
           >
             ← Back to home
           </Link>
@@ -315,12 +315,10 @@ export default function InsightPage({ params }: { params: { slug: string } }) {
                 ← More insights
               </Link>
               <Link
-                href="https://github.com/nkurunziza-saddy/dukora"
-                target="_blank"
-                rel="noopener noreferrer"
+                href={"/auth/sign-up"}
                 className="text-xs text-text-secondary hover:text-foreground transition"
               >
-                Contribute on GitHub →
+                Get started →
               </Link>
             </div>
           </div>

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function Footer() {
   return (
     <footer id="contact" className="border-t border-border bg-background">
@@ -14,7 +16,7 @@ export function Footer() {
               and free .
             </p>
             <div className="flex items-center gap-2">
-              <a
+              <Link
                 href="https://x.com/nk_saddy"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -28,8 +30,8 @@ export function Footer() {
                 >
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
-              </a>
-              <a
+              </Link>
+              <Link
                 href="https://github.com/nkurunziza-saddy/dukora"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -47,7 +49,7 @@ export function Footer() {
                     clipRule="evenodd"
                   />
                 </svg>
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -57,32 +59,32 @@ export function Footer() {
             </h4>
             <ul className="space-y-2.5">
               <li>
-                <a
+                <Link
                   href="#features"
                   className="text-xs text-text-secondary hover:text-foreground transition"
                 >
                   Features
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="https://github.com/nkurunziza-saddy/dukora"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs text-text-secondary hover:text-foreground transition"
                 >
                   GitHub
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="https://github.com/nkurunziza-saddy/dukora/blob/main/LICENSE"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs text-text-secondary hover:text-foreground transition"
                 >
                   License
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -93,30 +95,30 @@ export function Footer() {
             </h4>
             <ul className="space-y-2.5">
               <li>
-                <a
+                <Link
                   href="#insights"
                   className="text-xs text-text-secondary hover:text-foreground transition"
                 >
                   Insights
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="#about"
                   className="text-xs text-text-secondary hover:text-foreground transition"
                 >
                   About
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="https://github.com/nkurunziza-saddy/dukora/issues"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs text-text-secondary hover:text-foreground transition"
                 >
                   Report Issue
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -127,14 +129,14 @@ export function Footer() {
             © 2025 Dukora. Open source.
           </p>
           <div className="flex items-center gap-4">
-            <a
+            <Link
               href="https://github.com/nkurunziza-saddy/dukora"
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs text-text-tertiary hover:text-text-secondary transition"
             >
               Contribute
-            </a>
+            </Link>
           </div>
         </div>
       </div>

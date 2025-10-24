@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const posts = [
   {
     slug: "ai-inventory-predictions",
@@ -41,7 +43,7 @@ export function BlogSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border">
           {posts.map((post, index) => (
-            <a
+            <Link
               key={index}
               href={`/insights/${post.slug}`}
               className="bg-background p-8 hover:bg-surface-elevated transition-colors group"
@@ -63,7 +65,7 @@ export function BlogSection() {
                 </p>
                 <div className="text-xs text-foreground pt-2">Read more →</div>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>

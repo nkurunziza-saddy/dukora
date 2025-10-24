@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function StatsSection() {
   return (
     <section className="py-24 md:py-32 border-y border-border">
@@ -13,23 +15,23 @@ export function StatsSection() {
           </div>
           <p className="text-xs text-text-tertiary max-w-lg mx-auto leading-relaxed">
             Currently in alpha development. Built by{" "}
-            <a
+            <Link
               href="https://x.com/nk_saddy"
               target="_blank"
               rel="noopener noreferrer"
               className="text-foreground hover:underline"
             >
               @nk_saddy
-            </a>
+            </Link>
             . Contributions welcome on{" "}
-            <a
+            <Link
               href="https://github.com/nkurunziza-saddy/dukora"
               target="_blank"
               rel="noopener noreferrer"
               className="text-foreground hover:underline"
             >
               GitHub
-            </a>
+            </Link>
             .
           </p>
         </div>

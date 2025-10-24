@@ -15,7 +15,7 @@ export function HeroSection() {
 
           <p className="text-sm md:text-base text-text-secondary max-w-xl mx-auto leading-relaxed text-pretty">
             Track inventory, manage warehouses, analyze finances, and get
-            AI-powered insights. All in one place.
+            AI-powered tools. All in one place.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
@@ -25,18 +25,16 @@ export function HeroSection() {
             >
               Sign up
             </Link>
-            <a
-              href="https://github.com/nkurunziza-saddy/dukora"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="#features"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-border text-foreground text-xs font-medium hover:bg-surface transition-all"
             >
-              View on GitHub
-            </a>
+              Features
+            </Link>
           </div>
 
           <p className="text-xs text-text-tertiary pt-4">
-            Built with Next.js, Drizzle ORM, and PostgreSQL
+            Built for businesses
           </p>
         </div>
       </div>

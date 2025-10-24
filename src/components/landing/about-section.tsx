@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function AboutSection() {
   return (
     <section id="about" className="py-24 md:py-32 lg:py-40">
@@ -21,21 +23,18 @@ export function AboutSection() {
               teams to make better decisions faster.
             </p>
             <p>
-              Built with Next.js, Drizzle ORM, PostgreSQL, and Better-auth,
-              Dukora is designed to be fast, reliable, and easy to self-host.
-              Every feature is crafted with attention to detail and a focus on
-              real-world business needs.
+              Built with small to medium businesses in mind, Dukora scales
+              alongside your growth, ensuring you always have the insights and
+              control you need to succeed in a competitive market.
             </p>
           </div>
           <div className="pt-4">
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href={"/auth/sign-up"}
               className="inline-flex items-center gap-2 px-5 py-2.5 border border-border text-foreground text-xs font-medium hover:bg-surface transition-all"
             >
-              Learn More on GitHub
-            </a>
+              Try Dukora for free
+            </Link>
           </div>
         </div>
       </div>

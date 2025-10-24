@@ -47,9 +47,9 @@ const features = [
       "Every action is logged for complete transparency and compliance.",
   },
   {
-    title: "PostgreSQL Powered",
+    title: "Secure by Design",
     description:
-      "Reliable, scalable database with Drizzle ORM for type safety.",
+      "Data encryption, regular backups, and robust security practices to protect your business data.",
   },
   {
     title: "Mobile Ready",

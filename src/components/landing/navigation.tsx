@@ -18,24 +18,24 @@ export function Navigation() {
           </div>
 
           <nav className="hidden md:flex items-center gap-4">
-            <a
+            <Link
               href="#features"
               className="text-xs text-text-secondary hover:text-foreground transition"
             >
               Features
-            </a>
-            <a
+            </Link>
+            <Link
               href="#about"
               className="text-xs text-text-secondary hover:text-foreground transition"
             >
               About
-            </a>
-            <a
+            </Link>
+            <Link
               href="#insights"
               className="text-xs text-text-secondary hover:text-foreground transition"
             >
               Insights
-            </a>
+            </Link>
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
@@ -59,38 +59,45 @@ export function Navigation() {
           </button>
         </div>
 
-        {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border">
-            <nav className="flex flex-col gap-3">
-              <Link
-                href="#features"
-                className="text-xs text-text-secondary hover:text-foreground transition"
-              >
-                Features
-              </Link>
-              <Link
-                href="#about"
-                className="text-xs text-text-secondary hover:text-foreground transition"
-              >
-                About
-              </Link>
-              <Link
-                href="#insights"
-                className="text-xs text-text-secondary hover:text-foreground transition"
-              >
-                Insights
-              </Link>
-              <div className="pt-3 border-t border-border">
+        <div className="md:hidden">
+          <div
+            aria-hidden={!mobileMenuOpen}
+            className={`overflow-hidden transition-all duration-300 ease-in-out ${
+              mobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+            }`}
+          >
+            <div className="py-4 border-t border-border">
+              <nav className="flex flex-col gap-3">
                 <Link
-                  href="/auth/sign-up"
-                  className="block px-4 py-1.5 text-xs font-medium text-center text-foreground border border-border hover:bg-surface transition"
+                  href="#features"
+                  className="text-xs text-text-secondary hover:text-foreground transition"
                 >
-                  Sign up
+                  Features
                 </Link>
-              </div>
-            </nav>
+                <Link
+                  href="#about"
+                  className="text-xs text-text-secondary hover:text-foreground transition"
+                >
+                  About
+                </Link>
+                <Link
+                  href="#insights"
+                  className="text-xs text-text-secondary hover:text-foreground transition"
+                >
+                  Insights
+                </Link>
+                <div className="pt-3 border-t border-border">
+                  <Link
+                    href="/auth/sign-up"
+                    className="block px-4 py-1.5 text-xs font-medium text-center text-foreground border border-border hover:bg-surface transition"
+                  >
+                    Sign up
+                  </Link>
+                </div>
+              </nav>
+            </div>
           </div>
-        )}
+        </div>
       </div>
     </nav>
   );
