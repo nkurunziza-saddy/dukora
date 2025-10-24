@@ -19,7 +19,21 @@ export const getWarehouses = createProtectedAction(
       return { data: null, error: warehouses.error };
     }
     return { data: warehouses.data, error: null };
-  },
+  }
+);
+export const getWarehousesPaginated = createProtectedAction(
+  Permission.WAREHOUSE_VIEW,
+  async (user, { page, pageSize }: { page: number; pageSize: number }) => {
+    const warehouses = await warehouseRepo.get_all_paginated_cached(
+      user.businessId!,
+      page,
+      pageSize
+    );
+    if (warehouses.error) {
+      return { data: null, error: warehouses.error };
+    }
+    return { data: warehouses.data, error: null };
+  }
 );
 
 export const getWarehouseById = createProtectedAction(
@@ -30,13 +44,13 @@ export const getWarehouseById = createProtectedAction(
     }
     const warehouse = await warehouseRepo.get_by_id_cached(
       warehouseId,
-      user.businessId!,
+      user.businessId!
     );
     if (warehouse.error) {
       return { data: null, error: warehouse.error };
     }
     return { data: warehouse.data, error: null };
-  },
+  }
 );
 
 export const createWarehouse = createProtectedAction(
@@ -51,7 +65,7 @@ export const createWarehouse = createProtectedAction(
     };
     const { data: resData, error: resError } = await warehouseRepo.create(
       warehouse,
-      user.id,
+      user.id
     );
     if (resError) {
       return { data: null, error: resError };
@@ -59,7 +73,7 @@ export const createWarehouse = createProtectedAction(
     revalidatePath("/scheduler");
     revalidatePath("/dashboard");
     return { data: resData, error: null };
-  },
+  }
 );
 
 export const updateWarehouse = createProtectedAction(
@@ -72,7 +86,7 @@ export const updateWarehouse = createProtectedAction(
     }: {
       warehouseId: string;
       updates: Partial<Omit<InsertWarehouse, "id" | "businessId">>;
-    },
+    }
   ) => {
     if (!warehouseId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -81,14 +95,14 @@ export const updateWarehouse = createProtectedAction(
       warehouseId,
       user.businessId!,
       user.id,
-      updates,
+      updates
     );
     if (updatedWarehouse.error) {
       return { data: null, error: updatedWarehouse.error };
     }
     revalidatePath("/", "layout");
     return { data: updatedWarehouse.data, error: null };
-  },
+  }
 );
 
 export const deleteWarehouse = createProtectedAction(
@@ -100,7 +114,7 @@ export const deleteWarehouse = createProtectedAction(
     await warehouseRepo.remove(warehouseId, user.businessId!, user.id);
     revalidatePath("/", "layout");
     return { data: { success: true }, error: null };
-  },
+  }
 );
 
 export const createManyWarehouses = createProtectedAction(
@@ -110,7 +124,7 @@ export const createManyWarehouses = createProtectedAction(
     data: {
       created: Omit<InsertWarehouse, "businessId" | "id" | "code">[];
       deleted: SelectWarehouse[];
-    },
+    }
   ) => {
     if (data === null) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -122,18 +136,18 @@ export const createManyWarehouses = createProtectedAction(
     }));
     const createdWarehouses = await warehouseRepo.create_many(
       warehouses,
-      user.id,
+      user.id
     );
     const deleteWarehouses = await Promise.all(
       data.deleted.map((warehouse) => {
         return warehouseRepo.remove(
           warehouse.id,
           warehouse.businessId,
-          user.id,
+          user.id
         );
-      }),
+      })
     );
     revalidatePath("/", "layout");
     return { data: { createdWarehouses, deleteWarehouses }, error: null };
-  },
+  }
 );

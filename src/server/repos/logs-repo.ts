@@ -1,6 +1,6 @@
 "use server";
 
-import { and, desc, eq } from "drizzle-orm";
+import { and, count, desc, eq } from "drizzle-orm";
 import { revalidatePath, unstable_cache } from "next/cache";
 import { cache } from "react";
 import { db } from "@/lib/db";
@@ -20,8 +20,8 @@ export const get_all = cache(async (businessId: string, userId: string) => {
       .where(
         and(
           eq(auditLogsTable.businessId, businessId),
-          eq(auditLogsTable.performedBy, userId),
-        ),
+          eq(auditLogsTable.performedBy, userId)
+        )
       )
       .orderBy(desc(auditLogsTable.performedAt));
     return { data: auditLogs, error: null };
@@ -39,7 +39,68 @@ export const get_all_cached = unstable_cache(
   {
     tags: ["logs"],
     revalidate: 300,
+  }
+);
+
+export const get_all_paginated = cache(
+  async (
+    businessId: string,
+    userId: string,
+    page: number,
+    pageSize: number
+  ) => {
+    if (!businessId) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
+    }
+
+    try {
+      const offset = (page - 1) * pageSize;
+      const auditLogs = await db
+        .select()
+        .from(auditLogsTable)
+        .where(
+          and(
+            eq(auditLogsTable.businessId, businessId),
+            eq(auditLogsTable.performedBy, userId)
+          )
+        )
+        .orderBy(desc(auditLogsTable.performedAt))
+        .limit(pageSize)
+        .offset(offset);
+      const [totalCount] = await db
+        .select({ count: count() })
+        .from(auditLogsTable)
+        .where(
+          and(
+            eq(auditLogsTable.businessId, businessId),
+            eq(auditLogsTable.performedBy, userId)
+          )
+        );
+      return {
+        data: { auditLogs, totalCount: totalCount.count || 0 },
+        error: null,
+      };
+    } catch (error) {
+      console.error("Failed to fetch auditLogs:", error);
+      return { data: null, error: ErrorCode.FAILED_REQUEST };
+    }
+  }
+);
+
+export const get_all_paginated_cached = unstable_cache(
+  async (
+    businessId: string,
+    userId: string,
+    page: number,
+    pageSize: number
+  ) => {
+    return get_all_paginated(businessId, userId, page, pageSize);
   },
+  ["logs"],
+  {
+    tags: ["logs"],
+    revalidate: 300,
+  }
 );
 
 export const get_overview = cache(
@@ -55,8 +116,8 @@ export const get_overview = cache(
         .where(
           and(
             eq(auditLogsTable.businessId, businessId),
-            eq(auditLogsTable.performedBy, userId),
-          ),
+            eq(auditLogsTable.performedBy, userId)
+          )
         )
         .innerJoin(usersTable, eq(auditLogsTable.performedBy, usersTable.id))
         .limit(limit ?? 5)
@@ -66,7 +127,7 @@ export const get_overview = cache(
       console.error("Failed to fetch auditLogs:", error);
       return { data: null, error: ErrorCode.FAILED_REQUEST };
     }
-  },
+  }
 );
 
 export async function get_by_id(auditLogId: string, businessId: string) {
@@ -78,7 +139,7 @@ export async function get_by_id(auditLogId: string, businessId: string) {
     const auditLog = await db.query.auditLogsTable.findFirst({
       where: and(
         eq(auditLogsTable.id, auditLogId),
-        eq(auditLogsTable.businessId, businessId),
+        eq(auditLogsTable.businessId, businessId)
       ),
     });
 
@@ -99,7 +160,7 @@ export async function get_by_id(auditLogId: string, businessId: string) {
 export async function create(
   _businessId: string,
   _userId: string,
-  auditLog: InsertAuditLog,
+  auditLog: InsertAuditLog
 ) {
   try {
     const [newAuditLog] = await db
@@ -133,8 +194,8 @@ export async function remove(auditLogId: string, businessId: string) {
       .where(
         and(
           eq(auditLogsTable.id, auditLogId),
-          eq(auditLogsTable.businessId, businessId),
-        ),
+          eq(auditLogsTable.businessId, businessId)
+        )
       )
       .returning();
 

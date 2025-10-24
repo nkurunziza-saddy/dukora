@@ -25,6 +25,34 @@ export const get_all = cache(async (businessId: string) => {
   }
 });
 
+export const get_all_paginated = cache(
+  async (businessId: string, page: number, pageSize: number) => {
+    if (!businessId) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
+    }
+    try {
+      const offset = (page - 1) * pageSize;
+      const payments = await db
+        .select()
+        .from(interBusinessPaymentsTable)
+        .where(eq(interBusinessPaymentsTable.payerBusinessId, businessId))
+        .orderBy(desc(interBusinessPaymentsTable.createdAt))
+        .limit(pageSize)
+        .offset(offset);
+      return {
+        data: { payments, totalCount: payments.length || 0 },
+        error: null,
+      };
+    } catch (error) {
+      console.error(
+        "Failed to get inter-business payments for business:",
+        error
+      );
+      return { data: null, error: ErrorCode.FAILED_REQUEST };
+    }
+  }
+);
+
 export async function get_by_id(paymentId: string) {
   if (!paymentId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -45,7 +73,7 @@ export async function get_by_id(paymentId: string) {
 
 export async function create(
   payment: InsertInterBusinessPayment,
-  userId: string,
+  userId: string
 ) {
   if (!payment || !userId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -78,7 +106,7 @@ export async function create(
 export async function update_status(
   paymentId: string,
   status: string,
-  userId: string,
+  userId: string
 ) {
   if (!paymentId || !status || !userId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };

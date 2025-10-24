@@ -6,6 +6,9 @@ import { DataTable } from "@/components/table/data-table";
 type ColumnWrapperProps<T> = {
   column: (t: (key: string) => string) => ColumnDef<T>[];
   data: T[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
   tag:
     | "products"
     | "suppliers"
@@ -15,9 +18,25 @@ type ColumnWrapperProps<T> = {
     | "payments";
 };
 
-const ColumnWrapper = <T,>({ column, data, tag }: ColumnWrapperProps<T>) => {
+const ColumnWrapper = <T,>({
+  column,
+  data,
+  totalCount,
+  page,
+  pageSize,
+  tag,
+}: ColumnWrapperProps<T>) => {
   const t = useTranslations(tag === "payments" ? "payments" : "common");
-  return <DataTable columns={column(t)} data={data} tag={tag} />;
+  return (
+    <DataTable
+      columns={column(t)}
+      data={data}
+      tag={tag}
+      totalCount={totalCount}
+      page={page}
+      pageSize={pageSize}
+    />
+  );
 };
 
 export default ColumnWrapper;

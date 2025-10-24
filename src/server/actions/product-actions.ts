@@ -15,7 +15,22 @@ export const getProducts = createProtectedAction(
       return { data: null, error: products.error };
     }
     return { data: products.data, error: null };
-  },
+  }
+);
+
+export const getProductsPaginated = createProtectedAction(
+  Permission.PRODUCT_VIEW,
+  async (user, { page, pageSize }: { page: number; pageSize: number }) => {
+    const products = await productRepo.get_all_paginated_cached(
+      user.businessId!,
+      page,
+      pageSize
+    );
+    if (products.error) {
+      return { data: null, error: products.error };
+    }
+    return { data: products.data, error: null };
+  }
 );
 
 export const getOverviewProducts = createProtectedAction(
@@ -26,7 +41,7 @@ export const getOverviewProducts = createProtectedAction(
       return { data: null, error: products.error };
     }
     return { data: products.data, error: null };
-  },
+  }
 );
 
 export const getProductById = createProtectedAction(
@@ -37,13 +52,13 @@ export const getProductById = createProtectedAction(
     }
     const product = await productRepo.get_by_id_cached(
       productId,
-      user.businessId!,
+      user.businessId!
     );
     if (product.error) {
       return { data: null, error: product.error };
     }
     return { data: product.data, error: null };
-  },
+  }
 );
 
 export const createProduct = createProtectedAction(
@@ -62,7 +77,7 @@ export const createProduct = createProtectedAction(
     }
     revalidatePath("/", "layout");
     return { data: res.data, error: null };
-  },
+  }
 );
 
 export const updateProduct = createProtectedAction(
@@ -75,7 +90,7 @@ export const updateProduct = createProtectedAction(
     }: {
       productId: string;
       updates: Partial<Omit<InsertProduct, "id" | "businessId">>;
-    },
+    }
   ) => {
     if (!productId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -84,14 +99,14 @@ export const updateProduct = createProtectedAction(
       productId,
       user.businessId!,
       user.id,
-      updates,
+      updates
     );
     if (updatedProduct.error) {
       return { data: null, error: updatedProduct.error };
     }
     revalidatePath("/", "layout");
     return { data: updatedProduct.data, error: null };
-  },
+  }
 );
 
 export const deleteProduct = createProtectedAction(
@@ -106,7 +121,7 @@ export const deleteProduct = createProtectedAction(
     }
     revalidatePath("/", "layout");
     return { data: { success: true }, error: null };
-  },
+  }
 );
 
 export const createManyProducts = createProtectedAction(
@@ -125,5 +140,5 @@ export const createManyProducts = createProtectedAction(
     }
     revalidatePath("/", "layout");
     return { data: createdProducts.data, error: null };
-  },
+  }
 );

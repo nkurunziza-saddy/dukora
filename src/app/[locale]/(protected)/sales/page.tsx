@@ -11,15 +11,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getTodayTransactions } from "@/server/actions/statistics-actions";
-import { getTransactionsByTimeInterval } from "@/server/actions/transaction-actions";
+import { getTransactionsByTimeIntervalPaginated } from "@/server/actions/transaction-actions";
 import { TransactionColumn } from "@/utils/columns/transaction-column";
 
-export default async function SalesTracking() {
+export default async function SalesTracking(
+  props: PageProps<"/[locale]/sales">
+) {
+  const query = await props.searchParams;
+  const page = Number(query.page) || 1;
+  const pageSize = Number(query.pageSize) || 10;
   const t = await getTranslations("sales");
   const statData = await getTodayTransactions({});
-  const transactions = await getTransactionsByTimeInterval({
+  const transactionsData = await getTransactionsByTimeIntervalPaginated({
     startDate: subDays(new Date(), 7),
     endDate: new Date(),
+    page,
+    pageSize,
   });
 
   const salesStatsData = [
@@ -49,7 +56,7 @@ export default async function SalesTracking() {
     },
   ];
 
-  if (statData.error || !transactions.data) {
+  if (statData.error || !transactionsData.data) {
     throw new Error("Stat fetching error");
   }
 
@@ -79,8 +86,11 @@ export default async function SalesTracking() {
         <CardPanel className="px-0">
           <ColumnWrapper
             column={TransactionColumn}
-            data={transactions.data}
+            data={transactionsData.data.result}
             tag="transactions"
+            page={page}
+            pageSize={pageSize}
+            totalCount={transactionsData.data.totalCount}
           />
         </CardPanel>
       </Card>

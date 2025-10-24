@@ -17,33 +17,22 @@ export const getTransactions = createProtectedAction(
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  },
+  }
 );
 
 export const getTransactionsPaginated = createProtectedAction(
   Permission.FINANCIAL_VIEW,
-  async (user, { page = 1, limit = 50 }: { page?: number; limit?: number }) => {
-    const result = await transactionRepo.get_paginated(
+  async (user, { page, pageSize }: { page: number; pageSize: number }) => {
+    const transactions = await transactionRepo.get_all_paginated_cached(
       user.businessId!,
       page,
-      limit,
+      pageSize
     );
-
-    if (result.error) {
-      return { data: null, error: result.error, pagination: null };
+    if (transactions.error) {
+      return { data: null, error: transactions.error };
     }
-
-    return {
-      data: result.data,
-      error: null,
-      pagination: {
-        page: result.page,
-        limit: result.limit,
-        total: result.total,
-        totalPages: result.totalPages,
-      },
-    };
-  },
+    return { data: transactions.data, error: null };
+  }
 );
 
 export const getTransactionsByTimeInterval = createProtectedAction(
@@ -52,13 +41,39 @@ export const getTransactionsByTimeInterval = createProtectedAction(
     const transactions = await transactionRepo.get_time_interval_with_with(
       user.businessId!,
       startDate,
-      endDate,
+      endDate
     );
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  },
+  }
+);
+
+export const getTransactionsByTimeIntervalPaginated = createProtectedAction(
+  Permission.FINANCIAL_VIEW,
+  async (
+    user,
+    {
+      startDate,
+      endDate,
+      page,
+      pageSize,
+    }: { startDate: Date; endDate: Date; page: number; pageSize: number }
+  ) => {
+    const transactions =
+      await transactionRepo.get_time_interval_with_with_paginated(
+        user.businessId!,
+        startDate,
+        endDate,
+        page,
+        pageSize
+      );
+    if (transactions.error) {
+      return { data: null, error: transactions.error };
+    }
+    return { data: transactions.data, error: null };
+  }
 );
 
 export const getTransactionById = createProtectedAction(
@@ -69,20 +84,20 @@ export const getTransactionById = createProtectedAction(
     }
     const transaction = await transactionRepo.get_by_id(
       transactionId,
-      user.businessId!,
+      user.businessId!
     );
     if (transaction.error) {
       return { data: null, error: transaction.error };
     }
     return { data: transaction.data, error: null };
-  },
+  }
 );
 
 export const createTransaction = createProtectedAction(
   Permission.TRANSACTION_PURCHASE_CREATE,
   async (
     user,
-    transactionData: Omit<InsertTransaction, "businessId" | "id" | "createdBy">,
+    transactionData: Omit<InsertTransaction, "businessId" | "id" | "createdBy">
   ) => {
     if (
       !transactionData.productId?.trim() ||
@@ -104,7 +119,7 @@ export const createTransaction = createProtectedAction(
     }
 
     return { data: resData, error: null };
-  },
+  }
 );
 
 export const createTransactionAndWarehouseItem = createProtectedAction(
@@ -114,7 +129,7 @@ export const createTransactionAndWarehouseItem = createProtectedAction(
     transactionData: Omit<
       InsertTransaction,
       "businessId" | "id" | "createdBy" | "warehouseItemId"
-    >,
+    >
   ) => {
     if (
       !transactionData.productId?.trim() ||
@@ -134,7 +149,7 @@ export const createTransactionAndWarehouseItem = createProtectedAction(
       return { data: null, error: resError };
     }
     return { data: resData, error: null };
-  },
+  }
 );
 
 export const getTransactionsByType = createProtectedAction(
@@ -145,11 +160,11 @@ export const getTransactionsByType = createProtectedAction(
     }
     const transactions = await transactionRepo.get_by_type(
       user.businessId!,
-      type,
+      type
     );
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  },
+  }
 );

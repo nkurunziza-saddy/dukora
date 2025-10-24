@@ -4,34 +4,43 @@ import type { InsertAuditLog } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import {
-  create as createLogRepo,
-  get_all_cached as getAllLogsRepo,
-  get_by_id as getLogByIdRepo,
-  get_overview as getOverviewLogsRepo,
-  remove as removeLogRepo,
-} from "../repos/logs-repo";
+import * as logsRepo from "../repos/logs-repo";
 
 export const getLogs = createProtectedAction(
   Permission.LOG_VIEW,
   async (user) => {
-    const logs = await getAllLogsRepo(user.businessId!, user.id);
+    const logs = await logsRepo.get_all_cached(user.businessId!, user.id);
     if (logs.error) {
       return { data: null, error: logs.error };
     }
     return { data: logs.data, error: null };
-  },
+  }
+);
+export const getLogsPaginated = createProtectedAction(
+  Permission.LOG_VIEW,
+  async (user, { page, pageSize }: { page: number; pageSize: number }) => {
+    const logs = await logsRepo.get_all_paginated_cached(
+      user.businessId!,
+      user.id,
+      page,
+      pageSize
+    );
+    if (logs.error) {
+      return { data: null, error: logs.error };
+    }
+    return { data: logs.data, error: null };
+  }
 );
 
 export const getLogsOverview = createProtectedAction(
   Permission.LOG_VIEW,
   async (user, limit?: number) => {
-    const logs = await getOverviewLogsRepo(user.businessId!, user.id, limit);
+    const logs = await logsRepo.get_overview(user.businessId!, user.id, limit);
     if (logs.error) {
       return { data: null, error: logs.error };
     }
     return { data: logs.data, error: null };
-  },
+  }
 );
 
 export const getLogById = createProtectedAction(
@@ -40,12 +49,12 @@ export const getLogById = createProtectedAction(
     if (!auditLogId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const log = await getLogByIdRepo(auditLogId, user.businessId!);
+    const log = await logsRepo.get_by_id(auditLogId, user.businessId!);
     if (log.error) {
       return { data: null, error: log.error };
     }
     return { data: log.data, error: null };
-  },
+  }
 );
 
 export const createLog = createProtectedAction(
@@ -56,12 +65,12 @@ export const createLog = createProtectedAction(
       businessId: user.businessId!,
       performedBy: user.id,
     };
-    const res = await createLogRepo(user.businessId!, user.id, log);
+    const res = await logsRepo.create(user.businessId!, user.id, log);
     if (res.error) {
       return { data: null, error: res.error };
     }
     return { data: res.data, error: null };
-  },
+  }
 );
 
 export const deleteLog = createProtectedAction(
@@ -70,10 +79,10 @@ export const deleteLog = createProtectedAction(
     if (!auditLogId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const res = await removeLogRepo(auditLogId, user.businessId!);
+    const res = await logsRepo.remove(auditLogId, user.businessId!);
     if (res.error) {
       return { data: null, error: res.error };
     }
     return { data: res.data, error: null };
-  },
+  }
 );

@@ -28,39 +28,43 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
-import { getInvitations } from "@/server/actions/invitation-actions";
-import { getUsers } from "@/server/actions/user-actions";
+import { getInvitationsPaginated } from "@/server/actions/invitation-actions";
+import { getUsersPaginated } from "@/server/actions/user-actions";
 import { Permission } from "@/server/constants/permissions";
 import { RolePermissions } from "@/server/helpers/role-permissions";
 import { InvitationColumn } from "@/utils/columns/invitation-column";
 import { UserColumn } from "@/utils/columns/user-column";
 
-export default async function users() {
-  const users = await getUsers({});
-  const invitations = await getInvitations({});
-  if (!users.data) return null;
+export default async function Users(props: PageProps<"/[locale]/users">) {
+  const query = await props.searchParams;
+  const page = Number(query.page) || 1;
+  const pageSize = Number(query.pageSize) || 10;
+  const usersData = await getUsersPaginated({ page, pageSize });
+  const invitationsData = await getInvitationsPaginated({ page, pageSize });
   const t = await getTranslations("users");
   const statData = [
     {
       title: t("totalUsers"),
-      value: users.data ? users.data.length : 0,
+      value: usersData.data ? usersData.data.users.length : 0,
       icon: UsersIcon,
     },
     {
       title: t("activeUsers"),
-      value: users.data ? users.data.filter((user) => user.isActive).length : 0,
+      value: usersData.data
+        ? usersData.data.users.filter((user) => user.isActive).length
+        : 0,
       icon: UsersIcon,
     },
     {
       title: t("admins"),
-      value: users.data
-        ? users.data.filter((user) => user.role === "ADMIN").length
+      value: usersData.data
+        ? usersData.data.users.filter((user) => user.role === "ADMIN").length
         : 0,
       icon: UsersIcon,
     },
     {
       title: t("pending"),
-      value: invitations.data ? invitations.data.length : 0,
+      value: invitationsData.data ? invitationsData.data.invitations.length : 0,
       icon: UsersIcon,
     },
   ];
@@ -113,14 +117,17 @@ export default async function users() {
             <CardPanel className="px-0">
               <ColumnWrapper
                 column={UserColumn}
-                data={users.data ?? []}
+                data={usersData.data?.users ?? []}
+                totalCount={usersData.data?.totalCount || 0}
+                page={page}
+                pageSize={pageSize}
                 tag="users"
               />
             </CardPanel>
           </Card>
         </TabsPanel>
         <TabsPanel value="invitations">
-          {invitations.data && (
+          {invitationsData.data && (
             <Card className="bg-transparent border-0 px-0">
               <CardHeader className="px-0">
                 <CardTitle>{t("tabsInvitations")}</CardTitle>
@@ -131,7 +138,10 @@ export default async function users() {
               <CardPanel className="px-0">
                 <ColumnWrapper
                   column={InvitationColumn}
-                  data={invitations.data}
+                  data={invitationsData.data?.invitations}
+                  totalCount={invitationsData.data?.totalCount || 0}
+                  page={page}
+                  pageSize={pageSize}
                   tag="invitations"
                 />
               </CardPanel>

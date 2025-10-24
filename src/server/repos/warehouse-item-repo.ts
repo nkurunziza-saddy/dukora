@@ -1,5 +1,5 @@
 "use server";
-import { and, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import { revalidatePath, unstable_cache } from "next/cache";
 import { cache } from "react";
 import { db } from "@/lib/db";
@@ -36,7 +36,44 @@ export const get_all_cached = unstable_cache(
   {
     tags: ["warehouses", "warehouse-items"],
     revalidate: 300,
+  }
+);
+
+export const get_all_paginated = cache(
+  async (warehouseId: string, page: number, pageSize: number) => {
+    try {
+      const offset = (page - 1) * pageSize;
+      const items = await db
+        .select()
+        .from(warehouseItemsTable)
+        .where(eq(warehouseItemsTable.warehouseId, warehouseId))
+        .limit(pageSize)
+        .offset(offset);
+      const [totalCount] = await db
+        .select({ count: count() })
+        .from(warehouseItemsTable)
+        .where(eq(warehouseItemsTable.warehouseId, warehouseId));
+
+      return {
+        data: { items, totalCount: totalCount.count || 0 },
+        error: null,
+      };
+    } catch (error) {
+      console.error("Error getting warehouse items:", error);
+      return { data: null, error: ErrorCode.FAILED_REQUEST };
+    }
+  }
+);
+
+export const get_all_paginated_cached = unstable_cache(
+  async (warehouseId: string, page: number, pageSize: number) => {
+    return await get_all_paginated(warehouseId, page, pageSize);
   },
+  ["warehouses", "warehouse-items"],
+  {
+    tags: ["warehouses", "warehouse-items"],
+    revalidate: 300,
+  }
 );
 
 export async function get_all_by_business_id(businessId: string) {
@@ -49,11 +86,11 @@ export async function get_all_by_business_id(businessId: string) {
       .from(warehousesTable)
       .innerJoin(
         warehouseItemsTable,
-        eq(warehousesTable.id, warehouseItemsTable.warehouseId),
+        eq(warehousesTable.id, warehouseItemsTable.warehouseId)
       )
       .innerJoin(
         productsTable,
-        eq(warehouseItemsTable.productId, productsTable.id),
+        eq(warehouseItemsTable.productId, productsTable.id)
       )
       .where(eq(warehousesTable.businessId, businessId));
     return { data: items, error: null };
@@ -91,13 +128,13 @@ export const get_by_id_cached = unstable_cache(
   {
     tags: [`warehouses`, "warehouse-item"],
     revalidate: 300,
-  },
+  }
 );
 
 export async function create(
   businessId: string,
   userId: string,
-  warehouseItem: InsertWarehouseItem,
+  warehouseItem: InsertWarehouseItem
 ) {
   try {
     const result = await db.transaction(async (tx) => {
@@ -132,7 +169,7 @@ export async function update(
   businessId: string,
   warehouseItemId: string,
   userId: string,
-  updates: Partial<InsertWarehouseItem>,
+  updates: Partial<InsertWarehouseItem>
 ) {
   try {
     const result = await db.transaction(async (tx) => {
@@ -183,7 +220,7 @@ export async function update(
 export async function remove(
   warehouseItemId: string,
   businessId: string,
-  userId: string,
+  userId: string
 ) {
   try {
     const item = await db.query.warehouseItemsTable.findFirst({

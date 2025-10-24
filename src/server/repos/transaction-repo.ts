@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, lte, sql } from "drizzle-orm";
+import { and, count, desc, eq, gte, lte, sql } from "drizzle-orm";
 import { revalidatePath, unstable_cache } from "next/cache";
 import { cache } from "react";
 import { db } from "@/lib/db";
@@ -40,7 +40,7 @@ export const get_all = cache(async (businessId: string) => {
       .where(eq(transactionsTable.businessId, businessId))
       .innerJoin(
         productsTable,
-        eq(productsTable.id, transactionsTable.productId),
+        eq(productsTable.id, transactionsTable.productId)
       )
       .innerJoin(usersTable, eq(usersTable.id, transactionsTable.createdBy))
       .orderBy(desc(transactionsTable.createdAt));
@@ -60,53 +60,74 @@ export const get_all_cached = unstable_cache(
   {
     tags: ["transactions"],
     revalidate: 300,
-  },
+  }
 );
 
-export const get_paginated = cache(
-  async (businessId: string, page = 1, limit = 50) => {
+export const get_all_paginated = cache(
+  async (businessId: string, page: number, pageSize: number) => {
     if (!businessId) {
-      return { data: null, error: ErrorCode.MISSING_INPUT, total: 0 };
+      return { data: null, error: ErrorCode.MISSING_INPUT };
     }
 
     try {
-      const offset = (page - 1) * limit;
-
-      const [totalResult] = await db
-        .select({ count: sql<number>`count(*)` })
+      const offset = (page - 1) * pageSize;
+      const transactions = await db
+        .select({
+          type: transactionsTable.type,
+          quantity: transactionsTable.quantity,
+          reference: transactionsTable.reference,
+          note: transactionsTable.note,
+          createdAt: transactionsTable.createdAt,
+          product: productsTable.name,
+          createdBy: usersTable.name,
+        })
         .from(transactionsTable)
-        .where(eq(transactionsTable.businessId, businessId));
+        .where(eq(transactionsTable.businessId, businessId))
+        .innerJoin(
+          productsTable,
+          eq(productsTable.id, transactionsTable.productId)
+        )
+        .innerJoin(usersTable, eq(usersTable.id, transactionsTable.createdBy))
+        .orderBy(desc(transactionsTable.createdAt))
+        .limit(pageSize)
+        .offset(offset);
 
-      const transactions = await db.query.transactionsTable.findMany({
-        where: eq(transactionsTable.businessId, businessId),
-        orderBy: desc(transactionsTable.createdAt),
-        limit,
-        offset,
-        with: {
-          product: true,
-          createdByUser: true,
-        },
-      });
+      const [totalCount] = await db
+        .select({ count: count() })
+        .from(transactionsTable)
+        .where(eq(transactionsTable.businessId, businessId))
+        .innerJoin(
+          productsTable,
+          eq(productsTable.id, transactionsTable.productId)
+        )
+        .innerJoin(usersTable, eq(usersTable.id, transactionsTable.createdBy));
 
       return {
-        data: transactions,
+        data: { transactions, totalCount: totalCount.count || 0 },
         error: null,
-        total: totalResult.count,
-        page,
-        limit,
-        totalPages: Math.ceil(totalResult.count / limit),
       };
     } catch (error) {
       console.error("Failed to fetch transactions:", error);
-      return { data: null, error: ErrorCode.FAILED_REQUEST, total: 0 };
+      return { data: null, error: ErrorCode.FAILED_REQUEST };
     }
+  }
+);
+
+export const get_all_paginated_cached = unstable_cache(
+  async (businessId: string, page: number, pageSize: number) => {
+    return get_all_paginated(businessId, page, pageSize);
   },
+  ["transactions"],
+  {
+    tags: ["transactions"],
+    revalidate: 300,
+  }
 );
 
 export async function get_by_time_interval(
   businessId: string,
   dateFrom: Date,
-  dateTo: Date,
+  dateTo: Date
 ) {
   try {
     const result = await db
@@ -116,12 +137,12 @@ export async function get_by_time_interval(
         and(
           eq(transactionsTable.businessId, businessId),
           gte(transactionsTable.createdAt, dateFrom),
-          lte(transactionsTable.createdAt, dateTo),
-        ),
+          lte(transactionsTable.createdAt, dateTo)
+        )
       )
       .innerJoin(
         productsTable,
-        eq(transactionsTable.productId, productsTable.id),
+        eq(transactionsTable.productId, productsTable.id)
       );
     return {
       data: result,
@@ -135,7 +156,7 @@ export async function get_by_time_interval(
 export async function get_time_interval_with_with(
   businessId: string,
   dateFrom: Date,
-  dateTo: Date,
+  dateTo: Date
 ) {
   try {
     const result = await db
@@ -153,18 +174,80 @@ export async function get_time_interval_with_with(
         and(
           eq(transactionsTable.businessId, businessId),
           gte(transactionsTable.createdAt, dateFrom),
-          lte(transactionsTable.createdAt, dateTo),
-        ),
+          lte(transactionsTable.createdAt, dateTo)
+        )
       )
       .innerJoin(
         productsTable,
-        eq(productsTable.id, transactionsTable.productId),
+        eq(productsTable.id, transactionsTable.productId)
       )
       .innerJoin(usersTable, eq(usersTable.id, transactionsTable.createdBy))
       .orderBy(desc(transactionsTable.createdAt));
 
     return {
       data: result,
+      error: null,
+    };
+  } catch (error) {
+    console.error(error);
+    return { data: null, error: ErrorCode.FAILED_REQUEST };
+  }
+}
+
+export async function get_time_interval_with_with_paginated(
+  businessId: string,
+  dateFrom: Date,
+  dateTo: Date,
+  page: number,
+  pageSize: number
+) {
+  try {
+    const offset = (page - 1) * pageSize;
+    const result = await db
+      .select({
+        type: transactionsTable.type,
+        quantity: transactionsTable.quantity,
+        reference: transactionsTable.reference,
+        note: transactionsTable.note,
+        createdAt: transactionsTable.createdAt,
+        product: productsTable.name,
+        createdBy: usersTable.name,
+      })
+      .from(transactionsTable)
+      .where(
+        and(
+          eq(transactionsTable.businessId, businessId),
+          gte(transactionsTable.createdAt, dateFrom),
+          lte(transactionsTable.createdAt, dateTo)
+        )
+      )
+      .innerJoin(
+        productsTable,
+        eq(productsTable.id, transactionsTable.productId)
+      )
+      .innerJoin(usersTable, eq(usersTable.id, transactionsTable.createdBy))
+      .orderBy(desc(transactionsTable.createdAt))
+      .limit(pageSize)
+      .offset(offset);
+    const [totalCount] = await db
+      .select({
+        count: count(),
+      })
+      .from(transactionsTable)
+      .where(
+        and(
+          eq(transactionsTable.businessId, businessId),
+          gte(transactionsTable.createdAt, dateFrom),
+          lte(transactionsTable.createdAt, dateTo)
+        )
+      )
+      .innerJoin(
+        productsTable,
+        eq(productsTable.id, transactionsTable.productId)
+      )
+      .innerJoin(usersTable, eq(usersTable.id, transactionsTable.createdBy));
+    return {
+      data: { result, totalCount: totalCount.count || 0 },
       error: null,
     };
   } catch (error) {
@@ -182,7 +265,7 @@ export async function get_by_id(transactionId: string, businessId: string) {
     const transaction = await db.query.transactionsTable.findFirst({
       where: and(
         eq(transactionsTable.id, transactionId),
-        eq(transactionsTable.businessId, businessId),
+        eq(transactionsTable.businessId, businessId)
       ),
       with: {
         product: true,
@@ -260,7 +343,7 @@ export async function create(transaction: InsertTransaction) {
 }
 
 export async function create_with_warehouse_item(
-  transaction: Omit<InsertTransaction, "warehouseItemId">,
+  transaction: Omit<InsertTransaction, "warehouseItemId">
 ) {
   if (
     !transaction.productId ||
@@ -283,7 +366,7 @@ export async function create_with_warehouse_item(
         await tx.query.warehouseItemsTable.findFirst({
           where: and(
             eq(warehouseItemsTable.productId, transaction.productId),
-            eq(warehouseItemsTable.warehouseId, transaction.warehouseId),
+            eq(warehouseItemsTable.warehouseId, transaction.warehouseId)
           ),
         });
       let warehouseItem: SelectWarehouseItem | undefined;
@@ -301,7 +384,7 @@ export async function create_with_warehouse_item(
         const newWarehouseItem = await createWarehouseItem(
           transaction.businessId,
           transaction.createdBy,
-          warehouseItemData,
+          warehouseItemData
         );
         if (newWarehouseItem.error) {
           return { data: null, error: newWarehouseItem.error };
@@ -349,8 +432,8 @@ export async function get_by_type(businessId: string, type: TransactionType) {
       .where(
         and(
           eq(transactionsTable.businessId, businessId),
-          eq(transactionsTable.type, type),
-        ),
+          eq(transactionsTable.type, type)
+        )
       )
       .orderBy(desc(transactionsTable.createdAt));
 

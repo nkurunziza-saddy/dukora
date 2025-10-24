@@ -1,5 +1,5 @@
 "use server";
-import { and, desc, eq } from "drizzle-orm";
+import { and, count, desc, eq } from "drizzle-orm";
 import { revalidatePath, unstable_cache } from "next/cache";
 import { cache } from "react";
 import { db } from "@/lib/db";
@@ -35,7 +35,47 @@ export const get_all_cached = unstable_cache(
   {
     tags: ["warehouses"],
     revalidate: 300,
+  }
+);
+
+export const get_all_paginated = cache(
+  async (businessId: string, page: number, pageSize: number) => {
+    if (!businessId) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
+    }
+    try {
+      const offset = (page - 1) * pageSize;
+      const warehouses = await db
+        .select()
+        .from(warehousesTable)
+        .where(eq(warehousesTable.businessId, businessId))
+        .orderBy(desc(warehousesTable.createdAt))
+        .limit(pageSize)
+        .offset(offset);
+      const [totalCount] = await db
+        .select({ count: count() })
+        .from(warehousesTable)
+        .where(eq(warehousesTable.businessId, businessId));
+      return {
+        data: { warehouses, totalCount: totalCount.count || 0 },
+        error: null,
+      };
+    } catch (error) {
+      console.error("Error getting warehouses:", error);
+      return { data: null, error: ErrorCode.FAILED_REQUEST };
+    }
+  }
+);
+
+export const get_all_paginated_cached = unstable_cache(
+  async (businessId: string, page: number, pageSize: number) => {
+    return get_all_paginated(businessId, page, pageSize);
   },
+  ["warehouses"],
+  {
+    tags: ["warehouses"],
+    revalidate: 300,
+  }
 );
 
 export const get_by_id = cache(
@@ -47,7 +87,7 @@ export const get_by_id = cache(
       const warehouse = await db.query.warehousesTable.findFirst({
         where: and(
           eq(warehousesTable.id, warehouseId),
-          eq(warehousesTable.businessId, businessId),
+          eq(warehousesTable.businessId, businessId)
         ),
         with: {
           transactions: true,
@@ -64,7 +104,7 @@ export const get_by_id = cache(
       console.error("Error getting warehouse:", error);
       return { data: null, error: ErrorCode.FAILED_REQUEST };
     }
-  },
+  }
 );
 
 export const get_by_id_cached = unstable_cache(
@@ -75,7 +115,7 @@ export const get_by_id_cached = unstable_cache(
   {
     tags: [`warehouses`],
     revalidate: 300,
-  },
+  }
 );
 
 export async function create(warehouse: InsertWarehouse, userId: string) {
@@ -87,7 +127,7 @@ export async function create(warehouse: InsertWarehouse, userId: string) {
       const existingWarehouse = await db.query.warehousesTable.findFirst({
         where: and(
           eq(warehousesTable.businessId, warehouse.businessId),
-          eq(warehousesTable.name, warehouse.name),
+          eq(warehousesTable.name, warehouse.name)
         ),
       });
       if (existingWarehouse) {
@@ -125,7 +165,7 @@ export async function update(
   warehouseId: string,
   businessId: string,
   userId: string,
-  updates: Partial<InsertWarehouse>,
+  updates: Partial<InsertWarehouse>
 ) {
   if (!warehouseId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -138,8 +178,8 @@ export async function update(
         .where(
           and(
             eq(warehousesTable.id, warehouseId),
-            eq(warehousesTable.businessId, businessId),
-          ),
+            eq(warehousesTable.businessId, businessId)
+          )
         )
         .returning();
 
@@ -177,7 +217,7 @@ export async function update(
 export async function remove(
   warehouseId: string,
   businessId: string,
-  userId: string,
+  userId: string
 ) {
   if (!warehouseId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -201,8 +241,8 @@ export async function remove(
         .where(
           and(
             eq(warehousesTable.id, warehouseId),
-            eq(warehousesTable.businessId, businessId),
-          ),
+            eq(warehousesTable.businessId, businessId)
+          )
         )
         .returning();
 
@@ -239,7 +279,7 @@ export async function remove(
 
 export async function create_many(
   warehouses: InsertWarehouse[],
-  userId: string,
+  userId: string
 ) {
   if (warehouses === null || warehouses.length === 0) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -255,7 +295,7 @@ export async function create_many(
         const existingWarehouse = await db.query.warehousesTable.findFirst({
           where: and(
             eq(warehousesTable.businessId, warehouse.businessId),
-            eq(warehousesTable.name, warehouse.name),
+            eq(warehousesTable.name, warehouse.name)
           ),
         });
         if (existingWarehouse) continue;

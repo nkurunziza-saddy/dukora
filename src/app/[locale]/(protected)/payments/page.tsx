@@ -7,11 +7,19 @@ import { getInterBusinessPayments } from "@/server/actions/payment-actions";
 import { ErrorCode } from "@/server/constants/errors";
 import { PaymentColumn } from "@/utils/columns/payment-column";
 
-export default async function PaymentsHistoryPage() {
+export default async function PaymentsHistoryPage(
+  props: PageProps<"/[locale]/payments">
+) {
+  const query = await props.searchParams;
+  const page = Number(query.page) || 1;
+  const pageSize = Number(query.pageSize) || 10;
   const t = await getTranslations("payments");
   const tCommon = await getTranslations("common");
 
-  const { data: payments, error } = await getInterBusinessPayments({});
+  const { data: paymentsData, error } = await getInterBusinessPayments({
+    page,
+    pageSize,
+  });
 
   if (error) {
     return (
@@ -40,7 +48,14 @@ export default async function PaymentsHistoryPage() {
         </Button>
       </div>
       <Separator />
-      <ColumnWrapper column={PaymentColumn} data={payments!} tag="payments" />
+      <ColumnWrapper
+        column={PaymentColumn}
+        data={paymentsData?.payments!}
+        totalCount={paymentsData?.totalCount || 0}
+        page={page}
+        pageSize={pageSize}
+        tag="payments"
+      />
     </div>
   );
 }

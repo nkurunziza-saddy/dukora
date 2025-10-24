@@ -1,6 +1,6 @@
 "use server";
 
-import { and, desc, eq, isNull } from "drizzle-orm";
+import { and, count, desc, eq, isNull, sql } from "drizzle-orm";
 import { revalidatePath, unstable_cache } from "next/cache";
 import { cache } from "react";
 import { db } from "@/lib/db";
@@ -20,8 +20,8 @@ export const get_all = cache(async (businessId: string) => {
       .where(
         and(
           eq(suppliersTable.businessId, businessId),
-          isNull(suppliersTable.deletedAt),
-        ),
+          isNull(suppliersTable.deletedAt)
+        )
       )
       .orderBy(desc(suppliersTable.createdAt));
     return { data: suppliers, error: null };
@@ -39,7 +39,60 @@ export const get_all_cached = unstable_cache(
   {
     revalidate: 300,
     tags: ["suppliers"],
+  }
+);
+
+export const get_all_paginated = cache(
+  async (businessId: string, page: number, pageSize: number) => {
+    if (!businessId) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
+    }
+
+    try {
+      const offset = (page - 1) * pageSize;
+      const suppliers = await db
+        .select()
+        .from(suppliersTable)
+        .where(
+          and(
+            eq(suppliersTable.businessId, businessId),
+            isNull(suppliersTable.deletedAt)
+          )
+        )
+        .orderBy(desc(suppliersTable.createdAt))
+        .limit(pageSize)
+        .offset(offset);
+
+      const [totalCount] = await db
+        .select({ count: count() })
+        .from(suppliersTable)
+        .where(
+          and(
+            eq(suppliersTable.businessId, businessId),
+            isNull(suppliersTable.deletedAt)
+          )
+        );
+
+      return {
+        data: { suppliers, totalCount: totalCount.count || 0 },
+        error: null,
+      };
+    } catch (error) {
+      console.error("Failed to fetch suppliers:", error);
+      return { data: null, error: ErrorCode.FAILED_REQUEST };
+    }
+  }
+);
+
+export const get_all_paginated_cached = unstable_cache(
+  async (businessId: string, page: number, pageSize: number) => {
+    return get_all_paginated(businessId, page, pageSize);
   },
+  ["suppliers"],
+  {
+    revalidate: 300,
+    tags: ["suppliers"],
+  }
 );
 
 export async function get_by_id(supplierId: string, businessId: string) {
@@ -51,7 +104,7 @@ export async function get_by_id(supplierId: string, businessId: string) {
     const supplier = await db.query.suppliersTable.findFirst({
       where: and(
         eq(suppliersTable.id, supplierId),
-        eq(suppliersTable.businessId, businessId),
+        eq(suppliersTable.businessId, businessId)
       ),
       with: {
         productSuppliers: true,
@@ -80,13 +133,13 @@ export const get_by_id_cached = unstable_cache(
   {
     revalidate: 300,
     tags: ["suppliers", "supplier-by-id"],
-  },
+  }
 );
 
 export async function create(
   businessId: string,
   userId: string,
-  supplier: InsertSupplier,
+  supplier: InsertSupplier
 ) {
   if (!supplier.name || !supplier.businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -125,7 +178,7 @@ export async function update(
   supplierId: string,
   businessId: string,
   userId: string,
-  updates: Partial<InsertSupplier>,
+  updates: Partial<InsertSupplier>
 ) {
   if (!supplierId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -140,8 +193,8 @@ export async function update(
           and(
             eq(suppliersTable.id, supplierId),
             eq(suppliersTable.businessId, businessId),
-            isNull(suppliersTable.deletedAt),
-          ),
+            isNull(suppliersTable.deletedAt)
+          )
         )
         .returning();
 
@@ -175,7 +228,7 @@ export async function update(
 export async function remove(
   supplierId: string,
   businessId: string,
-  userId: string,
+  userId: string
 ) {
   if (!supplierId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -195,8 +248,8 @@ export async function remove(
         .where(
           and(
             eq(suppliersTable.id, supplierId),
-            eq(suppliersTable.businessId, businessId),
-          ),
+            eq(suppliersTable.businessId, businessId)
+          )
         )
         .returning();
 

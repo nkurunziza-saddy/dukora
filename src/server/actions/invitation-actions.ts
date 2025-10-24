@@ -18,7 +18,21 @@ export const getInvitations = createProtectedAction(
       return { data: null, error: invitations.error };
     }
     return { data: invitations.data, error: null };
-  },
+  }
+);
+export const getInvitationsPaginated = createProtectedAction(
+  Permission.INVITATION_VIEW,
+  async (user, { page, pageSize }: { page: number; pageSize: number }) => {
+    const invitations = await invitationRepo.get_all_paginated_cached(
+      user.businessId!,
+      page,
+      pageSize
+    );
+    if (invitations.error) {
+      return { data: null, error: invitations.error };
+    }
+    return { data: invitations.data, error: null };
+  }
 );
 
 export const getInvitationById = createProtectedAction(
@@ -29,13 +43,13 @@ export const getInvitationById = createProtectedAction(
     }
     const invitation = await invitationRepo.get_by_id(
       invitationId,
-      user.businessId!,
+      user.businessId!
     );
     if (invitation.error) {
       return { data: null, error: invitation.error };
     }
     return { data: invitation.data, error: null };
-  },
+  }
 );
 
 import { redirect } from "next/navigation";
@@ -54,7 +68,7 @@ export const createInvitation = createProtectedAction(
     invitationData: Omit<
       InsertInvitation,
       "businessId" | "id" | "code" | "expiresAt" | "isAccepted" | "invitedBy"
-    >,
+    >
   ) => {
     if (!invitationData.email?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -63,7 +77,7 @@ export const createInvitation = createProtectedAction(
     const res = await invitationRepo.create(
       user.businessId!,
       user.id,
-      invitationData,
+      invitationData
     );
     if (res.error) {
       return { data: null, error: res.error };
@@ -102,7 +116,7 @@ export const createInvitation = createProtectedAction(
     }
     revalidatePath("users");
     return { data: res.data, error: null };
-  },
+  }
 );
 
 export const updateInvitation = createProtectedAction(
@@ -115,7 +129,7 @@ export const updateInvitation = createProtectedAction(
     }: {
       invitationId: string;
       updates: Partial<Omit<InsertInvitation, "id" | "businessId">>;
-    },
+    }
   ) => {
     if (!invitationId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -124,14 +138,14 @@ export const updateInvitation = createProtectedAction(
       invitationId,
       user.businessId!,
       user.id,
-      updates,
+      updates
     );
     if (updatedInvitation.error) {
       return { data: null, error: updatedInvitation.error };
     }
     revalidatePath("users");
     return { data: updatedInvitation.data, error: null };
-  },
+  }
 );
 
 export const deleteInvitation = createProtectedAction(
@@ -143,14 +157,14 @@ export const deleteInvitation = createProtectedAction(
     const res = await invitationRepo.remove(
       invitationId,
       user.businessId!,
-      user.id,
+      user.id
     );
     if (res.error) {
       return { data: null, error: res.error };
     }
     revalidatePath("users");
     return { data: { success: true }, error: null };
-  },
+  }
 );
 
 export const createManyInvitations = createProtectedAction(
@@ -160,7 +174,7 @@ export const createManyInvitations = createProtectedAction(
     invitationsData: Omit<
       InsertInvitation,
       "businessId" | "id" | "code" | "expiresAt" | "isAccepted" | "invitedBy"
-    >[],
+    >[]
   ) => {
     if (invitationsData === null) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -208,13 +222,13 @@ export const createManyInvitations = createProtectedAction(
       } catch (emailError) {
         console.error(
           `Failed to send invitation email to ${invitation.email}:`,
-          emailError,
+          emailError
         );
       }
     }
     revalidatePath("users");
     return { data: createdInvitations.data, error: null };
-  },
+  }
 );
 
 export const acceptInvitation = createPublicAction(
@@ -228,7 +242,7 @@ export const acceptInvitation = createPublicAction(
     }
     revalidatePath("/", "layout");
     redirect(res.data.redirect || "/");
-  },
+  }
 );
 
 export const setPasswordForInvitation = createPublicAction(
@@ -244,7 +258,7 @@ export const setPasswordForInvitation = createPublicAction(
     const res = await invitationRepo.set_password_for_invitation(
       email,
       invitationCode,
-      password,
+      password
     );
     if (!res) {
       redirect("/");
@@ -254,5 +268,5 @@ export const setPasswordForInvitation = createPublicAction(
     }
     revalidatePath("/", "layout");
     redirect(res.data.redirect || "/");
-  },
+  }
 );
