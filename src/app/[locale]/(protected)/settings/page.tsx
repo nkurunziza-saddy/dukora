@@ -1,3 +1,4 @@
+import React, { Suspense } from "react";
 import {
   AlertCircleIcon,
   BellIcon,
@@ -34,13 +35,35 @@ import { EditCategories } from "./_components/edit-categories";
 import { EditWarehouses } from "./_components/edit-warehouses";
 import { getTranslations } from "next-intl/server";
 
-export default async function SettingsPage() {
+type TStripeFn = ReturnType<typeof getTranslations> extends Promise<infer R>
+  ? R
+  : never;
+
+export default function SettingsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Card>
+            <CardPanel>
+              <p className="text-sm text-muted-foreground">Loading settings…</p>
+            </CardPanel>
+          </Card>
+        </div>
+      }
+    >
+      <SessionGuard />
+    </Suspense>
+  );
+}
+
+async function SessionGuard() {
   const session = await getCurrentSession();
   const tStripe = await getTranslations("stripe");
-  const businessId = session?.user.businessId;
-  const userId = session?.user.id;
+  const userId = session?.user?.id;
+  const businessId = session?.user?.businessId;
 
-  if (!businessId || !userId) {
+  if (!userId || !businessId) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <Alert variant="error" className="max-w-md">
@@ -53,6 +76,41 @@ export default async function SettingsPage() {
     );
   }
 
+  const [businessRes, userRes] = await Promise.all([
+    getBusinessById(businessId),
+    getUserById(userId),
+  ]);
+
+  const business = businessRes.data;
+  const user = userRes.data;
+
+  if (!business) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Alert variant="error" className="max-w-md">
+          <AlertCircleIcon className="h-4 w-4" />
+          <AlertDescription>
+            Business data is not available. Please try refreshing the page.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
+  return (
+    <ProtectedSettings business={business} user={user} tStripe={tStripe} />
+  );
+}
+
+function ProtectedSettings({
+  business,
+  user,
+  tStripe,
+}: {
+  business: any;
+  user: any;
+  tStripe: TStripeFn;
+}) {
   const tabConfig = [
     {
       section: "Business",
@@ -100,26 +158,6 @@ export default async function SettingsPage() {
     },
   ];
 
-  const [businessRes, userRes] = await Promise.all([
-    getBusinessById(businessId),
-    getUserById(userId),
-  ]);
-
-  const business = businessRes.data;
-  const user = userRes.data;
-  if (!business) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Alert variant="error" className="max-w-md">
-          <AlertCircleIcon className="h-4 w-4" />
-          <AlertDescription>
-            Business data is not available. Please try refreshing the page.
-          </AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen">
       <div className="container mx-auto py-8 px-4 max-w-7xl">
@@ -135,7 +173,7 @@ export default async function SettingsPage() {
           orientation="vertical"
           className="w-full flex-row gap-4"
         >
-          <div className="w-60 flex-shrink-0">
+          <div className="w-60 shrink-0">
             <div className="sticky top-6">
               <TabsList className="flex flex-col gap-1 h-auto w-full bg-transparent border shadow-sm p-1">
                 {tabConfig.map((section, sectionIndex) => (
@@ -144,7 +182,6 @@ export default async function SettingsPage() {
 
                     <div className="px-2 py-1 border-b mb-2">
                       <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                        {/* <section.icon className="h-3.5 w-3.5" /> */}
                         {section.section}
                       </h3>
                     </div>
@@ -157,7 +194,6 @@ export default async function SettingsPage() {
                           disabled={tab.disabled}
                           className="w-full justify-start text-sm font-medium"
                         >
-                          {/* <tab.icon className="h-4 w-4 flex-shrink-0" /> */}
                           <span className="truncate">{tab.label}</span>
                         </TabsTab>
                       ))}

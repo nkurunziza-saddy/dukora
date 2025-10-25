@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import type { InsertProduct } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
@@ -10,38 +10,41 @@ import * as productRepo from "../repos/product-repo";
 export const getProducts = createProtectedAction(
   Permission.PRODUCT_VIEW,
   async (user) => {
-    const products = await productRepo.get_all_cached(user.businessId!);
+    const products = await productRepo.get_all(user.businessId ?? "");
     if (products.error) {
       return { data: null, error: products.error };
     }
     return { data: products.data, error: null };
-  }
+  },
 );
 
 export const getProductsPaginated = createProtectedAction(
   Permission.PRODUCT_VIEW,
   async (user, { page, pageSize }: { page: number; pageSize: number }) => {
-    const products = await productRepo.get_all_paginated_cached(
-      user.businessId!,
+    const products = await productRepo.get_all_paginated(
+      user.businessId ?? "",
       page,
-      pageSize
+      pageSize,
     );
     if (products.error) {
       return { data: null, error: products.error };
     }
     return { data: products.data, error: null };
-  }
+  },
 );
 
 export const getOverviewProducts = createProtectedAction(
   Permission.PRODUCT_VIEW,
   async (user, limit: number) => {
-    const products = await productRepo.get_overview(user.businessId!, limit);
+    const products = await productRepo.get_overview(
+      user.businessId ?? "",
+      limit,
+    );
     if (products.error) {
       return { data: null, error: products.error };
     }
     return { data: products.data, error: null };
-  }
+  },
 );
 
 export const getProductById = createProtectedAction(
@@ -50,15 +53,15 @@ export const getProductById = createProtectedAction(
     if (!productId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const product = await productRepo.get_by_id_cached(
+    const product = await productRepo.get_by_id(
       productId,
-      user.businessId!
+      user.businessId ?? "",
     );
     if (product.error) {
       return { data: null, error: product.error };
     }
     return { data: product.data, error: null };
-  }
+  },
 );
 
 export const createProduct = createProtectedAction(
@@ -69,15 +72,16 @@ export const createProduct = createProtectedAction(
     }
     const product: InsertProduct = {
       ...productData,
-      businessId: user.businessId!,
+      businessId: user.businessId ?? "",
     };
     const res = await productRepo.create(product, user.id);
     if (res.error) {
       return { data: null, error: res.error };
     }
-    revalidatePath("/", "layout");
+    revalidateTag(`products-${user.businessId}`, "max");
+    revalidateTag("products", "max");
     return { data: res.data, error: null };
-  }
+  },
 );
 
 export const updateProduct = createProtectedAction(
@@ -90,23 +94,24 @@ export const updateProduct = createProtectedAction(
     }: {
       productId: string;
       updates: Partial<Omit<InsertProduct, "id" | "businessId">>;
-    }
+    },
   ) => {
     if (!productId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
     const updatedProduct = await productRepo.update(
       productId,
-      user.businessId!,
+      user.businessId ?? "",
       user.id,
-      updates
+      updates,
     );
     if (updatedProduct.error) {
       return { data: null, error: updatedProduct.error };
     }
-    revalidatePath("/", "layout");
+    revalidateTag(`products-${user.businessId}`, "max");
+    revalidateTag(`product-${productId}`, "max");
     return { data: updatedProduct.data, error: null };
-  }
+  },
 );
 
 export const deleteProduct = createProtectedAction(
@@ -115,13 +120,18 @@ export const deleteProduct = createProtectedAction(
     if (!productId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const res = await productRepo.remove(productId, user.businessId!, user.id);
+    const res = await productRepo.remove(
+      productId,
+      user.businessId ?? "",
+      user.id,
+    );
     if (res.error) {
       return { data: null, error: res.error };
     }
-    revalidatePath("/", "layout");
+    revalidateTag(`products-${user.businessId}`, "max");
+    revalidateTag(`product-${productId}`, "max");
     return { data: { success: true }, error: null };
-  }
+  },
 );
 
 export const createManyProducts = createProtectedAction(
@@ -132,13 +142,14 @@ export const createManyProducts = createProtectedAction(
     }
     const products: InsertProduct[] = productsData.map((product) => ({
       ...product,
-      businessId: user.businessId!,
+      businessId: user.businessId ?? "",
     }));
     const createdProducts = await productRepo.create_many(products);
     if (createdProducts.error) {
       return { data: null, error: createdProducts.error };
     }
-    revalidatePath("/", "layout");
+    revalidateTag(`products-${user.businessId}`, "max");
+    revalidateTag("products", "max");
     return { data: createdProducts.data, error: null };
-  }
+  },
 );

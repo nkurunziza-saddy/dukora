@@ -5,13 +5,12 @@ import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as businessSettingsRepo from "../repos/business-settings-repo";
+import { revalidateTag } from "next/cache";
 
 export const getBusinessSettings = createProtectedAction(
   Permission.BUSINESS_SETTINGS_VIEW,
   async (user) => {
-    const settings = await businessSettingsRepo.get_all_cached(
-      user.businessId!,
-    );
+    const settings = await businessSettingsRepo.get_all(user.businessId ?? "");
     if (settings.error) {
       return { data: null, error: settings.error };
     }
@@ -34,9 +33,13 @@ export const upsertBusinessSettings = createProtectedAction(
         ...setting,
         key: setting.key as string,
         value: setting.value as string,
-        businessId: user.businessId!,
+        businessId: user.businessId ?? "",
       };
-      return businessSettingsRepo.upsert(user.businessId!, user.id, newSetting);
+      return businessSettingsRepo.upsert(
+        user.businessId ?? "",
+        user.id,
+        newSetting,
+      );
     });
 
     const results = await Promise.all(promises);
@@ -45,7 +48,8 @@ export const upsertBusinessSettings = createProtectedAction(
     if (errors.length > 0) {
       return { data: null, error: ErrorCode.FAILED_REQUEST, errors };
     }
-
+    revalidateTag(`business-settings-${user.businessId}`, "max");
+    revalidateTag(`business-settings`, "max");
     return { data: { success: true }, error: null };
   },
 );
@@ -61,7 +65,7 @@ export const upsertManyBusinessSettings = createProtectedAction(
     }
     const settings: InsertBusinessSetting[] = settingsData.map((setting) => ({
       ...setting,
-      businessId: user.businessId!,
+      businessId: user.businessId ?? "",
     }));
     const createdSettings = await businessSettingsRepo.upsert_many(
       user.id,
@@ -70,6 +74,8 @@ export const upsertManyBusinessSettings = createProtectedAction(
     if (createdSettings.error) {
       return { data: null, error: createdSettings.error };
     }
+    revalidateTag(`business-settings-${user.businessId}`, "max");
+    revalidateTag(`business-settings`, "max");
     return { data: createdSettings.data, error: null };
   },
 );

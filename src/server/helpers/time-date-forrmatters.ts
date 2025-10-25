@@ -22,8 +22,6 @@ export function getMonthData(monthsAgo: number): {
   monthName: string;
   year: string;
 } {
-  // Always ensure we exclude current month by adding 1 to monthsAgo
-  // This guarantees we never include incomplete current month data
   const adjustedMonthsAgo = Math.max(1, monthsAgo + 1);
   const targetDate = startOfMonth(subMonths(new Date(), adjustedMonthsAgo));
 
@@ -35,7 +33,7 @@ export function getMonthData(monthsAgo: number): {
 export function getCurrentMonthBoundary(): Date {
   const now = new Date();
   const currentMonth = startOfMonth(now);
-  return subMonths(currentMonth, 1); // Always start from last month
+  return subMonths(currentMonth, 1);
 }
 
 export function getAvailableMonthsForAnalytics(businessCreatedAt: Date): Array<{
@@ -51,9 +49,8 @@ export function getAvailableMonthsForAnalytics(businessCreatedAt: Date): Array<{
   let targetDate = currentBoundary;
 
   while (targetDate >= businessStart && monthsBack <= 24) {
-    // Max 2 years
     months.push({
-      value: monthsBack - 1, // Adjust for 0-based indexing in UI
+      value: monthsBack - 1,
       label: `${format(targetDate, "MMMM yyyy")}`,
       date: targetDate,
     });

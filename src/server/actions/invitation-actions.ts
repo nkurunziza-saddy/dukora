@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import type { InsertInvitation } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
@@ -9,30 +9,38 @@ import {
   createPublicAction,
 } from "@/server/helpers/action-factory";
 import * as invitationRepo from "../repos/invitations-repo";
+import { redirect } from "next/navigation";
+import {
+  buildInviteEmailHtml,
+  buildInviteEmailText,
+} from "@/components/email-templates/invitation-email";
+import { resend } from "@/lib/email";
+import { get_by_id as get_business_by_id } from "../repos/business-repo";
+import { accept_invitation as acceptInvitationRepo } from "../repos/invitations-repo";
 
 export const getInvitations = createProtectedAction(
   Permission.INVITATION_VIEW,
   async (user) => {
-    const invitations = await invitationRepo.get_all_cached(user.businessId!);
+    const invitations = await invitationRepo.get_all(user.businessId ?? "");
     if (invitations.error) {
       return { data: null, error: invitations.error };
     }
     return { data: invitations.data, error: null };
-  }
+  },
 );
 export const getInvitationsPaginated = createProtectedAction(
   Permission.INVITATION_VIEW,
   async (user, { page, pageSize }: { page: number; pageSize: number }) => {
-    const invitations = await invitationRepo.get_all_paginated_cached(
-      user.businessId!,
+    const invitations = await invitationRepo.get_all_paginated(
+      user.businessId ?? "",
       page,
-      pageSize
+      pageSize,
     );
     if (invitations.error) {
       return { data: null, error: invitations.error };
     }
     return { data: invitations.data, error: null };
-  }
+  },
 );
 
 export const getInvitationById = createProtectedAction(
@@ -43,23 +51,14 @@ export const getInvitationById = createProtectedAction(
     }
     const invitation = await invitationRepo.get_by_id(
       invitationId,
-      user.businessId!
+      user.businessId ?? "",
     );
     if (invitation.error) {
       return { data: null, error: invitation.error };
     }
     return { data: invitation.data, error: null };
-  }
+  },
 );
-
-import { redirect } from "next/navigation";
-import {
-  buildInviteEmailHtml,
-  buildInviteEmailText,
-} from "@/components/email-templates/invitation-email";
-import { resend } from "@/lib/email";
-import { get_by_id_cached as getBusinessByIdRepo } from "../repos/business-repo";
-import { accept_invitation as acceptInvitationRepo } from "../repos/invitations-repo";
 
 export const createInvitation = createProtectedAction(
   Permission.INVITATION_CREATE,
@@ -68,22 +67,22 @@ export const createInvitation = createProtectedAction(
     invitationData: Omit<
       InsertInvitation,
       "businessId" | "id" | "code" | "expiresAt" | "isAccepted" | "invitedBy"
-    >
+    >,
   ) => {
     if (!invitationData.email?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
 
     const res = await invitationRepo.create(
-      user.businessId!,
+      user.businessId ?? "",
       user.id,
-      invitationData
+      invitationData,
     );
     if (res.error) {
       return { data: null, error: res.error };
     }
 
-    const business = await getBusinessByIdRepo(user.businessId!);
+    const business = await get_business_by_id(user.businessId ?? "");
     if (business.error || !business.data) {
       return { data: null, error: ErrorCode.FAILED_REQUEST };
     }
@@ -114,9 +113,10 @@ export const createInvitation = createProtectedAction(
       console.error("Failed to send invitation email:", emailError);
       return { data: null, error: ErrorCode.FAILED_REQUEST };
     }
-    revalidatePath("users");
+    revalidateTag(`invitations-${user.businessId}`, "max");
+    revalidateTag("invitations", "max");
     return { data: res.data, error: null };
-  }
+  },
 );
 
 export const updateInvitation = createProtectedAction(
@@ -129,23 +129,24 @@ export const updateInvitation = createProtectedAction(
     }: {
       invitationId: string;
       updates: Partial<Omit<InsertInvitation, "id" | "businessId">>;
-    }
+    },
   ) => {
     if (!invitationId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
     const updatedInvitation = await invitationRepo.update(
       invitationId,
-      user.businessId!,
+      user.businessId ?? "",
       user.id,
-      updates
+      updates,
     );
     if (updatedInvitation.error) {
       return { data: null, error: updatedInvitation.error };
     }
-    revalidatePath("users");
+    revalidateTag(`invitations-${user.businessId}`, "max");
+    revalidateTag(`invitation-${invitationId}`, "max");
     return { data: updatedInvitation.data, error: null };
-  }
+  },
 );
 
 export const deleteInvitation = createProtectedAction(
@@ -156,15 +157,16 @@ export const deleteInvitation = createProtectedAction(
     }
     const res = await invitationRepo.remove(
       invitationId,
-      user.businessId!,
-      user.id
+      user.businessId ?? "",
+      user.id,
     );
     if (res.error) {
       return { data: null, error: res.error };
     }
-    revalidatePath("users");
+    revalidateTag(`invitations-${user.businessId}`, "max");
+    revalidateTag(`invitation-${invitationId}`, "max");
     return { data: { success: true }, error: null };
-  }
+  },
 );
 
 export const createManyInvitations = createProtectedAction(
@@ -174,7 +176,7 @@ export const createManyInvitations = createProtectedAction(
     invitationsData: Omit<
       InsertInvitation,
       "businessId" | "id" | "code" | "expiresAt" | "isAccepted" | "invitedBy"
-    >[]
+    >[],
   ) => {
     if (invitationsData === null) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -184,14 +186,14 @@ export const createManyInvitations = createProtectedAction(
       "id" | "code" | "expiresAt" | "isAccepted" | "invitedBy"
     >[] = invitationsData.map((invitation) => ({
       ...invitation,
-      businessId: user.businessId!,
+      businessId: user.businessId ?? "",
     }));
     const createdInvitations = await invitationRepo.create_many(invitations);
     if (createdInvitations.error) {
       return { data: null, error: createdInvitations.error };
     }
 
-    const business = await getBusinessByIdRepo(user.businessId!);
+    const business = await get_business_by_id(user.businessId ?? "");
     if (business.error || !business.data) {
       return { data: null, error: ErrorCode.FAILED_REQUEST };
     }
@@ -222,13 +224,14 @@ export const createManyInvitations = createProtectedAction(
       } catch (emailError) {
         console.error(
           `Failed to send invitation email to ${invitation.email}:`,
-          emailError
+          emailError,
         );
       }
     }
-    revalidatePath("users");
+    revalidateTag(`invitations-${user.businessId}`, "max");
+    revalidateTag("invitations", "max");
     return { data: createdInvitations.data, error: null };
-  }
+  },
 );
 
 export const acceptInvitation = createPublicAction(
@@ -240,9 +243,9 @@ export const acceptInvitation = createPublicAction(
     if (res.error) {
       redirect("/");
     }
-    revalidatePath("/", "layout");
+    revalidateTag(`invitations`, "max");
     redirect(res.data.redirect || "/");
-  }
+  },
 );
 
 export const setPasswordForInvitation = createPublicAction(
@@ -258,7 +261,7 @@ export const setPasswordForInvitation = createPublicAction(
     const res = await invitationRepo.set_password_for_invitation(
       email,
       invitationCode,
-      password
+      password,
     );
     if (!res) {
       redirect("/");
@@ -266,7 +269,7 @@ export const setPasswordForInvitation = createPublicAction(
     if (res.error) {
       redirect("/");
     }
-    revalidatePath("/", "layout");
+    revalidateTag(`invitations`, "max");
     redirect(res.data.redirect || "/");
-  }
+  },
 );

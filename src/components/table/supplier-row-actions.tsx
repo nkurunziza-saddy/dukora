@@ -20,6 +20,7 @@ import type { SelectSupplier } from "@/lib/schema/schema-types";
 import SupplierForm from "../forms/create-supplier-form";
 import ConfirmDialog from "../shared/confirm-dialog";
 import { StateDialog } from "../shared/reusable-form-dialog";
+import { HoverPrefetchLink } from "../hover-prefetch-link";
 
 export interface SupplierRowActionsProps {
   supplier: SelectSupplier;
@@ -82,9 +83,9 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
           <MenuGroup>
             <MenuGroupLabel>{t_common("actions")}</MenuGroupLabel>
             <MenuItem>
-              <Link href={`/suppliers/${supplier.id}`} prefetch>
+              <HoverPrefetchLink href={`/suppliers/${supplier.id}`}>
                 {t("supplier.viewDetails")}
-              </Link>
+              </HoverPrefetchLink>
             </MenuItem>
             <MenuSeparator />
             <MenuItem

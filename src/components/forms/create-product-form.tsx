@@ -163,7 +163,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               <FieldLabel>{t("description")}</FieldLabel>
               <Textarea
                 placeholder={t("enterProductDescription")}
-                className="min-h-[80px]"
+                className="min-h-20"
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}

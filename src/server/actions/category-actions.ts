@@ -1,5 +1,5 @@
 "use server";
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import type { InsertCategory } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
@@ -9,7 +9,7 @@ import * as categoryRepo from "../repos/category-repo";
 export const getCategories = createProtectedAction(
   Permission.CATEGORY_VIEW,
   async (user) => {
-    const categories = await categoryRepo.get_all_cached(user.businessId!);
+    const categories = await categoryRepo.get_all(user.businessId ?? "");
     if (categories.error) {
       return { data: null, error: categories.error };
     }
@@ -17,13 +17,16 @@ export const getCategories = createProtectedAction(
   },
 );
 
-export const fetchCategoryById = createProtectedAction(
+export const getCategoryById = createProtectedAction(
   Permission.CATEGORY_VIEW,
   async (user, categoryId: string) => {
     if (!categoryId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const category = await categoryRepo.get_by_id(categoryId, user.businessId!);
+    const category = await categoryRepo.get_by_id(
+      categoryId,
+      user.businessId ?? "",
+    );
     if (category.error) {
       return { data: null, error: category.error };
     }
@@ -39,7 +42,7 @@ export const upsertCategory = createProtectedAction(
     }
     const category: InsertCategory = {
       value: categoryData,
-      businessId: user.businessId!,
+      businessId: user.businessId ?? "",
     };
     const { data: resData, error: resError } = await categoryRepo.create(
       category,
@@ -48,7 +51,8 @@ export const upsertCategory = createProtectedAction(
     if (resError) {
       return { data: null, error: resError };
     }
-    revalidatePath("/", "layout");
+    revalidateTag(`categories-${user.businessId}`, "max");
+    revalidateTag("categories", "max");
     return { data: resData, error: null };
   },
 );
@@ -70,14 +74,15 @@ export const updateCategory = createProtectedAction(
     }
     const updatedCategory = await categoryRepo.update(
       categoryId,
-      user.businessId!,
+      user.businessId ?? "",
       user.id,
       updates,
     );
     if (updatedCategory.error) {
       return { data: null, error: updatedCategory.error };
     }
-    revalidatePath("/", "layout");
+    revalidateTag(`categories-${user.businessId}`, "max");
+    revalidateTag(`category-${categoryId}`, "max");
     return { data: updatedCategory.data, error: null };
   },
 );
@@ -90,13 +95,14 @@ export const deleteCategory = createProtectedAction(
     }
     const res = await categoryRepo.remove(
       categoryId,
-      user.businessId!,
+      user.businessId ?? "",
       user.id,
     );
     if (res.error) {
       return { data: null, error: ErrorCode.DATABASE_ERROR };
     }
-    revalidatePath("/", "layout");
+    revalidateTag(`categories-${user.businessId}`, "max");
+    revalidateTag(`category-${categoryId}`, "max");
     return { data: { success: true }, error: null };
   },
 );
@@ -109,13 +115,14 @@ export const upsertManyCategories = createProtectedAction(
     }
     const categories: InsertCategory[] = categoriesData.map((category) => ({
       value: category,
-      businessId: user.businessId!,
+      businessId: user.businessId ?? "",
     }));
     const createdCategories = await categoryRepo.upsert_many(
       categories,
       user.id,
     );
-    revalidatePath("/", "layout");
+    revalidateTag(`categories-${user.businessId}`, "max");
+    revalidateTag("categories", "max");
     return { data: createdCategories, error: null };
   },
 );

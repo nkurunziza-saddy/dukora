@@ -8,6 +8,12 @@ import UserExpenses from "./_components/user-expenses";
 import UserSchedules from "./_components/user-schedules";
 import UserSummaryCard from "./_components/user-summary-card";
 import UserTransactions from "./_components/user-transactions";
+import type { Metadata } from "next";
+
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
 
 export async function generateStaticParams() {
   const res = await db.query.usersTable.findMany();
@@ -15,6 +21,22 @@ export async function generateStaticParams() {
   return res.map((unit) => ({
     id: unit.id,
   }));
+}
+
+export async function generateMetadata({
+  params,
+  searchParams,
+}: Props): Promise<Metadata> {
+  const { id } = await params;
+  const { data: user, error } = await getUserById(id);
+  if (error || !user) {
+    return {
+      title: "User Not Found",
+    };
+  }
+  return {
+    title: user?.name ?? "User",
+  };
 }
 
 export default async function UserDetailsPage({

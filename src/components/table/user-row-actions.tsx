@@ -20,6 +20,7 @@ import type { SelectUser } from "@/lib/schema/schema-types";
 import { UpdateUserForm } from "../forms/update-user-form";
 import ConfirmDialog from "../shared/confirm-dialog";
 import { StateDialog } from "../shared/reusable-form-dialog";
+import { HoverPrefetchLink } from "../hover-prefetch-link";
 
 export interface UserRowActionsProps {
   user: SelectUser;
@@ -86,9 +87,9 @@ const UserRowActions: FC<UserRowActionsProps> = ({ user }) => {
             </MenuItem>
             <MenuSeparator />
             <MenuItem>
-              <Link href={`/users/${user.id}`} prefetch>
+              <HoverPrefetchLink href={`/users/${user.id}`}>
                 {t_common("viewUserDetails")}
-              </Link>
+              </HoverPrefetchLink>
             </MenuItem>
             <MenuSeparator />
             <MenuItem

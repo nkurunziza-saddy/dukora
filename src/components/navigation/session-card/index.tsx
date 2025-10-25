@@ -99,6 +99,16 @@ const SessionCard = memo(() => {
               />
             }
           >
+            <Avatar className="size-8 rounded-lg">
+              <AvatarImage
+                src={computedData.userImage || "/placeholder.svg"}
+                alt={`${computedData.userName} avatar`}
+                loading="lazy"
+              />
+              <AvatarFallback className="rounded-lg text-xs font-medium">
+                {computedData.userInitials}
+              </AvatarFallback>
+            </Avatar>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium truncate">
                 {computedData.userName}
@@ -107,7 +117,7 @@ const SessionCard = memo(() => {
                 {computedData.businessName}
               </p>
             </div>
-            <ChevronsUpDownIcon className="ml-auto" />
+            <ChevronsUpDownIcon className="ml-auto size-4" />
           </MenuTrigger>
           <MenuPopup
             className="min-w-64 rounded-lg"

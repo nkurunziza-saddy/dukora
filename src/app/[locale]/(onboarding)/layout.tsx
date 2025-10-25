@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
 import { getCurrentSession } from "@/server/actions/auth-actions";
+import { Suspense } from "react";
+import { GuardSkeleton } from "@/components/guard-skeleton";
 
-export default async function OnboardingLayout({
+async function OnboardingLayoutGuard({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -13,5 +15,16 @@ export default async function OnboardingLayout({
   if (session?.user.businessId) {
     redirect("/dashboard");
   }
-  return <div>{children}</div>;
+  return <>{children}</>;
+}
+export default async function OnboardingLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <Suspense fallback={<GuardSkeleton />}>
+      <OnboardingLayoutGuard>{children}</OnboardingLayoutGuard>
+    </Suspense>
+  );
 }

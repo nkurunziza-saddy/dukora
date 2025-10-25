@@ -1,19 +1,26 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { UserIcon } from "lucide-react";
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
 import { memo } from "react";
 
 const SessionCardError = memo(() => (
-  <div className="flex h-16 items-center justify-between opacity-50">
-    <div className="flex items-center gap-2 p-2">
-      <span className="text-sm text-muted-foreground">Unable to load</span>
-    </div>
-    <Avatar className="rounded-lg">
-      <AvatarFallback>
-        <UserIcon className="size-3" />
-      </AvatarFallback>
-    </Avatar>
-  </div>
+  <SidebarMenu>
+    <SidebarMenuItem>
+      <SidebarMenuButton
+        size="lg"
+        className="cursor-default hover:bg-transparent opacity-50"
+      >
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-medium">Unable to load</p>
+          <p className="text-xs text-muted-foreground">Session error</p>
+        </div>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  </SidebarMenu>
 ));
 
 SessionCardError.displayName = "SessionCardError";
+
 export { SessionCardError };

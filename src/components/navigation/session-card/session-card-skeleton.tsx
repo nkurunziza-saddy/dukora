@@ -1,14 +1,26 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
 import { memo } from "react";
 
 const SessionCardSkeleton = memo(() => (
-  <div className="flex h-16 items-center justify-between">
-    <div className="flex flex-col">
-      <Skeleton className="h-4 w-24" />
-      <Skeleton className="h-2 w-20" />
-    </div>
-    <Skeleton className="size-6 rounded-lg" />
-  </div>
+  <SidebarMenu>
+    <SidebarMenuItem>
+      <SidebarMenuButton
+        size="lg"
+        className="cursor-default hover:bg-transparent"
+      >
+        <div className="min-w-0 flex-1 space-y-1.5">
+          <Skeleton className="h-3.5 w-24" />
+          <Skeleton className="h-3 w-32" />
+        </div>
+        <Skeleton className="ml-auto size-4" />
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  </SidebarMenu>
 ));
 
 SessionCardSkeleton.displayName = "SessionCardSkeleton";

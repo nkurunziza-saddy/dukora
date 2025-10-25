@@ -8,7 +8,7 @@ import { ErrorCode } from "@/server/constants/errors";
 import { PaymentColumn } from "@/utils/columns/payment-column";
 
 export default async function PaymentsHistoryPage(
-  props: PageProps<"/[locale]/payments">
+  props: PageProps<"/[locale]/payments">,
 ) {
   const query = await props.searchParams;
   const page = Number(query.page) || 1;

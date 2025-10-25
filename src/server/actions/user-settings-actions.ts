@@ -5,11 +5,12 @@ import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as userSettingsRepo from "../repos/user-settings-repo";
+import { revalidateTag } from "next/cache";
 
 export const getUserSettings = createProtectedAction(
   Permission.USER_VIEW,
   async (user) => {
-    const settings = await userSettingsRepo.get_all_cached(user.id);
+    const settings = await userSettingsRepo.get_all(user.id);
     if (settings.error) {
       return { data: null, error: settings.error };
     }
@@ -35,7 +36,11 @@ export const upsertUserSettings = createProtectedAction(
         userId: user.id,
         updatedAt: new Date(),
       };
-      return userSettingsRepo.upsert(user.id, user.businessId!, newSetting);
+      return userSettingsRepo.upsert(
+        user.id,
+        user.businessId ?? "",
+        newSetting,
+      );
     });
 
     const results = await Promise.all(promises);
@@ -44,7 +49,8 @@ export const upsertUserSettings = createProtectedAction(
     if (errors.length > 0) {
       return { data: null, error: ErrorCode.FAILED_REQUEST, errors };
     }
-
+    revalidateTag(`user-settings-${user.businessId}`, "max");
+    revalidateTag(`user-settings`, "max");
     return { data: { success: true }, error: null };
   },
 );

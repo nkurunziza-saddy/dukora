@@ -8,46 +8,47 @@ import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as transactionRepo from "../repos/transaction-repo";
+import { revalidateTag } from "next/cache";
 
 export const getTransactions = createProtectedAction(
   Permission.FINANCIAL_VIEW,
   async (user) => {
-    const transactions = await transactionRepo.get_all_cached(user.businessId!);
+    const transactions = await transactionRepo.get_all(user.businessId ?? "");
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  }
+  },
 );
 
 export const getTransactionsPaginated = createProtectedAction(
   Permission.FINANCIAL_VIEW,
   async (user, { page, pageSize }: { page: number; pageSize: number }) => {
-    const transactions = await transactionRepo.get_all_paginated_cached(
-      user.businessId!,
+    const transactions = await transactionRepo.get_all_paginated(
+      user.businessId ?? "",
       page,
-      pageSize
+      pageSize,
     );
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  }
+  },
 );
 
 export const getTransactionsByTimeInterval = createProtectedAction(
   Permission.FINANCIAL_VIEW,
   async (user, { startDate, endDate }: { startDate: Date; endDate: Date }) => {
     const transactions = await transactionRepo.get_time_interval_with_with(
-      user.businessId!,
+      user.businessId ?? "",
       startDate,
-      endDate
+      endDate,
     );
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  }
+  },
 );
 
 export const getTransactionsByTimeIntervalPaginated = createProtectedAction(
@@ -59,21 +60,21 @@ export const getTransactionsByTimeIntervalPaginated = createProtectedAction(
       endDate,
       page,
       pageSize,
-    }: { startDate: Date; endDate: Date; page: number; pageSize: number }
+    }: { startDate: Date; endDate: Date; page: number; pageSize: number },
   ) => {
     const transactions =
       await transactionRepo.get_time_interval_with_with_paginated(
-        user.businessId!,
+        user.businessId ?? "",
         startDate,
         endDate,
         page,
-        pageSize
+        pageSize,
       );
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  }
+  },
 );
 
 export const getTransactionById = createProtectedAction(
@@ -84,20 +85,20 @@ export const getTransactionById = createProtectedAction(
     }
     const transaction = await transactionRepo.get_by_id(
       transactionId,
-      user.businessId!
+      user.businessId ?? "",
     );
     if (transaction.error) {
       return { data: null, error: transaction.error };
     }
     return { data: transaction.data, error: null };
-  }
+  },
 );
 
 export const createTransaction = createProtectedAction(
   Permission.TRANSACTION_PURCHASE_CREATE,
   async (
     user,
-    transactionData: Omit<InsertTransaction, "businessId" | "id" | "createdBy">
+    transactionData: Omit<InsertTransaction, "businessId" | "id" | "createdBy">,
   ) => {
     if (
       !transactionData.productId?.trim() ||
@@ -109,7 +110,7 @@ export const createTransaction = createProtectedAction(
     }
     const transaction: InsertTransaction = {
       ...transactionData,
-      businessId: user.businessId!,
+      businessId: user.businessId ?? "",
       createdBy: user.id,
     };
     const { data: resData, error: resError } =
@@ -117,9 +118,10 @@ export const createTransaction = createProtectedAction(
     if (resError) {
       return { data: null, error: resError };
     }
-
+    revalidateTag(`transactions-${user.businessId}`, "max");
+    revalidateTag("transactions", "max");
     return { data: resData, error: null };
-  }
+  },
 );
 
 export const createTransactionAndWarehouseItem = createProtectedAction(
@@ -129,7 +131,7 @@ export const createTransactionAndWarehouseItem = createProtectedAction(
     transactionData: Omit<
       InsertTransaction,
       "businessId" | "id" | "createdBy" | "warehouseItemId"
-    >
+    >,
   ) => {
     if (
       !transactionData.productId?.trim() ||
@@ -140,7 +142,7 @@ export const createTransactionAndWarehouseItem = createProtectedAction(
     }
     const transaction = {
       ...transactionData,
-      businessId: user.businessId!,
+      businessId: user.businessId ?? "",
       createdBy: user.id,
     };
     const { data: resData, error: resError } =
@@ -148,8 +150,12 @@ export const createTransactionAndWarehouseItem = createProtectedAction(
     if (resError) {
       return { data: null, error: resError };
     }
+    revalidateTag(`transactions-${user.businessId}`, "max");
+    revalidateTag("transactions", "max");
+    revalidateTag(`warehouse-item-${user.businessId}`, "max");
+    revalidateTag("warehouse-items", "max");
     return { data: resData, error: null };
-  }
+  },
 );
 
 export const getTransactionsByType = createProtectedAction(
@@ -159,12 +165,12 @@ export const getTransactionsByType = createProtectedAction(
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
     const transactions = await transactionRepo.get_by_type(
-      user.businessId!,
-      type
+      user.businessId ?? "",
+      type,
     );
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  }
+  },
 );

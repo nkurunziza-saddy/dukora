@@ -8,8 +8,8 @@ import ClientBody from "@/components/providers/client-body";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { QueryProvider } from "@/lib/providers/query-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { locales } from "@/i18n/config";
 import { routing } from "@/i18n/routing";
+import { setRequestLocale } from "next-intl/server";
 
 const geistSans = Geist({
   subsets: ["latin"],
@@ -30,25 +30,18 @@ export const metadata: Metadata = {
     "Track inventory across multiple warehouses, manage sales in real-time, and get AI-powered insights—all in one unified dashboard.",
 };
 
-export async function generateStaticParams() {
-  return locales.map((locale) => ({
-    locale,
-  }));
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
 }
 
-export default async function RootLayout({
-  children,
-  params,
-}: Readonly<{
-  children: React.ReactNode;
-  params: Promise<{ locale: string }>;
-}>) {
-  const { locale } = await params;
+export default async function RootLayout(props: LayoutProps<"/[locale]">) {
+  const locale = (await props.params).locale;
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+  setRequestLocale(locale);
   return (
-    <html lang={locale} className={`dark `}>
+    <html lang={locale} className={``}>
       <body
         suppressHydrationWarning
         className={`scrollbar ${geistSans.variable} ${geistMono.variable}`}
@@ -62,7 +55,7 @@ export default async function RootLayout({
               disableTransitionOnChange
             >
               <ClientBody>
-                {children}
+                {props.children}
                 <Toaster />
               </ClientBody>
             </ThemeProvider>

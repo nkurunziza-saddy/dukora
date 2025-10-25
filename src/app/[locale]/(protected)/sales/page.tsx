@@ -15,7 +15,7 @@ import { getTransactionsByTimeIntervalPaginated } from "@/server/actions/transac
 import { TransactionColumn } from "@/utils/columns/transaction-column";
 
 export default async function SalesTracking(
-  props: PageProps<"/[locale]/sales">
+  props: PageProps<"/[locale]/sales">,
 ) {
   const query = await props.searchParams;
   const page = Number(query.page) || 1;

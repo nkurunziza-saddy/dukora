@@ -2,8 +2,9 @@ import type { TransactionType } from "@/lib/schema/schema-types";
 import { getUserIfHasPermission } from "@/server/actions/auth/permission-middleware";
 import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
-import { getFilteredTransactions } from "@/server/repos/statistics/transactions-stat-repo";
-export async function fetchTransactionsByFilters(
+import { get_filtered_transactions } from "@/server/repos/statistics-repo/transactions-stat-repo";
+
+export async function getTransactionsByFilters(
   limit = 10,
   offset = 0,
   sortBy: "createdAt" | "quantity" = "createdAt",
@@ -19,7 +20,7 @@ export async function fetchTransactionsByFilters(
     const dateFromObj = dateFrom ? new Date(dateFrom) : undefined;
     const dateToObj = dateTo ? new Date(dateTo) : undefined;
 
-    const data = await getFilteredTransactions(
+    const data = await get_filtered_transactions(
       currentUser.id,
       limit,
       offset,

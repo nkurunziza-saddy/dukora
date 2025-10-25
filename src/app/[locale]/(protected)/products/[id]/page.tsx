@@ -7,6 +7,12 @@ import ProductStockLevels from "./_components/product-stock-levels";
 import ProductSummaryCard from "./_components/product-summary-card";
 import ProductSuppliers from "./_components/product-suppliers";
 import ProductTransactions from "./_components/product-transactions";
+import type { Metadata } from "next";
+
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
 
 export async function generateStaticParams() {
   const res = await db.query.productsTable.findMany();
@@ -14,6 +20,22 @@ export async function generateStaticParams() {
   return res.map((unit) => ({
     id: unit.id,
   }));
+}
+
+export async function generateMetadata({
+  params,
+  searchParams,
+}: Props): Promise<Metadata> {
+  const { id } = await params;
+  const { data: product, error } = await getProductById(id);
+  if (error || !product) {
+    return {
+      title: "Product Not Found",
+    };
+  }
+  return {
+    title: product?.name ?? "Product",
+  };
 }
 
 export default async function ProductDetailsPage({

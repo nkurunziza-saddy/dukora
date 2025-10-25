@@ -4,7 +4,7 @@ import { stripe } from "@/lib/stripe";
 import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import { get_by_id as getBusinessByIdRepo } from "@/server/repos/business-repo";
+import { get_by_id as get_business_by_id } from "@/server/repos/business-repo";
 import * as interBusinessPaymentsRepo from "@/server/repos/inter-business-payments-repo";
 
 export const initiateInterBusinessPayment = createProtectedAction(
@@ -21,18 +21,18 @@ export const initiateInterBusinessPayment = createProtectedAction(
       amount: number;
       currency: string;
       applicationFeeAmount?: number;
-    }
+    },
   ) => {
     if (!user.businessId) {
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
     }
 
-    const payerBusiness = await getBusinessByIdRepo(user.businessId);
+    const payerBusiness = await get_business_by_id(user.businessId);
     if (payerBusiness.error || !payerBusiness.data?.stripeAccountId) {
       return { data: null, error: ErrorCode.STRIPE_ACCOUNT_NOT_CONNECTED };
     }
 
-    const receiverBusiness = await getBusinessByIdRepo(receiverBusinessId);
+    const receiverBusiness = await get_business_by_id(receiverBusinessId);
     if (receiverBusiness.error || !receiverBusiness.data?.stripeAccountId) {
       return {
         data: null,
@@ -63,7 +63,7 @@ export const initiateInterBusinessPayment = createProtectedAction(
           applicationFeeAmount: String(applicationFeeAmount),
           initiatedByUserId: user.id,
         },
-        user.id
+        user.id,
       );
 
       if (paymentRecord.error) {
@@ -78,7 +78,7 @@ export const initiateInterBusinessPayment = createProtectedAction(
         error: ErrorCode.FAILED_REQUEST,
       };
     }
-  }
+  },
 );
 
 export const getInterBusinessPayments = createProtectedAction(
@@ -90,11 +90,11 @@ export const getInterBusinessPayments = createProtectedAction(
     const payments = await interBusinessPaymentsRepo.get_all_paginated(
       user.businessId,
       page,
-      pageSize
+      pageSize,
     );
     if (payments.error) {
       return { data: null, error: payments.error };
     }
     return { data: payments.data, error: null };
-  }
+  },
 );

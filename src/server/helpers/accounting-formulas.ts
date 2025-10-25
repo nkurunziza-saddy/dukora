@@ -1,5 +1,3 @@
-// these are all pure functioned to maximize performance and testing
-
 import type {
   ExtendedWarehouseItemPayload,
   SelectExpense,
@@ -155,7 +153,7 @@ export function calculateAllMetrics(
       : 0;
 
   // Cash flow indicators
-  const workingCapital = validClosingStock; // Simplified --- would need accounts receivable/payable for full calculation which arent't implemented yet
+  const workingCapital = validClosingStock; // Simplified --- would need accounts receivable/payable for full calculation which arent't implemented yet, //TODO; Apply it later
   const inventoryValue = validClosingStock;
   const inventoryGrowth =
     validOpeningStock > 0

@@ -1,75 +1,17 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-// import { Checkbox } from "@/components/ui/checkbox";
 import { format } from "date-fns";
 import { CircleIcon, TimerIcon } from "lucide-react";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
 import ProductRowActions from "@/components/table/product-row-actions";
 import { Badge } from "@/components/ui/badge";
 import { ProductStatus, type SelectProduct } from "@/lib/schema/schema-types";
-// import { Button } from "@/components/ui/button";
 
 export function ProductColumn(
   t: (key: string) => string,
 ): ColumnDef<SelectProduct>[] {
   return [
-    // {
-    //   id: "expander",
-    //   header: () => null,
-    //   cell: ({ row }) => {
-    //     return row.getCanExpand() ? (
-    //       <Button
-    //         {...{
-    //           className: "size-7 shadow-none text-muted-foreground",
-    //           onClick: row.getToggleExpandedHandler(),
-    //           "aria-expanded": row.getIsExpanded(),
-    //           "aria-label": row.getIsExpanded()
-    //             ? `Collapse details for ${row.original.description}`
-    //             : `Expand details for ${row.original.description}`,
-    //           size: "icon",
-    //           variant: "ghost",
-    //         }}
-    //       >
-    //         {row.getIsExpanded() ? (
-    //           <ChevronUpIcon
-    //             className="opacity-60"
-    //             size={16}
-    //             aria-hidden="true"
-    //           />
-    //         ) : (
-    //           <ChevronDownIcon
-    //             className="opacity-60"
-    //             size={16}
-    //             aria-hidden="true"
-    //           />
-    //         )}
-    //       </Button>
-    //     ) : undefined;
-    //   },
-    // },
-    // {
-    //   id: "select",
-    //   header: ({ table }) => (
-    //     <Checkbox
-    //       checked={
-    //         table.getIsAllPageRowsSelected() ||
-    //         (table.getIsSomePageRowsSelected() && "indeterminate")
-    //       }
-    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-    //       aria-label="Select all"
-    //     />
-    //   ),
-    //   cell: ({ row }) => (
-    //     <Checkbox
-    //       checked={row.getIsSelected()}
-    //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-    //       aria-label="Select row"
-    //     />
-    //   ),
-    //   enableSorting: false,
-    //   enableHiding: false,
-    // },
     {
       accessorKey: "status",
       header: ({ column }) => (

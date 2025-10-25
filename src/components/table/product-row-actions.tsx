@@ -2,7 +2,6 @@
 
 import { format } from "date-fns";
 import { EditIcon, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 import React, { type FC, useState } from "react";
 import { toast } from "sonner";
@@ -20,6 +19,7 @@ import {
 import type { SelectProduct } from "@/lib/schema/schema-types";
 import ProductForm from "../forms/create-product-form";
 import ConfirmDialog from "../shared/confirm-dialog";
+import { HoverPrefetchLink } from "../hover-prefetch-link";
 
 export interface ProductRowActionsProps {
   product: SelectProduct;
@@ -80,9 +80,9 @@ const ProductRowActions: FC<ProductRowActionsProps> = ({ product }) => {
             <MenuGroupLabel>{t_common("actions")}</MenuGroupLabel>
 
             <MenuItem>
-              <Link href={`/products/${product.id}`} prefetch>
+              <HoverPrefetchLink href={`/products/${product.id}`}>
                 {t("product.viewDetails")}
-              </Link>
+              </HoverPrefetchLink>
             </MenuItem>
             <MenuSeparator />
             <MenuItem

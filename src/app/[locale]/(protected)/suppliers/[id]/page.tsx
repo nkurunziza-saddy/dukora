@@ -5,6 +5,12 @@ import { db } from "@/lib/db";
 import { getSupplierById } from "@/server/actions/supplier-actions";
 import SupplierProducts from "./_components/supplier-products";
 import SupplierSummaryCard from "./_components/supplier-summary-card";
+import type { Metadata } from "next";
+
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
 
 export async function generateStaticParams() {
   const res = await db.query.suppliersTable.findMany();
@@ -12,6 +18,19 @@ export async function generateStaticParams() {
   return res.map((supplier) => ({
     id: supplier.id,
   }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const { data: supplier, error } = await getSupplierById(id);
+  if (error || !supplier) {
+    return {
+      title: "Supplier Not Found",
+    };
+  }
+  return {
+    title: supplier?.name ?? "Supplier",
+  };
 }
 
 export default async function SupplierDetailsPage({

@@ -1,18 +1,18 @@
 import { addDays, startOfToday, subDays } from "date-fns";
 import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import { getTotalProducts as getTotalProductsRepo } from "@/server/repos/statistics/product-stat-repo";
+import { get_total_products } from "@/server/repos/statistics-repo/product-stat-repo";
 import {
-  getInventoryValue as getInventoryValueRepo,
-  getProductsWithStockAlert as getProductsWithStockAlertRepo,
-} from "@/server/repos/statistics/stock-stat-repo";
-import * as transactionRepo from "@/server/repos/statistics/transactions-stat-repo";
-import { getTotalWarehouses as getTotalWarehousesRepo } from "@/server/repos/statistics/warehouse-stat-repo";
+  get_inventory_value,
+  get_products_with_stock_alert,
+} from "@/server/repos/statistics-repo/stock-stat-repo";
+import * as transactionRepo from "@/server/repos/statistics-repo/transactions-stat-repo";
+import { get_total_warehouses } from "@/server/repos/statistics-repo/warehouse-stat-repo";
 
 export const getTotalSKUCount = createProtectedAction(
   Permission.FINANCIAL_VIEW,
   async (user) => {
-    const count = await getTotalProductsRepo(user.businessId!);
+    const count = await get_total_products(user.businessId ?? "");
     if (count.error) {
       return { data: null, error: count.error };
     }
@@ -23,7 +23,7 @@ export const getTotalSKUCount = createProtectedAction(
 export const getTotalWarehousesCount = createProtectedAction(
   Permission.FINANCIAL_VIEW,
   async (user) => {
-    const count = await getTotalWarehousesRepo(user.businessId!);
+    const count = await get_total_warehouses(user.businessId ?? "");
     if (count.error) {
       return { data: null, error: count.error };
     }
@@ -34,7 +34,7 @@ export const getTotalWarehousesCount = createProtectedAction(
 export const getLowStockProductsCount = createProtectedAction(
   Permission.FINANCIAL_VIEW,
   async (user) => {
-    const count = await getProductsWithStockAlertRepo(user.businessId!);
+    const count = await get_products_with_stock_alert(user.businessId ?? "");
     if (count.error) {
       return { data: null, error: count.error };
     }
@@ -45,7 +45,7 @@ export const getLowStockProductsCount = createProtectedAction(
 export const getCurrentInventoryValue = createProtectedAction(
   Permission.FINANCIAL_VIEW,
   async (user) => {
-    const count = await getInventoryValueRepo(user.businessId!);
+    const count = await get_inventory_value(user.businessId ?? "");
     if (count.error) {
       return { data: null, error: count.error };
     }
@@ -60,13 +60,13 @@ export const getTodayTransactions = createProtectedAction(
     const tomorrow = addDays(today, 1);
     const yesterday = subDays(today, 1);
     const [resToday, resYesterday] = await Promise.all([
-      transactionRepo.getTransactionMetricsForInterval(
-        user.businessId!,
+      transactionRepo.get_transaction_metrics_for_interval(
+        user.businessId ?? "",
         today,
         tomorrow,
       ),
-      transactionRepo.getTransactionMetricsForInterval(
-        user.businessId!,
+      transactionRepo.get_transaction_metrics_for_interval(
+        user.businessId ?? "",
         yesterday,
         today,
       ),

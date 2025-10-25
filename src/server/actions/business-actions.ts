@@ -1,5 +1,5 @@
 "use server";
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import type { InsertBusiness } from "@/lib/schema/schema-types";
 import { getCurrentSession } from "@/server/actions/auth-actions";
 import { ErrorCode } from "@/server/constants/errors";
@@ -24,7 +24,7 @@ export const getBusinessById = createProtectedAction(
     if (!businessId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
-    const business = await businessRepo.get_by_id_cached(businessId);
+    const business = await businessRepo.get_by_id(businessId);
     if (business.error) {
       return { data: null, error: business.error };
     }
@@ -49,7 +49,8 @@ export const createBusiness = async (
   if (res.error) {
     return { data: null, error: res.error };
   }
-  revalidatePath("/", "layout");
+  revalidateTag(`business-${res.data.id}`, "max");
+  revalidateTag(`businesses`, "max");
   return { data: res.data, error: null };
 };
 
@@ -76,7 +77,8 @@ export const updateBusiness = createProtectedAction(
     if (updatedBusiness.error) {
       return { data: null, error: updatedBusiness.error };
     }
-    revalidatePath("/", "layout");
+    revalidateTag(`business-${user.businessId}`, "max");
+    revalidateTag(`business-${businessId}`, "max");
     return { data: updatedBusiness.data, error: null };
   },
 );
@@ -91,14 +93,15 @@ export const deleteBusiness = createProtectedAction(
     if (res.error) {
       return { data: null, error: res.error };
     }
-    revalidatePath("/", "layout");
+    revalidateTag(`businesses-${user.businessId}`, "max");
+    revalidateTag(`business-${businessId}`, "max");
     return { data: { success: true }, error: null };
   },
 );
 
 export const createManyBusinesses = createProtectedAction(
   Permission.BUSINESS_CREATE,
-  async (_user, businessesData: Omit<InsertBusiness, "id">[]) => {
+  async (user, businessesData: Omit<InsertBusiness, "id">[]) => {
     if (!businessesData?.length) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
     }
@@ -107,7 +110,8 @@ export const createManyBusinesses = createProtectedAction(
     if (createdBusinesses.error) {
       return { data: null, error: createdBusinesses.error };
     }
-    revalidatePath("/", "layout");
+    revalidateTag(`businesses-${user.businessId}`, "max");
+    revalidateTag("businesses", "max");
     return { data: createdBusinesses.data, error: null };
   },
 );

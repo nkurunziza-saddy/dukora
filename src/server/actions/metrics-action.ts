@@ -21,7 +21,7 @@ import * as metricsRepo from "@/server/repos/metrics-repo";
 import * as transactionRepo from "@/server/repos/transaction-repo";
 import { calculateAllMetrics } from "../helpers/accounting-formulas";
 import { syncMetricsToDatabase } from "../helpers/db-functional-helpers";
-import { get_all_cached as getAllBusinesses } from "../repos/business-repo";
+import { get_all as get_all_businesses } from "../repos/business-repo";
 import { getExpensesByTimeInterval } from "./expense-actions";
 
 export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
@@ -53,7 +53,7 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
     }
 
     const transactions = await transactionRepo.get_by_time_interval(
-      currentUser.businessId!,
+      currentUser.businessId ?? "",
       dateFrom,
       dateTo,
     );
@@ -80,7 +80,7 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
 
     const prevMonth = subMonths(dateFrom, 1);
     const openingStockMetric = await metricsRepo.get_metric_by_name(
-      currentUser.businessId!,
+      currentUser.businessId ?? "",
       "closingStock",
       "monthly",
       prevMonth,
@@ -91,7 +91,7 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
     );
 
     const warehouseItemsReq = await getWarehouseItemsByBusiness(
-      currentUser.businessId!,
+      currentUser.businessId ?? "",
     );
     if (warehouseItemsReq.error) {
       console.error(
@@ -122,7 +122,7 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
     );
 
     const syncResult = await syncMetricsToDatabase(
-      currentUser.businessId!,
+      currentUser.businessId ?? "",
       dateFrom,
       calculatedMetrics,
     );
@@ -145,7 +145,7 @@ export async function getMonthlyMetrics(date: Date) {
 
   try {
     const metrics = await metricsRepo.get_monthly_metrics(
-      currentUser.businessId!,
+      currentUser.businessId ?? "",
       date,
     );
     return metrics;
@@ -160,7 +160,7 @@ export async function scheduleMonthlyMetricsSync() {
     let successCount = 0;
     let errorCount = 0;
 
-    const businesses = await getAllBusinesses();
+    const businesses = await get_all_businesses();
 
     for (const business of businesses.data || []) {
       const result = await calculateAndSyncMonthlyMetrics(
