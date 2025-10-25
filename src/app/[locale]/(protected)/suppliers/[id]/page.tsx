@@ -13,8 +13,14 @@ type Props = {
 };
 
 export async function generateStaticParams() {
-  const res = await db.query.suppliersTable.findMany();
-  if (!res) return Array.from({ length: 2 }).map((i) => ({ id: i }));
+  const res = await db.query.suppliersTable.findMany({
+    columns: { id: true },
+  });
+
+  if (res.length === 0) {
+    return [{ id: "placeholder" }];
+  }
+
   return res.map((supplier) => ({
     id: supplier.id,
   }));

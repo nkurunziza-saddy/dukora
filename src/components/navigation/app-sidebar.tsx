@@ -33,38 +33,34 @@ import {
 } from "@/components/ui/sidebar";
 import SessionCard from "./session-card";
 
-export const data = {
+export const navData = {
   navMain: [
     {
       title: "Dashboard",
-      items: [
-        {
-          title: "Dashboard",
-          url: "/dashboard",
-          icon: LayersIcon,
-        },
-        {
-          title: "Inventory Overview",
-          url: "/inventory",
-          icon: WarehouseIcon,
-        },
-        {
-          title: "Product Catalog",
-          url: "/products",
-          icon: PackageIcon,
-        },
-        {
-          title: "Supplier Management",
-          url: "/suppliers",
-          icon: TruckIcon,
-        },
-        {
-          title: "Business transactions",
-          url: "/transactions",
-          icon: ArrowRightLeftIcon,
-        },
-      ],
+      url: "/dashboard",
+      icon: LayersIcon,
     },
+    {
+      title: "Inventory Overview",
+      url: "/inventory",
+      icon: WarehouseIcon,
+    },
+    {
+      title: "Product Catalog",
+      url: "/products",
+      icon: PackageIcon,
+    },
+    {
+      title: "Supplier Management",
+      url: "/suppliers",
+      icon: TruckIcon,
+    },
+    {
+      title: "Business transactions",
+      url: "/transactions",
+      icon: ArrowRightLeftIcon,
+    },
+
     {
       title: "Operations",
       items: [
@@ -136,12 +132,12 @@ export function AppSidebar() {
         <SessionCard />
       </SidebarHeader>
       <SidebarContent>
-        {data.navMain.map((group) => (
+        {navData.navMain.map((group) => (
           <SidebarGroup key={group.title}>
             <SidebarGroupLabel>{t(group.title)}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {group.items.map((item) => {
+                {group.items?.map((item) => {
                   const url = item.url.slice(1);
                   const isActive = pathname === `/${locale}${item.url}`;
                   return (

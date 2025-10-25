@@ -45,7 +45,7 @@ export function CompoundInterestCalculator() {
             id="principal"
             type="number"
             value={principal}
-            onChange={(e) => setPrincipal(parseFloat(e.target.value))}
+            onChange={(e) => setPrincipal(parseFloat(e.target.value) || 0)}
             onBlur={calculateCompoundInterest}
           />
         </div>
@@ -57,7 +57,7 @@ export function CompoundInterestCalculator() {
             id="annualRate"
             type="number"
             value={annualRate}
-            onChange={(e) => setAnnualRate(parseFloat(e.target.value))}
+            onChange={(e) => setAnnualRate(parseFloat(e.target.value) || 0)}
             onBlur={calculateCompoundInterest}
           />
         </div>
@@ -70,7 +70,7 @@ export function CompoundInterestCalculator() {
             type="number"
             value={compoundingFrequency}
             onChange={(e) =>
-              setCompoundingFrequency(parseFloat(e.target.value))
+              setCompoundingFrequency(parseFloat(e.target.value) || 0)
             }
             onBlur={calculateCompoundInterest}
           />
@@ -81,7 +81,7 @@ export function CompoundInterestCalculator() {
             id="time"
             type="number"
             value={time}
-            onChange={(e) => setTime(parseFloat(e.target.value))}
+            onChange={(e) => setTime(parseFloat(e.target.value) || 0)}
             onBlur={calculateCompoundInterest}
           />
         </div>

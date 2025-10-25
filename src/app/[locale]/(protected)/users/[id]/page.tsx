@@ -17,7 +17,9 @@ type Props = {
 
 export async function generateStaticParams() {
   const res = await db.query.usersTable.findMany();
-  if (!res) return Array.from({ length: 2 }).map((i) => ({ id: i }));
+  if (res.length === 0) {
+    return [{ id: "placeholder" }];
+  }
   return res.map((unit) => ({
     id: unit.id,
   }));

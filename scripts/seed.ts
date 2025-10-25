@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import * as schema from "./src/lib/schema";
+import * as schema from "../src/lib/schema";
 import "dotenv/config";
 import { endOfMonth, startOfMonth, subMonths } from "date-fns";
 import { db } from "@/lib/db";
@@ -13,7 +13,7 @@ const main = async () => {
 
   if (!businesses) {
     console.error(
-      "No business found in the database. Please create a business before seeding.",
+      "No business found in the database. Please create a business before seeding."
     );
     process.exit(1);
   }
@@ -50,7 +50,7 @@ const main = async () => {
 
     if (users.length === 0) {
       console.error(
-        `No users found for business: ${business.name}. Please ensure users exist.`,
+        `No users found for business: ${business.name}. Please ensure users exist.`
       );
       process.exit(1);
     }
@@ -116,7 +116,7 @@ const main = async () => {
         barcode: faker.string.numeric(13),
         price: price.toFixed(2),
         costPrice: (price * faker.number.float({ min: 0.5, max: 0.8 })).toFixed(
-          2,
+          2
         ),
         categoryId: faker.helpers.arrayElement(categories).id,
         businessId: business.id,
@@ -134,12 +134,12 @@ const main = async () => {
     const productSuppliersData = products.flatMap((product) => {
       const selectedSuppliers = faker.helpers.arrayElements(
         suppliers,
-        faker.number.int({ min: 1, max: 2 }),
+        faker.number.int({ min: 1, max: 2 })
       );
       return selectedSuppliers.map((supplier) => {
         const createdDate = faker.date.between({
           from: new Date(
-            Math.max(product.createdAt.getTime(), supplier.createdAt.getTime()),
+            Math.max(product.createdAt.getTime(), supplier.createdAt.getTime())
           ),
           to: today,
         });
@@ -160,7 +160,7 @@ const main = async () => {
     });
     await db.insert(schema.productSuppliersTable).values(productSuppliersData);
     console.log(
-      `  ${productSuppliersData.length} product supplier links seeded.`,
+      `  ${productSuppliersData.length} product supplier links seeded.`
     );
 
     console.log("  Seeding warehouses...");
@@ -191,10 +191,7 @@ const main = async () => {
       products.map((product) => {
         const createdDate = faker.date.between({
           from: new Date(
-            Math.max(
-              warehouse.createdAt.getTime(),
-              product.createdAt.getTime(),
-            ),
+            Math.max(warehouse.createdAt.getTime(), product.createdAt.getTime())
           ),
           to: subMonths(today, 2),
         });
@@ -205,7 +202,7 @@ const main = async () => {
           createdAt: createdDate,
           updatedAt: faker.date.between({ from: createdDate, to: today }),
         };
-      }),
+      })
     );
     const warehouseItems = await db
       .insert(schema.warehouseItemsTable)
@@ -224,7 +221,7 @@ const main = async () => {
         `    Seeding data for ${monthStart.toLocaleString("default", {
           month: "long",
           year: "numeric",
-        })}...`,
+        })}...`
       );
 
       const transactionsData = [];
@@ -234,7 +231,7 @@ const main = async () => {
 
       for (let j = 0; j < numSales; j++) {
         const effectiveMonthEnd = new Date(
-          Math.min(monthEnd.getTime(), today.getTime()),
+          Math.min(monthEnd.getTime(), today.getTime())
         );
         const transactionDate = faker.date.between({
           from: monthStart,
@@ -244,7 +241,7 @@ const main = async () => {
         const warehouse = faker.helpers.arrayElement(warehouses);
         const warehouseItem = warehouseItems.find(
           (wi) =>
-            wi.productId === soldProduct.id && wi.warehouseId === warehouse.id,
+            wi.productId === soldProduct.id && wi.warehouseId === warehouse.id
         );
 
         if (!warehouseItem) continue;
@@ -265,7 +262,7 @@ const main = async () => {
           updatedAt: faker.date.between({
             from: transactionDate,
             to: new Date(
-              Math.min(effectiveMonthEnd.getTime(), today.getTime()),
+              Math.min(effectiveMonthEnd.getTime(), today.getTime())
             ),
           }),
         };
@@ -311,7 +308,7 @@ const main = async () => {
 
       for (let k = 0; k < numPurchases; k++) {
         const effectiveMonthEnd = new Date(
-          Math.min(monthEnd.getTime(), today.getTime()),
+          Math.min(monthEnd.getTime(), today.getTime())
         );
         const transactionDate = faker.date.between({
           from: monthStart,
@@ -322,7 +319,7 @@ const main = async () => {
         const warehouseItem = warehouseItems.find(
           (wi) =>
             wi.productId === purchasedProduct.id &&
-            wi.warehouseId === warehouse.id,
+            wi.warehouseId === warehouse.id
         );
 
         if (!warehouseItem) continue;
@@ -344,7 +341,7 @@ const main = async () => {
           updatedAt: faker.date.between({
             from: transactionDate,
             to: new Date(
-              Math.min(effectiveMonthEnd.getTime(), today.getTime()),
+              Math.min(effectiveMonthEnd.getTime(), today.getTime())
             ),
           }),
         };
@@ -388,7 +385,7 @@ const main = async () => {
           .values(purchaseTransactionsData);
 
       console.log(
-        `      ${numSales} sales and ${numPurchases} purchases seeded.`,
+        `      ${numSales} sales and ${numPurchases} purchases seeded.`
       );
 
       const allMonthTransactions = [
@@ -441,7 +438,7 @@ const main = async () => {
 
       for (let l = 0; l < faker.number.int({ min: 3, max: 8 }); l++) {
         const effectiveMonthEnd = new Date(
-          Math.min(monthEnd.getTime(), today.getTime()),
+          Math.min(monthEnd.getTime(), today.getTime())
         );
         const auditDate = faker.date.between({
           from: monthStart,

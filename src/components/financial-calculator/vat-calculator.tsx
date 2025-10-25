@@ -40,7 +40,7 @@ export function VATCalculator() {
             id="salesAmount"
             type="number"
             value={salesAmount}
-            onChange={(e) => setSalesAmount(parseFloat(e.target.value))}
+            onChange={(e) => setSalesAmount(parseFloat(e.target.value) || 0)}
             onBlur={calculateVAT}
           />
         </div>
@@ -52,7 +52,7 @@ export function VATCalculator() {
             id="purchasesAmount"
             type="number"
             value={purchasesAmount}
-            onChange={(e) => setPurchasesAmount(parseFloat(e.target.value))}
+            onChange={(e) => setPurchasesAmount(parseFloat(e.target.value) || 0)}
             onBlur={calculateVAT}
           />
         </div>

@@ -58,7 +58,7 @@ export function IncomeTaxCalculator() {
             id="annualIncome"
             type="number"
             value={annualIncome}
-            onChange={(e) => setAnnualIncome(parseFloat(e.target.value))}
+            onChange={(e) => setAnnualIncome(parseFloat(e.target.value) || 0)}
             onBlur={calculatePIT}
           />
         </div>

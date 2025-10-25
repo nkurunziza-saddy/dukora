@@ -46,7 +46,7 @@ export function LoanCalculator() {
             id="loanAmount"
             type="number"
             value={loanAmount}
-            onChange={(e) => setLoanAmount(parseFloat(e.target.value))}
+            onChange={(e) => setLoanAmount(parseFloat(e.target.value) || 0)}
             onBlur={calculateMonthlyPayment}
           />
         </div>
@@ -58,7 +58,7 @@ export function LoanCalculator() {
             id="interestRate"
             type="number"
             value={interestRate}
-            onChange={(e) => setInterestRate(parseFloat(e.target.value))}
+            onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
             onBlur={calculateMonthlyPayment}
           />
         </div>
@@ -70,7 +70,7 @@ export function LoanCalculator() {
             id="loanTerm"
             type="number"
             value={loanTerm}
-            onChange={(e) => setLoanTerm(parseFloat(e.target.value))}
+            onChange={(e) => setLoanTerm(parseFloat(e.target.value) || 0)}
             onBlur={calculateMonthlyPayment}
           />
         </div>

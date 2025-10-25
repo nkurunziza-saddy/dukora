@@ -43,7 +43,7 @@ export function SavingsGoalCalculator() {
             id="targetAmount"
             type="number"
             value={targetAmount}
-            onChange={(e) => setTargetAmount(parseFloat(e.target.value))}
+            onChange={(e) => setTargetAmount(parseFloat(e.target.value) || 0)}
             onBlur={calculateYearsToGoal}
           />
         </div>
@@ -55,7 +55,7 @@ export function SavingsGoalCalculator() {
             id="currentSavings"
             type="number"
             value={currentSavings}
-            onChange={(e) => setCurrentSavings(parseFloat(e.target.value))}
+            onChange={(e) => setCurrentSavings(parseFloat(e.target.value) || 0)}
             onBlur={calculateYearsToGoal}
           />
         </div>
@@ -67,7 +67,7 @@ export function SavingsGoalCalculator() {
             id="annualContribution"
             type="number"
             value={annualContribution}
-            onChange={(e) => setAnnualContribution(parseFloat(e.target.value))}
+            onChange={(e) => setAnnualContribution(parseFloat(e.target.value) || 0)}
             onBlur={calculateYearsToGoal}
           />
         </div>

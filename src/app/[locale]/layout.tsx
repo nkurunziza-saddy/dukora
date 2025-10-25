@@ -10,25 +10,12 @@ import { QueryProvider } from "@/lib/providers/query-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { routing } from "@/i18n/routing";
 import { setRequestLocale } from "next-intl/server";
+import { fontMono, fontSans } from "@/lib/config/fonts";
+import { constructMetadata } from "@/lib/config/metadata";
 
-const geistSans = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist",
-  display: "swap",
-  preload: true,
+export const metadata = constructMetadata({
+  canonicalUrl: "/",
 });
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
-  display: "swap",
-  preload: true,
-});
-
-export const metadata: Metadata = {
-  title: "Dukora - Modern Inventory Management for Growing Businesses",
-  description:
-    "Track inventory across multiple warehouses, manage sales in real-time, and get AI-powered insights—all in one unified dashboard.",
-};
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -41,10 +28,9 @@ export default async function RootLayout(props: LayoutProps<"/[locale]">) {
   }
   setRequestLocale(locale);
   return (
-    <html lang={locale} className={``}>
+    <html lang={locale} suppressHydrationWarning>
       <body
-        suppressHydrationWarning
-        className={`scrollbar ${geistSans.variable} ${geistMono.variable}`}
+        className={` ${fontSans.variable} ${fontMono.variable} bg-background text-foreground antialiased`}
       >
         <NextIntlClientProvider>
           <QueryProvider>

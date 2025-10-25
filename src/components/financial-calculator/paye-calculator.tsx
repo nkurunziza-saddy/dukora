@@ -28,9 +28,8 @@ export function PAYECalculator() {
 
   const calculatePAYE = () => {
     let tax = 0;
-    let remainingIncome = monthlyIncome;
-
     if (employeeType === "permanent") {
+      let remainingIncome = monthlyIncome;
       if (remainingIncome > 200000) {
         tax += (remainingIncome - 200000) * 0.3;
         remainingIncome = 200000;
@@ -41,14 +40,11 @@ export function PAYECalculator() {
       }
       if (remainingIncome > 60000) {
         tax += (remainingIncome - 60000) * 0.1;
-        remainingIncome = 60000;
       }
-      // 0 - 60,000 is 0%
     } else if (employeeType === "casual") {
-      if (remainingIncome > 60000) {
-        tax += (remainingIncome - 60000) * 0.15;
+      if (monthlyIncome > 60000) {
+        tax = monthlyIncome * 0.15;
       }
-      // 0 - 60,000 is 0%
     }
     setPaye(tax);
   };
@@ -68,7 +64,7 @@ export function PAYECalculator() {
             id="monthlyIncome"
             type="number"
             value={monthlyIncome}
-            onChange={(e) => setMonthlyIncome(parseFloat(e.target.value))}
+            onChange={(e) => setMonthlyIncome(parseFloat(e.target.value) || 0)}
             onBlur={calculatePAYE}
           />
         </div>

@@ -10,7 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import "katex/dist/katex.min.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { SIDEBAR_WIDTH } from "@/components/ui/sidebar";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/lib/hooks/use-mobile";
 import { Message } from "./message-box";
 import { TypingIndicator } from "./typing-indicator";
 import { WelcomeScreen } from "./welcome-screen";
@@ -37,7 +37,7 @@ export default function AIChat() {
     (id: string) => {
       setMessages((prev) => prev.filter((message) => message.id !== id));
     },
-    [setMessages],
+    [setMessages]
   );
 
   const handleCopyMessage = useCallback(
@@ -46,7 +46,7 @@ export default function AIChat() {
       setCopiedMessageId(messageId);
       setTimeout(() => setCopiedMessageId(null), 2000);
     },
-    [],
+    []
   );
 
   const handleSuggestionClick = useCallback((suggestion: string) => {
@@ -61,7 +61,7 @@ export default function AIChat() {
       sendMessage({ text: input });
       setInput("");
     },
-    [input, isLoading, sendMessage],
+    [input, isLoading, sendMessage]
   );
 
   const handleClear = useCallback(() => {
@@ -191,7 +191,7 @@ export default function AIChat() {
             <Button
               type="submit"
               disabled={isLoading || !input.trim()}
-              className="h-11 w-11 p-0 flex-shrink-0"
+              className="h-11 w-11 p-0 shrink-0"
             >
               <SendIcon className="w-4 h-4" />
             </Button>

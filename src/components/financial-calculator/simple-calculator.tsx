@@ -39,7 +39,7 @@ export function SimpleCalculator() {
             id="principal"
             type="number"
             value={principal}
-            onChange={(e) => setPrincipal(parseFloat(e.target.value))}
+            onChange={(e) => setPrincipal(parseFloat(e.target.value) || 0)}
             onBlur={calculateSimpleInterest}
           />
         </div>
@@ -51,7 +51,7 @@ export function SimpleCalculator() {
             id="interestRate"
             type="number"
             value={interestRate}
-            onChange={(e) => setInterestRate(parseFloat(e.target.value))}
+            onChange={(e) => setInterestRate(parseFloat(e.target.value) || 0)}
             onBlur={calculateSimpleInterest}
           />
         </div>
@@ -61,7 +61,7 @@ export function SimpleCalculator() {
             id="time"
             type="number"
             value={time}
-            onChange={(e) => setTime(parseFloat(e.target.value))}
+            onChange={(e) => setTime(parseFloat(e.target.value) || 0)}
             onBlur={calculateSimpleInterest}
           />
         </div>

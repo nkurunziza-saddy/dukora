@@ -144,8 +144,49 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    @apply scroll-smooth;
+  }
   body {
-    @apply bg-background text-foreground;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+
+    ::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      @apply bg-muted-foreground/40 rounded-md;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      @apply bg-muted-foreground/60;
+    }
+    ::-webkit-scrollbar-thumb:active {
+      @apply bg-muted-foreground/80;
+    }
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }
 
@@ -258,28 +299,4 @@
 
 .markdown-content > *:last-child {
   margin-bottom: 0;
-}
-
-.scrollbar {
-  overflow-y: scroll;
-}
-
-.scrollbar::-webkit-scrollbar {
-  width: 4px;
-}
-
-.scrollbar::-webkit-scrollbar-track {
-  @apply bg-background;
-}
-
-.scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-muted-foreground rounded-md;
-}
-
-.scrollbar-hidden::-webkit-scrollbar {
-  display: none;
-}
-.scrollbar-hidden {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
 }
