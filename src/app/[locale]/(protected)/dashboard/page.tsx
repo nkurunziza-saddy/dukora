@@ -35,6 +35,14 @@ import {
   getTotalSKUCount,
   getTotalWarehousesCount,
 } from "@/server/actions/statistics-actions";
+import type { Metadata } from "next";
+import { constructMetadata } from "@/lib/config/metadata";
+
+export const metadata: Metadata = constructMetadata({
+  title: "Dashboard",
+  description: "View your inventory and sales analytics in real-time",
+  canonicalUrl: "/dashboard",
+});
 
 export default async function InventoryDashboard() {
   const [totalSKUs, totalWarehouses, lowStockCount, inventoryValue] =
@@ -225,7 +233,7 @@ export default async function InventoryDashboard() {
                           <span
                             className={cn(
                               "inline-block size-2.5 rounded-md mr-2 align-middle opacity-60",
-                              colorClass,
+                              colorClass
                             )}
                             aria-hidden="true"
                           />
@@ -306,7 +314,7 @@ export default async function InventoryDashboard() {
                         <TableCell>
                           {log.audit_logs.performedAt
                             ? new Date(
-                                log.audit_logs.performedAt,
+                                log.audit_logs.performedAt
                               ).toLocaleString()
                             : "-"}
                         </TableCell>

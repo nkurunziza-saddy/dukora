@@ -1,3 +1,6 @@
+import { constructMetadata } from "@/lib/config/metadata";
+import type { Metadata } from "next";
+
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -11,6 +14,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+
+export const metadata: Metadata = constructMetadata({
+  title: "Accept Invitation",
+});
 
 async function AcceptInvitationContent({ code }: { code: string }) {
   const t = await getTranslations("auth.invitation");

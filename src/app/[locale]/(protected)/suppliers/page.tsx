@@ -1,8 +1,14 @@
+import { constructMetadata } from "@/lib/config/metadata";
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import ColumnWrapper from "@/components/providers/column-wrapper";
 import { getSuppliersPaginated } from "@/server/actions/supplier-actions";
 import { SupplierColumn } from "@/utils/columns/supplier-column";
 import { TableSkeleton } from "@/components/table-skeleton";
+
+export const metadata: Metadata = constructMetadata({
+  title: "Suppliers",
+});
 
 async function SuppliersTable({
   page,

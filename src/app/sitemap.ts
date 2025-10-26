@@ -1,8 +1,6 @@
 import { SITE_HOME_URL } from "@/lib/config/site";
 import type { MetadataRoute } from "next";
 
-export const dynamic = "force-dynamic";
-
 export const cats = [
   {
     title: "Dashboard",

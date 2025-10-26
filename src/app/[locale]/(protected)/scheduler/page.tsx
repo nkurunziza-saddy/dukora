@@ -1,3 +1,5 @@
+import { constructMetadata } from "@/lib/config/metadata";
+import type { Metadata } from "next";
 import { EventCalendar } from "@/components/event-calendar";
 import type { InsertSchedule } from "@/lib/schema/schema-types";
 import {
@@ -6,6 +8,11 @@ import {
   updateSchedule as _updateSchedule,
   getSchedules,
 } from "@/server/actions/schedule-actions";
+
+export const metadata: Metadata = constructMetadata({
+  title: "Scheduler",
+});
+
 export default async function page() {
   const schedules = await getSchedules({});
   if (!schedules.data) return null;

@@ -1,3 +1,5 @@
+import { constructMetadata } from "@/lib/config/metadata";
+import type { Metadata } from "next";
 import { PlusIcon, UsersIcon } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { InviteUserForm } from "@/components/forms/invite-user-form";
@@ -34,6 +36,10 @@ import { Permission } from "@/server/constants/permissions";
 import { RolePermissions } from "@/server/helpers/role-permissions";
 import { InvitationColumn } from "@/utils/columns/invitation-column";
 import { UserColumn } from "@/utils/columns/user-column";
+
+export const metadata: Metadata = constructMetadata({
+  title: "Users",
+});
 
 export default async function Users(props: PageProps<"/[locale]/users">) {
   const query = await props.searchParams;

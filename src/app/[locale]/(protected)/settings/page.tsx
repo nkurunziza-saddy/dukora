@@ -1,3 +1,6 @@
+import { constructMetadata } from "@/lib/config/metadata";
+import type { Metadata } from "next";
+
 import React, { Suspense } from "react";
 import {
   AlertCircleIcon,
@@ -35,9 +38,12 @@ import { EditCategories } from "./_components/edit-categories";
 import { EditWarehouses } from "./_components/edit-warehouses";
 import { getTranslations } from "next-intl/server";
 
-type TStripeFn = ReturnType<typeof getTranslations> extends Promise<infer R>
-  ? R
-  : never;
+export const metadata: Metadata = constructMetadata({
+  title: "Settings",
+});
+
+type TStripeFn =
+  ReturnType<typeof getTranslations> extends Promise<infer R> ? R : never;
 
 export default function SettingsPage() {
   return (

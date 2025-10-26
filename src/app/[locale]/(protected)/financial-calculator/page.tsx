@@ -5,13 +5,22 @@ import { SavingsGoalCalculator } from "@/components/financial-calculator/savings
 import { SimpleCalculator } from "@/components/financial-calculator/simple-calculator";
 import { TaxCalculator } from "@/components/financial-calculator/tax-calculator";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
+import { constructMetadata } from "@/lib/config/metadata";
+import type { Metadata } from "next";
 
-export async function generateMetadata() {
-  const t = await getTranslations("financial_calculator");
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const t = await getTranslations({
+    locale,
+    namespace: "financial_calculator",
+  });
 
-  return {
+  return constructMetadata({
     title: t("meta_title"),
-  };
+  });
 }
 
 export default function financial_calculatorPage() {

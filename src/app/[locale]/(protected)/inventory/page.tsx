@@ -1,9 +1,15 @@
+import { constructMetadata } from "@/lib/config/metadata";
+import type { Metadata } from "next";
 import { LayersIcon, WarehouseIcon } from "lucide-react";
 import StatCard from "@/components/shared/stat-card";
 import { getProducts } from "@/server/actions/product-actions";
 import { getWarehouses } from "@/server/actions/warehouse-actions";
 import { getWarehouseItemsByBusiness } from "@/server/actions/warehouse-item-actions";
 import WarehouseTableClient from "./warehouse-clients";
+
+export const metadata: Metadata = constructMetadata({
+  title: "Inventory",
+});
 
 export default async function WarehousePage() {
   const [warehousesRes, warehouseItemsRes, productsRes] = await Promise.all([

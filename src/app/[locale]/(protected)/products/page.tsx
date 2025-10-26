@@ -1,8 +1,14 @@
+import { constructMetadata } from "@/lib/config/metadata";
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import ColumnWrapper from "@/components/providers/column-wrapper";
 import { getProductsPaginated } from "@/server/actions/product-actions";
 import { ProductColumn } from "@/utils/columns/product-column";
 import { TableSkeleton } from "@/components/table-skeleton";
+
+export const metadata: Metadata = constructMetadata({
+  title: "Products",
+});
 
 async function ProductsTable({
   page,

@@ -1,3 +1,6 @@
+import { constructMetadata } from "@/lib/config/metadata";
+import type { Metadata } from "next";
+
 import {
   AlertCircleIcon,
   AlertTriangleIcon,
@@ -43,6 +46,10 @@ import { ErrorCode } from "@/server/constants/errors";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getCurrentSession } from "@/server/actions/auth-actions";
+
+export const metadata: Metadata = constructMetadata({
+  title: "Analytics",
+});
 
 function AnalyticsSkeleton() {
   return (

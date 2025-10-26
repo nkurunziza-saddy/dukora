@@ -47,9 +47,5 @@ yarn-error.log*
 next-env.d.ts
 
 # specific files
-todo.md
-test.ts
 **/*.local.md
-GEMINI.md
-seed-data.ts
 /_bin/**

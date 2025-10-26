@@ -1,3 +1,5 @@
+import { constructMetadata } from "@/lib/config/metadata";
+import type { Metadata } from "next";
 import { subDays } from "date-fns";
 import { DollarSignIcon, ShoppingCartIcon, TrendingUpIcon } from "lucide-react";
 import { getTranslations } from "next-intl/server";
@@ -13,6 +15,10 @@ import {
 import { getTodayTransactions } from "@/server/actions/statistics-actions";
 import { getTransactionsByTimeIntervalPaginated } from "@/server/actions/transaction-actions";
 import { TransactionColumn } from "@/utils/columns/transaction-column";
+
+export const metadata: Metadata = constructMetadata({
+  title: "Sales",
+});
 
 export default async function SalesTracking(
   props: PageProps<"/[locale]/sales">,

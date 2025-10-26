@@ -1,3 +1,5 @@
+import { constructMetadata } from "@/lib/config/metadata";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import ColumnWrapper from "@/components/providers/column-wrapper";
@@ -6,6 +8,10 @@ import { Separator } from "@/components/ui/separator";
 import { getInterBusinessPayments } from "@/server/actions/payment-actions";
 import { ErrorCode } from "@/server/constants/errors";
 import { PaymentColumn } from "@/utils/columns/payment-column";
+
+export const metadata: Metadata = constructMetadata({
+  title: "Payments",
+});
 
 export default async function PaymentsHistoryPage(
   props: PageProps<"/[locale]/payments">,

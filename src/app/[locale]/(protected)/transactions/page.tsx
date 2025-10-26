@@ -1,8 +1,14 @@
+import { constructMetadata } from "@/lib/config/metadata";
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import ColumnWrapper from "@/components/providers/column-wrapper";
 import { getTransactionsPaginated } from "@/server/actions/transaction-actions";
 import { TransactionColumn } from "@/utils/columns/transaction-column";
 import { TableSkeleton } from "@/components/table-skeleton";
+
+export const metadata: Metadata = constructMetadata({
+  title: "Transactions",
+});
 
 async function TransactionsTable({
   page,
