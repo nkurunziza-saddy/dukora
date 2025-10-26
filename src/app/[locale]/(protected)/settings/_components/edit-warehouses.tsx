@@ -10,7 +10,7 @@ import { Field, FieldError, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { SelectWarehouse } from "@/lib/schema/schema-types";
 import { createManyWarehouses } from "@/server/actions/warehouse-actions";
-import { warehousesSchema, LIMITS } from "./settings-utils";
+import { LIMITS, warehousesSchema } from "./settings-utils";
 
 export function EditWarehouses({
   warehouses,

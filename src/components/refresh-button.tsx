@@ -1,10 +1,10 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { RefreshCwIcon } from "lucide-react";
 import { useState } from "react";
 import { handleRefresh } from "@/server/helpers/general-purpose";
 import { Button } from "./ui/button";
-import { useQueryClient } from "@tanstack/react-query";
 
 export function RefreshButton() {
   const [loading, setLoading] = useState(false);

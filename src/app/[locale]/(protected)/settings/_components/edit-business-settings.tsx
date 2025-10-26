@@ -4,6 +4,11 @@ import { format } from "date-fns";
 import { AlertCircleIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import {
+  getCountries,
+  getCurrencies,
+  getMonths,
+} from "@/app/[locale]/(onboarding)/onboarding/_components/onboarding-utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,6 +21,7 @@ import {
   FieldGroup,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectItem,
@@ -27,12 +33,6 @@ import { Switch } from "@/components/ui/switch";
 import type { SelectBusinessSetting } from "@/lib/schema/schema-types";
 import { upsertBusinessSettings } from "@/server/actions/business-settings-actions";
 import { LIMITS, settingsSchema } from "./settings-utils";
-import {
-  getCountries,
-  getCurrencies,
-  getMonths,
-} from "@/app/[locale]/(onboarding)/onboarding/_components/onboarding-utils";
-import { Label } from "@/components/ui/label";
 
 export function EditBusinessSettings({
   settings,

@@ -1,3 +1,8 @@
+import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
+import { GuardSkeleton } from "@/components/guard-skeleton";
+import { Button } from "@/components/ui/button";
 import {
   Empty,
   EmptyContent,
@@ -5,22 +10,22 @@ import {
   EmptyHeader,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { getCurrentSession } from "@/server/actions/auth-actions";
 import type { SessionSession } from "@/lib/auth";
-import { Suspense } from "react";
-import { GuardSkeleton } from "@/components/guard-skeleton";
+import { getCurrentSession } from "@/server/actions/auth-actions";
 
-function NotFoundGuard({ session }: { session: SessionSession | null }) {
+function NotFoundGuard({
+  session,
+  t,
+}: {
+  session: SessionSession | null;
+  t: (key: string) => string;
+}) {
   return (
     <div className="flex h-screen w-full items-center justify-center">
       <Empty>
         <EmptyHeader>
-          <EmptyTitle>404 - Not Found</EmptyTitle>
-          <EmptyDescription>
-            The page you&apos;re looking for doesn&apos;t exist.
-          </EmptyDescription>
+          <EmptyTitle>{t("title")}</EmptyTitle>
+          <EmptyDescription>{t("description")}</EmptyDescription>
         </EmptyHeader>
         <EmptyContent>
           <div className="flex gap-2 items-center">
@@ -30,7 +35,7 @@ function NotFoundGuard({ session }: { session: SessionSession | null }) {
                 size="sm"
                 render={<Link href={"/dashboard"} />}
               >
-                Go to dashboard
+                {t("goToDashboard")}
               </Button>
             ) : (
               <>
@@ -39,27 +44,27 @@ function NotFoundGuard({ session }: { session: SessionSession | null }) {
                   size="sm"
                   render={<Link href={"/"} />}
                 >
-                  Go to landing page
+                  {t("goToLandingPage")}
                 </Button>
                 <Button
                   variant={"outline"}
                   size="sm"
                   render={<Link href={"/auth/sign-up"} />}
                 >
-                  Sign up
+                  {t("signUp")}
                 </Button>
               </>
             )}
           </div>
           <EmptyDescription className="text-sm">
-            Need help?{" "}
+            {t("needHelp")}{" "}
             <a
               href={`mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}?subject=${encodeURIComponent(
-                "Request for support in Dukora app",
+                t("requestForSupport"),
               )}`}
               title="Email Dukora Support"
             >
-              Contact support
+              {t("contactSupport")}
             </a>
           </EmptyDescription>
         </EmptyContent>
@@ -69,9 +74,10 @@ function NotFoundGuard({ session }: { session: SessionSession | null }) {
 }
 export default async function NotFound() {
   const session = await getCurrentSession();
+  const t = await getTranslations("notFound");
   return (
     <Suspense fallback={<GuardSkeleton />}>
-      <NotFoundGuard session={session} />
+      <NotFoundGuard session={session} t={t} />
     </Suspense>
   );
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 const posts = {
   "ai-inventory-predictions": {
@@ -210,7 +211,12 @@ export function generateStaticParams() {
   }));
 }
 
-export default function InsightPage({ params }: { params: { slug: string } }) {
+export default async function InsightPage({
+  params,
+}: {
+  params: { slug: string; locale: string };
+}) {
+  const t = await getTranslations("landing.insights");
   const post = posts[params.slug as keyof typeof posts];
 
   if (!post) {
@@ -225,7 +231,7 @@ export default function InsightPage({ params }: { params: { slug: string } }) {
             href="/"
             className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground/80 transition"
           >
-            ← Back to home
+            {t("backToHome")}
           </Link>
         </div>
       </header>
@@ -287,12 +293,17 @@ export default function InsightPage({ params }: { params: { slug: string } }) {
               }
 
               if (block.type === "list") {
-                const items = (block as any).items as any[];
+                interface ListBlock {
+                  type: "list";
+                  items: string[];
+                }
+                const items = (block as ListBlock).items;
+                const listKey = `list-${index}`;
                 return (
-                  <ul key={items[0]} className="space-y-2 mb-6 ml-6">
+                  <ul key={listKey} className="space-y-2 mb-6 ml-6">
                     {items.map((item) => (
                       <li
-                        key={item}
+                        key={`${listKey}-${item.slice(0, 20)}`}
                         className="text-sm text-text-secondary leading-relaxed list-disc"
                       >
                         {item}
@@ -312,13 +323,13 @@ export default function InsightPage({ params }: { params: { slug: string } }) {
                 href="/#insights"
                 className="text-xs text-text-secondary hover:text-foreground transition"
               >
-                ← More insights
+                {t("moreInsights")}
               </Link>
               <Link
                 href={"/auth/sign-up"}
                 className="text-xs text-text-secondary hover:text-foreground transition"
               >
-                Get started →
+                {t("getStarted")}
               </Link>
             </div>
           </div>

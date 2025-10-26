@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export function CompoundInterestCalculator() {
-  const t = useTranslations("financial_calculator");
+  const t = useTranslations("financialCalculator");
 
   const [principal, setPrincipal] = useState(0);
   const [annualRate, setAnnualRate] = useState(0);
@@ -31,15 +31,13 @@ export function CompoundInterestCalculator() {
   return (
     <Card className="w-full max-w-4xl">
       <CardHeader>
-        <CardTitle>{t("compound_calculator.title")}</CardTitle>
-        <CardDescription>
-          {t("compound_calculator.description")}
-        </CardDescription>
+        <CardTitle>{t("compoundCalculator.title")}</CardTitle>
+        <CardDescription>{t("compoundCalculator.description")}</CardDescription>
       </CardHeader>
       <CardPanel className="grid gap-4">
         <div className="grid gap-2">
           <Label htmlFor="principal">
-            {t("compound_calculator.principal_label")}
+            {t("compoundCalculator.principalLabel")}
           </Label>
           <Input
             id="principal"
@@ -51,7 +49,7 @@ export function CompoundInterestCalculator() {
         </div>
         <div className="grid gap-2">
           <Label htmlFor="annualRate">
-            {t("compound_calculator.annual_rate_label")}
+            {t("compoundCalculator.annualRateLabel")}
           </Label>
           <Input
             id="annualRate"
@@ -63,7 +61,7 @@ export function CompoundInterestCalculator() {
         </div>
         <div className="grid gap-2">
           <Label htmlFor="compoundingFrequency">
-            {t("compound_calculator.compounding_frequency_label")}
+            {t("compoundCalculator.compoundingFrequencyLabel")}
           </Label>
           <Input
             id="compoundingFrequency"
@@ -76,7 +74,7 @@ export function CompoundInterestCalculator() {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="time">{t("compound_calculator.time_label")}</Label>
+          <Label htmlFor="time">{t("compoundCalculator.timeLabel")}</Label>
           <Input
             id="time"
             type="number"
@@ -87,7 +85,7 @@ export function CompoundInterestCalculator() {
         </div>
         <div className="grid gap-2">
           <Label htmlFor="futureValue">
-            {t("compound_calculator.future_value_label")}
+            {t("compoundCalculator.futureValueLabel")}
           </Label>
           <Input
             id="futureValue"

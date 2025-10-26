@@ -544,7 +544,7 @@
     "update": "Sasisha",
     "updating": "Inasasisha"
   },
-  "ai-chat": {
+  "aiChat": {
     "aiAssistantChat": "AI Assistant Chat",
     "askAnythingPlaceholder": "Ask me anything about your inventory...",
     "askQuestions": "Ask questions about your inventory and get instant insights",
@@ -559,69 +559,69 @@
     "thinking": "Thinking",
     "title": "AI Chat"
   },
-  "financial_calculator": {
-    "compound_calculator": {
-      "annual_rate_label": "Annual Interest Rate (%)",
-      "compounding_frequency_label": "Compounding Frequency (per year)",
+  "financialCalculator": {
+    "compoundCalculator": {
+      "annualRateLabel": "Annual Interest Rate (%)",
+      "compoundingFrequencyLabel": "Compounding Frequency (per year)",
       "description": "Calculate the future value of an investment with compound interest.",
-      "future_value_label": "Future Value",
-      "principal_label": "Principal Amount",
-      "time_label": "Time (Years)",
+      "futureValueLabel": "Future Value",
+      "principalLabel": "Principal Amount",
+      "timeLabel": "Time (Years)",
       "title": "Compound Interest Calculator"
     },
-    "income_tax_calculator": {
-      "annual_income_label": "Annual Taxable Income (RWF)",
-      "annual_tax_label": "Total Annual Tax (RWF)",
+    "incomeTaxCalculator": {
+      "annualIncomeLabel": "Annual Taxable Income (RWF)",
+      "annualTaxLabel": "Total Annual Tax (RWF)",
       "description": "Calculate your annual and monthly income tax based on Rwandan progressive brackets.",
-      "monthly_tax_label": "Monthly Tax (RWF)",
+      "monthlyTaxLabel": "Monthly Tax (RWF)",
       "title": "Income Tax (Personal Income Tax – PIT)"
     },
-    "loan_calculator": {
+    "loanCalculator": {
       "description": "Calculate your monthly loan payments.",
-      "interest_rate_label": "Annual Interest Rate (%)",
-      "loan_amount_label": "Loan Amount",
-      "loan_term_label": "Loan Term (Years)",
-      "monthly_payment_label": "Monthly Payment",
+      "interestRateLabel": "Annual Interest Rate (%)",
+      "loanAmountLabel": "Loan Amount",
+      "loanTermLabel": "Loan Term (Years)",
+      "monthlyPaymentLabel": "Monthly Payment",
       "title": "Loan Calculator"
     },
-    "meta_title": "Financial Calculator",
-    "paye_calculator": {
-      "casual_laborer": "Mfanyakazi wa Muda",
+    "metaTitle": "Financial Calculator",
+    "payeCalculator": {
+      "casualLaborer": "Mfanyakazi wa Muda",
       "description": "Kokotoa PAYE yako ya kila mwezi kulingana na aina ya mfanyakazi na mapato.",
-      "employee_type_label": "Aina ya Mfanyakazi",
-      "monthly_income_label": "Mapato Yanayotozwa Kodi kwa Mwezi (RWF)",
-      "paye_label": "PAYE ya Kila Mwezi (RWF)",
-      "permanent_employee": "Mfanyakazi wa Kudumu",
-      "select_employee_type": "Chagua aina ya mfanyakazi",
+      "employeeTypeLabel": "Aina ya Mfanyakazi",
+      "monthlyIncomeLabel": "Mapato Yanayotozwa Kodi kwa Mwezi (RWF)",
+      "payeLabel": "PAYE ya Kila Mwezi (RWF)",
+      "permanentEmployee": "Mfanyakazi wa Kudumu",
+      "selectEmployeeType": "Chagua aina ya mfanyakazi",
       "title": "Kikokotoo cha PAYE (Pay As You Earn)"
     },
-    "savings_calculator": {
-      "annual_contribution_label": "Michango ya Kila Mwaka",
-      "current_savings_label": "Akiba ya Sasa",
+    "savingsCalculator": {
+      "annualContributionLabel": "Michango ya Kila Mwaka",
+      "currentSavingsLabel": "Akiba ya Sasa",
       "description": "Kokotoa miaka itakayochukua kufikia lengo lako la akiba.",
-      "target_amount_label": "Kiasi Lengwa",
+      "targetAmountLabel": "Kiasi Lengwa",
       "title": "Kikokotoo cha Lengo la Akiba",
-      "years_to_goal_label": "Miaka hadi Lengo"
+      "yearsToGoalLabel": "Miaka hadi Lengo"
     },
-    "simple_calculator": {
+    "simpleCalculator": {
       "description": "Calculate simple interest based on principal, interest rate, and time.",
-      "interest_rate_label": "Annual Interest Rate (%)",
-      "principal_label": "Principal Amount",
-      "result_label": "Final Amount",
-      "time_label": "Time (Years)",
+      "interestRateLabel": "Annual Interest Rate (%)",
+      "principalLabel": "Principal Amount",
+      "resultLabel": "Final Amount",
+      "timeLabel": "Time (Years)",
       "title": "Simple Interest Calculator"
     },
-    "tax_calculator": {
-      "paye_tab": "PAYE",
-      "pit_tab": "Income Tax (PIT)",
-      "vat_tab": "VAT"
+    "taxCalculator": {
+      "payeTab": "PAYE",
+      "pitTab": "Income Tax (PIT)",
+      "vatTab": "VAT"
     },
-    "vat_calculator": {
+    "vatCalculator": {
       "description": "Calculate your monthly VAT due based on sales and purchases.",
-      "purchases_amount_label": "Total Purchases Amount (RWF)",
-      "sales_amount_label": "Total Sales Amount (RWF)",
+      "purchasesAmountLabel": "Total Purchases Amount (RWF)",
+      "salesAmountLabel": "Total Sales Amount (RWF)",
       "title": "VAT (Value Added Tax) Calculator",
-      "vat_due_label": "Monthly VAT Due (RWF)"
+      "vatDueLabel": "Monthly VAT Due (RWF)"
     }
   },
   "quickActions": {
@@ -671,8 +671,8 @@
     "Management": "Management",
     "Operations": "Operations",
     "Tools": "Tools",
-    "ai-chat": "AI Chat",
-    "financial-calculator": "Financial Calculator"
+    "aiChat": "AI Chat",
+    "financialCalculator": "Financial Calculator"
   },
   "supplier": {
     "copyId": "Nakili ID ya msambazaji",

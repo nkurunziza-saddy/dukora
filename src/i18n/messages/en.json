@@ -95,6 +95,137 @@
     "unitPounds": "Pounds",
     "type": "Type"
   },
+  "landing": {
+    "navigation": {
+      "brand": "Dukora",
+      "features": "Features",
+      "about": "About",
+      "insights": "Insights",
+      "signUp": "Sign up"
+    },
+    "hero": {
+      "badge": "Open Source & Free",
+      "title": "Modern inventory management for growing businesses",
+      "description": "Track inventory, manage warehouses, analyze finances, and get AI-powered tools. All in one place.",
+      "ctaPrimary": "Sign up",
+      "ctaSecondary": "Features",
+      "tagline": "Built for businesses"
+    },
+    "features": {
+      "title": "Everything you need to manage your business",
+      "description": "From inventory tracking to AI-powered insights, Dukora provides all the tools to streamline operations.",
+      "realtimeInventory": {
+        "title": "Real-time Inventory",
+        "description": "Track stock levels across all warehouses with automatic alerts and batch tracking."
+      },
+      "multiWarehouse": {
+        "title": "Multi-warehouse",
+        "description": "Manage inventory across multiple locations with seamless transfers."
+      },
+      "aiAssistant": {
+        "title": "AI Assistant",
+        "description": "Get instant answers about your business with our tuned AI assistant."
+      },
+      "financialAnalytics": {
+        "title": "Financial Analytics",
+        "description": "Comprehensive insights into sales, profits, COGS, and margins."
+      },
+      "transactionTracking": {
+        "title": "Transaction Tracking",
+        "description": "Record all sales, purchases, and operational expenses automatically."
+      },
+      "roleBasedAccess": {
+        "title": "Role-based Access",
+        "description": "Granular permissions and multi-user support for team collaboration."
+      },
+      "supplierManagement": {
+        "title": "Supplier Management",
+        "description": "Manage supplier relationships and track purchase orders."
+      },
+      "taskScheduling": {
+        "title": "Task Scheduling",
+        "description": "Built-in calendar for scheduling tasks and business events."
+      },
+      "multiLanguage": {
+        "title": "Multi-language",
+        "description": "Internationalized UI with support for multiple languages."
+      },
+      "completeAuditLog": {
+        "title": "Complete Audit Log",
+        "description": "Every action is logged for complete transparency and compliance."
+      },
+      "secureByDesign": {
+        "title": "Secure by Design",
+        "description": "Data encryption, regular backups, and robust security practices to protect your business data."
+      },
+      "mobileReady": {
+        "title": "Mobile Ready",
+        "description": "Responsive design that works seamlessly on all devices."
+      }
+    },
+    "stats": {
+      "percentage": "100%",
+      "openSourceFree": "Open Source & Free",
+      "description": "Currently in alpha development. Built by",
+      "contributeOn": "Contributions welcome on"
+    },
+    "about": {
+      "title": "Built for businesses that need clarity and control",
+      "para1": "Dukora is a modern, open-source inventory and business management system designed to provide a comprehensive, real-time overview of your operations. Built with a powerful and scalable tech stack, it offers everything from product and warehouse management to detailed financial analytics and role-based user permissions.",
+      "para2": "Born in Kigali in 2024, our mission is to bring total financial clarity to businesses of all sizes. We combine deep technical expertise with user-centric design to create tools that empower teams to make better decisions faster.",
+      "para3": "Built with small to medium businesses in mind, Dukora scales alongside your growth, ensuring you always have the insights and control you need to succeed in a competitive market.",
+      "cta": "Try Dukora for free"
+    },
+    "blog": {
+      "latestInsights": "Latest insights",
+      "description": "Product updates, tutorials, and best practices for inventory management",
+      "readMore": "Read more →",
+      "postProductUpdate": "Product Update",
+      "postTutorial": "Tutorial",
+      "postBestPractices": "Best Practices",
+      "aiInventoryPredictions": {
+        "category": "Product Update",
+        "title": "Introducing AI-powered inventory predictions",
+        "description": "Learn how our new AI assistant helps you predict stock levels and optimize ordering.",
+        "date": "Jan 15, 2025"
+      },
+      "multiWarehouseSetup": {
+        "category": "Tutorial",
+        "title": "Setting up multi-warehouse management",
+        "description": "A complete guide to managing inventory across multiple locations with Dukora.",
+        "date": "Jan 10, 2025"
+      },
+      "optimizeCashFlow": {
+        "category": "Best Practices",
+        "title": "5 strategies to optimize cash flow",
+        "description": "Proven techniques to maintain liquidity and reduce manual work across all accounts.",
+        "date": "Jan 5, 2025"
+      }
+    },
+    "cta": {
+      "title": "Ready to take control of your inventory?",
+      "description": "Dukora is open source and free. Get started in minutes with our comprehensive documentation and active community support.",
+      "button": "Sign up"
+    },
+    "footer": {
+      "tagline": "Modern inventory management for growing businesses. Open source and free .",
+      "product": "Product",
+      "resources": "Resources",
+      "featuresLink": "Features",
+      "githubLink": "GitHub",
+      "licenseLink": "License",
+      "insightsLink": "Insights",
+      "aboutLink": "About",
+      "reportIssueLink": "Report Issue",
+      "copyright": "© 2025 Dukora. Open source.",
+      "contribute": "Contribute"
+    },
+    "insights": {
+      "backToHome": "← Back to home",
+      "moreInsights": "← More insights",
+      "getStarted": "Get started →"
+    }
+  },
   "schedule": {
     "today": "Today",
     "month": "Month",
@@ -365,14 +496,13 @@
     "payments": "Payments & Invoices",
     "users": "Users & Permissions",
     "transactions": "Business Transactions",
-    "Dashboard": "Dashboard",
-    "Main": "Main",
-    "Operations": "Operations",
-    "Management": "Management",
-    "Tools": "Tools",
+    "main": "Main",
+    "operations": "Operations",
+    "management": "Management",
+    "tools": "Tools",
     "scheduler": "Scheduler",
-    "ai-chat": "AI Chat",
-    "financial-calculator": "Financial Calculator",
+    "aiChat": "AI Chat",
+    "financialCalculator": "Financial Calculator",
     "commerce": "E-commerce Sync"
   },
   "inventory": {
@@ -479,7 +609,7 @@
     "weeklySalesRevenue": "Weekly sales revenue",
     "revenueTrends7Days": "Revenue trends over last 7 days"
   },
-  "ai-chat": {
+  "aiChat": {
     "title": "AI Chat",
     "description": "Get instant help and insights for your inventory management",
     "quickActions": "Quick Actions",
@@ -684,69 +814,69 @@
     "autoSync": "Auto Sync",
     "overallSyncHealth": "Overall Sync Health"
   },
-  "financial_calculator": {
-    "meta_title": "Financial Calculator",
-    "simple_calculator": {
+  "financialCalculator": {
+    "metaTitle": "Financial Calculator",
+    "simpleCalculator": {
       "title": "Simple Interest Calculator",
       "description": "Calculate simple interest based on principal, interest rate, and time.",
-      "principal_label": "Principal Amount",
-      "interest_rate_label": "Annual Interest Rate (%)",
-      "time_label": "Time (Years)",
-      "result_label": "Final Amount"
+      "principalLabel": "Principal Amount",
+      "interestRateLabel": "Annual Interest Rate (%)",
+      "timeLabel": "Time (Years)",
+      "resultLabel": "Final Amount"
     },
-    "loan_calculator": {
+    "loanCalculator": {
       "title": "Loan Calculator",
       "description": "Calculate your monthly loan payments.",
-      "loan_amount_label": "Loan Amount",
-      "interest_rate_label": "Annual Interest Rate (%)",
-      "loan_term_label": "Loan Term (Years)",
-      "monthly_payment_label": "Monthly Payment"
+      "loanAmountLabel": "Loan Amount",
+      "interestRateLabel": "Annual Interest Rate (%)",
+      "loanTermLabel": "Loan Term (Years)",
+      "monthlyPaymentLabel": "Monthly Payment"
     },
-    "compound_calculator": {
+    "compoundCalculator": {
       "title": "Compound Interest Calculator",
       "description": "Calculate the future value of an investment with compound interest.",
-      "principal_label": "Principal Amount",
-      "annual_rate_label": "Annual Interest Rate (%)",
-      "compounding_frequency_label": "Compounding Frequency (per year)",
-      "time_label": "Time (Years)",
-      "future_value_label": "Future Value"
+      "principalLabel": "Principal Amount",
+      "annualRateLabel": "Annual Interest Rate (%)",
+      "compoundingFrequencyLabel": "Compounding Frequency (per year)",
+      "timeLabel": "Time (Years)",
+      "futureValueLabel": "Future Value"
     },
-    "savings_calculator": {
+    "savingsCalculator": {
       "title": "Savings Goal Calculator",
       "description": "Calculate how many years it will take to reach your savings goal.",
-      "target_amount_label": "Target Amount",
-      "current_savings_label": "Current Savings",
-      "annual_contribution_label": "Annual Contribution",
-      "years_to_goal_label": "Years to Goal"
+      "targetAmountLabel": "Target Amount",
+      "currentSavingsLabel": "Current Savings",
+      "annualContributionLabel": "Annual Contribution",
+      "yearsToGoalLabel": "Years to Goal"
     },
-    "tax_calculator": {
-      "pit_tab": "Income Tax (PIT)",
-      "paye_tab": "PAYE",
-      "vat_tab": "VAT"
+    "taxCalculator": {
+      "pitTab": "Income Tax (PIT)",
+      "payeTab": "PAYE",
+      "vatTab": "VAT"
     },
-    "income_tax_calculator": {
+    "incomeTaxCalculator": {
       "title": "Income Tax (Personal Income Tax – PIT)",
       "description": "Calculate your annual and monthly income tax based on Rwandan progressive brackets.",
-      "annual_income_label": "Annual Taxable Income (RWF)",
-      "annual_tax_label": "Total Annual Tax (RWF)",
-      "monthly_tax_label": "Monthly Tax (RWF)"
+      "annualIncomeLabel": "Annual Taxable Income (RWF)",
+      "annualTaxLabel": "Total Annual Tax (RWF)",
+      "monthlyTaxLabel": "Monthly Tax (RWF)"
     },
-    "paye_calculator": {
+    "payeCalculator": {
       "title": "PAYE (Pay As You Earn) Calculator",
       "description": "Calculate your monthly PAYE based on employee type and income.",
-      "monthly_income_label": "Monthly Taxable Income (RWF)",
-      "employee_type_label": "Employee Type",
-      "select_employee_type": "Select employee type",
-      "permanent_employee": "Permanent Employee",
-      "casual_laborer": "Casual Laborer",
-      "paye_label": "Monthly PAYE (RWF)"
+      "monthlyIncomeLabel": "Monthly Taxable Income (RWF)",
+      "employeeTypeLabel": "Employee Type",
+      "selectEmployeeType": "Select employee type",
+      "permanentEmployee": "Permanent Employee",
+      "casualLaborer": "Casual Laborer",
+      "payeLabel": "Monthly PAYE (RWF)"
     },
-    "vat_calculator": {
+    "vatCalculator": {
       "title": "VAT (Value Added Tax) Calculator",
       "description": "Calculate your monthly VAT due based on sales and purchases.",
-      "sales_amount_label": "Total Sales Amount (RWF)",
-      "purchases_amount_label": "Total Purchases Amount (RWF)",
-      "vat_due_label": "Monthly VAT Due (RWF)"
+      "salesAmountLabel": "Total Sales Amount (RWF)",
+      "purchasesAmountLabel": "Total Purchases Amount (RWF)",
+      "vatDueLabel": "Monthly VAT Due (RWF)"
     }
   },
   "table": {
@@ -1027,5 +1157,108 @@
     "errorDeletingUser": "Error deleting user",
     "userDeletedSuccessfully": "User deleted successfully",
     "unexpectedErrorOccurred": "An unexpected error occurred"
+  },
+  "onboarding": {
+    "title": "Onboarding",
+    "welcome": {
+      "title": "Welcome to Your Inventory System",
+      "description": "Let's set up your business in just a few steps"
+    },
+    "steps": {
+      "businessProfile": "Business Profile",
+      "businessProfileDescription": "Set up your business identity",
+      "taxSettings": "Tax Settings",
+      "taxSettingsDescription": "Configure pricing and taxes",
+      "teamSetup": "Team Setup",
+      "teamSetupDescription": "Invite your team members",
+      "categories": "Categories",
+      "categoriesDescription": "Choose product categories",
+      "warehousesBranches": "Warehouses/Branches",
+      "warehousesBranchesDescription": "Set up your business branches and warehouses management"
+    },
+    "businessName": {
+      "label": "Business Name",
+      "placeholder": "Enter your business name"
+    },
+    "businessType": {
+      "label": "Business Type"
+    },
+    "currency": {
+      "label": "Currency"
+    },
+    "country": {
+      "label": "Country"
+    },
+    "timezone": {
+      "label": "Timezone",
+      "autoFillDescription": "Auto-filled based on selected country"
+    },
+    "fiscalYearStartMonth": {
+      "label": "Fiscal Year Start Month"
+    },
+    "pricesIncludeTax": {
+      "label": "Prices Include Tax",
+      "description": "Toggle whether your product prices include tax or are tax-exclusive"
+    },
+    "defaultVatRate": {
+      "label": "Default VAT Rate (%)",
+      "description": "Optional: Set a default VAT rate for your products",
+      "placeholder": "e.g., 18"
+    },
+    "teamMembers": {
+      "addUpTo": "Add up to {limit} team invitations.",
+      "addMember": "Add member",
+      "emailPlaceholder": "name@example.com",
+      "removeMember": "Remove teammember {index}"
+    },
+    "categories": {
+      "makeYourOwn": "Make your own product categories",
+      "selected": "Selected",
+      "add": "Add",
+      "placeholder": "Add custom category (e.g., Food)",
+      "addButton": "Add",
+      "categoryLimit": "You can select up to {limit} categories.",
+      "alreadyAdded": "Category already added",
+      "removeCategory": "Remove category {index}"
+    },
+    "warehouses": {
+      "addUpTo": "Add up to {limit} warehouses.",
+      "addWarehouse": "Add warehouse",
+      "placeholder": "Gishushu Branch",
+      "isDefault": "Is Default",
+      "setDefault": "Set Default",
+      "removeWarehouse": "Remove warehouse {index}"
+    },
+    "buttons": {
+      "previous": "Previous",
+      "next": "Next",
+      "completeSetup": "Complete Setup",
+      "settingUp": "Setting up..."
+    },
+    "errors": {
+      "businessNameRequired": "Business name is required",
+      "businessTypeRequired": "Business type is required",
+      "currencyRequired": "Currency is required",
+      "countryRequired": "Country is required",
+      "timezoneRequired": "Timezone is required",
+      "fiscalStartMonthRequired": "Fiscal start month is required",
+      "invalidEmail": "Invalid email address",
+      "warehouseNameRequired": "Warehouse name is required",
+      "maxInvitations": "Maximum invitations is {limit}",
+      "maxCategories": "You can select up to {limit} categories",
+      "maxWarehouses": "Allowed warehouses up to {limit}",
+      "atLeastOneWarehouse": "At least one warehouse is required",
+      "setupFailed": "Setup failed. Check console for details."
+    }
+  },
+  "notFound": {
+    "title": "404 - Not Found",
+    "description": "The page you're looking for doesn't exist.",
+    "goToDashboard": "Go to dashboard",
+    "goToLandingPage": "Go to landing page",
+    "signUp": "Sign up",
+    "needHelp": "Need help?",
+    "contactSupport": "Contact support",
+    "requestForSupport": "Request for support in Dukora app"
   }
 }

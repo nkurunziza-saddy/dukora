@@ -1,6 +1,5 @@
-import { constructMetadata } from "@/lib/config/metadata";
-import type { Metadata } from "next";
 import { PlusIcon, UsersIcon } from "lucide-react";
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { InviteUserForm } from "@/components/forms/invite-user-form";
 import ColumnWrapper from "@/components/providers/column-wrapper";
@@ -30,6 +29,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
+import { constructMetadata } from "@/lib/config/metadata";
 import { getInvitationsPaginated } from "@/server/actions/invitation-actions";
 import { getUsersPaginated } from "@/server/actions/user-actions";
 import { Permission } from "@/server/constants/permissions";

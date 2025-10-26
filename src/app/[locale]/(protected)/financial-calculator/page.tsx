@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { CompoundInterestCalculator } from "@/components/financial-calculator/compound-interest-calculator";
 import { LoanCalculator } from "@/components/financial-calculator/loan-calculator";
@@ -6,7 +7,6 @@ import { SimpleCalculator } from "@/components/financial-calculator/simple-calcu
 import { TaxCalculator } from "@/components/financial-calculator/tax-calculator";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
 import { constructMetadata } from "@/lib/config/metadata";
-import type { Metadata } from "next";
 
 export async function generateMetadata({
   params: { locale },
@@ -15,15 +15,15 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const t = await getTranslations({
     locale,
-    namespace: "financial_calculator",
+    namespace: "financialCalculator",
   });
 
   return constructMetadata({
-    title: t("meta_title"),
+    title: t("metaTitle"),
   });
 }
 
-export default function financial_calculatorPage() {
+export default function financialCalculatorPage() {
   return (
     <div className="flex flex-col gap-y-4">
       <Tabs defaultValue="simple">

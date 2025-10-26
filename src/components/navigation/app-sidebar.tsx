@@ -36,29 +36,34 @@ import SessionCard from "./session-card";
 export const data = {
   navMain: [
     {
-      title: "Main",
+      title: "main",
       items: [
         {
+          id: "dashboard",
           title: "Dashboard",
           url: "/dashboard",
           icon: LayersIcon,
         },
         {
+          id: "inventory",
           title: "Inventory Overview",
           url: "/inventory",
           icon: WarehouseIcon,
         },
         {
+          id: "products",
           title: "Product Catalog",
           url: "/products",
           icon: PackageIcon,
         },
         {
+          id: "suppliers",
           title: "Supplier Management",
           url: "/suppliers",
           icon: TruckIcon,
         },
         {
+          id: "transactions",
           title: "Business transactions",
           url: "/transactions",
           icon: ArrowRightLeftIcon,
@@ -66,19 +71,22 @@ export const data = {
       ],
     },
     {
-      title: "Operations",
+      title: "operations",
       items: [
         {
+          id: "sales",
           title: "Sales Tracking",
           url: "/sales",
           icon: ShoppingCartIcon,
         },
         {
+          id: "analytics",
           title: "Analytics",
           url: "/analytics",
           icon: BarChart3Icon,
         },
         {
+          id: "payments",
           title: "Payments & Invoices",
           url: "/payments",
           icon: CreditCardIcon,
@@ -87,20 +95,23 @@ export const data = {
       ],
     },
     {
-      title: "Management",
+      title: "management",
       items: [
         {
+          id: "users",
           title: "Users & Permissions",
           url: "/users",
           icon: UsersIcon,
         },
 
         {
+          id: "scheduler",
           title: "Scheduler",
           url: "/scheduler",
           icon: CalendarIcon,
         },
         {
+          id: "commerce",
           title: "E-commerce Sync",
           url: "/commerce",
           icon: StoreIcon,
@@ -109,14 +120,16 @@ export const data = {
       ],
     },
     {
-      title: "Tools",
+      title: "tools",
       items: [
         {
+          id: "aiChat",
           title: "AI Chat",
           url: "/ai-chat",
           icon: BotIcon,
         },
         {
+          id: "financialCalculator",
           title: "Financial calculator",
           url: "/financial-calculator",
           icon: CalculatorIcon,
@@ -142,14 +155,13 @@ export function AppSidebar() {
             <SidebarGroupContent>
               <SidebarMenu>
                 {group.items.map((item) => {
-                  const url = item.url.slice(1);
                   const isActive = pathname === `/${locale}${item.url}`;
                   return (
-                    <SidebarMenuItem key={item.title}>
+                    <SidebarMenuItem key={item.id}>
                       {item.disabled ? (
                         <SidebarMenuButton disabled>
                           {/* <item.icon className="h-4 w-4" /> */}
-                          <span className="opacity-50">{t(url)}</span>
+                          <span className="opacity-50">{t(item.id)}</span>
                         </SidebarMenuButton>
                       ) : (
                         <SidebarMenuButton
@@ -157,7 +169,7 @@ export function AppSidebar() {
                           variant={isActive ? "active" : undefined}
                         >
                           {/* <item.icon className="h-4 w-4" /> */}
-                          <span>{t(url)}</span>
+                          <span>{t(item.id)}</span>
                         </SidebarMenuButton>
                       )}
                     </SidebarMenuItem>

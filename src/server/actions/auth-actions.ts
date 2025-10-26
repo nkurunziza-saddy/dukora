@@ -1,8 +1,8 @@
 "use server";
 
+import { cacheLife, cacheTag } from "next/cache";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
-import { cacheLife, cacheTag } from "next/cache";
 
 export const getCurrentSession = async () => {
   "use cache: private";

@@ -1,10 +1,10 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { memo } from "react";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { memo } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const SessionCardSkeleton = memo(() => (
   <SidebarMenu>

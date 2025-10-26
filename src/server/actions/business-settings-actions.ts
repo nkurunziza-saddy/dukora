@@ -1,11 +1,11 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
 import type { InsertBusinessSetting } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as businessSettingsRepo from "../repos/business-settings-repo";
-import { revalidateTag } from "next/cache";
 
 export const getBusinessSettings = createProtectedAction(
   Permission.BUSINESS_SETTINGS_VIEW,

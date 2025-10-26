@@ -5,6 +5,7 @@ import {
   TrendingUpIcon,
   WarehouseIcon,
 } from "lucide-react";
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import StatCard from "@/components/shared/stat-card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -24,6 +25,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { constructMetadata } from "@/lib/config/metadata";
 import { cn, formatCurrency, formatKeys, formatNumber } from "@/lib/utils";
 import { getLogsOverview } from "@/server/actions/logs-actions";
 import { getOverviewProducts } from "@/server/actions/product-actions";
@@ -35,8 +37,6 @@ import {
   getTotalSKUCount,
   getTotalWarehousesCount,
 } from "@/server/actions/statistics-actions";
-import type { Metadata } from "next";
-import { constructMetadata } from "@/lib/config/metadata";
 
 export const metadata: Metadata = constructMetadata({
   title: "Dashboard",

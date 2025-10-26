@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -10,10 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getAvailableMonthsForAnalytics } from "@/server/helpers/time-date-forrmatters";
-import { useQuery } from "@tanstack/react-query";
-import { Skeleton } from "./ui/skeleton";
 import type { SessionSession } from "@/lib/auth";
+import { getAvailableMonthsForAnalytics } from "@/server/helpers/time-date-forrmatters";
+import { Skeleton } from "./ui/skeleton";
 
 interface TimeRangeProps {
   currentValue?: string;
@@ -25,16 +25,16 @@ export function TimeRange({ currentValue = "0", session }: TimeRangeProps) {
 
   const router = useRouter();
   const t = useTranslations("timeRange");
-  if (!session) {
-    return null;
-  }
+
   const {
     data: availableMonths,
     isLoading,
     error,
   } = useQuery({
     queryKey: ["available-months"],
-    queryFn: () => getAvailableMonthsForAnalytics(session.user.businessId!),
+    enabled: !!session?.user.businessId,
+    queryFn: () =>
+      getAvailableMonthsForAnalytics(session?.user.businessId ?? null),
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
   });
@@ -70,14 +70,20 @@ export function TimeRange({ currentValue = "0", session }: TimeRangeProps) {
     );
   }
 
+  if (!session) {
+    return null;
+  }
+
   return (
     <Select
       value={timeRange}
       onValueChange={setTimeRange}
-      items={availableMonths!.map((p) => ({
-        value: p.value.toString(),
-        label: p.label,
-      }))}
+      items={
+        availableMonths?.map((p) => ({
+          value: p.value.toString(),
+          label: p.label,
+        })) || []
+      }
     >
       <SelectTrigger
         className="w-40 rounded-lg sm:ml-auto"
@@ -86,7 +92,7 @@ export function TimeRange({ currentValue = "0", session }: TimeRangeProps) {
         <SelectValue />
       </SelectTrigger>
       <SelectPopup className="rounded-xl">
-        {availableMonths!.map((month) => (
+        {availableMonths?.map((month) => (
           <SelectItem
             key={month.value}
             value={month.value.toString()}
@@ -94,7 +100,7 @@ export function TimeRange({ currentValue = "0", session }: TimeRangeProps) {
           >
             {month.label}
           </SelectItem>
-        ))}
+        )) || []}
       </SelectPopup>
     </Select>
   );

@@ -1,11 +1,11 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
 import type { InsertAuditLog } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as logsRepo from "../repos/logs-repo";
-import { revalidateTag } from "next/cache";
 
 export const getLogs = createProtectedAction(
   Permission.LOG_VIEW,

@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { getBusinesses } from "@/server/actions/business-actions";
 import { getCategories } from "@/server/actions/category-actions";
 import { getProductById, getProducts } from "@/server/actions/product-actions";
@@ -5,7 +6,6 @@ import { getSuppliers } from "@/server/actions/supplier-actions";
 import { getUserById } from "@/server/actions/user-actions";
 import { getWarehouses } from "@/server/actions/warehouse-actions";
 import { getWarehouseItems } from "@/server/actions/warehouse-item-actions";
-import { useQuery } from "@tanstack/react-query";
 
 export const useProducts = () => {
   const res = useQuery({

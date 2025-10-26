@@ -2,9 +2,11 @@
 
 import { MenuIcon, XIcon } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 export function Navigation() {
+  const t = useTranslations("landing.navigation");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -13,7 +15,7 @@ export function Navigation() {
         <div className="flex h-14 items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-sm font-semibold text-foreground">
-              Dukora
+              {t("brand")}
             </span>
           </div>
 
@@ -22,19 +24,19 @@ export function Navigation() {
               href="#features"
               className="text-xs text-text-secondary hover:text-foreground transition"
             >
-              Features
+              {t("features")}
             </Link>
             <Link
               href="#about"
               className="text-xs text-text-secondary hover:text-foreground transition"
             >
-              About
+              {t("about")}
             </Link>
             <Link
               href="#insights"
               className="text-xs text-text-secondary hover:text-foreground transition"
             >
-              Insights
+              {t("insights")}
             </Link>
           </nav>
 
@@ -43,11 +45,12 @@ export function Navigation() {
               href="/auth/sign-up"
               className="px-4 py-1.5 text-xs font-medium text-foreground hover:bg-surface transition border border-border"
             >
-              Sign up
+              {t("signUp")}
             </Link>
           </div>
 
           <button
+            type="button"
             className="md:hidden text-text-secondary hover:text-foreground"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
@@ -72,26 +75,26 @@ export function Navigation() {
                   href="#features"
                   className="text-xs text-text-secondary hover:text-foreground transition"
                 >
-                  Features
+                  {t("features")}
                 </Link>
                 <Link
                   href="#about"
                   className="text-xs text-text-secondary hover:text-foreground transition"
                 >
-                  About
+                  {t("about")}
                 </Link>
                 <Link
                   href="#insights"
                   className="text-xs text-text-secondary hover:text-foreground transition"
                 >
-                  Insights
+                  {t("insights")}
                 </Link>
                 <div className="pt-3 border-t border-border">
                   <Link
                     href="/auth/sign-up"
                     className="block px-4 py-1.5 text-xs font-medium text-center text-foreground border border-border hover:bg-surface transition"
                   >
-                    Sign up
+                    {t("signUp")}
                   </Link>
                 </div>
               </nav>

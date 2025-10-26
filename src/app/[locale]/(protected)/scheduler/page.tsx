@@ -1,6 +1,6 @@
-import { constructMetadata } from "@/lib/config/metadata";
 import type { Metadata } from "next";
 import { EventCalendar } from "@/components/event-calendar";
+import { constructMetadata } from "@/lib/config/metadata";
 import type { InsertSchedule } from "@/lib/schema/schema-types";
 import {
   createSchedule as _createSchedule,

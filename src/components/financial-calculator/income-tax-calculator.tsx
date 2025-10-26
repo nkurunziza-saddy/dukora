@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export function IncomeTaxCalculator() {
-  const t = useTranslations("financial_calculator");
+  const t = useTranslations("financialCalculator");
 
   const [annualIncome, setAnnualIncome] = useState(0);
   const [annualTax, setAnnualTax] = useState(0);
@@ -44,15 +44,15 @@ export function IncomeTaxCalculator() {
   return (
     <Card className="w-full max-w-4xl">
       <CardHeader>
-        <CardTitle>{t("income_tax_calculator.title")}</CardTitle>
+        <CardTitle>{t("incomeTaxCalculator.title")}</CardTitle>
         <CardDescription>
-          {t("income_tax_calculator.description")}
+          {t("incomeTaxCalculator.description")}
         </CardDescription>
       </CardHeader>
       <CardPanel className="grid gap-4">
         <div className="grid gap-2">
           <Label htmlFor="annualIncome">
-            {t("income_tax_calculator.annual_income_label")}
+            {t("incomeTaxCalculator.annualIncomeLabel")}
           </Label>
           <Input
             id="annualIncome"
@@ -64,7 +64,7 @@ export function IncomeTaxCalculator() {
         </div>
         <div className="grid gap-2">
           <Label htmlFor="annualTax">
-            {t("income_tax_calculator.annual_tax_label")}
+            {t("incomeTaxCalculator.annualTaxLabel")}
           </Label>
           <Input
             id="annualTax"
@@ -75,7 +75,7 @@ export function IncomeTaxCalculator() {
         </div>
         <div className="grid gap-2">
           <Label htmlFor="monthlyTax">
-            {t("income_tax_calculator.monthly_tax_label")}
+            {t("incomeTaxCalculator.monthlyTaxLabel")}
           </Label>
           <Input
             id="monthlyTax"

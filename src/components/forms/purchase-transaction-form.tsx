@@ -17,17 +17,17 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  useProducts,
+  useSuppliers,
+  useWarehouses,
+} from "@/lib/hooks/use-queries";
 import type {
   InsertTransaction,
   SelectTransaction,
 } from "@/lib/schema/schema-types";
 import { cn } from "@/lib/utils";
 import { createTransactionAndWarehouseItem } from "@/server/actions/transaction-actions";
-import {
-  useProducts,
-  useWarehouses,
-  useSuppliers,
-} from "@/lib/hooks/use-queries";
 import { TriggerDialog } from "../shared/reusable-form-dialog";
 import {
   Autocomplete,

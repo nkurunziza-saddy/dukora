@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
 import type {
   InsertTransaction,
   TransactionType,
@@ -8,7 +9,6 @@ import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as transactionRepo from "../repos/transaction-repo";
-import { revalidateTag } from "next/cache";
 
 export const getTransactions = createProtectedAction(
   Permission.FINANCIAL_VIEW,

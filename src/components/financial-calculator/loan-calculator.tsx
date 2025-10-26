@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export function LoanCalculator() {
-  const t = useTranslations("financial_calculator");
+  const t = useTranslations("financialCalculator");
 
   const [loanAmount, setLoanAmount] = useState(0);
   const [interestRate, setInterestRate] = useState(0);
@@ -34,13 +34,13 @@ export function LoanCalculator() {
   return (
     <Card className="w-full max-w-4xl">
       <CardHeader>
-        <CardTitle>{t("loan_calculator.title")}</CardTitle>
-        <CardDescription>{t("loan_calculator.description")}</CardDescription>
+        <CardTitle>{t("loanCalculator.title")}</CardTitle>
+        <CardDescription>{t("loanCalculator.description")}</CardDescription>
       </CardHeader>
       <CardPanel className="grid gap-4">
         <div className="grid gap-2">
           <Label htmlFor="loanAmount">
-            {t("loan_calculator.loan_amount_label")}
+            {t("loanCalculator.loanAmountLabel")}
           </Label>
           <Input
             id="loanAmount"
@@ -52,7 +52,7 @@ export function LoanCalculator() {
         </div>
         <div className="grid gap-2">
           <Label htmlFor="interestRate">
-            {t("loan_calculator.interest_rate_label")}
+            {t("loanCalculator.interestRateLabel")}
           </Label>
           <Input
             id="interestRate"
@@ -63,9 +63,7 @@ export function LoanCalculator() {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="loanTerm">
-            {t("loan_calculator.loan_term_label")}
-          </Label>
+          <Label htmlFor="loanTerm">{t("loanCalculator.loanTermLabel")}</Label>
           <Input
             id="loanTerm"
             type="number"
@@ -76,7 +74,7 @@ export function LoanCalculator() {
         </div>
         <div className="grid gap-2">
           <Label htmlFor="monthlyPayment">
-            {t("loan_calculator.monthly_payment_label")}
+            {t("loanCalculator.monthlyPaymentLabel")}
           </Label>
           <Input
             id="monthlyPayment"

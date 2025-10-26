@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useProductDetails, useProducts } from "@/lib/hooks/use-queries";
 import { TRANSACTION_TYPE } from "@/lib/schema";
 import type {
   InsertTransaction,
@@ -33,7 +34,6 @@ import type {
 import { cn } from "@/lib/utils";
 import { createTransaction } from "@/server/actions/transaction-actions";
 import { transactionTypesObject } from "@/utils/constants";
-import { useProducts, useProductDetails } from "@/lib/hooks/use-queries";
 import { TriggerDialog } from "../shared/reusable-form-dialog";
 import {
   Autocomplete,

@@ -18,9 +18,9 @@ import {
 } from "@/components/ui/menu";
 import type { SelectUser } from "@/lib/schema/schema-types";
 import { UpdateUserForm } from "../forms/update-user-form";
+import { HoverPrefetchLink } from "../hover-prefetch-link";
 import ConfirmDialog from "../shared/confirm-dialog";
 import { StateDialog } from "../shared/reusable-form-dialog";
-import { HoverPrefetchLink } from "../hover-prefetch-link";
 
 export interface UserRowActionsProps {
   user: SelectUser;

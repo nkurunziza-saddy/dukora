@@ -72,7 +72,7 @@ export default function LocaleSwitcher() {
         {languageItems.map((item) => (
           <div
             key={`${id}-${item.value}`}
-            className="border-input has-[:checked]:border-primary/50 has-[:checked]:bg-accent/50 relative flex flex-col items-center gap-3 rounded-md border p-3 shadow-xs outline-none transition-colors hover:bg-accent/30"
+            className="border-input has-checked:border-primary/50 has-checked:bg-accent/50 relative flex flex-col items-center gap-3 rounded-md border p-3 shadow-xs outline-none transition-colors hover:bg-accent/30"
           >
             <div className="flex items-center gap-2">
               <RadioGroupItem

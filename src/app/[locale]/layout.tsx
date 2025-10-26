@@ -1,13 +1,13 @@
 import "../globals.css";
 import { Analytics } from "@vercel/analytics/next";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
 import ClientBody from "@/components/providers/client-body";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import { QueryProvider } from "@/lib/providers/query-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { routing } from "@/i18n/routing";
-import { setRequestLocale } from "next-intl/server";
 import { fontMono, fontSans } from "@/lib/config/fonts";
 import {
   MY_HANDLE,
@@ -16,7 +16,7 @@ import {
   SITE_KEYWORDS,
   SITE_NAME,
 } from "@/lib/config/site";
-import type { Metadata } from "next";
+import { QueryProvider } from "@/lib/providers/query-provider";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_HOME_URL),

@@ -1,7 +1,3 @@
-import { constructMetadata } from "@/lib/config/metadata";
-import type { Metadata } from "next";
-
-import React, { Suspense } from "react";
 import {
   AlertCircleIcon,
   BellIcon,
@@ -13,6 +9,9 @@ import {
   UserIcon,
   WarehouseIcon,
 } from "lucide-react";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import React, { Suspense } from "react";
 import UserProfileForm from "@/components/forms/user-profile-form";
 import { UserSettingsForm } from "@/components/forms/user-settings-form";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -28,6 +27,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
+import { constructMetadata } from "@/lib/config/metadata";
 import { getCurrentSession } from "@/server/actions/auth-actions";
 import { getBusinessById } from "@/server/actions/business-actions";
 import { getUserById } from "@/server/actions/user-actions";
@@ -36,7 +36,6 @@ import { EditBusinessDetails } from "./_components/edit-business-details";
 import { EditBusinessSettings } from "./_components/edit-business-settings";
 import { EditCategories } from "./_components/edit-categories";
 import { EditWarehouses } from "./_components/edit-warehouses";
-import { getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = constructMetadata({
   title: "Settings",

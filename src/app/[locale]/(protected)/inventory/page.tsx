@@ -1,7 +1,7 @@
-import { constructMetadata } from "@/lib/config/metadata";
-import type { Metadata } from "next";
 import { LayersIcon, WarehouseIcon } from "lucide-react";
+import type { Metadata } from "next";
 import StatCard from "@/components/shared/stat-card";
+import { constructMetadata } from "@/lib/config/metadata";
 import { getProducts } from "@/server/actions/product-actions";
 import { getWarehouses } from "@/server/actions/warehouse-actions";
 import { getWarehouseItemsByBusiness } from "@/server/actions/warehouse-item-actions";

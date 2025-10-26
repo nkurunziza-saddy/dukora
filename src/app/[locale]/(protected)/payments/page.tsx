@@ -1,10 +1,10 @@
-import { constructMetadata } from "@/lib/config/metadata";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import ColumnWrapper from "@/components/providers/column-wrapper";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { constructMetadata } from "@/lib/config/metadata";
 import { getInterBusinessPayments } from "@/server/actions/payment-actions";
 import { ErrorCode } from "@/server/constants/errors";
 import { PaymentColumn } from "@/utils/columns/payment-column";

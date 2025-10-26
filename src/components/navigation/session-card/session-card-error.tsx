@@ -1,9 +1,9 @@
+import { memo } from "react";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { memo } from "react";
 
 const SessionCardError = memo(() => (
   <SidebarMenu>

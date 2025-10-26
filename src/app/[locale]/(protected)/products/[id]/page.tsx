@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
@@ -7,7 +8,6 @@ import ProductStockLevels from "./_components/product-stock-levels";
 import ProductSummaryCard from "./_components/product-summary-card";
 import ProductSuppliers from "./_components/product-suppliers";
 import ProductTransactions from "./_components/product-transactions";
-import type { Metadata } from "next";
 
 type Props = {
   params: Promise<{ id: string }>;

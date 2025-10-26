@@ -5,8 +5,8 @@ import { Calendar1, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  COLOR_OPTIONS,
   type CalendarEvent,
+  COLOR_OPTIONS,
   type EventColor,
 } from "@/components/event-calendar";
 import {

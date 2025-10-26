@@ -18,13 +18,13 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useProductDetails, useProducts } from "@/lib/hooks/use-queries";
 import type {
   InsertTransaction,
   SelectTransaction,
 } from "@/lib/schema/schema-types";
 import { cn } from "@/lib/utils";
 import { createTransaction } from "@/server/actions/transaction-actions";
-import { useProducts, useProductDetails } from "@/lib/hooks/use-queries";
 import { TriggerDialog } from "../shared/reusable-form-dialog";
 import {
   Autocomplete,

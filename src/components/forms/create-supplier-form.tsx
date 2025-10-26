@@ -203,7 +203,7 @@ export default function SupplierForm({
                   id={field.name}
                   name={field.name}
                   placeholder={t("enterBusinessAddress")}
-                  className="min-h-[80px]"
+                  className="min-h-20"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}

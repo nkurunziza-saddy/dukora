@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export function SavingsGoalCalculator() {
-  const t = useTranslations("financial_calculator");
+  const t = useTranslations("financialCalculator");
 
   const [targetAmount, setTargetAmount] = useState(0);
   const [currentSavings, setCurrentSavings] = useState(0);
@@ -31,13 +31,13 @@ export function SavingsGoalCalculator() {
   return (
     <Card className="w-full max-w-4xl">
       <CardHeader>
-        <CardTitle>{t("savings_calculator.title")}</CardTitle>
-        <CardDescription>{t("savings_calculator.description")}</CardDescription>
+        <CardTitle>{t("savingsCalculator.title")}</CardTitle>
+        <CardDescription>{t("savingsCalculator.description")}</CardDescription>
       </CardHeader>
       <CardPanel className="grid gap-4">
         <div className="grid gap-2">
           <Label htmlFor="targetAmount">
-            {t("savings_calculator.target_amount_label")}
+            {t("savingsCalculator.targetAmountLabel")}
           </Label>
           <Input
             id="targetAmount"
@@ -49,7 +49,7 @@ export function SavingsGoalCalculator() {
         </div>
         <div className="grid gap-2">
           <Label htmlFor="currentSavings">
-            {t("savings_calculator.current_savings_label")}
+            {t("savingsCalculator.currentSavingsLabel")}
           </Label>
           <Input
             id="currentSavings"
@@ -61,7 +61,7 @@ export function SavingsGoalCalculator() {
         </div>
         <div className="grid gap-2">
           <Label htmlFor="annualContribution">
-            {t("savings_calculator.annual_contribution_label")}
+            {t("savingsCalculator.annualContributionLabel")}
           </Label>
           <Input
             id="annualContribution"
@@ -75,7 +75,7 @@ export function SavingsGoalCalculator() {
         </div>
         <div className="grid gap-2">
           <Label htmlFor="yearsToGoal">
-            {t("savings_calculator.years_to_goal_label")}
+            {t("savingsCalculator.yearsToGoalLabel")}
           </Label>
           <Input
             id="yearsToGoal"

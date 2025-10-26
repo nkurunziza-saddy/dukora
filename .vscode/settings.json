@@ -13,5 +13,10 @@
   ],
   "i18n-ally.localesPaths": ["src/i18n", "src/i18n/messages"],
   "i18n-ally.keystyle": "flat",
-  "i18n-ally.sourceLanguage": "en"
+  "i18n-ally.sourceLanguage": "en",
+
+  "editor.codeActionsOnSave": {
+    "source.organizeImports.biome": "explicit",
+    "source.fixAll.biome": "explicit"
+  }
 }

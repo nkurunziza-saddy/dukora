@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export function SimpleCalculator() {
-  const t = useTranslations("financial_calculator");
+  const t = useTranslations("financialCalculator");
 
   const [principal, setPrincipal] = useState(0);
   const [interestRate, setInterestRate] = useState(0);
@@ -27,13 +27,13 @@ export function SimpleCalculator() {
   return (
     <Card className="w-full max-w-4xl">
       <CardHeader>
-        <CardTitle>{t("simple_calculator.title")}</CardTitle>
-        <CardDescription>{t("simple_calculator.description")}</CardDescription>
+        <CardTitle>{t("simpleCalculator.title")}</CardTitle>
+        <CardDescription>{t("simpleCalculator.description")}</CardDescription>
       </CardHeader>
       <CardPanel className="grid gap-4">
         <div className="grid gap-2">
           <Label htmlFor="principal">
-            {t("simple_calculator.principal_label")}
+            {t("simpleCalculator.principalLabel")}
           </Label>
           <Input
             id="principal"
@@ -45,7 +45,7 @@ export function SimpleCalculator() {
         </div>
         <div className="grid gap-2">
           <Label htmlFor="interestRate">
-            {t("simple_calculator.interest_rate_label")}
+            {t("simpleCalculator.interestRateLabel")}
           </Label>
           <Input
             id="interestRate"
@@ -56,7 +56,7 @@ export function SimpleCalculator() {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="time">{t("simple_calculator.time_label")}</Label>
+          <Label htmlFor="time">{t("simpleCalculator.timeLabel")}</Label>
           <Input
             id="time"
             type="number"
@@ -66,7 +66,7 @@ export function SimpleCalculator() {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="result">{t("simple_calculator.result_label")}</Label>
+          <Label htmlFor="result">{t("simpleCalculator.resultLabel")}</Label>
           <Input id="result" type="number" value={result.toFixed(2)} readOnly />
         </div>
       </CardPanel>

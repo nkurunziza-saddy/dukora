@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
 import type {
   InsertWarehouseItem,
   SelectProduct,
@@ -9,7 +10,6 @@ import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as warehouseItemsRepo from "@/server/repos/warehouse-item-repo";
-import { revalidateTag } from "next/cache";
 
 export const getWarehouseItems = createProtectedAction(
   Permission.WAREHOUSE_ITEM_VIEW,

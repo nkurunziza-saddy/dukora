@@ -1,11 +1,11 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
 import type { InsertUserSetting } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as userSettingsRepo from "../repos/user-settings-repo";
-import { revalidateTag } from "next/cache";
 
 export const getUserSettings = createProtectedAction(
   Permission.USER_VIEW,

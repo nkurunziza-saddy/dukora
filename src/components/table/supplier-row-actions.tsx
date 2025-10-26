@@ -18,9 +18,9 @@ import {
 } from "@/components/ui/menu";
 import type { SelectSupplier } from "@/lib/schema/schema-types";
 import SupplierForm from "../forms/create-supplier-form";
+import { HoverPrefetchLink } from "../hover-prefetch-link";
 import ConfirmDialog from "../shared/confirm-dialog";
 import { StateDialog } from "../shared/reusable-form-dialog";
-import { HoverPrefetchLink } from "../hover-prefetch-link";
 
 export interface SupplierRowActionsProps {
   supplier: SelectSupplier;

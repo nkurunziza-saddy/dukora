@@ -89,6 +89,7 @@ export function EventsPopup({
       <div className="bg-background sticky top-0 flex items-center justify-between border-b p-3">
         <h3 className="font-medium">{format(date, "d MMMM yyyy")}</h3>
         <button
+          type="button"
           onClick={onClose}
           className="hover:bg-muted rounded-full p-1"
           aria-label="Close"

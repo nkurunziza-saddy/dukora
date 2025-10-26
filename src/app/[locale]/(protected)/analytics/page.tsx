@@ -1,6 +1,3 @@
-import { constructMetadata } from "@/lib/config/metadata";
-import type { Metadata } from "next";
-
 import {
   AlertCircleIcon,
   AlertTriangleIcon,
@@ -15,7 +12,9 @@ import {
   TrendingUpIcon,
   WalletIcon,
 } from "lucide-react";
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 import StatCard from "@/components/shared/stat-card";
 import { TimeRange } from "@/components/time-range";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -28,6 +27,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -36,16 +36,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { constructMetadata } from "@/lib/config/metadata";
 import { formatCurrency, formatKeys, formatNumber } from "@/lib/utils";
+import { getCurrentSession } from "@/server/actions/auth-actions";
 import { calculateAndSyncMonthlyMetrics } from "@/server/actions/metrics-action";
+import { ErrorCode } from "@/server/constants/errors";
 import {
   getCurrentMonthBoundary,
   getMonthData,
 } from "@/server/helpers/time-date-forrmatters";
-import { ErrorCode } from "@/server/constants/errors";
-import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { getCurrentSession } from "@/server/actions/auth-actions";
 
 export const metadata: Metadata = constructMetadata({
   title: "Analytics",

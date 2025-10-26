@@ -1,5 +1,5 @@
-import { SITE_HOME_URL } from "@/lib/config/site";
 import type { MetadataRoute } from "next";
+import { SITE_HOME_URL } from "@/lib/config/site";
 
 export const cats = [
   {

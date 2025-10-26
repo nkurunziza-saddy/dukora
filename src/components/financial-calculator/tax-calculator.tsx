@@ -7,14 +7,14 @@ import { PAYECalculator } from "./paye-calculator";
 import { VATCalculator } from "./vat-calculator";
 
 export function TaxCalculator() {
-  const t = useTranslations("financial_calculator");
+  const t = useTranslations("financialCalculator");
 
   return (
     <Tabs defaultValue="pit">
       <TabsList className="w-fit">
-        <TabsTab value="pit">{t("tax_calculator.pit_tab")}</TabsTab>
-        <TabsTab value="paye">{t("tax_calculator.paye_tab")}</TabsTab>
-        <TabsTab value="vat">{t("tax_calculator.vat_tab")}</TabsTab>
+        <TabsTab value="pit">{t("taxCalculator.pitTab")}</TabsTab>
+        <TabsTab value="paye">{t("taxCalculator.payeTab")}</TabsTab>
+        <TabsTab value="vat">{t("taxCalculator.vatTab")}</TabsTab>
       </TabsList>
       <TabsPanel value="pit">
         <IncomeTaxCalculator />

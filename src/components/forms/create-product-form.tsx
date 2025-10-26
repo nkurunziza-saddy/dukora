@@ -23,9 +23,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useCategories } from "@/lib/hooks/use-queries";
 import type { SelectProduct } from "@/lib/schema/schema-types";
 import { createProduct, updateProduct } from "@/server/actions/product-actions";
-import { useCategories } from "@/lib/hooks/use-queries";
 import { TriggerDialog } from "../shared/reusable-form-dialog";
 import { Separator } from "../ui/separator";
 

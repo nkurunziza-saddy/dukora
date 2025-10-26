@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/config/site";
+import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/config/site";
 
 export const alt = SITE_NAME;
 export const size = {

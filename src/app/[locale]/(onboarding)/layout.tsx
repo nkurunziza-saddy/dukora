@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
-import { getCurrentSession } from "@/server/actions/auth-actions";
 import { Suspense } from "react";
 import { GuardSkeleton } from "@/components/guard-skeleton";
+import { getCurrentSession } from "@/server/actions/auth-actions";
 
 async function OnboardingLayoutGuard({
   children,

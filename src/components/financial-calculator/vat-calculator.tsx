@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export function VATCalculator() {
-  const t = useTranslations("financial_calculator");
+  const t = useTranslations("financialCalculator");
 
   const [salesAmount, setSalesAmount] = useState(0);
   const [purchasesAmount, setPurchasesAmount] = useState(0);
@@ -28,13 +28,13 @@ export function VATCalculator() {
   return (
     <Card className="w-full max-w-4xl">
       <CardHeader>
-        <CardTitle>{t("vat_calculator.title")}</CardTitle>
-        <CardDescription>{t("vat_calculator.description")}</CardDescription>
+        <CardTitle>{t("vatCalculator.title")}</CardTitle>
+        <CardDescription>{t("vatCalculator.description")}</CardDescription>
       </CardHeader>
       <CardPanel className="grid gap-4">
         <div className="grid gap-2">
           <Label htmlFor="salesAmount">
-            {t("vat_calculator.sales_amount_label")}
+            {t("vatCalculator.salesAmountLabel")}
           </Label>
           <Input
             id="salesAmount"
@@ -46,7 +46,7 @@ export function VATCalculator() {
         </div>
         <div className="grid gap-2">
           <Label htmlFor="purchasesAmount">
-            {t("vat_calculator.purchases_amount_label")}
+            {t("vatCalculator.purchasesAmountLabel")}
           </Label>
           <Input
             id="purchasesAmount"
@@ -59,7 +59,7 @@ export function VATCalculator() {
           />
         </div>
         <div className="grid gap-2">
-          <Label htmlFor="vatDue">{t("vat_calculator.vat_due_label")}</Label>
+          <Label htmlFor="vatDue">{t("vatCalculator.vatDueLabel")}</Label>
           <Input id="vatDue" type="number" value={vatDue.toFixed(2)} readOnly />
         </div>
       </CardPanel>

@@ -1,11 +1,11 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
 import type { InsertSupplier } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as supplierRepo from "../repos/supplier-repo";
-import { revalidateTag } from "next/cache";
 
 export const getSuppliers = createProtectedAction(
   Permission.SUPPLIER_VIEW,

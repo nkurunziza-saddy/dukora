@@ -1,7 +1,6 @@
-import { constructMetadata } from "@/lib/config/metadata";
-import type { Metadata } from "next";
 import { subDays } from "date-fns";
 import { DollarSignIcon, ShoppingCartIcon, TrendingUpIcon } from "lucide-react";
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import ColumnWrapper from "@/components/providers/column-wrapper";
 import StatCard from "@/components/shared/stat-card";
@@ -12,6 +11,7 @@ import {
   CardPanel,
   CardTitle,
 } from "@/components/ui/card";
+import { constructMetadata } from "@/lib/config/metadata";
 import { getTodayTransactions } from "@/server/actions/statistics-actions";
 import { getTransactionsByTimeIntervalPaginated } from "@/server/actions/transaction-actions";
 import { TransactionColumn } from "@/utils/columns/transaction-column";

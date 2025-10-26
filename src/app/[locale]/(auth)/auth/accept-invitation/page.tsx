@@ -1,10 +1,8 @@
-import { constructMetadata } from "@/lib/config/metadata";
 import type { Metadata } from "next";
-
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { constructMetadata } from "@/lib/config/metadata";
 
 export const metadata: Metadata = constructMetadata({
   title: "Accept Invitation",

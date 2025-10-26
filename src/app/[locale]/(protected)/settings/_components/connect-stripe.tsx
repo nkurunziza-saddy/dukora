@@ -1,12 +1,13 @@
 "use client";
 
-import * as React from "react";
 import { useForm } from "@tanstack/react-form";
-import { toast } from "sonner";
 import { CheckCircleIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
-
+import * as React from "react";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Field,
   FieldDescription,
@@ -15,14 +16,11 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-
 import {
   createStripeAccountLink,
   createStripeConnectedAccount,
 } from "@/server/actions/stripe-connect-actions";
 import { stripeConnectSchema } from "./settings-utils";
-import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function ConnectStripe({
   stripeAccountId,

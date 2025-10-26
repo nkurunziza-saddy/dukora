@@ -18,8 +18,8 @@ import {
 } from "@/components/ui/menu";
 import type { SelectProduct } from "@/lib/schema/schema-types";
 import ProductForm from "../forms/create-product-form";
-import ConfirmDialog from "../shared/confirm-dialog";
 import { HoverPrefetchLink } from "../hover-prefetch-link";
+import ConfirmDialog from "../shared/confirm-dialog";
 
 export interface ProductRowActionsProps {
   product: SelectProduct;

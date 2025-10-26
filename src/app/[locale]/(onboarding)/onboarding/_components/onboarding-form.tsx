@@ -14,7 +14,21 @@ import {
   CardPanel,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldSet,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import {
   Select,
   SelectItem,
@@ -33,6 +47,7 @@ import {
 } from "@/components/ui/stepper";
 import { Switch } from "@/components/ui/switch";
 import { UserRole } from "@/lib/schema/schema-types";
+import { businessInitialization } from "@/server/actions/onboarding-actions";
 import { defaultCategories, userRolesObject } from "@/utils/constants";
 import LocaleSwitcher from "./language-switcher";
 import {
@@ -40,32 +55,19 @@ import {
   getCountries,
   getCurrencies,
   getMonths,
+  getSteps,
   INVITATIONS_LIMIT,
   onboardingSchema,
-  steps,
   WAREHOUSES_LIMIT,
 } from "./onboarding-utils";
-import {
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldSet,
-} from "@/components/ui/field";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from "@/components/ui/input-group";
-import { businessInitialization } from "@/server/actions/onboarding-actions";
 
 const CATEGORY_LIMIT = 10;
 
 export default function OnboardingFlow() {
   const t = useTranslations("forms");
   const tCommon = useTranslations("common");
+  const tOnboarding = useTranslations("onboarding");
+  const steps = getSteps(tOnboarding);
 
   const [currentStep, setCurrentStep] = useState(1);
   const [newCategory, setNewCategory] = useState("");
@@ -88,7 +90,7 @@ export default function OnboardingFlow() {
       onBlur: onboardingSchema,
     },
     onSubmit: async ({ value }) => {
-      if (currentStep !== steps.length) {
+      if (currentStep !== getSteps(tOnboarding).length) {
         return;
       }
 
@@ -104,7 +106,7 @@ export default function OnboardingFlow() {
         }
       } catch (error) {
         console.error("Onboarding error:", error);
-        toast.error("Setup failed. Check console for details.");
+        toast.error(tOnboarding("errors.setupFailed"));
       }
     },
     onSubmitInvalid({ formApi }) {
@@ -115,7 +117,7 @@ export default function OnboardingFlow() {
 
       let firstInput: HTMLInputElement | undefined;
       for (const input of inputs) {
-        if (!!errorMap[input.name]) {
+        if (errorMap[input.name]) {
           firstInput = input;
           break;
         }
@@ -136,7 +138,7 @@ export default function OnboardingFlow() {
       }
     }
 
-    if (isValid && currentStep < steps.length) {
+    if (isValid && currentStep < getSteps(tOnboarding).length) {
       setCurrentStep((s) => s + 1);
     }
   };
@@ -173,29 +175,29 @@ export default function OnboardingFlow() {
     <div className="min-h-screen py-8">
       <div className="max-w-5xl mx-auto px-4">
         <CardHeader className="mb-8 px-0">
-          <CardTitle>Welcome to Your Inventory System</CardTitle>
+          <CardTitle>{tOnboarding("welcome.title")}</CardTitle>
           <CardDescription>
-            Let&apos;s set up your business in just a few steps
+            {tOnboarding("welcome.description")}
           </CardDescription>
         </CardHeader>
 
         <div className="mb-8">
           <Stepper value={currentStep} onValueChange={setCurrentStep}>
-            {steps.map(({ step, title }) => (
+            {steps.map((stepInfo) => (
               <StepperItem
-                key={step}
-                step={step}
+                key={stepInfo.step}
+                step={stepInfo.step}
                 className="not-last:flex-1 max-md:items-start"
               >
                 <StepperTrigger className="rounded hover:cursor-pointer max-md:flex-col">
                   <StepperIndicator />
                   <div className="text-center md:text-left">
                     <StepperTitle className="flex items-center gap-2">
-                      {title}
+                      {stepInfo.title}
                     </StepperTitle>
                   </div>
                 </StepperTrigger>
-                {step < steps.length && (
+                {stepInfo.step < getSteps(tOnboarding).length && (
                   <StepperSeparator className="max-md:mt-3.5 md:mx-4" />
                 )}
               </StepperItem>
@@ -239,7 +241,7 @@ export default function OnboardingFlow() {
                             htmlFor={field.name}
                             className="text-sm font-medium"
                           >
-                            Business Name *
+                            {tOnboarding("businessName.label")} *
                           </label>
                           <Input
                             id={field.name}
@@ -247,7 +249,9 @@ export default function OnboardingFlow() {
                             value={field.state.value}
                             onBlur={field.handleBlur}
                             onChange={(e) => field.handleChange(e.target.value)}
-                            placeholder="Enter your business name"
+                            placeholder={tOnboarding(
+                              "businessName.placeholder",
+                            )}
                             aria-invalid={isInvalid}
                             autoComplete="off"
                           />
@@ -273,7 +277,7 @@ export default function OnboardingFlow() {
                             htmlFor={field.name}
                             className="text-sm font-medium"
                           >
-                            Business Type *
+                            {tOnboarding("businessType.label")} *
                           </label>
                           <Select
                             value={field.state.value}
@@ -313,7 +317,7 @@ export default function OnboardingFlow() {
                               htmlFor={field.name}
                               className="text-sm font-medium"
                             >
-                              Currency *
+                              {tOnboarding("currency.label")} *
                             </label>
                             <Select
                               value={field.state.value}
@@ -357,7 +361,7 @@ export default function OnboardingFlow() {
                               htmlFor={field.name}
                               className="text-sm font-medium"
                             >
-                              Country *
+                              {tOnboarding("country.label")} *
                             </label>
                             <Select
                               value={field.state.value}
@@ -408,7 +412,7 @@ export default function OnboardingFlow() {
                             htmlFor={field.name}
                             className="text-sm font-medium"
                           >
-                            Timezone
+                            {tOnboarding("timezone.label")}
                           </label>
                           <Input
                             id={field.name}
@@ -417,7 +421,7 @@ export default function OnboardingFlow() {
                             disabled
                           />
                           <p className="text-sm text-muted-foreground">
-                            Auto-filled based on selected country
+                            {tOnboarding("timezone.autoFillDescription")}
                           </p>
                         </div>
                       )}
@@ -434,7 +438,7 @@ export default function OnboardingFlow() {
                               htmlFor={field.name}
                               className="text-sm font-medium"
                             >
-                              Fiscal Year Start Month *
+                              {tOnboarding("fiscalYearStartMonth.label")} *
                             </label>
                             <Select
                               value={field.state.value}
@@ -480,11 +484,10 @@ export default function OnboardingFlow() {
                             htmlFor="pricesIncludeTax"
                             className="text-base font-medium"
                           >
-                            Prices Include Tax
+                            {tOnboarding("pricesIncludeTax.label")}
                           </label>
                           <p className="text-sm text-muted-foreground">
-                            Toggle whether your product prices include tax or
-                            are tax-exclusive
+                            {tOnboarding("pricesIncludeTax.description")}
                           </p>
                         </div>
                         <Switch
@@ -509,7 +512,7 @@ export default function OnboardingFlow() {
                             htmlFor={field.name}
                             className="text-sm font-medium"
                           >
-                            Default VAT Rate (%)
+                            {tOnboarding("defaultVatRate.label")}
                           </label>
                           <Input
                             id={field.name}
@@ -519,10 +522,12 @@ export default function OnboardingFlow() {
                             value={field.state.value}
                             onBlur={field.handleBlur}
                             onChange={(e) => field.handleChange(e.target.value)}
-                            placeholder="e.g., 18"
+                            placeholder={tOnboarding(
+                              "defaultVatRate.placeholder",
+                            )}
                           />
                           <p className="text-sm text-muted-foreground">
-                            Optional: Set a default VAT rate for your products
+                            {tOnboarding("defaultVatRate.description")}
                           </p>
                           {isInvalid && (
                             <p className="text-sm text-destructive">
@@ -544,7 +549,9 @@ export default function OnboardingFlow() {
                     return (
                       <FieldSet className="gap-4">
                         <FieldDescription>
-                          Add up to {INVITATIONS_LIMIT} team invitations.
+                          {tOnboarding("teamMembers.addUpTo", {
+                            limit: INVITATIONS_LIMIT,
+                          })}
                         </FieldDescription>
 
                         <FieldGroup className="gap-4">
@@ -579,7 +586,9 @@ export default function OnboardingFlow() {
                                                   e.target.value as any,
                                                 )
                                               }
-                                              placeholder="name@example.com"
+                                              placeholder={tOnboarding(
+                                                "teamMembers.emailPlaceholder",
+                                              )}
                                               type="email"
                                               autoComplete="email"
                                             />
@@ -685,7 +694,7 @@ export default function OnboardingFlow() {
                               INVITATIONS_LIMIT
                             }
                           >
-                            Add member
+                            {tOnboarding("teamMembers.addMember")}
                           </Button>
                         </FieldGroup>
 
@@ -724,12 +733,14 @@ export default function OnboardingFlow() {
                       const trimmed = newCategory.trim();
                       if (!trimmed) return;
                       if (currentCategories.includes(trimmed)) {
-                        toast.error("Category already added");
+                        toast.error(tOnboarding("errors.alreadyAdded"));
                         return;
                       }
                       if (currentCategories.length >= CATEGORY_LIMIT) {
                         toast.error(
-                          `You can select up to ${CATEGORY_LIMIT} categories.`,
+                          tOnboarding("errors.maxCategories", {
+                            limit: CATEGORY_LIMIT,
+                          }),
                         );
                         return;
                       }
@@ -740,7 +751,7 @@ export default function OnboardingFlow() {
                     return (
                       <FieldSet className="gap-4">
                         <FieldDescription>
-                          Make your own product categories
+                          {tOnboarding("categories.makeYourOwn")}
                         </FieldDescription>
 
                         <FieldGroup className="gap-4">
@@ -765,7 +776,9 @@ export default function OnboardingFlow() {
                                     </h5>
                                   </div>
                                   <div className="ml-3 text-sm">
-                                    {isSelected ? "Selected" : "Add"}
+                                    {isSelected
+                                      ? tOnboarding("categories.selected")
+                                      : tOnboarding("categories.add")}
                                   </div>
                                 </button>
                               );
@@ -777,7 +790,9 @@ export default function OnboardingFlow() {
                               id="new-category"
                               value={newCategory}
                               onChange={(e) => setNewCategory(e.target.value)}
-                              placeholder="Add custom category (e.g., Food)"
+                              placeholder={tOnboarding(
+                                "categories.placeholder",
+                              )}
                               onKeyDown={(e) => {
                                 if (e.key === "Enter") {
                                   e.preventDefault();
@@ -791,7 +806,7 @@ export default function OnboardingFlow() {
                               variant="outline"
                               size="sm"
                             >
-                              Add
+                              {tOnboarding("categories.addButton")}
                             </Button>
                           </div>
                           <div className="ml-auto text-sm text-muted-foreground tabular-nums">
@@ -850,7 +865,9 @@ export default function OnboardingFlow() {
                     return (
                       <FieldSet className="gap-4">
                         <FieldDescription>
-                          Add up to {WAREHOUSES_LIMIT} warehouses.
+                          {tOnboarding("warehouses.addUpTo", {
+                            limit: WAREHOUSES_LIMIT,
+                          })}
                         </FieldDescription>
 
                         <FieldGroup className="gap-4">
@@ -882,7 +899,9 @@ export default function OnboardingFlow() {
                                               )
                                             }
                                             aria-invalid={isSubFieldInvalid}
-                                            placeholder="Gishushu Branch"
+                                            placeholder={tOnboarding(
+                                              "warehouses.placeholder",
+                                            )}
                                           />
                                         </InputGroup>
                                         {isSubFieldInvalid && (
@@ -909,8 +928,8 @@ export default function OnboardingFlow() {
                                 onClick={() => handleSetDefault(index)}
                               >
                                 {field.state.value[index]?.isDefault === true
-                                  ? "Is Default"
-                                  : "Set Default"}
+                                  ? tOnboarding("warehouses.isDefault")
+                                  : tOnboarding("warehouses.setDefault")}
                               </Button>
 
                               <div>
@@ -946,7 +965,7 @@ export default function OnboardingFlow() {
                               WAREHOUSES_LIMIT
                             }
                           >
-                            Add warehouse
+                            {tOnboarding("warehouses.addWarehouse")}
                           </Button>
                         </FieldGroup>
 
@@ -969,24 +988,24 @@ export default function OnboardingFlow() {
                   onClick={prevStep}
                   disabled={currentStep === 1}
                 >
-                  Previous
+                  {tOnboarding("buttons.previous")}
                 </Button>
 
-                {currentStep < steps.length && (
+                {currentStep < getSteps(tOnboarding).length && (
                   <Button type="button" onClick={nextStep}>
-                    Next
+                    {tOnboarding("buttons.next")}
                   </Button>
                 )}
 
-                {currentStep === steps.length && (
+                {currentStep === getSteps(tOnboarding).length && (
                   <Button
                     type="submit"
                     form="onboarding-form"
                     disabled={form.state.isSubmitting}
                   >
                     {form.state.isSubmitting
-                      ? "Setting up..."
-                      : "Complete Setup"}
+                      ? tOnboarding("buttons.settingUp")
+                      : tOnboarding("buttons.completeSetup")}
                   </Button>
                 )}
               </Field>

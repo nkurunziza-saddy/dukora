@@ -1,5 +1,3 @@
-import { USER_ROLES } from "@/lib/schema/models/enums";
-import z from "zod";
 import {
   Building2Icon,
   MapPinIcon,
@@ -7,6 +5,8 @@ import {
   SettingsIcon,
   UsersIcon,
 } from "lucide-react";
+import z from "zod";
+import { USER_ROLES } from "@/lib/schema/models/enums";
 
 export const CATEGORY_LIMIT = 10;
 export const INVITATIONS_LIMIT = 5;
@@ -45,35 +45,35 @@ export const onboardingSchema = z.object({
 
 export type OnboardingFormData = z.infer<typeof onboardingSchema>;
 
-export const steps = [
+export const getSteps = (t: (key: string) => string) => [
   {
     step: 1,
-    title: "Business Profile",
-    description: "Set up your business identity",
+    title: t("onboarding.steps.businessProfile"),
+    description: t("onboarding.steps.businessProfileDescription"),
     icon: Building2Icon,
   },
   {
     step: 2,
-    title: "Tax SettingsIcon",
-    description: "Configure pricing and taxes",
+    title: t("onboarding.steps.taxSettings"),
+    description: t("onboarding.steps.taxSettingsDescription"),
     icon: SettingsIcon,
   },
   {
     step: 3,
-    title: "Team Setup",
-    description: "Invite your team members",
+    title: t("onboarding.steps.teamSetup"),
+    description: t("onboarding.steps.teamSetupDescription"),
     icon: UsersIcon,
   },
   {
     step: 4,
-    title: "Categories",
-    description: "Choose product categories",
+    title: t("onboarding.steps.categories"),
+    description: t("onboarding.steps.categoriesDescription"),
     icon: PackageIcon,
   },
   {
     step: 5,
-    title: "Warehouses/Branches",
-    description: "Set up your business branches and warehouses management",
+    title: t("onboarding.steps.warehousesBranches"),
+    description: t("onboarding.steps.warehousesBranchesDescription"),
     icon: MapPinIcon,
   },
 ];
