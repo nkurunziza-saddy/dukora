@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import { GuardSkeleton } from "@/components/guard-skeleton";
 import { AboutSection } from "@/components/landing/about-section";
 import { BlogSection } from "@/components/landing/blog-section";
 import { CTASection } from "@/components/landing/cta-section";
@@ -9,6 +8,7 @@ import { Footer } from "@/components/landing/footer";
 import { HeroSection } from "@/components/landing/hero-section";
 import { Navigation } from "@/components/landing/navigation";
 import { StatsSection } from "@/components/landing/stats-section";
+import { GuardSkeleton } from "@/components/skeletons";
 import { getCurrentSession } from "@/server/actions/auth-actions";
 
 async function LandingPageGuard({

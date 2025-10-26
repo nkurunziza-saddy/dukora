@@ -16,6 +16,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import StatCard from "@/components/shared/stat-card";
+import { AnalyticsSkeleton } from "@/components/skeletons";
 import { TimeRange } from "@/components/time-range";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -27,7 +28,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -50,44 +50,6 @@ export async function generateMetadata(): Promise<Metadata> {
   return constructI18nMetadata({
     pageKey: "analytics",
   });
-}
-
-function AnalyticsSkeleton() {
-  return (
-    <div className="space-y-8 p-4">
-      <div className="flex items-center justify-between">
-        <div className="">
-          <Skeleton className="h-8 w-48" />
-          <Skeleton className="h-4 w-32 mt-2" />
-        </div>
-        <Skeleton className="h-10 w-40" />
-      </div>
-      <Separator />
-      <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <Skeleton className="h-6 w-48" />
-          <Skeleton className="h-6 w-20" />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {Array.from({ length: 4 }, (_, i) => (
-            <Skeleton key={`revenue-skeleton-${i + 1}`} className="h-32" />
-          ))}
-        </div>
-      </div>
-      <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <Skeleton className="h-6 w-48" />
-          <Skeleton className="h-6 w-20" />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {Array.from({ length: 3 }, (_, i) => (
-            <Skeleton key={`operating-skeleton-${i + 1}`} className="h-32" />
-          ))}
-        </div>
-      </div>
-      <Skeleton className="h-96" />
-    </div>
-  );
 }
 
 async function AnalyticsEmptyState({
@@ -363,7 +325,7 @@ const Analytics = async ({
     return null;
   }
   return (
-    <main className="space-y-8 p-4" aria-label="Analytics Dashboard">
+    <main aria-label="Analytics Dashboard" className="space-y-8 p-4">
       <header className="flex items-center justify-between">
         <div className="">
           <h1 className="font-medium tracking-tight">{t("title")}</h1>
@@ -376,12 +338,12 @@ const Analytics = async ({
 
       <Separator />
 
-      <section className="space-y-6" aria-labelledby="revenue-section">
+      <section aria-labelledby="revenue-section" className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-          <CardTitle id="revenue-section" className="text-xl font-semibold">
+          <CardTitle className="text-xl font-semibold" id="revenue-section">
             {t("revenueProfitability")}
           </CardTitle>
-          <Badge variant="secondary" className="w-fit">
+          <Badge className="w-fit" variant="secondary">
             {t("keyMetrics")}
           </Badge>
         </div>
@@ -389,23 +351,23 @@ const Analytics = async ({
           {revenueMetrics.map((metric) => {
             return (
               <StatCard
+                icon={metric.icon}
                 key={metric.title}
+                subText={metric.description}
                 title={metric.title}
                 value={metric.value}
-                icon={metric.icon}
-                subText={metric.description}
               />
             );
           })}
         </div>
       </section>
 
-      <section className="space-y-6" aria-labelledby="operating-section">
+      <section aria-labelledby="operating-section" className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-          <CardTitle id="operating-section" className="text-xl font-semibold">
+          <CardTitle className="text-xl font-semibold" id="operating-section">
             {t("operatingPerformance")}
           </CardTitle>
-          <Badge variant="outline" className="w-fit">
+          <Badge className="w-fit" variant="outline">
             {t("cashFlow")}
           </Badge>
         </div>
@@ -413,11 +375,11 @@ const Analytics = async ({
           {operatingMetrics.map((metric) => {
             return (
               <StatCard
+                icon={metric.icon}
                 key={metric.title}
+                subText={metric.description}
                 title={metric.title}
                 value={metric.value}
-                icon={metric.icon}
-                subText={metric.description}
               />
             );
           })}
@@ -481,7 +443,7 @@ const Analytics = async ({
           <CardTitle className="text-xl font-semibold">
             {t("detailedMetrics")}
           </CardTitle>
-          <Badge variant="secondary" className="w-fit">
+          <Badge className="w-fit" variant="secondary">
             {t("completeOverview")}
           </Badge>
         </div>
@@ -513,10 +475,10 @@ const Analytics = async ({
                     const IconComponent = metric.icon || InfoIcon;
                     return (
                       <TableRow
-                        key={metric.label}
                         className={`hover:bg-muted/50 transition-colors ${
                           index % 2 === 0 ? "bg-background" : "bg-muted/20"
                         }`}
+                        key={metric.label}
                       >
                         <TableCell className="font-medium px-6 py-4">
                           <div className="flex items-center gap-3">
@@ -528,6 +490,7 @@ const Analytics = async ({
                         </TableCell>
                         <TableCell className="px-6 py-4">
                           <Badge
+                            className="font-medium"
                             variant={
                               metric.category === t("salesCategory")
                                 ? "green"
@@ -542,7 +505,6 @@ const Analytics = async ({
                                         ? "orange"
                                         : "default"
                             }
-                            className="font-medium"
                           >
                             {metric.category}
                           </Badge>
@@ -564,7 +526,7 @@ const Analytics = async ({
 };
 
 export default async function AnalyticsPage(
-  props: PageProps<"/[locale]/analytics">,
+  props: PageProps<"/[locale]/analytics">
 ) {
   const searchParams = await props.searchParams;
   return (

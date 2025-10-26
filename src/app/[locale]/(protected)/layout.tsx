@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import type React from "react";
 import { Suspense } from "react";
-import { GuardSkeleton } from "@/components/guard-skeleton";
 import SidebarContainer from "@/components/providers/sidebar-container";
+import { GuardSkeleton } from "@/components/skeletons";
 import { getCurrentSession } from "@/server/actions/auth-actions";
 
 async function SessionGuard({ children }: { children: React.ReactNode }) {

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
+import { AcceptInvitationSkeleton } from "@/components/skeletons";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,7 +12,6 @@ import {
   CardPanel,
   CardTitle,
 } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -45,28 +45,6 @@ async function AcceptInvitationContent({ code }: { code: string }) {
               {t("declineInvitationButton")}
             </Button>
           </Link>
-        </div>
-      </CardPanel>
-    </Card>
-  );
-}
-
-function AcceptInvitationSkeleton() {
-  return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>
-          <Skeleton className="h-7 w-48" />
-        </CardTitle>
-        <CardDescription>
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-3/4 mt-1" />
-        </CardDescription>
-      </CardHeader>
-      <CardPanel>
-        <div className="flex gap-4">
-          <Skeleton className="h-10 flex-1" />
-          <Skeleton className="h-10 flex-1" />
         </div>
       </CardPanel>
     </Card>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import ColumnWrapper from "@/components/providers/column-wrapper";
-import { TableSkeleton } from "@/components/table-skeleton";
+import { TableSkeleton } from "@/components/skeletons";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { getSuppliersPaginated } from "@/server/actions/supplier-actions";
 import { SupplierColumn } from "@/utils/columns/supplier-column";
@@ -33,16 +33,16 @@ async function SuppliersTable({
     <ColumnWrapper
       column={SupplierColumn}
       data={suppliers.data.suppliers}
-      totalCount={suppliers.data.totalCount}
       page={page}
       pageSize={pageSize}
       tag="suppliers"
+      totalCount={suppliers.data.totalCount}
     />
   );
 }
 
 export default async function SuppliersPage(
-  props: PageProps<"/[locale]/suppliers">,
+  props: PageProps<"/[locale]/suppliers">
 ) {
   const query = await props.searchParams;
   const page = Number(query.page) || 1;

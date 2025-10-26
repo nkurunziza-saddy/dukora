@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useEffect } from "react";
-import { GuardSkeleton } from "../guard-skeleton";
+import { GuardSkeleton } from "../skeletons";
 
 export default function ClientBody({
   children,

@@ -14,6 +14,7 @@ import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import UserProfileForm from "@/components/forms/user-profile-form";
 import { UserSettingsForm } from "@/components/forms/user-settings-form";
+import { SettingsSkeleton } from "@/components/skeletons";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -43,23 +44,12 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-type TStripeFn = ReturnType<typeof getTranslations> extends Promise<infer R>
-  ? R
-  : never;
+type TStripeFn =
+  ReturnType<typeof getTranslations> extends Promise<infer R> ? R : never;
 
 export default function SettingsPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex items-center justify-center min-h-[400px]">
-          <Card>
-            <CardPanel>
-              <p className="text-sm text-muted-foreground">Loading settings…</p>
-            </CardPanel>
-          </Card>
-        </div>
-      }
-    >
+    <Suspense fallback={<SettingsSkeleton />}>
       <SessionGuard />
     </Suspense>
   );

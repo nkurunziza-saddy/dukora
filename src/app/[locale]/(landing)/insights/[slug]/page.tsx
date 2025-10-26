@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
-import { GuardSkeleton } from "@/components/guard-skeleton";
+import { GuardSkeleton } from "@/components/skeletons";
 
 const posts = {
   "ai-inventory-predictions": {
@@ -342,7 +342,7 @@ async function InsightContent({
 }
 
 export default async function InsightPage(
-  props: PageProps<"/[locale]/insights/[slug]">,
+  props: PageProps<"/[locale]/insights/[slug]">
 ) {
   const params = await props.params;
   return (

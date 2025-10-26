@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import ColumnWrapper from "@/components/providers/column-wrapper";
-import { TableSkeleton } from "@/components/table-skeleton";
+import { TableSkeleton } from "@/components/skeletons";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { getProductsPaginated } from "@/server/actions/product-actions";
 import { ProductColumn } from "@/utils/columns/product-column";
@@ -42,7 +42,7 @@ async function ProductsTable({
 }
 
 export default async function ProductsPage(
-  props: PageProps<"/[locale]/products">,
+  props: PageProps<"/[locale]/products">
 ) {
   const query = await props.searchParams;
   const page = Number(query.page) || 1;

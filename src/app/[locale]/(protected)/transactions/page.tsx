@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import ColumnWrapper from "@/components/providers/column-wrapper";
-import { TableSkeleton } from "@/components/table-skeleton";
+import { TableSkeleton } from "@/components/skeletons";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { getTransactionsPaginated } from "@/server/actions/transaction-actions";
 import { TransactionColumn } from "@/utils/columns/transaction-column";
@@ -33,16 +33,16 @@ async function TransactionsTable({
     <ColumnWrapper
       column={TransactionColumn}
       data={transactions.data.transactions}
-      totalCount={transactions.data.totalCount}
       page={page}
       pageSize={pageSize}
       tag="transactions"
+      totalCount={transactions.data.totalCount}
     />
   );
 }
 
 export default async function TransactionsPage(
-  props: PageProps<"/[locale]/transactions">,
+  props: PageProps<"/[locale]/transactions">
 ) {
   const query = await props.searchParams;
   const page = Number(query.page) || 1;

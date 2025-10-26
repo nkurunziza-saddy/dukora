@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
-import { GuardSkeleton } from "@/components/guard-skeleton";
+import { GuardSkeleton } from "@/components/skeletons";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -31,25 +31,25 @@ function NotFoundGuard({
           <div className="flex gap-2 items-center">
             {session ? (
               <Button
-                variant={"secondary"}
-                size="sm"
                 render={<Link href={"/dashboard"} />}
+                size="sm"
+                variant={"secondary"}
               >
                 {t("goToDashboard")}
               </Button>
             ) : (
               <>
                 <Button
-                  variant={"secondary"}
-                  size="sm"
                   render={<Link href={"/"} />}
+                  size="sm"
+                  variant={"secondary"}
                 >
                   {t("goToLandingPage")}
                 </Button>
                 <Button
-                  variant={"outline"}
-                  size="sm"
                   render={<Link href={"/auth/sign-up"} />}
+                  size="sm"
+                  variant={"outline"}
                 >
                   {t("signUp")}
                 </Button>
@@ -60,7 +60,7 @@ function NotFoundGuard({
             {t("needHelp")}{" "}
             <a
               href={`mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}?subject=${encodeURIComponent(
-                t("requestForSupport"),
+                t("requestForSupport")
               )}`}
               title="Email Dukora Support"
             >
