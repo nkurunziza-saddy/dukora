@@ -366,6 +366,7 @@
     "users": "Users & Permissions",
     "transactions": "Business Transactions",
     "Dashboard": "Dashboard",
+    "Main": "Main",
     "Operations": "Operations",
     "Management": "Management",
     "Tools": "Tools",
@@ -556,7 +557,16 @@
     "expenseRatio": "Expense Ratio",
     "expenseRatioDesc": "Percentage of revenue spent on operating expenses.",
     "uniqueProductsSold": "Unique Products Sold",
-    "returnRate": "Return Rate"
+    "returnRate": "Return Rate",
+    "errorTitle": "Analytics Error",
+    "retry": "Retry",
+    "noDataTitle": "No Analytics Data Available",
+    "noDataDescription": "Analytics data is not available for the selected time period.",
+    "businessCreatedOn": "Business created on",
+    "noDataHelp": "To see analytics data, you need to:",
+    "noDataHelp1": "Record some transactions",
+    "noDataHelp2": "Add inventory items to your warehouses",
+    "noDataHelp3": "Wait for the next month to see historical data"
   },
   "payments": {
     "title": "Payments & Invoices",
@@ -776,7 +786,8 @@
     "selectTimeRange": "Select time range",
     "lastMonth": "Last month",
     "last2Months": "Last 2 months",
-    "last3Months": "Last 3 months"
+    "last3Months": "Last 3 months",
+    "noDataAvailable": "No data available"
   },
   "auth": {
     "orContinueWith": "or continue with",

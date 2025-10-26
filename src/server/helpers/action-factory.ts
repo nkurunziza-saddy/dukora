@@ -1,4 +1,4 @@
-import type { SessionUSer } from "@/lib/auth";
+import type { SessionUser } from "@/lib/auth";
 import { getCurrentSession } from "@/server/actions/auth-actions";
 import { ErrorCode } from "@/server/constants/errors";
 import type { Permission } from "@/server/constants/permissions";
@@ -12,9 +12,9 @@ type ServiceResponse<T> = {
 export function createProtectedAction<TInput, TOutput>(
   permission: Permission,
   handler: (
-    user: SessionUSer,
-    input: TInput,
-  ) => Promise<ServiceResponse<TOutput>>,
+    user: SessionUser,
+    input: TInput
+  ) => Promise<ServiceResponse<TOutput>>
 ) {
   return async (input: TInput): Promise<ServiceResponse<TOutput>> => {
     const session = await getCurrentSession();
@@ -37,7 +37,7 @@ export function createProtectedAction<TInput, TOutput>(
   };
 }
 export function createPublicAction<TInput, TOutput>(
-  handler: (input: TInput) => Promise<ServiceResponse<TOutput>>,
+  handler: (input: TInput) => Promise<ServiceResponse<TOutput>>
 ) {
   return async (input: TInput): Promise<ServiceResponse<TOutput>> => {
     try {

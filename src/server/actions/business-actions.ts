@@ -15,7 +15,7 @@ export const getBusinesses = createProtectedAction(
       return { data: null, error: businesses.error };
     }
     return { data: businesses.data, error: null };
-  },
+  }
 );
 
 export const getBusinessById = createProtectedAction(
@@ -29,11 +29,25 @@ export const getBusinessById = createProtectedAction(
       return { data: null, error: business.error };
     }
     return { data: business.data, error: null };
-  },
+  }
+);
+
+export const getBusinessByIdMinimized = createProtectedAction(
+  Permission.BUSINESS_VIEW,
+  async (_user, businessId: string) => {
+    if (!businessId?.trim()) {
+      return { data: null, error: ErrorCode.MISSING_INPUT };
+    }
+    const business = await businessRepo.get_by_id_minimized(businessId);
+    if (business.error) {
+      return { data: null, error: business.error };
+    }
+    return { data: business.data, error: null };
+  }
 );
 
 export const createBusiness = async (
-  businessData: Omit<InsertBusiness, "id">,
+  businessData: Omit<InsertBusiness, "id">
 ) => {
   const session = await getCurrentSession();
   if (!session) {
@@ -44,7 +58,7 @@ export const createBusiness = async (
   }
   const res = await businessRepo.create(
     session.user.id,
-    businessData as InsertBusiness,
+    businessData as InsertBusiness
   );
   if (res.error) {
     return { data: null, error: res.error };
@@ -64,7 +78,7 @@ export const updateBusiness = createProtectedAction(
     }: {
       businessId: string;
       updates: Partial<Omit<InsertBusiness, "id">>;
-    },
+    }
   ) => {
     if (!businessId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -72,7 +86,7 @@ export const updateBusiness = createProtectedAction(
     const updatedBusiness = await businessRepo.update(
       businessId,
       user.id,
-      updates,
+      updates
     );
     if (updatedBusiness.error) {
       return { data: null, error: updatedBusiness.error };
@@ -80,7 +94,7 @@ export const updateBusiness = createProtectedAction(
     revalidateTag(`business-${user.businessId}`, "max");
     revalidateTag(`business-${businessId}`, "max");
     return { data: updatedBusiness.data, error: null };
-  },
+  }
 );
 
 export const deleteBusiness = createProtectedAction(
@@ -96,7 +110,7 @@ export const deleteBusiness = createProtectedAction(
     revalidateTag(`businesses-${user.businessId}`, "max");
     revalidateTag(`business-${businessId}`, "max");
     return { data: { success: true }, error: null };
-  },
+  }
 );
 
 export const createManyBusinesses = createProtectedAction(
@@ -113,5 +127,5 @@ export const createManyBusinesses = createProtectedAction(
     revalidateTag(`businesses-${user.businessId}`, "max");
     revalidateTag("businesses", "max");
     return { data: createdBusinesses.data, error: null };
-  },
+  }
 );

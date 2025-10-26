@@ -1,4 +1,5 @@
 import { format, isValid, parse, set, startOfMonth, subMonths } from "date-fns";
+import { getBusinessByIdMinimized } from "../actions/business-actions";
 
 export function parseMonth(monthNum: number): Date {
   const year = new Date().getFullYear();
@@ -36,14 +37,19 @@ export function getCurrentMonthBoundary(): Date {
   return subMonths(currentMonth, 1);
 }
 
-export function getAvailableMonthsForAnalytics(businessCreatedAt: Date): Array<{
-  value: number;
-  label: string;
-  date: Date;
-}> {
+export async function getAvailableMonthsForAnalytics(
+  businessId: string | null | undefined
+): Promise<
+  {
+    value: number;
+    label: string;
+    date: Date;
+  }[]
+> {
   const months = [];
+  const currentBusiness = await getBusinessByIdMinimized(businessId!);
   const currentBoundary = getCurrentMonthBoundary();
-  const businessStart = startOfMonth(businessCreatedAt);
+  const businessStart = startOfMonth(currentBusiness.data?.createdAt!);
 
   let monthsBack = 1;
   let targetDate = currentBoundary;

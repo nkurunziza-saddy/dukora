@@ -43,3 +43,28 @@ export async function get_by_id(businessId: string) {
     return { data: null, error: ErrorCode.FAILED_REQUEST };
   }
 }
+
+export async function get_by_id_minimized(businessId: string) {
+  if (!businessId) {
+    return { data: null, error: ErrorCode.MISSING_INPUT };
+  }
+
+  try {
+    const business = await db.query.businessesTable.findFirst({
+      where: eq(businessesTable.id, businessId),
+      columns: {
+        name: true,
+        createdAt: true,
+      },
+    });
+
+    if (!business) {
+      return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
+    }
+
+    return { data: business, error: null };
+  } catch (error) {
+    console.error("Failed to fetch business:", error);
+    return { data: null, error: ErrorCode.FAILED_REQUEST };
+  }
+}
