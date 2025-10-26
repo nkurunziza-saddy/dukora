@@ -37,7 +37,7 @@ export default function AIChat() {
     (id: string) => {
       setMessages((prev) => prev.filter((message) => message.id !== id));
     },
-    [setMessages]
+    [setMessages],
   );
 
   const handleCopyMessage = useCallback(
@@ -46,7 +46,7 @@ export default function AIChat() {
       setCopiedMessageId(messageId);
       setTimeout(() => setCopiedMessageId(null), 2000);
     },
-    []
+    [],
   );
 
   const handleSuggestionClick = useCallback((suggestion: string) => {
@@ -61,7 +61,7 @@ export default function AIChat() {
       sendMessage({ text: input });
       setInput("");
     },
-    [input, isLoading, sendMessage]
+    [input, isLoading, sendMessage],
   );
 
   const handleClear = useCallback(() => {

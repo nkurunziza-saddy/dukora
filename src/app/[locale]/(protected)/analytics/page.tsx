@@ -563,7 +563,7 @@ const Analytics = async ({
 };
 
 export default async function AnalyticsPage(
-  props: PageProps<"/[locale]/analytics">
+  props: PageProps<"/[locale]/analytics">,
 ) {
   const searchParams = await props.searchParams;
   return (

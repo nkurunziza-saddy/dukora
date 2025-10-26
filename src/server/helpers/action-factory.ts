@@ -13,8 +13,8 @@ export function createProtectedAction<TInput, TOutput>(
   permission: Permission,
   handler: (
     user: SessionUser,
-    input: TInput
-  ) => Promise<ServiceResponse<TOutput>>
+    input: TInput,
+  ) => Promise<ServiceResponse<TOutput>>,
 ) {
   return async (input: TInput): Promise<ServiceResponse<TOutput>> => {
     const session = await getCurrentSession();
@@ -37,7 +37,7 @@ export function createProtectedAction<TInput, TOutput>(
   };
 }
 export function createPublicAction<TInput, TOutput>(
-  handler: (input: TInput) => Promise<ServiceResponse<TOutput>>
+  handler: (input: TInput) => Promise<ServiceResponse<TOutput>>,
 ) {
   return async (input: TInput): Promise<ServiceResponse<TOutput>> => {
     try {

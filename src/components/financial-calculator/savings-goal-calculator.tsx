@@ -67,7 +67,9 @@ export function SavingsGoalCalculator() {
             id="annualContribution"
             type="number"
             value={annualContribution}
-            onChange={(e) => setAnnualContribution(parseFloat(e.target.value) || 0)}
+            onChange={(e) =>
+              setAnnualContribution(parseFloat(e.target.value) || 0)
+            }
             onBlur={calculateYearsToGoal}
           />
         </div>

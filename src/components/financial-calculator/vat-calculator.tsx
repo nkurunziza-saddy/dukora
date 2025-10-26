@@ -52,7 +52,9 @@ export function VATCalculator() {
             id="purchasesAmount"
             type="number"
             value={purchasesAmount}
-            onChange={(e) => setPurchasesAmount(parseFloat(e.target.value) || 0)}
+            onChange={(e) =>
+              setPurchasesAmount(parseFloat(e.target.value) || 0)
+            }
             onBlur={calculateVAT}
           />
         </div>

@@ -55,7 +55,7 @@ function NotFoundGuard({ session }: { session: SessionSession | null }) {
             Need help?{" "}
             <a
               href={`mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}?subject=${encodeURIComponent(
-                "Request for support in Dukora app"
+                "Request for support in Dukora app",
               )}`}
               title="Email Dukora Support"
             >

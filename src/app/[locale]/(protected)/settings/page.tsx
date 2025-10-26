@@ -42,8 +42,9 @@ export const metadata: Metadata = constructMetadata({
   title: "Settings",
 });
 
-type TStripeFn =
-  ReturnType<typeof getTranslations> extends Promise<infer R> ? R : never;
+type TStripeFn = ReturnType<typeof getTranslations> extends Promise<infer R>
+  ? R
+  : never;
 
 export default function SettingsPage() {
   return (
