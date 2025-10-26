@@ -9,50 +9,22 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { routing } from "@/i18n/routing";
 import { fontMono, fontSans } from "@/lib/config/fonts";
-import {
-  MY_HANDLE,
-  SITE_DESCRIPTION,
-  SITE_HOME_URL,
-  SITE_KEYWORDS,
-  SITE_NAME,
-} from "@/lib/config/site";
+import { getI18nSiteMetadata } from "@/lib/config/i18n-metadata";
+import { MY_HANDLE, SITE_KEYWORDS } from "@/lib/config/site";
 import { QueryProvider } from "@/lib/providers/query-provider";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_HOME_URL),
-  title: {
-    template: `%s | ${SITE_NAME}`,
-    default: SITE_NAME,
-  },
-  description: SITE_DESCRIPTION,
-  keywords: SITE_KEYWORDS,
-  openGraph: {
-    title: {
-      template: `%s | ${SITE_NAME}`,
-      default: SITE_NAME,
+export async function generateMetadata(): Promise<Metadata> {
+  const metadata = await getI18nSiteMetadata();
+
+  return {
+    ...metadata,
+    keywords: SITE_KEYWORDS,
+    twitter: {
+      ...metadata.twitter,
+      creator: `@${MY_HANDLE}`,
     },
-    description: SITE_DESCRIPTION,
-    siteName: SITE_NAME,
-    type: "website",
-    url: "/",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: {
-      template: `%s | ${SITE_NAME}`,
-      default: SITE_NAME,
-    },
-    description: SITE_DESCRIPTION,
-    creator: `@${MY_HANDLE}`,
-  },
-  alternates: {
-    canonical: "/",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+  };
+}
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -65,15 +37,15 @@ export default async function RootLayout(props: LayoutProps<"/[locale]">) {
   }
   setRequestLocale(locale);
   return (
-    <html lang={locale} suppressHydrationWarning data-scroll-behavior="smooth">
+    <html data-scroll-behavior="smooth" lang={locale} suppressHydrationWarning>
       <body className={` ${fontSans.variable} ${fontMono.variable}`}>
         <NextIntlClientProvider>
           <QueryProvider>
             <ThemeProvider
               attribute="class"
               defaultTheme="system"
-              enableSystem
               disableTransitionOnChange
+              enableSystem
             >
               <ClientBody>
                 {props.children}

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import OnTopBlurOverlay from "@/components/on-top-blur";
-import { constructMetadata } from "@/lib/config/metadata";
+import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 
-export const metadata: Metadata = constructMetadata({
-  title: "Commerce",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return constructI18nMetadata({
+    pageKey: "commerce",
+  });
+}
 
 const commerce = () => {
   return (

@@ -12,11 +12,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { constructMetadata } from "@/lib/config/metadata";
+import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 
-export const metadata: Metadata = constructMetadata({
-  title: "Accept Invitation",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return constructI18nMetadata({
+    pageKey: "acceptInvitation",
+  });
+}
 
 async function AcceptInvitationContent({ code }: { code: string }) {
   const t = await getTranslations("auth.invitation");
@@ -30,14 +32,14 @@ async function AcceptInvitationContent({ code }: { code: string }) {
       <CardPanel>
         <div className="flex gap-4">
           <Link
-            href={`/auth/accept-invitation?code=${code}`}
             className="flex-1"
+            href={`/auth/accept-invitation?code=${code}`}
           >
             <Button className="w-full">{t("acceptInvitationButton")}</Button>
           </Link>
           <Link
-            href={`/auth/accept-invitation?code=${code}`}
             className="flex-1"
+            href={`/auth/accept-invitation?code=${code}`}
           >
             <Button className="w-full bg-transparent" variant="outline">
               {t("declineInvitationButton")}

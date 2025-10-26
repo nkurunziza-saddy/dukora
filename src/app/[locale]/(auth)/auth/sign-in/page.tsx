@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import SignIn from "@/components/auth/sign-in";
-import { constructMetadata } from "@/lib/config/metadata";
+import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 
-export const metadata: Metadata = constructMetadata({
-  title: "Sign In",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return constructI18nMetadata({
+    pageKey: "signIn",
+  });
+}
 
 const page = () => {
   return <SignIn />;

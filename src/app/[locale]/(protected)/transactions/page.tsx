@@ -2,13 +2,15 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import ColumnWrapper from "@/components/providers/column-wrapper";
 import { TableSkeleton } from "@/components/table-skeleton";
-import { constructMetadata } from "@/lib/config/metadata";
+import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { getTransactionsPaginated } from "@/server/actions/transaction-actions";
 import { TransactionColumn } from "@/utils/columns/transaction-column";
 
-export const metadata: Metadata = constructMetadata({
-  title: "Transactions",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return constructI18nMetadata({
+    pageKey: "transactions",
+  });
+}
 
 async function TransactionsTable({
   page,

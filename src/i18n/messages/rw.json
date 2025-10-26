@@ -146,7 +146,92 @@
     "userSettingsUpdateFailed": "Byanze kuvugurura igenamiterere ry'umukoresha",
     "userSettingsUpdated": "Igenamiterere ry'umukoresha ryavuguruwe",
     "userUpdated": "Umwirondoro w'umukoresha wavuguruwe neza",
-    "weightMustBeNumber": "Ibiro bigomba kuba umubare"
+    "weightMustBeNumber": "Ibiro bigomba kuba umubare",
+    "accountStatus": "Account status",
+    "pricesIncludeTax": "Prices Include Tax",
+    "selectMonth": "Select month",
+    "vatRatePlaceholder": "20%, 13%, ...",
+    "currencyGBP": "British Pound (GBP)",
+    "selectedCategories": "Selected categories",
+    "currencyRWF": "Rwandan Franc (RWF)",
+    "businessTypeWholesale": "Wholesale",
+    "saveCategories": "Save Categories",
+    "taxSettings": "Tax settings",
+    "categoryHealth": "Health & Beauty",
+    "invoicePrefix": "Invoice Prefix",
+    "monthOctober": "October",
+    "warehousePlaceholder": "Enter warehouse name",
+    "businessTypeRestaurant": "Restaurant",
+    "registrationNumberDescription": "Your legal permanent business registration number",
+    "businessTypeDescription": "Select your business type",
+    "active": "Active",
+    "accountStatusDescription": "Account status description",
+    "default": "Default",
+    "monthApril": "April",
+    "setDefault": "Set default",
+    "categoryFood": "Food & Beverages",
+    "saveWarehouses": "Save warehouses",
+    "businessTypeOther": "Other",
+    "monthAugust": "August",
+    "enterBusinessDescription": "Enter business description",
+    "currencyEUR": "Euro (EUR)",
+    "warehouseLocation": "Warehouse Location",
+    "chooseCategories": "Choose categories",
+    "timezoneAutoFill": "Timezone Auto Fill",
+    "warehousesAndBranches": "Warehouses and branches",
+    "monthJune": "June",
+    "pricesIncludeTaxDescription": "Prices Include Tax Description",
+    "categoryClothing": "Clothing",
+    "monthDecember": "December",
+    "selectCountry": "Select currency",
+    "monthJuly": "July",
+    "invoiceSettings": "Invoice Settings",
+    "defaultVatRateDescription": "Default Vat Rate Description",
+    "categoryOffice": "Office Supplies",
+    "systemInformation": "System Information",
+    "businessInformation": "Business Information",
+    "categoryBooks": "Books & Media",
+    "businessTypeService": "Service",
+    "countryGB": "United Kingdom",
+    "monthFebruary": "February",
+    "businessSettingsDescription": "Your custom business settings",
+    "invoicePrefixPlaceholder": "Enter prefix for your invoices",
+    "loadingSuppliers": "Loading suppliers",
+    "other": "Other",
+    "enterCategoryName": "Enter category name",
+    "invoiceNumberStart": "Invoice Number Start",
+    "regionalSettings": "Regional settings",
+    "currencyUSD": "US Dollar (USD)",
+    "noWarehousesFoundForProd": "No warehouses found containing this product",
+    "businessSettings": "Business Settings",
+    "monthMarch": "March",
+    "countryRW": "Rwanda",
+    "invoiceNumberStartDescription": "Invoice number start",
+    "businessTypeRetail": "Retail",
+    "saveDetails": "Save details",
+    "addCustomCategories": "Add custom categories",
+    "countryDE": "Germany",
+    "domainDescription": "Must be a url",
+    "monthJanuary": "January",
+    "enterUserEmail": "Enter user email",
+    "categorySports": "Sports & Recreation",
+    "addLocation": "Add location",
+    "selectCurrency": "Select country",
+    "businessDescription": "Business Description",
+    "selectBusinessType": "Select Business Type",
+    "country": "Country",
+    "categories": "Categories",
+    "monthMay": "May",
+    "defaultVatRate": "Default VAR Rate",
+    "monthNovember": "November",
+    "basicInformation": "Basic Information",
+    "countryUS": "United States",
+    "monthSeptember": "September",
+    "categoryHome": "Home & Garden",
+    "warehouseDescription": "Add details of warehouse/branch location",
+    "saveSettings": "Save settings",
+    "businessTypeManufacturing": "Manufacturing",
+    "categoryElectronics": "Electronics"
   },
   "payments": {
     "title": "Kwishyura & Faktiri",
@@ -209,7 +294,8 @@
     "selectReceiverBusiness": "Hitamo ikigo cyakiriye",
     "stripeChargeId": "ID ya Stripe Charge",
     "stripePaymentIntentId": "ID ya Stripe Payment Intent",
-    "transactionId": "ID y'igikorwa"
+    "transactionId": "ID y'igikorwa",
+    "payerBusiness": "Payer business"
   },
   "table": {
     "wait": "Tegereza...",
@@ -241,7 +327,8 @@
     "deleteInvitation": "Siba ubutumire",
     "deleteInvitationDesc": "Urabyizeye ko ushaka gusiba ubu butumire? Ibi ntibishobora kugarurwa.",
     "invitationDeleteError": "Error deleting invitation",
-    "invitationDeleteSuccess": "Invitation deleted successfully."
+    "invitationDeleteSuccess": "Invitation deleted successfully.",
+    "export": "Export"
   },
   "analytics": {
     "title": "Isesengura & Ubumenyi bwa AI",
@@ -283,7 +370,39 @@
     "inventoryCategory": "Ububiko",
     "expensesCategory": "Amafaranga yakoreshejwe",
     "marginsCategory": "Inyungu",
-    "ratiosCategory": "Ibipimo"
+    "ratiosCategory": "Ibipimo",
+    "assetTurnover": "Asset Turnover",
+    "netRevenueDesc": "Revenue after accounting for sales returns.",
+    "expenseRatio": "Expense Ratio",
+    "noDataHelp": "To see analytics data, you need to:",
+    "validTransactions": "Valid Transactions",
+    "errorTitle": "Analytics Error",
+    "noDataDescription": "Analytics data is not available for the selected time period.",
+    "businessCreatedOn": "Business created on",
+    "grossProfitDesc": "Profitability from sales after cost of goods sold.",
+    "no": "No",
+    "editLayout": "Edit Layout",
+    "totalTransactions": "Total Transactions",
+    "noDataTitle": "No Analytics Data Available",
+    "inventoryGrowth": "Inventory Growth",
+    "efficiencyCategory": "Efficiency",
+    "noDataHelp2": "Add inventory items to your warehouses",
+    "expenseRatioDesc": "Percentage of revenue spent on operating expenses.",
+    "saveLayout": "Save Layout",
+    "operatingIncomeDesc": "Profitability from core business operations.",
+    "noDataHelp1": "Record some transactions",
+    "yes": "Yes",
+    "netIncomeDesc": "Overall profitability after all expenses.",
+    "hasExpenseData": "Has Expense Data",
+    "uniqueProductsSold": "Unique Products Sold",
+    "noDataHelp3": "Wait for the next month to see historical data",
+    "operatingExpensesDesc": "Costs incurred from normal business operations.",
+    "dataQuality": "Data Quality",
+    "retry": "Retry",
+    "totalRevenueDesc": "Total revenue from sales before deducting returns.",
+    "addWidget": "Add Widget",
+    "hasInventoryData": "Has Inventory Data",
+    "returnRate": "Return Rate"
   },
   "commerce": {
     "title": "Kuhuza ubucuruzi",
@@ -363,7 +482,11 @@
     "type": "Type",
     "unit": "Unit",
     "warehouse": "Warehouse",
-    "weight": "Weight"
+    "weight": "Weight",
+    "supplierProductCode": "Supplier Product Code",
+    "leadTimeDays": "Lead time days",
+    "supplierPrice": "Supplier price",
+    "isPreferred": "Is preferred"
   },
   "sales": {
     "saleFromYesterday": "Ibyagurishijwe ejo",
@@ -461,7 +584,17 @@
     "unitPieces": "Ibice",
     "unitPounds": "Pounds",
     "wait": "Tegereza",
-    "weight": "Ibiro"
+    "weight": "Ibiro",
+    "code": "Code",
+    "lastUpdated": "Last updated",
+    "isActive": "Is active",
+    "type": "Type",
+    "active": "Active",
+    "default": "Default",
+    "items": "Items",
+    "isDefault": "Is default",
+    "reservedQty": "Reserved quantity",
+    "products": "Products"
   },
   "schedule": {
     "today": "Uyu munsi",
@@ -542,7 +675,8 @@
     "transactionAddFailed": "Byanze kongeramo igikorwa",
     "type": "Ubwoko",
     "update": "Vugurura",
-    "updating": "Birimo kuvugurura"
+    "updating": "Birimo kuvugurura",
+    "healthyInventory": "Healthy inventory"
   },
   "aiChat": {
     "aiAssistantChat": "AI Assistant Chat",
@@ -640,12 +774,13 @@
     "recordPurchaseTransactionDesc": "Uzuza amakuru arambuye y'igikorwa ushaka kwandika.",
     "productCategories": "Ibyiciro by'ibicuruzwa",
     "supplierManagement": "Imicungire y'abatanga ibicuruzwa",
-    "systemSettings": "Igenamiterere rya sisitemu",
     "recordAnyTransaction": "Andika igikorwa icyo ari cyo cyose",
     "recordExpenseTransaction": "Andika igikorwa cy'igura",
     "recordExpenseTransactionDesc": "Andika igikorwa cy'igura.",
     "recordTransaction": "Andika igikorwa",
-    "recordTransactionDescription": "Andika ubwoko bw'igikorwa icyo ari cyo cyose."
+    "recordTransactionDescription": "Andika ubwoko bw'igikorwa icyo ari cyo cyose.",
+    "settings": "Settings",
+    "productManagement": "Product Management"
   },
   "notifications": {
     "stockLevelUpdated": "Urwego rw'ububiko rwavuguruwe kuri {product}",
@@ -667,12 +802,12 @@
     "transactions": "Imigenderanire y'ubucuruzi",
     "scheduler": "Igenamiterere",
     "commerce": "Kuhuza ubucuruzi",
-    "Dashboard": "Dashboard",
-    "Management": "Management",
-    "Operations": "Operations",
-    "Tools": "Tools",
     "aiChat": "AI Chat",
-    "financialCalculator": "Financial Calculator"
+    "financialCalculator": "Financial Calculator",
+    "operations": "Operations",
+    "tools": "Tools",
+    "management": "Management",
+    "main": "Main"
   },
   "supplier": {
     "copyId": "Koporora ID y'umuguzi",
@@ -692,7 +827,91 @@
     "price": "Price",
     "productCode": "Product Code",
     "products": "Products",
-    "summary": "Summary"
+    "summary": "Summary",
+    "date": "Date"
+  },
+  "metadata": {
+    "siteName": "Dukora",
+    "siteDescription": "Dukora ni urubuga rwuzuye rwo gukurikirana ibicuruzwa mu bubiko byinshi, gucunga ibicuruzwa mu gihe cy'ukuri, no gupata ubwoba bwa AI—byose mu dashibodi imwe.",
+    "siteShortDescription": "Urubuga rwuzuye rwo gucunga ibicuruzwa n'ibicuruzwa hamwe n'ubwoba bwa AI.",
+    "pages": {
+      "dashboard": {
+        "title": "Dashibodi",
+        "description": "Reba ibisubizo byawe by'ibicuruzwa n'ibicuruzwa mu gihe cy'ukuri"
+      },
+      "inventory": {
+        "title": "Incamake y'Ibicuruzwa",
+        "description": "Incamake y'igihe cy'ukuri cy'urwego rw'ibicuruzwa na gucunga ibicuruzwa"
+      },
+      "products": {
+        "title": "Katalogi y'Ibicuruzwa",
+        "description": "Cunga ibicuruzwa byawe na makuru y'ikatalogi"
+      },
+      "suppliers": {
+        "title": "Gucunga Abatanga",
+        "description": "Cunga ubwiyunge bwawe n'abatanga na tegeko ry'ugura"
+      },
+      "transactions": {
+        "title": "Imikorere y'Ubucuruzi",
+        "description": "Kurikirana imikorere yose y'ubucuruzi na gahunda y'imari"
+      },
+      "sales": {
+        "title": "Kurikirana Ibicuruzwa",
+        "description": "Kurikirana ibikorwa byawe by'ibicuruzwa na gahunda y'amafaranga"
+      },
+      "analytics": {
+        "title": "Gusuzuma na AI",
+        "description": "Ubwoba bwa AI na gusuzuma bwo gusubira inyuma bw'ibicuruzwa byawe"
+      },
+      "commerce": {
+        "title": "Guhuza E-commerce",
+        "description": "Guhuza amaduka yawe ya e-commerce na gucunga ubwiyunge"
+      },
+      "payments": {
+        "title": "Kwishyura na Fakture",
+        "description": "Cunga na kurikirana uburyo bwawe bwo kwishyura na gahunda"
+      },
+      "users": {
+        "title": "Abakoresha na Uruhushya",
+        "description": "Cunga imirimo y'abakoresha na uruhushya rw'ubucuruzi bwawe"
+      },
+      "settings": {
+        "title": "Igenamiterere",
+        "description": "Shiraho igenamiterere na ibyifuza by'ubucuruzi bwawe"
+      },
+      "scheduler": {
+        "title": "Umuyoboro",
+        "description": "Gahunda na gucunga imirimo na ibikorwa by'ubucuruzi bwawe"
+      },
+      "aiChat": {
+        "title": "AI Chat",
+        "description": "Gupata ubufasha bwo mu gihe na ubwoba bwo gucunga ibicuruzwa"
+      },
+      "financialCalculator": {
+        "title": "Kikokotoo cy'Imari",
+        "description": "Kubara amahoro, amabanki na metiriki y'imari y'ubucuruzi bwawe"
+      },
+      "onboarding": {
+        "title": "Kwinjira",
+        "description": "Shiraho ubucuruzi bwawe na utangire na Dukora"
+      },
+      "signIn": {
+        "title": "Winjira kuri konti yawe",
+        "description": "Winjire imeli yawe n'ijambo ry'ibanga kugirango ufike kuri konti yawe"
+      },
+      "signUp": {
+        "title": "Kora konti yawe",
+        "description": "Uzuzemo amakuru yawe kugirango ukore konti nshya"
+      },
+      "acceptInvitation": {
+        "title": "Emera ukwemera",
+        "description": "Wemerewe kwinjira mu bihugu. Nyamuneka winjire amakuru yawe kugirango wemere ukwemera"
+      },
+      "setPassword": {
+        "title": "Shiraho ijambo ry'ibanga ryawe",
+        "description": "Nyamuneka shiraho ijambo ry'ibanga kuri konti yawe kugirango ukomeze gushyiraho"
+      }
+    }
   },
   "users": {
     "totalUsers": "Abakoresha bose",
@@ -711,7 +930,35 @@
     "permissionsPermission": "Uburenganzira",
     "errorDeletingUser": "Ikosa mu gusiba umukoresha",
     "userDeletedSuccessfully": "Umukoresha yasibwe neza",
-    "unexpectedErrorOccurred": "Ikosa ritazwi ryabaye"
+    "unexpectedErrorOccurred": "Ikosa ritazwi ryabaye",
+    "auditLogChanges": "Changes",
+    "transactionDate": "Transaction Date",
+    "auditLogPerformedAt": "Performed at",
+    "expenseNote": "Expense Note",
+    "scheduleStartDate": "Start date",
+    "transactionType": "Transaction Type",
+    "expenses": "Expenses",
+    "auditLogRecordId": "Record id",
+    "businessName": "Business Name",
+    "expenseDate": "Expense Date",
+    "auditLogs": "Logs",
+    "transactionReference": "Transaction Reference",
+    "scheduleLocation": "Location",
+    "createdAt": "Business Creation Date",
+    "scheduleCategory": "Category",
+    "schedules": "Schedules",
+    "scheduleEndDate": "End date",
+    "scheduleTitle": "Title",
+    "email": "Email",
+    "expenseReference": "Expense Reference",
+    "transactions": "Transactions",
+    "auditLogModel": "Model",
+    "about": "About",
+    "expenseAmount": "Expense Amount",
+    "auditLogAction": "Log Action",
+    "transactionQuantity": "Transaction Quantity",
+    "summary": "Summary",
+    "role": "Role"
   },
   "invitation": {
     "INVITATION_EXPIRED": "Invitation has expired.",
@@ -766,7 +1013,12 @@
     "stripeAccountConnected": "Konti ya Stripe yahujwe",
     "stripeConnectError": "Habayeho ikosa mu guhuza Stripe.",
     "stripeIntegration": "Guhuza Stripe",
-    "stripeIntegrationDescription": "Huza konti yawe ya Stripe kugira ngo wemererwe kwishyurana hagati y'ibigo."
+    "stripeIntegrationDescription": "Huza konti yawe ya Stripe kugira ngo wemererwe kwishyurana hagati y'ibigo.",
+    "notConnected": "Not connected",
+    "stripeNotConnectedDescription": "Connect a stripe to enable payments-related features",
+    "stripeBenefits": "Stripe Benefits",
+    "connectionStatus": "Connection Status",
+    "connected": "Connected"
   },
   "products": {
     "title": "Urutonde rw'ibicuruzwa",
@@ -800,6 +1052,292 @@
     "selectTimeRange": "Hitamo Igihe",
     "lastMonth": "Ukwezi gushize",
     "last2Months": "Amezi 2",
-    "last3Months": "Amezi 3"
+    "last3Months": "Amezi 3",
+    "noDataAvailable": "No data available"
+  },
+  "landing": {
+    "features": {
+      "supplierManagement": {
+        "description": "Manage supplier relationships and track purchase orders.",
+        "title": "Supplier Management"
+      },
+      "financialAnalytics": {
+        "description": "Comprehensive insights into sales, profits, COGS, and margins.",
+        "title": "Financial Analytics"
+      },
+      "realtimeInventory": {
+        "title": "Real-time Inventory",
+        "description": "Track stock levels across all warehouses with automatic alerts and batch tracking."
+      },
+      "completeAuditLog": {
+        "title": "Complete Audit Log",
+        "description": "Every action is logged for complete transparency and compliance."
+      },
+      "secureByDesign": {
+        "title": "Secure by Design",
+        "description": "Data encryption, regular backups, and robust security practices to protect your business data."
+      },
+      "multiLanguage": {
+        "description": "Internationalized UI with support for multiple languages.",
+        "title": "Multi-language"
+      },
+      "mobileReady": {
+        "description": "Responsive design that works seamlessly on all devices.",
+        "title": "Mobile Ready"
+      },
+      "description": "From inventory tracking to AI-powered insights, Dukora provides all the tools to streamline operations.",
+      "transactionTracking": {
+        "title": "Transaction Tracking",
+        "description": "Record all sales, purchases, and operational expenses automatically."
+      },
+      "multiWarehouse": {
+        "title": "Multi-warehouse",
+        "description": "Manage inventory across multiple locations with seamless transfers."
+      },
+      "aiAssistant": {
+        "description": "Get instant answers about your business with our tuned AI assistant.",
+        "title": "AI Assistant"
+      },
+      "title": "Everything you need to manage your business",
+      "roleBasedAccess": {
+        "title": "Role-based Access",
+        "description": "Granular permissions and multi-user support for team collaboration."
+      },
+      "taskScheduling": {
+        "description": "Built-in calendar for scheduling tasks and business events.",
+        "title": "Task Scheduling"
+      }
+    },
+    "blog": {
+      "aiInventoryPredictions": {
+        "description": "Learn how our new AI assistant helps you predict stock levels and optimize ordering.",
+        "date": "Jan 15, 2025",
+        "title": "Introducing AI-powered inventory predictions",
+        "category": "Product Update"
+      },
+      "readMore": "Read more →",
+      "postBestPractices": "Best Practices",
+      "optimizeCashFlow": {
+        "category": "Best Practices",
+        "description": "Proven techniques to maintain liquidity and reduce manual work across all accounts.",
+        "date": "Jan 5, 2025",
+        "title": "5 strategies to optimize cash flow"
+      },
+      "multiWarehouseSetup": {
+        "category": "Tutorial",
+        "title": "Setting up multi-warehouse management",
+        "date": "Jan 10, 2025",
+        "description": "A complete guide to managing inventory across multiple locations with Dukora."
+      },
+      "postProductUpdate": "Product Update",
+      "latestInsights": "Latest insights",
+      "postTutorial": "Tutorial",
+      "description": "Product updates, tutorials, and best practices for inventory management"
+    },
+    "stats": {
+      "openSourceFree": "Open Source & Free",
+      "percentage": "100%",
+      "contributeOn": "Contributions welcome on",
+      "description": "Currently in alpha development. Built by"
+    },
+    "footer": {
+      "githubLink": "GitHub",
+      "resources": "Resources",
+      "copyright": "© 2025 Dukora. Open source.",
+      "aboutLink": "About",
+      "reportIssueLink": "Report Issue",
+      "insightsLink": "Insights",
+      "product": "Product",
+      "licenseLink": "License",
+      "featuresLink": "Features",
+      "tagline": "Modern inventory management for growing businesses. Open source and free .",
+      "contribute": "Contribute"
+    },
+    "insights": {
+      "backToHome": "← Back to home",
+      "getStarted": "Get started →",
+      "moreInsights": "← More insights"
+    },
+    "cta": {
+      "description": "Dukora is open source and free. Get started in minutes with our comprehensive documentation and active community support.",
+      "button": "Sign up",
+      "title": "Ready to take control of your inventory?"
+    },
+    "hero": {
+      "ctaPrimary": "Sign up",
+      "tagline": "Built for businesses",
+      "title": "Modern inventory management for growing businesses",
+      "ctaSecondary": "Features",
+      "description": "Track inventory, manage warehouses, analyze finances, and get AI-powered tools. All in one place.",
+      "badge": "Open Source & Free"
+    },
+    "about": {
+      "para3": "Built with small to medium businesses in mind, Dukora scales alongside your growth, ensuring you always have the insights and control you need to succeed in a competitive market.",
+      "para2": "Born in Kigali in 2024, our mission is to bring total financial clarity to businesses of all sizes. We combine deep technical expertise with user-centric design to create tools that empower teams to make better decisions faster.",
+      "para1": "Dukora is a modern, open-source inventory and business management system designed to provide a comprehensive, real-time overview of your operations. Built with a powerful and scalable tech stack, it offers everything from product and warehouse management to detailed financial analytics and role-based user permissions.",
+      "title": "Built for businesses that need clarity and control",
+      "cta": "Try Dukora for free"
+    },
+    "navigation": {
+      "signUp": "Sign up",
+      "features": "Features",
+      "brand": "Dukora",
+      "insights": "Insights",
+      "about": "About"
+    }
+  },
+  "auth": {
+    "setPassword": {
+      "setPasswordButton": "Set Password",
+      "title": "Set Your Password",
+      "passwordMismatch": "Passwords do not match. Please try again.",
+      "alreadyHaveAccount": "Already have an account?",
+      "signInLink": "Sign in here",
+      "description": "Please set a password for your account to complete the registration process."
+    },
+    "fields": {
+      "confirmPasswordPlaceholder": "Re-enter your password",
+      "lastNamePlaceholder": "Enter your last name",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "profileImagePreviewAlt": "Profile image preview",
+      "email": "Email",
+      "firstNamePlaceholder": "Enter your first name",
+      "emailPlaceholder": "Enter your email",
+      "confirmPassword": "Confirm Password",
+      "profileImage": "Profile Image",
+      "lastName": "Last Name",
+      "firstName": "First Name"
+    },
+    "signIn": {
+      "title": "Sign in to your account",
+      "googleButton": "Sign in with Google",
+      "forgotPassword": "Forgot password?",
+      "rememberMe": "Remember me",
+      "signUpLink": "Sign up here",
+      "description": "Enter your email and password to access your account.",
+      "noAccount": "No account ?",
+      "githubButton": "Sign in with GitHub",
+      "loginButton": "Sign In"
+    },
+    "orContinueWith": "or continue with",
+    "invitation": {
+      "title": "Accept Invitation",
+      "acceptInvitationButton": "Accept Invitation",
+      "description": "You have been invited to join a business. Please enter your details to accept the invitation.",
+      "declineInvitationButton": "Decline Invitation",
+      "alreadyAccepted": "Invitation already accepted ?",
+      "goToSignInLink": "Go to Sign In"
+    },
+    "signUp": {
+      "createAccountButton": "Create Account",
+      "description": "Fill in your details to create a new account.",
+      "title": "Create your account",
+      "signedIn": "Already signed in ?",
+      "signInLink": "Sign in here"
+    }
+  },
+  "onboarding": {
+    "title": "Onboarding",
+    "errors": {
+      "fiscalStartMonthRequired": "Fiscal start month is required",
+      "warehouseNameRequired": "Warehouse name is required",
+      "businessTypeRequired": "Business type is required",
+      "countryRequired": "Country is required",
+      "currencyRequired": "Currency is required",
+      "businessNameRequired": "Business name is required",
+      "setupFailed": "Setup failed. Check console for details.",
+      "maxWarehouses": "Allowed warehouses up to {limit}",
+      "maxInvitations": "Maximum invitations is {limit}",
+      "atLeastOneWarehouse": "At least one warehouse is required",
+      "invalidEmail": "Invalid email address",
+      "timezoneRequired": "Timezone is required",
+      "maxCategories": "You can select up to {limit} categories"
+    },
+    "teamMembers": {
+      "addUpTo": "Add up to {limit} team invitations.",
+      "removeMember": "Remove teammember {index}",
+      "emailPlaceholder": "name@example.com",
+      "addMember": "Add member"
+    },
+    "timezone": {
+      "label": "Timezone",
+      "autoFillDescription": "Auto-filled based on selected country"
+    },
+    "categories": {
+      "placeholder": "Add custom category (e.g., Food)",
+      "categoryLimit": "You can select up to {limit} categories.",
+      "addButton": "Add",
+      "selected": "Selected",
+      "alreadyAdded": "Category already added",
+      "removeCategory": "Remove category {index}",
+      "makeYourOwn": "Make your own product categories",
+      "add": "Add"
+    },
+    "steps": {
+      "businessProfile": "Business Profile",
+      "teamSetup": "Team Setup",
+      "warehousesBranches": "Warehouses/Branches",
+      "categories": "Categories",
+      "taxSettingsDescription": "Configure pricing and taxes",
+      "categoriesDescription": "Choose product categories",
+      "warehousesBranchesDescription": "Set up your business branches and warehouses management",
+      "businessProfileDescription": "Set up your business identity",
+      "teamSetupDescription": "Invite your team members",
+      "taxSettings": "Tax Settings"
+    },
+    "pricesIncludeTax": {
+      "label": "Prices Include Tax",
+      "description": "Toggle whether your product prices include tax or are tax-exclusive"
+    },
+    "defaultVatRate": {
+      "description": "Optional: Set a default VAT rate for your products",
+      "label": "Default VAT Rate (%)",
+      "placeholder": "e.g., 18"
+    },
+    "welcome": {
+      "description": "Let's set up your business in just a few steps",
+      "title": "Welcome to Your Inventory System"
+    },
+    "buttons": {
+      "previous": "Previous",
+      "completeSetup": "Complete Setup",
+      "settingUp": "Setting up...",
+      "next": "Next"
+    },
+    "warehouses": {
+      "addUpTo": "Add up to {limit} warehouses.",
+      "setDefault": "Set Default",
+      "addWarehouse": "Add warehouse",
+      "removeWarehouse": "Remove warehouse {index}",
+      "isDefault": "Is Default",
+      "placeholder": "Gishushu Branch"
+    },
+    "fiscalYearStartMonth": {
+      "label": "Fiscal Year Start Month"
+    },
+    "businessType": {
+      "label": "Business Type"
+    },
+    "businessName": {
+      "placeholder": "Enter your business name",
+      "label": "Business Name"
+    },
+    "currency": {
+      "label": "Currency"
+    },
+    "country": {
+      "label": "Country"
+    }
+  },
+  "notFound": {
+    "goToDashboard": "Go to dashboard",
+    "description": "The page you're looking for doesn't exist.",
+    "title": "404 - Not Found",
+    "goToLandingPage": "Go to landing page",
+    "requestForSupport": "Request for support in Dukora app",
+    "contactSupport": "Contact support",
+    "needHelp": "Need help?",
+    "signUp": "Sign up"
   }
 }

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { constructMetadata } from "@/lib/config/metadata";
+import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 
-export const metadata: Metadata = constructMetadata({
-  title: "Set Password",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return constructI18nMetadata({
+    pageKey: "setPassword",
+  });
+}
 
 export default function SetPasswordLayout({
   children,

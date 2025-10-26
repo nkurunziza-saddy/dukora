@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
+import { GuardSkeleton } from "@/components/guard-skeleton";
 
 const posts = {
   "ai-inventory-predictions": {
@@ -211,7 +213,7 @@ export function generateStaticParams() {
   }));
 }
 
-export default async function InsightPage({
+async function InsightContent({
   params,
 }: {
   params: { slug: string; locale: string };
@@ -228,8 +230,8 @@ export default async function InsightPage({
       <header className="border-b border-border">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <Link
-            href="/"
             className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground/80 transition"
+            href="/"
           >
             {t("backToHome")}
           </Link>
@@ -254,10 +256,10 @@ export default async function InsightPage({
                 {post.author}
               </div>
               <Link
-                href="https://x.com/nk_saddy"
-                target="_blank"
-                rel="noopener noreferrer"
                 className="text-xs text-text-secondary hover:text-foreground transition"
+                href="https://x.com/nk_saddy"
+                rel="noopener noreferrer"
+                target="_blank"
               >
                 @nk_saddy
               </Link>
@@ -269,12 +271,12 @@ export default async function InsightPage({
               if (block.type === "paragraph") {
                 return (
                   <p
+                    className="text-sm text-text-secondary leading-relaxed mb-6"
                     key={
                       block.text
                         ? block.text.substring(0, 30)
                         : `${block.type}-${index}`
                     }
-                    className="text-sm text-text-secondary leading-relaxed mb-6"
                   >
                     {block.text}
                   </p>
@@ -284,8 +286,8 @@ export default async function InsightPage({
               if (block.type === "heading") {
                 return (
                   <h2
-                    key={block.text}
                     className="text-xl md:text-2xl font-bold text-foreground mt-12 mb-4"
+                    key={block.text}
                   >
                     {block.text}
                   </h2>
@@ -300,11 +302,11 @@ export default async function InsightPage({
                 const items = (block as ListBlock).items;
                 const listKey = `list-${index}`;
                 return (
-                  <ul key={listKey} className="space-y-2 mb-6 ml-6">
+                  <ul className="space-y-2 mb-6 ml-6" key={listKey}>
                     {items.map((item) => (
                       <li
-                        key={`${listKey}-${item.slice(0, 20)}`}
                         className="text-sm text-text-secondary leading-relaxed list-disc"
+                        key={`${listKey}-${item.slice(0, 20)}`}
                       >
                         {item}
                       </li>
@@ -320,14 +322,14 @@ export default async function InsightPage({
           <div className="mt-16 pt-8 border-t border-border">
             <div className="flex items-center justify-between">
               <Link
-                href="/#insights"
                 className="text-xs text-text-secondary hover:text-foreground transition"
+                href="/#insights"
               >
                 {t("moreInsights")}
               </Link>
               <Link
-                href={"/auth/sign-up"}
                 className="text-xs text-text-secondary hover:text-foreground transition"
+                href={"/auth/sign-up"}
               >
                 {t("getStarted")}
               </Link>
@@ -336,5 +338,16 @@ export default async function InsightPage({
         </div>
       </article>
     </main>
+  );
+}
+
+export default async function InsightPage(
+  props: PageProps<"/[locale]/insights/[slug]">,
+) {
+  const params = await props.params;
+  return (
+    <Suspense fallback={<GuardSkeleton />}>
+      <InsightContent params={params} />
+    </Suspense>
   );
 }

@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 import UserProfileForm from "@/components/forms/user-profile-form";
 import { UserSettingsForm } from "@/components/forms/user-settings-form";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -27,7 +27,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
-import { constructMetadata } from "@/lib/config/metadata";
+import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { getCurrentSession } from "@/server/actions/auth-actions";
 import { getBusinessById } from "@/server/actions/business-actions";
 import { getUserById } from "@/server/actions/user-actions";
@@ -37,9 +37,11 @@ import { EditBusinessSettings } from "./_components/edit-business-settings";
 import { EditCategories } from "./_components/edit-categories";
 import { EditWarehouses } from "./_components/edit-warehouses";
 
-export const metadata: Metadata = constructMetadata({
-  title: "Settings",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return constructI18nMetadata({
+    pageKey: "settings",
+  });
+}
 
 type TStripeFn = ReturnType<typeof getTranslations> extends Promise<infer R>
   ? R
@@ -72,7 +74,7 @@ async function SessionGuard() {
   if (!userId || !businessId) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Alert variant="error" className="max-w-md">
+        <Alert className="max-w-md" variant="error">
           <AlertCircleIcon className="h-4 w-4" />
           <AlertDescription>
             Business or user not found. Please check your session.
@@ -93,7 +95,7 @@ async function SessionGuard() {
   if (!business) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Alert variant="error" className="max-w-md">
+        <Alert className="max-w-md" variant="error">
           <AlertCircleIcon className="h-4 w-4" />
           <AlertDescription>
             Business data is not available. Please try refreshing the page.
@@ -104,7 +106,7 @@ async function SessionGuard() {
   }
 
   return (
-    <ProtectedSettings business={business} user={user} tStripe={tStripe} />
+    <ProtectedSettings business={business} tStripe={tStripe} user={user} />
   );
 }
 
@@ -175,15 +177,15 @@ function ProtectedSettings({
         </div>
 
         <Tabs
+          className="w-full flex-row gap-4"
           defaultValue="business-details"
           orientation="vertical"
-          className="w-full flex-row gap-4"
         >
           <div className="w-60 shrink-0">
             <div className="sticky top-6">
               <TabsList className="flex flex-col gap-1 h-auto w-full bg-transparent border shadow-sm p-1">
                 {tabConfig.map((section, sectionIndex) => (
-                  <div key={section.section} className="w-full">
+                  <div className="w-full" key={section.section}>
                     {sectionIndex > 0 && <Separator className="my-1" />}
 
                     <div className="px-2 py-1 border-b mb-2">
@@ -195,10 +197,10 @@ function ProtectedSettings({
                     <div className="space-y-1">
                       {section.tabs.map((tab) => (
                         <TabsTab
+                          className="w-full justify-start text-sm font-medium"
+                          disabled={tab.disabled}
                           key={tab.value}
                           value={tab.value}
-                          disabled={tab.disabled}
-                          className="w-full justify-start text-sm font-medium"
                         >
                           <span className="truncate">{tab.label}</span>
                         </TabsTab>
@@ -211,7 +213,7 @@ function ProtectedSettings({
           </div>
 
           <div className="flex-1 min-w-0">
-            <TabsPanel value="business-details" className="m-0">
+            <TabsPanel className="m-0" value="business-details">
               <Card>
                 <CardHeader>
                   <CardTitle>Business Details</CardTitle>
@@ -236,14 +238,14 @@ function ProtectedSettings({
               </Card>
             </TabsPanel>
 
-            <TabsPanel value="business-settings" className="m-0">
+            <TabsPanel className="m-0" value="business-settings">
               <Card>
                 <CardPanel>
                   <EditBusinessSettings settings={business.businessSettings} />
                 </CardPanel>
               </Card>
             </TabsPanel>
-            <TabsPanel value="categories" className="m-0">
+            <TabsPanel className="m-0" value="categories">
               <Card>
                 <CardHeader>
                   <CardTitle>Categories</CardTitle>
@@ -257,7 +259,7 @@ function ProtectedSettings({
               </Card>
             </TabsPanel>
 
-            <TabsPanel value="warehouses" className="m-0">
+            <TabsPanel className="m-0" value="warehouses">
               <Card>
                 <CardHeader>
                   <CardTitle>Warehouses</CardTitle>
@@ -271,7 +273,7 @@ function ProtectedSettings({
               </Card>
             </TabsPanel>
 
-            <TabsPanel value="stripe" className="m-0">
+            <TabsPanel className="m-0" value="stripe">
               <Card>
                 <CardHeader>
                   <CardTitle>{tStripe("stripeIntegration")}</CardTitle>
@@ -287,7 +289,7 @@ function ProtectedSettings({
               </Card>
             </TabsPanel>
 
-            <TabsPanel value="user-details" className="m-0">
+            <TabsPanel className="m-0" value="user-details">
               <Card>
                 <CardHeader>
                   <CardTitle>Profile Details</CardTitle>
@@ -301,7 +303,7 @@ function ProtectedSettings({
               </Card>
             </TabsPanel>
 
-            <TabsPanel value="user-settings" className="m-0">
+            <TabsPanel className="m-0" value="user-settings">
               <Card>
                 <CardHeader>
                   <CardTitle>User Settings</CardTitle>
@@ -315,7 +317,7 @@ function ProtectedSettings({
               </Card>
             </TabsPanel>
 
-            <TabsPanel value="notifications" className="m-0">
+            <TabsPanel className="m-0" value="notifications">
               <Card>
                 <CardHeader>
                   <CardTitle>Notification Settings</CardTitle>
@@ -367,7 +369,7 @@ function ProtectedSettings({
               </Card>
             </TabsPanel>
 
-            <TabsPanel value="security" className="m-0">
+            <TabsPanel className="m-0" value="security">
               <Card>
                 <CardHeader>
                   <CardTitle>Security Settings</CardTitle>
@@ -382,7 +384,7 @@ function ProtectedSettings({
                       <p className="text-sm text-muted-foreground mb-3">
                         Last changed 30 days ago
                       </p>
-                      <Button variant="outline" size="sm">
+                      <Button size="sm" variant="outline">
                         Change Password
                       </Button>
                     </div>
@@ -393,7 +395,7 @@ function ProtectedSettings({
                       <p className="text-sm text-muted-foreground mb-3">
                         Add an extra layer of security to your account
                       </p>
-                      <Button variant="outline" size="sm">
+                      <Button size="sm" variant="outline">
                         Enable 2FA
                       </Button>
                     </div>
@@ -402,7 +404,7 @@ function ProtectedSettings({
                       <p className="text-sm text-muted-foreground mb-3">
                         Manage your active login sessions across devices
                       </p>
-                      <Button variant="outline" size="sm">
+                      <Button size="sm" variant="outline">
                         View Sessions
                       </Button>
                     </div>
@@ -411,7 +413,7 @@ function ProtectedSettings({
                       <p className="text-sm text-muted-foreground mb-3">
                         Review recent login activity
                       </p>
-                      <Button variant="outline" size="sm">
+                      <Button size="sm" variant="outline">
                         View History
                       </Button>
                     </div>

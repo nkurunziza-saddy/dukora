@@ -2,13 +2,15 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import ColumnWrapper from "@/components/providers/column-wrapper";
 import { TableSkeleton } from "@/components/table-skeleton";
-import { constructMetadata } from "@/lib/config/metadata";
+import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { getProductsPaginated } from "@/server/actions/product-actions";
 import { ProductColumn } from "@/utils/columns/product-column";
 
-export const metadata: Metadata = constructMetadata({
-  title: "Products",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return constructI18nMetadata({
+    pageKey: "products",
+  });
+}
 
 async function ProductsTable({
   page,
@@ -31,10 +33,10 @@ async function ProductsTable({
     <ColumnWrapper
       column={ProductColumn}
       data={products.data.products}
-      totalCount={products.data.totalCount}
       page={page}
       pageSize={pageSize}
       tag="products"
+      totalCount={products.data.totalCount}
     />
   );
 }

@@ -25,7 +25,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { constructMetadata } from "@/lib/config/metadata";
+import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { cn, formatCurrency, formatKeys, formatNumber } from "@/lib/utils";
 import { getLogsOverview } from "@/server/actions/logs-actions";
 import { getOverviewProducts } from "@/server/actions/product-actions";
@@ -38,11 +38,12 @@ import {
   getTotalWarehousesCount,
 } from "@/server/actions/statistics-actions";
 
-export const metadata: Metadata = constructMetadata({
-  title: "Dashboard",
-  description: "View your inventory and sales analytics in real-time",
-  canonicalUrl: "/dashboard",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return constructI18nMetadata({
+    pageKey: "dashboard",
+    canonicalUrl: "/dashboard",
+  });
+}
 
 export default async function InventoryDashboard() {
   const [totalSKUs, totalWarehouses, lowStockCount, inventoryValue] =
@@ -120,8 +121,8 @@ export default async function InventoryDashboard() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {inventoryStats.map((item) => (
             <StatCard
-              key={`${item.title}-${item.subText}`}
               icon={item.icon}
+              key={`${item.title}-${item.subText}`}
               subText={item.subText}
               title={item.title}
               value={item.value}
@@ -231,11 +232,11 @@ export default async function InventoryDashboard() {
                       <TableRow key={schedule.id}>
                         <TableCell className="flex items-center">
                           <span
+                            aria-hidden="true"
                             className={cn(
                               "inline-block size-2.5 rounded-md mr-2 align-middle opacity-60",
                               colorClass,
                             )}
-                            aria-hidden="true"
                           />
                           {schedule.title}
                         </TableCell>

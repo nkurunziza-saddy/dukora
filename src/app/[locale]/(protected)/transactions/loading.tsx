@@ -1,4 +1,3 @@
-import React from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function loading() {
@@ -20,7 +19,7 @@ export default function loading() {
         </div>
 
         {Array.from({ length: 10 }).map((_, i) => (
-          <div key={i} className="p-4 border-b last:border-b-0">
+          <div className="p-4 border-b last:border-b-0" key={i}>
             <div className="flex space-x-4">
               <Skeleton className="h-4 w-24" />
               <Skeleton className="h-4 w-32" />

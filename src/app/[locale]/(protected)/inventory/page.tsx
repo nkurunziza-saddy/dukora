@@ -1,15 +1,17 @@
 import { LayersIcon, WarehouseIcon } from "lucide-react";
 import type { Metadata } from "next";
 import StatCard from "@/components/shared/stat-card";
-import { constructMetadata } from "@/lib/config/metadata";
+import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { getProducts } from "@/server/actions/product-actions";
 import { getWarehouses } from "@/server/actions/warehouse-actions";
 import { getWarehouseItemsByBusiness } from "@/server/actions/warehouse-item-actions";
 import WarehouseTableClient from "./warehouse-clients";
 
-export const metadata: Metadata = constructMetadata({
-  title: "Inventory",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return constructI18nMetadata({
+    pageKey: "inventory",
+  });
+}
 
 export default async function WarehousePage() {
   const [warehousesRes, warehouseItemsRes, productsRes] = await Promise.all([

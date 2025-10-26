@@ -1,0 +1,27 @@
+{
+  "name": "i18n-sync-messages",
+  "version": "1.0.0",
+  "description": "I18n synchronization utilities for translation files",
+  "scripts": {
+    "check": "tsx check-missing-keys.ts",
+    "add": "tsx add-missing-keys.ts",
+    "remove": "tsx remove-extra-keys.ts",
+    "validate": "tsx validate-files.ts",
+    "sync": "tsx sync-all.ts",
+    "sync:dry": "tsx sync-all.ts --dry-run",
+    "check:verbose": "tsx check-missing-keys.ts --verbose",
+    "add:dry": "tsx add-missing-keys.ts --dry-run --verbose",
+    "remove:dry": "tsx remove-extra-keys.ts --dry-run --verbose",
+    "validate:json": "tsx validate-files.ts --format json",
+    "sync:verbose": "tsx sync-all.ts --verbose"
+  },
+  "keywords": [
+    "i18n",
+    "internationalization",
+    "translation",
+    "sync",
+    "utilities"
+  ],
+  "author": "Dukora Team",
+  "license": "MIT"
+}

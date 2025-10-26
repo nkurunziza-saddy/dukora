@@ -2,7 +2,6 @@
 
 import { format } from "date-fns";
 import { EditIcon, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 import React, { type FC, useState } from "react";
 import { toast } from "sonner";
@@ -74,7 +73,7 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
     <>
       <Menu>
         <MenuTrigger
-          render={<Button variant={"ghost"} className="h-8 w-8 p-0" />}
+          render={<Button className="h-8 w-8 p-0" variant={"ghost"} />}
         >
           <span className="sr-only">{t_common("openMenu")}</span>
           <MoreHorizontalIcon className="h-4 w-4" />
@@ -89,16 +88,16 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
             </MenuItem>
             <MenuSeparator />
             <MenuItem
-              onClick={() => setIsUpdateDialogOpen(true)}
               className="cursor-pointer"
+              onClick={() => setIsUpdateDialogOpen(true)}
             >
               <EditIcon className="size-3.5" />
               {t_common("edit")}
             </MenuItem>
             <MenuItem
-              variant="destructive"
-              onClick={() => setIsDeleteDialogOpen(true)}
               className="cursor-pointer"
+              onClick={() => setIsDeleteDialogOpen(true)}
+              variant="destructive"
             >
               <Trash2Icon className="size-3.5" />
               {t_common("delete")}
@@ -108,18 +107,18 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
       </Menu>
 
       <ConfirmDialog
-        isDialogOpen={isDeleteDialogOpen}
-        setIsDialogOpen={setIsDeleteDialogOpen}
-        handleConfirm={handleDeleteConfirm}
-        isLoading={isLoading}
-        title={t("supplier.deleteDialogTitle")}
         description={t("supplier.deleteDialogDescription")}
+        handleConfirm={handleDeleteConfirm}
+        isDialogOpen={isDeleteDialogOpen}
+        isLoading={isLoading}
+        setIsDialogOpen={setIsDeleteDialogOpen}
+        title={t("supplier.deleteDialogTitle")}
       />
       <StateDialog
-        title={t("supplier.editDialogTitle")}
         description={t("supplier.editDialogDescription")}
         isDialogOpen={isUpdateDialogOpen}
         setIsDialogOpen={setIsUpdateDialogOpen}
+        title={t("supplier.editDialogTitle")}
       >
         <SupplierForm supplier={supplier} />
       </StateDialog>

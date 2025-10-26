@@ -7,7 +7,6 @@ import * as React from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Field,
   FieldDescription,
@@ -161,16 +160,16 @@ export function ConnectStripe({
                 </FieldLabel>
 
                 <Input
+                  aria-invalid={
+                    field.state.meta.isTouched && !field.state.meta.isValid
+                  }
                   id={field.name}
                   name={field.name}
-                  value={String(displayedStripeAccountId ?? "")}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder={tStripe("stripeAccountIdPlaceholder") ?? ""}
                   readOnly
-                  aria-invalid={
-                    field.state.meta.isTouched && !field.state.meta.isValid
-                  }
+                  value={String(displayedStripeAccountId ?? "")}
                 />
 
                 <FieldDescription>
@@ -190,9 +189,9 @@ export function ConnectStripe({
         <div className="flex items-center gap-3">
           {!isStripeConnected ? (
             <Button
-              type="button"
-              onClick={handleConnectStripe}
               disabled={isLoading}
+              onClick={handleConnectStripe}
+              type="button"
             >
               {isLoading
                 ? tStripe("connecting")
@@ -201,27 +200,27 @@ export function ConnectStripe({
           ) : (
             <>
               <Badge
-                variant="default"
                 className="flex items-center gap-2 px-3 py-1"
+                variant="default"
               >
                 <CheckCircleIcon className="h-4 w-4" />
                 {tStripe("connected")}
               </Badge>
 
               <Button
+                disabled={isLoading}
+                onClick={handleManageStripe}
                 type="button"
                 variant="outline"
-                onClick={handleManageStripe}
-                disabled={isLoading}
               >
                 {tStripe("manageStripeAccount")}
               </Button>
 
               <Button
+                disabled={isLoading}
+                onClick={handleConnectStripe}
                 type="button"
                 variant="outline"
-                onClick={handleConnectStripe}
-                disabled={isLoading}
               >
                 {tStripe("reconnectStripeAccount")}
               </Button>
@@ -229,10 +228,10 @@ export function ConnectStripe({
           )}
 
           <Button
+            disabled={isLoading}
+            onClick={() => form.reset()}
             type="button"
             variant="ghost"
-            onClick={() => form.reset()}
-            disabled={isLoading}
           >
             {tCommon("reset") ?? "Reset"}
           </Button>

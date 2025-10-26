@@ -11,14 +11,16 @@ import {
   CardPanel,
   CardTitle,
 } from "@/components/ui/card";
-import { constructMetadata } from "@/lib/config/metadata";
+import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { getTodayTransactions } from "@/server/actions/statistics-actions";
 import { getTransactionsByTimeIntervalPaginated } from "@/server/actions/transaction-actions";
 import { TransactionColumn } from "@/utils/columns/transaction-column";
 
-export const metadata: Metadata = constructMetadata({
-  title: "Sales",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return constructI18nMetadata({
+    pageKey: "sales",
+  });
+}
 
 export default async function SalesTracking(
   props: PageProps<"/[locale]/sales">,

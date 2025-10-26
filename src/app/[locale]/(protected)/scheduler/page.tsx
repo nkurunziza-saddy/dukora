@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { EventCalendar } from "@/components/event-calendar";
-import { constructMetadata } from "@/lib/config/metadata";
+import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import type { InsertSchedule } from "@/lib/schema/schema-types";
 import {
   createSchedule as _createSchedule,
@@ -9,9 +9,11 @@ import {
   getSchedules,
 } from "@/server/actions/schedule-actions";
 
-export const metadata: Metadata = constructMetadata({
-  title: "Scheduler",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return constructI18nMetadata({
+    pageKey: "scheduler",
+  });
+}
 
 export default async function page() {
   const schedules = await getSchedules({});

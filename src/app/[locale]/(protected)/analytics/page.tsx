@@ -36,7 +36,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { constructMetadata } from "@/lib/config/metadata";
+import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { formatCurrency, formatKeys, formatNumber } from "@/lib/utils";
 import { getCurrentSession } from "@/server/actions/auth-actions";
 import { calculateAndSyncMonthlyMetrics } from "@/server/actions/metrics-action";
@@ -46,9 +46,11 @@ import {
   getMonthData,
 } from "@/server/helpers/time-date-forrmatters";
 
-export const metadata: Metadata = constructMetadata({
-  title: "Analytics",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return constructI18nMetadata({
+    pageKey: "analytics",
+  });
+}
 
 function AnalyticsSkeleton() {
   return (

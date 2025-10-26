@@ -1,25 +1,16 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import { CompoundInterestCalculator } from "@/components/financial-calculator/compound-interest-calculator";
 import { LoanCalculator } from "@/components/financial-calculator/loan-calculator";
 import { SavingsGoalCalculator } from "@/components/financial-calculator/savings-goal-calculator";
 import { SimpleCalculator } from "@/components/financial-calculator/simple-calculator";
 import { TaxCalculator } from "@/components/financial-calculator/tax-calculator";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
-import { constructMetadata } from "@/lib/config/metadata";
+import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 
-export async function generateMetadata({
-  params: { locale },
-}: {
-  params: { locale: string };
-}): Promise<Metadata> {
-  const t = await getTranslations({
-    locale,
-    namespace: "financialCalculator",
-  });
-
-  return constructMetadata({
-    title: t("metaTitle"),
+export async function generateMetadata(): Promise<Metadata> {
+  return constructI18nMetadata({
+    pageKey: "financialCalculator",
+    canonicalUrl: "/financial-calculator",
   });
 }
 

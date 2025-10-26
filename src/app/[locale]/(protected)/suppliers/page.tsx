@@ -2,13 +2,15 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import ColumnWrapper from "@/components/providers/column-wrapper";
 import { TableSkeleton } from "@/components/table-skeleton";
-import { constructMetadata } from "@/lib/config/metadata";
+import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { getSuppliersPaginated } from "@/server/actions/supplier-actions";
 import { SupplierColumn } from "@/utils/columns/supplier-column";
 
-export const metadata: Metadata = constructMetadata({
-  title: "Suppliers",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return constructI18nMetadata({
+    pageKey: "suppliers",
+  });
+}
 
 async function SuppliersTable({
   page,

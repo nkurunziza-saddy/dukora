@@ -4,14 +4,16 @@ import { getTranslations } from "next-intl/server";
 import ColumnWrapper from "@/components/providers/column-wrapper";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { constructMetadata } from "@/lib/config/metadata";
+import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { getInterBusinessPayments } from "@/server/actions/payment-actions";
 import { ErrorCode } from "@/server/constants/errors";
 import { PaymentColumn } from "@/utils/columns/payment-column";
 
-export const metadata: Metadata = constructMetadata({
-  title: "Payments",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return constructI18nMetadata({
+    pageKey: "payments",
+  });
+}
 
 export default async function PaymentsHistoryPage(
   props: PageProps<"/[locale]/payments">,

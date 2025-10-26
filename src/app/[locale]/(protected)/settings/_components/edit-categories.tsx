@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Field, FieldError, FieldGroup } from "@/components/ui/field";
+import { FieldError, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { SelectCategory } from "@/lib/schema/schema-types";
 import { upsertManyCategories } from "@/server/actions/category-actions";
@@ -60,7 +60,7 @@ export function EditCategories({
         form.handleSubmit();
       }}
     >
-      <form.Field name="categories" mode="array">
+      <form.Field mode="array" name="categories">
         {(field) => {
           const currentCategories = field.state.value || [];
           const isAtLimit = currentCategories.length >= LIMITS.CATEGORY_LIMIT;
@@ -139,8 +139,6 @@ export function EditCategories({
 
                     return (
                       <button
-                        type="button"
-                        key={category}
                         className={`p-4 border rounded-lg transition-colors w-full text-left ${
                           isSelected
                             ? "border-input bg-muted/70"
@@ -148,7 +146,9 @@ export function EditCategories({
                               ? "cursor-pointer hover:bg-muted/50"
                               : "opacity-50 cursor-not-allowed"
                         }`}
+                        key={category}
                         onClick={() => canSelect && toggleCategory(category)}
+                        type="button"
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
@@ -165,10 +165,8 @@ export function EditCategories({
                 <h4 className="font-medium mb-4">{t("addCustomCategories")}</h4>
                 <div className="flex gap-2 mb-4">
                   <Input
-                    id="customCategoryInput"
-                    placeholder={t("enterCategoryName")}
                     disabled={isAtLimit}
-                    value={newCategory}
+                    id="customCategoryInput"
                     onChange={(e) => setNewCategory(e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
@@ -176,12 +174,14 @@ export function EditCategories({
                         handleAddCustom();
                       }
                     }}
+                    placeholder={t("enterCategoryName")}
+                    value={newCategory}
                   />
                   <Button
+                    disabled={isAtLimit}
+                    onClick={handleAddCustom}
                     type="button"
                     variant="outline"
-                    onClick={handleAddCustom}
-                    disabled={isAtLimit}
                   >
                     <PlusIcon className="h-4 w-4" />
                   </Button>
@@ -192,12 +192,12 @@ export function EditCategories({
                     <div className="flex flex-wrap gap-2">
                       {currentCategories.map((category, index) => (
                         <Button
+                          aria-label={`Remove category ${index + 1}`}
                           key={`${category}-${index}`}
+                          onClick={() => field.removeValue(index)}
+                          size="xs"
                           type="button"
                           variant="outline"
-                          size="xs"
-                          onClick={() => field.removeValue(index)}
-                          aria-label={`Remove category ${index + 1}`}
                         >
                           <span className="">
                             {category} <XIcon className="inline-block ml-1" />
@@ -214,9 +214,9 @@ export function EditCategories({
       </form.Field>
       <div className="mt-6">
         <Button
-          type="submit"
-          form="edit-categories-form"
           disabled={form.state.isSubmitting}
+          form="edit-categories-form"
+          type="submit"
         >
           {form.state.isSubmitting ? t("saving") : t("saveCategories")}
         </Button>

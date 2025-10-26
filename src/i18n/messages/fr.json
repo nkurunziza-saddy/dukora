@@ -83,7 +83,17 @@
     "unitPieces": "Pièces",
     "unitPounds": "Livres",
     "wait": "Attendre",
-    "weight": "poids"
+    "weight": "poids",
+    "code": "Code",
+    "lastUpdated": "Last updated",
+    "isActive": "Is active",
+    "type": "Type",
+    "active": "Active",
+    "default": "Default",
+    "items": "Items",
+    "isDefault": "Is default",
+    "reservedQty": "Reserved quantity",
+    "products": "Products"
   },
   "forms": {
     "productName": "Nom du Produit",
@@ -232,7 +242,92 @@
     "userSettingsUpdateFailed": "Échec de la mise à jour des paramètres utilisateur",
     "userSettingsUpdated": "Paramètres utilisateur mis à jour",
     "userUpdated": "Profil utilisateur mis à jour avec succès",
-    "weightMustBeNumber": "Le poids doit être un nombre"
+    "weightMustBeNumber": "Le poids doit être un nombre",
+    "accountStatus": "Account status",
+    "pricesIncludeTax": "Prices Include Tax",
+    "selectMonth": "Select month",
+    "vatRatePlaceholder": "20%, 13%, ...",
+    "currencyGBP": "British Pound (GBP)",
+    "selectedCategories": "Selected categories",
+    "currencyRWF": "Rwandan Franc (RWF)",
+    "businessTypeWholesale": "Wholesale",
+    "saveCategories": "Save Categories",
+    "taxSettings": "Tax settings",
+    "categoryHealth": "Health & Beauty",
+    "invoicePrefix": "Invoice Prefix",
+    "monthOctober": "October",
+    "warehousePlaceholder": "Enter warehouse name",
+    "businessTypeRestaurant": "Restaurant",
+    "registrationNumberDescription": "Your legal permanent business registration number",
+    "businessTypeDescription": "Select your business type",
+    "active": "Active",
+    "accountStatusDescription": "Account status description",
+    "default": "Default",
+    "monthApril": "April",
+    "setDefault": "Set default",
+    "categoryFood": "Food & Beverages",
+    "saveWarehouses": "Save warehouses",
+    "businessTypeOther": "Other",
+    "monthAugust": "August",
+    "enterBusinessDescription": "Enter business description",
+    "currencyEUR": "Euro (EUR)",
+    "warehouseLocation": "Warehouse Location",
+    "chooseCategories": "Choose categories",
+    "timezoneAutoFill": "Timezone Auto Fill",
+    "warehousesAndBranches": "Warehouses and branches",
+    "monthJune": "June",
+    "pricesIncludeTaxDescription": "Prices Include Tax Description",
+    "categoryClothing": "Clothing",
+    "monthDecember": "December",
+    "selectCountry": "Select currency",
+    "monthJuly": "July",
+    "invoiceSettings": "Invoice Settings",
+    "defaultVatRateDescription": "Default Vat Rate Description",
+    "categoryOffice": "Office Supplies",
+    "systemInformation": "System Information",
+    "businessInformation": "Business Information",
+    "categoryBooks": "Books & Media",
+    "businessTypeService": "Service",
+    "countryGB": "United Kingdom",
+    "monthFebruary": "February",
+    "businessSettingsDescription": "Your custom business settings",
+    "invoicePrefixPlaceholder": "Enter prefix for your invoices",
+    "loadingSuppliers": "Loading suppliers",
+    "other": "Other",
+    "enterCategoryName": "Enter category name",
+    "invoiceNumberStart": "Invoice Number Start",
+    "regionalSettings": "Regional settings",
+    "currencyUSD": "US Dollar (USD)",
+    "noWarehousesFoundForProd": "No warehouses found containing this product",
+    "businessSettings": "Business Settings",
+    "monthMarch": "March",
+    "countryRW": "Rwanda",
+    "invoiceNumberStartDescription": "Invoice number start",
+    "businessTypeRetail": "Retail",
+    "saveDetails": "Save details",
+    "addCustomCategories": "Add custom categories",
+    "countryDE": "Germany",
+    "domainDescription": "Must be a url",
+    "monthJanuary": "January",
+    "enterUserEmail": "Enter user email",
+    "categorySports": "Sports & Recreation",
+    "addLocation": "Add location",
+    "selectCurrency": "Select country",
+    "businessDescription": "Business Description",
+    "selectBusinessType": "Select Business Type",
+    "country": "Country",
+    "categories": "Categories",
+    "monthMay": "May",
+    "defaultVatRate": "Default VAR Rate",
+    "monthNovember": "November",
+    "basicInformation": "Basic Information",
+    "countryUS": "United States",
+    "monthSeptember": "September",
+    "categoryHome": "Home & Garden",
+    "warehouseDescription": "Add details of warehouse/branch location",
+    "saveSettings": "Save settings",
+    "businessTypeManufacturing": "Manufacturing",
+    "categoryElectronics": "Electronics"
   },
   "payments": {
     "title": "Paiements et factures",
@@ -295,7 +390,8 @@
     "selectReceiverBusiness": "Sélectionner l'entreprise destinataire",
     "stripeChargeId": "ID de charge Stripe",
     "stripePaymentIntentId": "ID d'intention de paiement Stripe",
-    "transactionId": "ID de transaction"
+    "transactionId": "ID de transaction",
+    "payerBusiness": "Payer business"
   },
   "table": {
     "wait": "Veuillez patienter...",
@@ -327,7 +423,8 @@
     "deleteInvitation": "Supprimer l'invitation",
     "deleteInvitationDesc": "Êtes-vous sûr de vouloir supprimer cette invitation ? Cette action est irréversible.",
     "invitationDeleteError": "Error deleting invitation",
-    "invitationDeleteSuccess": "Invitation deleted successfully."
+    "invitationDeleteSuccess": "Invitation deleted successfully.",
+    "export": "Export"
   },
   "analytics": {
     "title": "Analyses et perspectives de l'IA",
@@ -369,7 +466,39 @@
     "inventoryCategory": "Inventaire",
     "expensesCategory": "Dépenses",
     "marginsCategory": "Marges",
-    "ratiosCategory": "Ratios"
+    "ratiosCategory": "Ratios",
+    "assetTurnover": "Asset Turnover",
+    "netRevenueDesc": "Revenue after accounting for sales returns.",
+    "expenseRatio": "Expense Ratio",
+    "noDataHelp": "To see analytics data, you need to:",
+    "validTransactions": "Valid Transactions",
+    "errorTitle": "Analytics Error",
+    "noDataDescription": "Analytics data is not available for the selected time period.",
+    "businessCreatedOn": "Business created on",
+    "grossProfitDesc": "Profitability from sales after cost of goods sold.",
+    "no": "No",
+    "editLayout": "Edit Layout",
+    "totalTransactions": "Total Transactions",
+    "noDataTitle": "No Analytics Data Available",
+    "inventoryGrowth": "Inventory Growth",
+    "efficiencyCategory": "Efficiency",
+    "noDataHelp2": "Add inventory items to your warehouses",
+    "expenseRatioDesc": "Percentage of revenue spent on operating expenses.",
+    "saveLayout": "Save Layout",
+    "operatingIncomeDesc": "Profitability from core business operations.",
+    "noDataHelp1": "Record some transactions",
+    "yes": "Yes",
+    "netIncomeDesc": "Overall profitability after all expenses.",
+    "hasExpenseData": "Has Expense Data",
+    "uniqueProductsSold": "Unique Products Sold",
+    "noDataHelp3": "Wait for the next month to see historical data",
+    "operatingExpensesDesc": "Costs incurred from normal business operations.",
+    "dataQuality": "Data Quality",
+    "retry": "Retry",
+    "totalRevenueDesc": "Total revenue from sales before deducting returns.",
+    "addWidget": "Add Widget",
+    "hasInventoryData": "Has Inventory Data",
+    "returnRate": "Return Rate"
   },
   "commerce": {
     "title": "Synchronisation E-commerce",
@@ -449,7 +578,11 @@
     "type": "Type",
     "unit": "Unit",
     "warehouse": "Warehouse",
-    "weight": "Weight"
+    "weight": "Weight",
+    "supplierProductCode": "Supplier Product Code",
+    "leadTimeDays": "Lead time days",
+    "supplierPrice": "Supplier price",
+    "isPreferred": "Is preferred"
   },
   "sales": {
     "saleFromYesterday": "Ventes d'hier",
@@ -542,7 +675,8 @@
     "transactionAddFailed": "Échec de l'ajout de la transaction",
     "type": "Type",
     "update": "Mettre à jour",
-    "updating": "Mise à jour en cours"
+    "updating": "Mise à jour en cours",
+    "healthyInventory": "Healthy inventory"
   },
   "aiChat": {
     "aiAssistantChat": "AI Assistant Chat",
@@ -640,12 +774,13 @@
     "recordPurchaseTransactionDesc": "Remplissez les détails de la transaction que vous souhaitez enregistrer.",
     "productCategories": "Catégories de produits",
     "supplierManagement": "Gestion des fournisseurs",
-    "systemSettings": "Paramètres du système",
     "recordAnyTransaction": "Enregistrer toute transaction",
     "recordExpenseTransaction": "Enregistrer une transaction de dépense",
     "recordExpenseTransactionDesc": "Enregistrer une transaction de dépense.",
     "recordTransaction": "Enregistrer la transaction",
-    "recordTransactionDescription": "Enregistrer tout type de transaction."
+    "recordTransactionDescription": "Enregistrer tout type de transaction.",
+    "settings": "Settings",
+    "productManagement": "Product Management"
   },
   "notifications": {
     "stockLevelUpdated": "Niveau de stock mis à jour pour {product}",
@@ -667,12 +802,12 @@
     "transactions": "Transactions commerciales",
     "scheduler": "Planificateur",
     "commerce": "Synchronisation E-commerce",
-    "Dashboard": "Dashboard",
-    "Management": "Management",
-    "Operations": "Operations",
-    "Tools": "Tools",
     "aiChat": "AI Chat",
-    "financialCalculator": "Financial Calculator"
+    "financialCalculator": "Financial Calculator",
+    "operations": "Operations",
+    "tools": "Tools",
+    "management": "Management",
+    "main": "Main"
   },
   "supplier": {
     "copyId": "Copier l'ID du fournisseur",
@@ -692,7 +827,91 @@
     "price": "Price",
     "productCode": "Product Code",
     "products": "Products",
-    "summary": "Summary"
+    "summary": "Summary",
+    "date": "Date"
+  },
+  "metadata": {
+    "siteName": "Dukora",
+    "siteDescription": "Dukora est une plateforme complète pour suivre les stocks dans plusieurs entrepôts, gérer les ventes en temps réel et obtenir des insights alimentés par l'IA—le tout dans un tableau de bord unifié.",
+    "siteShortDescription": "Plateforme complète de gestion d'inventaire et de ventes avec des insights alimentés par l'IA.",
+    "pages": {
+      "dashboard": {
+        "title": "Tableau de bord",
+        "description": "Visualisez vos analyses d'inventaire et de ventes en temps réel"
+      },
+      "inventory": {
+        "title": "Aperçu de l'inventaire",
+        "description": "Aperçu en temps réel de vos niveaux d'inventaire et de gestion des stocks"
+      },
+      "products": {
+        "title": "Catalogue de produits",
+        "description": "Gérez votre inventaire de produits et les informations du catalogue"
+      },
+      "suppliers": {
+        "title": "Gestion des fournisseurs",
+        "description": "Gérez vos relations avec les fournisseurs et les commandes d'achat"
+      },
+      "transactions": {
+        "title": "Transactions commerciales",
+        "description": "Suivez toutes vos transactions commerciales et activités financières"
+      },
+      "sales": {
+        "title": "Suivi des ventes",
+        "description": "Surveillez vos performances de vente et tendances de revenus"
+      },
+      "analytics": {
+        "title": "Analyse et IA",
+        "description": "Perspectives basées sur l'IA et analyses prédictives pour votre inventaire"
+      },
+      "commerce": {
+        "title": "Synchronisation E-commerce",
+        "description": "Synchronisez vos boutiques e-commerce et gérez les intégrations"
+      },
+      "payments": {
+        "title": "Paiements et factures",
+        "description": "Gérez et suivez vos méthodes de paiement et transactions"
+      },
+      "users": {
+        "title": "Utilisateurs et autorisations",
+        "description": "Gérez les rôles et autorisations des utilisateurs pour votre entreprise"
+      },
+      "settings": {
+        "title": "Paramètres",
+        "description": "Configurez les paramètres et préférences de votre entreprise"
+      },
+      "scheduler": {
+        "title": "Planificateur",
+        "description": "Planifiez et gérez vos tâches et événements d'entreprise"
+      },
+      "aiChat": {
+        "title": "Chat IA",
+        "description": "Obtenez une aide instantanée et des insights pour votre gestion d'inventaire"
+      },
+      "financialCalculator": {
+        "title": "Calculateur financier",
+        "description": "Calculez les taxes, prêts et métriques financières pour votre entreprise"
+      },
+      "onboarding": {
+        "title": "Intégration",
+        "description": "Configurez votre entreprise et commencez avec Dukora"
+      },
+      "signIn": {
+        "title": "Se connecter à votre compte",
+        "description": "Entrez votre email et mot de passe pour accéder à votre compte"
+      },
+      "signUp": {
+        "title": "Créer votre compte",
+        "description": "Remplissez vos détails pour créer un nouveau compte"
+      },
+      "acceptInvitation": {
+        "title": "Accepter l'invitation",
+        "description": "Vous avez été invité à rejoindre une entreprise. Veuillez entrer vos détails pour accepter l'invitation"
+      },
+      "setPassword": {
+        "title": "Définir votre mot de passe",
+        "description": "Veuillez définir un mot de passe pour votre compte pour terminer le processus d'inscription"
+      }
+    }
   },
   "users": {
     "totalUsers": "Utilisateurs totaux",
@@ -711,7 +930,35 @@
     "permissionsPermission": "Autorisation",
     "errorDeletingUser": "Erreur lors de la suppression de l'utilisateur",
     "userDeletedSuccessfully": "Utilisateur supprimé avec succès",
-    "unexpectedErrorOccurred": "Une erreur inattendue s'est produite"
+    "unexpectedErrorOccurred": "Une erreur inattendue s'est produite",
+    "auditLogChanges": "Changes",
+    "transactionDate": "Transaction Date",
+    "auditLogPerformedAt": "Performed at",
+    "expenseNote": "Expense Note",
+    "scheduleStartDate": "Start date",
+    "transactionType": "Transaction Type",
+    "expenses": "Expenses",
+    "auditLogRecordId": "Record id",
+    "businessName": "Business Name",
+    "expenseDate": "Expense Date",
+    "auditLogs": "Logs",
+    "transactionReference": "Transaction Reference",
+    "scheduleLocation": "Location",
+    "createdAt": "Business Creation Date",
+    "scheduleCategory": "Category",
+    "schedules": "Schedules",
+    "scheduleEndDate": "End date",
+    "scheduleTitle": "Title",
+    "email": "Email",
+    "expenseReference": "Expense Reference",
+    "transactions": "Transactions",
+    "auditLogModel": "Model",
+    "about": "About",
+    "expenseAmount": "Expense Amount",
+    "auditLogAction": "Log Action",
+    "transactionQuantity": "Transaction Quantity",
+    "summary": "Summary",
+    "role": "Role"
   },
   "invitation": {
     "INVITATION_EXPIRED": "Invitation has expired.",
@@ -766,7 +1013,12 @@
     "stripeAccountConnected": "Compte Stripe connecté",
     "stripeConnectError": "Une erreur s'est produite lors de la connexion Stripe.",
     "stripeIntegration": "Intégration Stripe",
-    "stripeIntegrationDescription": "Connectez votre compte Stripe pour activer les paiements inter-entreprises."
+    "stripeIntegrationDescription": "Connectez votre compte Stripe pour activer les paiements inter-entreprises.",
+    "notConnected": "Not connected",
+    "stripeNotConnectedDescription": "Connect a stripe to enable payments-related features",
+    "stripeBenefits": "Stripe Benefits",
+    "connectionStatus": "Connection Status",
+    "connected": "Connected"
   },
   "products": {
     "title": "Catalogue de produits",
@@ -800,6 +1052,292 @@
     "selectTimeRange": "Sélectionner la période",
     "lastMonth": "Le mois dernier",
     "last2Months": "2 mois",
-    "last3Months": "3 mois"
+    "last3Months": "3 mois",
+    "noDataAvailable": "No data available"
+  },
+  "landing": {
+    "features": {
+      "supplierManagement": {
+        "description": "Manage supplier relationships and track purchase orders.",
+        "title": "Supplier Management"
+      },
+      "financialAnalytics": {
+        "description": "Comprehensive insights into sales, profits, COGS, and margins.",
+        "title": "Financial Analytics"
+      },
+      "realtimeInventory": {
+        "title": "Real-time Inventory",
+        "description": "Track stock levels across all warehouses with automatic alerts and batch tracking."
+      },
+      "completeAuditLog": {
+        "title": "Complete Audit Log",
+        "description": "Every action is logged for complete transparency and compliance."
+      },
+      "secureByDesign": {
+        "title": "Secure by Design",
+        "description": "Data encryption, regular backups, and robust security practices to protect your business data."
+      },
+      "multiLanguage": {
+        "description": "Internationalized UI with support for multiple languages.",
+        "title": "Multi-language"
+      },
+      "mobileReady": {
+        "description": "Responsive design that works seamlessly on all devices.",
+        "title": "Mobile Ready"
+      },
+      "description": "From inventory tracking to AI-powered insights, Dukora provides all the tools to streamline operations.",
+      "transactionTracking": {
+        "title": "Transaction Tracking",
+        "description": "Record all sales, purchases, and operational expenses automatically."
+      },
+      "multiWarehouse": {
+        "title": "Multi-warehouse",
+        "description": "Manage inventory across multiple locations with seamless transfers."
+      },
+      "aiAssistant": {
+        "description": "Get instant answers about your business with our tuned AI assistant.",
+        "title": "AI Assistant"
+      },
+      "title": "Everything you need to manage your business",
+      "roleBasedAccess": {
+        "title": "Role-based Access",
+        "description": "Granular permissions and multi-user support for team collaboration."
+      },
+      "taskScheduling": {
+        "description": "Built-in calendar for scheduling tasks and business events.",
+        "title": "Task Scheduling"
+      }
+    },
+    "blog": {
+      "aiInventoryPredictions": {
+        "description": "Learn how our new AI assistant helps you predict stock levels and optimize ordering.",
+        "date": "Jan 15, 2025",
+        "title": "Introducing AI-powered inventory predictions",
+        "category": "Product Update"
+      },
+      "readMore": "Read more →",
+      "postBestPractices": "Best Practices",
+      "optimizeCashFlow": {
+        "category": "Best Practices",
+        "description": "Proven techniques to maintain liquidity and reduce manual work across all accounts.",
+        "date": "Jan 5, 2025",
+        "title": "5 strategies to optimize cash flow"
+      },
+      "multiWarehouseSetup": {
+        "category": "Tutorial",
+        "title": "Setting up multi-warehouse management",
+        "date": "Jan 10, 2025",
+        "description": "A complete guide to managing inventory across multiple locations with Dukora."
+      },
+      "postProductUpdate": "Product Update",
+      "latestInsights": "Latest insights",
+      "postTutorial": "Tutorial",
+      "description": "Product updates, tutorials, and best practices for inventory management"
+    },
+    "stats": {
+      "openSourceFree": "Open Source & Free",
+      "percentage": "100%",
+      "contributeOn": "Contributions welcome on",
+      "description": "Currently in alpha development. Built by"
+    },
+    "footer": {
+      "githubLink": "GitHub",
+      "resources": "Resources",
+      "copyright": "© 2025 Dukora. Open source.",
+      "aboutLink": "About",
+      "reportIssueLink": "Report Issue",
+      "insightsLink": "Insights",
+      "product": "Product",
+      "licenseLink": "License",
+      "featuresLink": "Features",
+      "tagline": "Modern inventory management for growing businesses. Open source and free .",
+      "contribute": "Contribute"
+    },
+    "insights": {
+      "backToHome": "← Back to home",
+      "getStarted": "Get started →",
+      "moreInsights": "← More insights"
+    },
+    "cta": {
+      "description": "Dukora is open source and free. Get started in minutes with our comprehensive documentation and active community support.",
+      "button": "Sign up",
+      "title": "Ready to take control of your inventory?"
+    },
+    "hero": {
+      "ctaPrimary": "Sign up",
+      "tagline": "Built for businesses",
+      "title": "Modern inventory management for growing businesses",
+      "ctaSecondary": "Features",
+      "description": "Track inventory, manage warehouses, analyze finances, and get AI-powered tools. All in one place.",
+      "badge": "Open Source & Free"
+    },
+    "about": {
+      "para3": "Built with small to medium businesses in mind, Dukora scales alongside your growth, ensuring you always have the insights and control you need to succeed in a competitive market.",
+      "para2": "Born in Kigali in 2024, our mission is to bring total financial clarity to businesses of all sizes. We combine deep technical expertise with user-centric design to create tools that empower teams to make better decisions faster.",
+      "para1": "Dukora is a modern, open-source inventory and business management system designed to provide a comprehensive, real-time overview of your operations. Built with a powerful and scalable tech stack, it offers everything from product and warehouse management to detailed financial analytics and role-based user permissions.",
+      "title": "Built for businesses that need clarity and control",
+      "cta": "Try Dukora for free"
+    },
+    "navigation": {
+      "signUp": "Sign up",
+      "features": "Features",
+      "brand": "Dukora",
+      "insights": "Insights",
+      "about": "About"
+    }
+  },
+  "auth": {
+    "setPassword": {
+      "setPasswordButton": "Set Password",
+      "title": "Set Your Password",
+      "passwordMismatch": "Passwords do not match. Please try again.",
+      "alreadyHaveAccount": "Already have an account?",
+      "signInLink": "Sign in here",
+      "description": "Please set a password for your account to complete the registration process."
+    },
+    "fields": {
+      "confirmPasswordPlaceholder": "Re-enter your password",
+      "lastNamePlaceholder": "Enter your last name",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "profileImagePreviewAlt": "Profile image preview",
+      "email": "Email",
+      "firstNamePlaceholder": "Enter your first name",
+      "emailPlaceholder": "Enter your email",
+      "confirmPassword": "Confirm Password",
+      "profileImage": "Profile Image",
+      "lastName": "Last Name",
+      "firstName": "First Name"
+    },
+    "signIn": {
+      "title": "Sign in to your account",
+      "googleButton": "Sign in with Google",
+      "forgotPassword": "Forgot password?",
+      "rememberMe": "Remember me",
+      "signUpLink": "Sign up here",
+      "description": "Enter your email and password to access your account.",
+      "noAccount": "No account ?",
+      "githubButton": "Sign in with GitHub",
+      "loginButton": "Sign In"
+    },
+    "orContinueWith": "or continue with",
+    "invitation": {
+      "title": "Accept Invitation",
+      "acceptInvitationButton": "Accept Invitation",
+      "description": "You have been invited to join a business. Please enter your details to accept the invitation.",
+      "declineInvitationButton": "Decline Invitation",
+      "alreadyAccepted": "Invitation already accepted ?",
+      "goToSignInLink": "Go to Sign In"
+    },
+    "signUp": {
+      "createAccountButton": "Create Account",
+      "description": "Fill in your details to create a new account.",
+      "title": "Create your account",
+      "signedIn": "Already signed in ?",
+      "signInLink": "Sign in here"
+    }
+  },
+  "onboarding": {
+    "title": "Onboarding",
+    "errors": {
+      "fiscalStartMonthRequired": "Fiscal start month is required",
+      "warehouseNameRequired": "Warehouse name is required",
+      "businessTypeRequired": "Business type is required",
+      "countryRequired": "Country is required",
+      "currencyRequired": "Currency is required",
+      "businessNameRequired": "Business name is required",
+      "setupFailed": "Setup failed. Check console for details.",
+      "maxWarehouses": "Allowed warehouses up to {limit}",
+      "maxInvitations": "Maximum invitations is {limit}",
+      "atLeastOneWarehouse": "At least one warehouse is required",
+      "invalidEmail": "Invalid email address",
+      "timezoneRequired": "Timezone is required",
+      "maxCategories": "You can select up to {limit} categories"
+    },
+    "teamMembers": {
+      "addUpTo": "Add up to {limit} team invitations.",
+      "removeMember": "Remove teammember {index}",
+      "emailPlaceholder": "name@example.com",
+      "addMember": "Add member"
+    },
+    "timezone": {
+      "label": "Timezone",
+      "autoFillDescription": "Auto-filled based on selected country"
+    },
+    "categories": {
+      "placeholder": "Add custom category (e.g., Food)",
+      "categoryLimit": "You can select up to {limit} categories.",
+      "addButton": "Add",
+      "selected": "Selected",
+      "alreadyAdded": "Category already added",
+      "removeCategory": "Remove category {index}",
+      "makeYourOwn": "Make your own product categories",
+      "add": "Add"
+    },
+    "steps": {
+      "businessProfile": "Business Profile",
+      "teamSetup": "Team Setup",
+      "warehousesBranches": "Warehouses/Branches",
+      "categories": "Categories",
+      "taxSettingsDescription": "Configure pricing and taxes",
+      "categoriesDescription": "Choose product categories",
+      "warehousesBranchesDescription": "Set up your business branches and warehouses management",
+      "businessProfileDescription": "Set up your business identity",
+      "teamSetupDescription": "Invite your team members",
+      "taxSettings": "Tax Settings"
+    },
+    "pricesIncludeTax": {
+      "label": "Prices Include Tax",
+      "description": "Toggle whether your product prices include tax or are tax-exclusive"
+    },
+    "defaultVatRate": {
+      "description": "Optional: Set a default VAT rate for your products",
+      "label": "Default VAT Rate (%)",
+      "placeholder": "e.g., 18"
+    },
+    "welcome": {
+      "description": "Let's set up your business in just a few steps",
+      "title": "Welcome to Your Inventory System"
+    },
+    "buttons": {
+      "previous": "Previous",
+      "completeSetup": "Complete Setup",
+      "settingUp": "Setting up...",
+      "next": "Next"
+    },
+    "warehouses": {
+      "addUpTo": "Add up to {limit} warehouses.",
+      "setDefault": "Set Default",
+      "addWarehouse": "Add warehouse",
+      "removeWarehouse": "Remove warehouse {index}",
+      "isDefault": "Is Default",
+      "placeholder": "Gishushu Branch"
+    },
+    "fiscalYearStartMonth": {
+      "label": "Fiscal Year Start Month"
+    },
+    "businessType": {
+      "label": "Business Type"
+    },
+    "businessName": {
+      "placeholder": "Enter your business name",
+      "label": "Business Name"
+    },
+    "currency": {
+      "label": "Currency"
+    },
+    "country": {
+      "label": "Country"
+    }
+  },
+  "notFound": {
+    "goToDashboard": "Go to dashboard",
+    "description": "The page you're looking for doesn't exist.",
+    "title": "404 - Not Found",
+    "goToLandingPage": "Go to landing page",
+    "requestForSupport": "Request for support in Dukora app",
+    "contactSupport": "Contact support",
+    "needHelp": "Need help?",
+    "signUp": "Sign up"
   }
 }

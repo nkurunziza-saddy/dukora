@@ -29,7 +29,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
-import { constructMetadata } from "@/lib/config/metadata";
+import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { getInvitationsPaginated } from "@/server/actions/invitation-actions";
 import { getUsersPaginated } from "@/server/actions/user-actions";
 import { Permission } from "@/server/constants/permissions";
@@ -37,9 +37,11 @@ import { RolePermissions } from "@/server/helpers/role-permissions";
 import { InvitationColumn } from "@/utils/columns/invitation-column";
 import { UserColumn } from "@/utils/columns/user-column";
 
-export const metadata: Metadata = constructMetadata({
-  title: "Users",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  return constructI18nMetadata({
+    pageKey: "users",
+  });
+}
 
 export default async function Users(props: PageProps<"/[locale]/users">) {
   const query = await props.searchParams;
