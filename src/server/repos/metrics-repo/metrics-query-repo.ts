@@ -1,4 +1,4 @@
-"use server";
+"use cache";
 
 import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
@@ -8,7 +8,7 @@ import { ErrorCode } from "@/server/constants/errors";
 export async function get_metric(
   businessId: string,
   periodType: string,
-  period: Date,
+  period: Date
 ) {
   try {
     const result = await db
@@ -18,8 +18,8 @@ export async function get_metric(
         and(
           eq(metricsTable.businessId, businessId),
           eq(metricsTable.periodType, periodType),
-          eq(metricsTable.period, period),
-        ),
+          eq(metricsTable.period, period)
+        )
       )
       .limit(1);
     return { data: result[0] || null, error: null };
@@ -33,7 +33,7 @@ export async function get_metric_by_name(
   businessId: string,
   name: string,
   periodType: string,
-  period: Date,
+  period: Date
 ) {
   try {
     const currentBusiness = await db.query.businessesTable.findFirst({
@@ -52,8 +52,8 @@ export async function get_metric_by_name(
           eq(metricsTable.businessId, businessId),
           eq(metricsTable.name, name),
           eq(metricsTable.periodType, periodType),
-          eq(metricsTable.period, period),
-        ),
+          eq(metricsTable.period, period)
+        )
       )
       .limit(1);
 
@@ -77,8 +77,8 @@ export async function get_monthly_metrics(businessId: string, date: Date) {
         and(
           eq(metricsTable.businessId, businessId),
           eq(metricsTable.periodType, "monthly"),
-          eq(metricsTable.period, date),
-        ),
+          eq(metricsTable.period, date)
+        )
       );
 
     const metricsObject = result.reduce(
@@ -86,7 +86,7 @@ export async function get_monthly_metrics(businessId: string, date: Date) {
         acc[metric.name] = Number(metric.value);
         return acc;
       },
-      {} as Record<string, number>,
+      {} as Record<string, number>
     );
 
     return { data: metricsObject, error: null };
@@ -100,7 +100,7 @@ export async function get_metrics_history(
   businessId: string,
   metricNames: string[],
   periodType = "monthly",
-  limit = 12,
+  limit = 12
 ) {
   try {
     const result = await db
@@ -109,8 +109,8 @@ export async function get_metrics_history(
       .where(
         and(
           eq(metricsTable.businessId, businessId),
-          eq(metricsTable.periodType, periodType),
-        ),
+          eq(metricsTable.periodType, periodType)
+        )
       )
       .orderBy(desc(metricsTable.period))
       .limit(limit * metricNames.length);
@@ -122,7 +122,7 @@ export async function get_metrics_history(
         acc[period][metric.name] = Number(metric.value);
         return acc;
       },
-      {} as Record<string, Record<string, number>>,
+      {} as Record<string, Record<string, number>>
     );
 
     return { data: groupedMetrics, error: null };
@@ -134,7 +134,7 @@ export async function get_metrics_history(
 
 export async function get_latest_metrics(
   businessId: string,
-  metricNames: string[],
+  metricNames: string[]
 ) {
   try {
     const result = await db
@@ -152,7 +152,7 @@ export async function get_latest_metrics(
         }
         return acc;
       },
-      {} as Record<string, number>,
+      {} as Record<string, number>
     );
 
     return { data: latestMetrics, error: null };
