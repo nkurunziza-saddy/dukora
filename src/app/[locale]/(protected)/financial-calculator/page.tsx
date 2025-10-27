@@ -16,30 +16,71 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function financialCalculatorPage() {
   return (
-    <div className="flex flex-col gap-y-4">
-      <Tabs defaultValue="simple">
-        <TabsList className="w-fit">
-          <TabsTab value="simple">Simple</TabsTab>
-          <TabsTab value="loan">Loan</TabsTab>
+    <div className="flex flex-col gap-y-6">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">
+          Financial Calculators
+        </h1>
+        <p className="text-muted-foreground">
+          Calculate loans, interest, savings goals, and taxes with precision
+        </p>
+      </div>
+
+      <Tabs className="w-full" defaultValue="simple">
+        <TabsList className="">
+          <TabsTab value="simple">Simple Interest</TabsTab>
+          <TabsTab value="loan">Loan Calculator</TabsTab>
           <TabsTab value="compound">Compound Interest</TabsTab>
           <TabsTab value="savings">Savings Goal</TabsTab>
-          <TabsTab value="tax">Tax</TabsTab>
+          <TabsTab value="tax">Tax Calculator</TabsTab>
         </TabsList>
-        <TabsPanel value="simple">
-          <SimpleCalculator />
-        </TabsPanel>
-        <TabsPanel value="loan">
-          <LoanCalculator />
-        </TabsPanel>
-        <TabsPanel value="compound">
-          <CompoundInterestCalculator />
-        </TabsPanel>
-        <TabsPanel value="savings">
-          <SavingsGoalCalculator />
-        </TabsPanel>
-        <TabsPanel value="tax">
-          <TaxCalculator />
-        </TabsPanel>
+
+        <div className="mt-6">
+          <TabsPanel value="simple">
+            <div className="space-y-4">
+              <h2 className="text-lg font-semibold mb-4 text-primary">
+                Simple Interest Calculator
+              </h2>
+              <SimpleCalculator />
+            </div>
+          </TabsPanel>
+
+          <TabsPanel value="loan">
+            <div className="space-y-4">
+              <h2 className="text-lg font-semibold mb-4 text-primary">
+                Loan Calculator
+              </h2>
+              <LoanCalculator />
+            </div>
+          </TabsPanel>
+
+          <TabsPanel value="compound">
+            <div className="space-y-4">
+              <h2 className="text-lg font-semibold mb-4 text-primary">
+                Compound Interest Calculator
+              </h2>
+              <CompoundInterestCalculator />
+            </div>
+          </TabsPanel>
+
+          <TabsPanel value="savings">
+            <div className="space-y-4">
+              <h2 className="text-lg font-semibold mb-4 text-primary">
+                Savings Goal Calculator
+              </h2>
+              <SavingsGoalCalculator />
+            </div>
+          </TabsPanel>
+
+          <TabsPanel value="tax">
+            <div className="space-y-4">
+              <h2 className="text-lg font-semibold mb-4 text-primary">
+                Tax Calculator
+              </h2>
+              <TaxCalculator />
+            </div>
+          </TabsPanel>
+        </div>
       </Tabs>
     </div>
   );

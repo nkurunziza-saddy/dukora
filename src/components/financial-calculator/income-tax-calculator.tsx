@@ -2,13 +2,6 @@
 
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardPanel,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -42,49 +35,88 @@ export function IncomeTaxCalculator() {
   };
 
   return (
-    <Card className="w-full max-w-4xl">
-      <CardHeader>
-        <CardTitle>{t("incomeTaxCalculator.title")}</CardTitle>
-        <CardDescription>
-          {t("incomeTaxCalculator.description")}
-        </CardDescription>
-      </CardHeader>
-      <CardPanel className="grid gap-4">
-        <div className="grid gap-2">
-          <Label htmlFor="annualIncome">
-            {t("incomeTaxCalculator.annualIncomeLabel")}
-          </Label>
-          <Input
-            id="annualIncome"
-            type="number"
-            value={annualIncome}
-            onChange={(e) => setAnnualIncome(parseFloat(e.target.value) || 0)}
-            onBlur={calculatePIT}
-          />
+    <div className="grid gap-4 md:grid-cols-2">
+      <div className="space-y-4">
+        <div className="rounded-lg border bg-muted/50 p-4">
+          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+            Income Details
+          </h3>
+          <div className="space-y-4">
+            <div className="grid gap-2">
+              <Label className="text-sm font-medium" htmlFor="annualIncome">
+                {t("incomeTaxCalculator.annualIncomeLabel")}
+              </Label>
+              <Input
+                className="focus:ring-2 focus:ring-primary/20"
+                id="annualIncome"
+                onBlur={calculatePIT}
+                onChange={(e) =>
+                  setAnnualIncome(parseFloat(e.target.value) || 0)
+                }
+                placeholder="Enter annual income"
+                type="number"
+                value={annualIncome}
+              />
+            </div>
+          </div>
         </div>
-        <div className="grid gap-2">
-          <Label htmlFor="annualTax">
-            {t("incomeTaxCalculator.annualTaxLabel")}
-          </Label>
-          <Input
-            id="annualTax"
-            type="number"
-            value={annualTax.toFixed(2)}
-            readOnly
-          />
+      </div>
+
+      <div className="space-y-4">
+        <div className="rounded-lg border border-success/20 bg-muted/50 p-4">
+          <h3 className="text-lg font-semibold text-success mb-4 flex items-center gap-2">
+            Tax Calculation
+          </h3>
+          <div className="space-y-4">
+            <div className="grid gap-2">
+              <Label
+                className="text-sm font-medium text-success"
+                htmlFor="annualTax"
+              >
+                {t("incomeTaxCalculator.annualTaxLabel")}
+              </Label>
+              <Input
+                className="bg-success/10 text-success font-semibold text-lg border-success/20"
+                id="annualTax"
+                readOnly
+                type="number"
+                value={annualTax.toFixed(2)}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label
+                className="text-sm font-medium text-success"
+                htmlFor="monthlyTax"
+              >
+                {t("incomeTaxCalculator.monthlyTaxLabel")}
+              </Label>
+              <Input
+                className="bg-success/10 text-success font-semibold text-lg border-success/20"
+                id="monthlyTax"
+                readOnly
+                type="number"
+                value={monthlyTax.toFixed(2)}
+              />
+            </div>
+            {annualTax > 0 && (
+              <div className="mt-4 p-3 rounded-md bg-success/5 border border-success/20">
+                <p className="text-sm text-success">
+                  <span className="font-medium">Net Annual Income:</span> $
+                  {(annualIncome - annualTax).toFixed(2)}
+                </p>
+                <p className="text-sm text-success">
+                  <span className="font-medium">Net Monthly Income:</span> $
+                  {((annualIncome - annualTax) / 12).toFixed(2)}
+                </p>
+                <p className="text-sm text-success">
+                  <span className="font-medium">Tax Rate:</span>{" "}
+                  {((annualTax / annualIncome) * 100).toFixed(2)}%
+                </p>
+              </div>
+            )}
+          </div>
         </div>
-        <div className="grid gap-2">
-          <Label htmlFor="monthlyTax">
-            {t("incomeTaxCalculator.monthlyTaxLabel")}
-          </Label>
-          <Input
-            id="monthlyTax"
-            type="number"
-            value={monthlyTax.toFixed(2)}
-            readOnly
-          />
-        </div>
-      </CardPanel>
-    </Card>
+      </div>
+    </div>
   );
 }
