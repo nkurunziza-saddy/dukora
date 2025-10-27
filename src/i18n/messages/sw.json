@@ -758,30 +758,6 @@
       "vatDueLabel": "Monthly VAT Due (RWF)"
     }
   },
-  "quickActions": {
-    "quickActions": "Vitendo vya Haraka",
-    "searchActionsPlaceholder": "Tafuta vitendo au nenda kwenye kurasa...",
-    "noResultsFound": "Hakuna matokeo yaliyopatikana.",
-    "quickActionsGroup": "Vitendo vya Haraka",
-    "managementGroup": "Usimamizi",
-    "createNewProduct": "Unda Bidhaa Mpya",
-    "createNewProductDesc": "Jaza maelezo ya bidhaa mpya unayotaka kuongeza.",
-    "createNewSupplier": "Unda Msambazaji Mpya",
-    "createNewSupplierDesc": "Jaza maelezo ya msambazaji mpya unayotaka kuongeza.",
-    "recordSaleTransaction": "Rekodi Muamala wa Mauzo",
-    "recordSaleTransactionDesc": "Jaza maelezo ya muamala unaotaka kurekodi.",
-    "recordPurchaseTransaction": "Rekodi Muamala wa Ununuzi",
-    "recordPurchaseTransactionDesc": "Jaza maelezo ya muamala unaotaka kurekodi.",
-    "productCategories": "Jamii za Bidhaa",
-    "supplierManagement": "Usimamizi wa Wasambazaji",
-    "recordAnyTransaction": "Record any transaction",
-    "recordExpenseTransaction": "Record expense transaction",
-    "recordExpenseTransactionDesc": "Record an expense transaction.",
-    "recordTransaction": "Record Transaction",
-    "recordTransactionDescription": "Record any type of transaction.",
-    "settings": "Settings",
-    "productManagement": "Product Management"
-  },
   "notifications": {
     "stockLevelUpdated": "Kiwango cha hisa kimesasishwa kwa {product}",
     "newOrderReceived": "Agizo jipya limepokelewa: {orderId}",
@@ -829,6 +805,35 @@
     "products": "Products",
     "summary": "Summary",
     "date": "Date"
+  },
+  "quickActions": {
+    "quickActions": "Vitendo vya Haraka",
+    "searchActionsPlaceholder": "Tafuta vitendo...",
+    "noResultsFound": "Hakuna matokeo yamepatikana.",
+    "quickActionsGroup": "Vitendo vya Haraka",
+    "navigationGroup": "Urambazaji",
+    "managementGroup": "Usimamizi",
+    "createNewProduct": "Unda Bidhaa Mpya",
+    "createNewSupplier": "Unda Mtoaji Mpya",
+    "recordSaleTransaction": "Rekodi Shughuli ya Uuzaji",
+    "recordPurchaseTransaction": "Rekodi Shughuli ya Ununuzi",
+    "recordExpenseTransaction": "Rekodi Shughuli ya Matumizi",
+    "recordTransaction": "Rekodi Shughuli",
+    "recordAnyTransaction": "Rekodi Shughuli Yoyote",
+    "dashboard": "Dashibodi",
+    "products": "Bidhaa",
+    "suppliers": "Watoaji",
+    "transactions": "Shughuli",
+    "analytics": "Uchambuzi",
+    "settings": "Mipangilio",
+    "productManagement": "Usimamizi wa Bidhaa",
+    "supplierManagement": "Usimamizi wa Watoaji",
+    "createNewProductDesc": "Ongeza bidhaa mpya kwenye hesabu zako za bidhaa",
+    "createNewSupplierDesc": "Ongeza mtoaji mpya kwenye mtandao wako",
+    "recordSaleTransactionDesc": "Rekodi shughuli ya uuzaji",
+    "recordPurchaseTransactionDesc": "Rekodi shughuli ya ununuzi",
+    "recordExpenseTransactionDesc": "Rekodi shughuli ya matumizi",
+    "recordTransactionDescription": "Rekodi aina yoyote ya shughuli"
   },
   "metadata": {
     "siteName": "Dukora",
@@ -910,6 +915,30 @@
       "setPassword": {
         "title": "Weka Nenosiri Lako",
         "description": "Tafadhali weka nenosiri kwa akaunti yako ili kukamilisha mchakato wa usajili"
+      },
+      "createProduct": {
+        "title": "Unda Bidhaa",
+        "description": "Ongeza bidhaa mpya kwenye hesabu zako za bidhaa"
+      },
+      "createSupplier": {
+        "title": "Unda Mtoaji",
+        "description": "Ongeza mtoaji mpya kwenye mtandao wako"
+      },
+      "createSale": {
+        "title": "Rekodi Uuzaji",
+        "description": "Rekodi shughuli mpya ya uuzaji"
+      },
+      "createPurchase": {
+        "title": "Rekodi Ununuzi",
+        "description": "Rekodi shughuli mpya ya ununuzi"
+      },
+      "createExpense": {
+        "title": "Rekodi Matumizi",
+        "description": "Rekodi shughuli mpya ya matumizi"
+      },
+      "createTransaction": {
+        "title": "Rekodi Shughuli",
+        "description": "Rekodi aina yoyote ya shughuli"
       }
     }
   },

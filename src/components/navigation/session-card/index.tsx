@@ -11,6 +11,15 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { memo, useMemo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import {
   Menu,
   MenuGroup,
@@ -20,6 +29,7 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
+import { Separator } from "@/components/ui/separator";
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -90,49 +100,45 @@ const SessionCard = memo(() => {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <Menu>
-          <MenuTrigger
-            render={
+        {isMobile ? (
+          <Drawer>
+            <DrawerTrigger className="w-full">
               <SidebarMenuButton
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground w-full"
                 size="lg"
-                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-              />
-            }
-          >
-            <Avatar className="size-8 rounded-lg">
-              <AvatarImage
-                src={computedData.userImage || "/placeholder.svg"}
-                alt={`${computedData.userName} avatar`}
-                loading="lazy"
-              />
-              <AvatarFallback className="rounded-lg text-xs font-medium">
-                {computedData.userInitials}
-              </AvatarFallback>
-            </Avatar>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium truncate">
-                {computedData.userName}
-              </p>
-              <p className="text-xs text-muted-foreground truncate">
-                {computedData.businessName}
-              </p>
-            </div>
-            <ChevronsUpDownIcon className="ml-auto size-4" />
-          </MenuTrigger>
-          <MenuPopup
-            className="min-w-64 rounded-lg"
-            align="start"
-            side={isMobile ? "bottom" : "right"}
-            sideOffset={8}
-          >
-            <MenuGroup>
-              <MenuGroupLabel className="p-3">
-                <div className="flex items-start gap-3">
+              >
+                <Avatar className="size-8 rounded-lg">
+                  <AvatarImage
+                    alt={`${computedData.userName} avatar`}
+                    loading="lazy"
+                    src={computedData.userImage || "/placeholder.svg"}
+                  />
+                  <AvatarFallback className="rounded-lg text-xs font-medium">
+                    {computedData.userInitials}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium truncate">
+                    {computedData.userName}
+                  </p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {computedData.businessName}
+                  </p>
+                </div>
+                <ChevronsUpDownIcon className="ml-auto size-4" />
+              </SidebarMenuButton>
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle>Account Menu</DrawerTitle>
+              </DrawerHeader>
+              <div className="px-4 pb-4">
+                <div className="flex items-start gap-3 p-3">
                   <Avatar className="rounded-lg h-10 w-10">
                     <AvatarImage
-                      src={computedData.userImage || "/placeholder.svg"}
                       alt={`${computedData.userName} avatar`}
                       loading="lazy"
+                      src={computedData.userImage || "/placeholder.svg"}
                     />
                     <AvatarFallback className="rounded-lg text-xs font-medium">
                       {computedData.userInitials}
@@ -151,42 +157,143 @@ const SessionCard = memo(() => {
                     </p>
                   </div>
                 </div>
-              </MenuGroupLabel>
 
-              <MenuSeparator />
+                <Separator className={"my-2"} />
 
-              <div className="p-1">
-                <MenuItem
-                  render={
-                    <Link
-                      href={`/users/${computedData.userId}`}
-                      className="cursor-pointer"
-                    />
-                  }
+                <DrawerClose className="block">
+                  <Link
+                    className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer"
+                    href={`/users/${computedData.userId}`}
+                  >
+                    <UserIcon className="size-3.5" />
+                    <span>{t("profile")}</span>
+                  </Link>
+                </DrawerClose>
+
+                <DrawerClose className="block">
+                  <Link
+                    className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground rounded-md cursor-pointer"
+                    href="/settings"
+                  >
+                    <SettingsIcon className="size-3.5" />
+                    <span>{t("settings")}</span>
+                  </Link>
+                </DrawerClose>
+
+                <Separator className={"my-2"} />
+
+                <Button
+                  className="w-full justify-start gap-2"
+                  onClick={handleLogout}
+                  // variant="destructive"
                 >
-                  <UserIcon className="size-3.5" />
-                  <span>{t("profile")}</span>
-                </MenuItem>
-
-                <MenuItem
-                  render={<Link href="/settings" className="cursor-pointer" />}
-                >
-                  <SettingsIcon className="size-3.5" />
-                  <span>{t("settings")}</span>
-                </MenuItem>
-              </div>
-
-              <MenuSeparator />
-
-              <div className="p-1">
-                <MenuItem onClick={handleLogout} variant="destructive">
                   <LogOutIcon className="size-3.5" />
                   <span>{t("signOut")}</span>
-                </MenuItem>
+                </Button>
               </div>
-            </MenuGroup>
-          </MenuPopup>
-        </Menu>
+            </DrawerContent>
+          </Drawer>
+        ) : (
+          <Menu>
+            <MenuTrigger
+              render={
+                <SidebarMenuButton
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                  size="lg"
+                />
+              }
+            >
+              <Avatar className="size-8 rounded-lg">
+                <AvatarImage
+                  alt={`${computedData.userName} avatar`}
+                  loading="lazy"
+                  src={computedData.userImage || "/placeholder.svg"}
+                />
+                <AvatarFallback className="rounded-lg text-xs font-medium">
+                  {computedData.userInitials}
+                </AvatarFallback>
+              </Avatar>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium truncate">
+                  {computedData.userName}
+                </p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {computedData.businessName}
+                </p>
+              </div>
+              <ChevronsUpDownIcon className="ml-auto size-4" />
+            </MenuTrigger>
+            <MenuPopup
+              align="start"
+              className="min-w-64 rounded-lg"
+              side="right"
+              sideOffset={8}
+            >
+              <MenuGroup>
+                <MenuGroupLabel className="p-3">
+                  <div className="flex items-start gap-3">
+                    <Avatar className="rounded-lg h-10 w-10">
+                      <AvatarImage
+                        alt={`${computedData.userName} avatar`}
+                        loading="lazy"
+                        src={computedData.userImage || "/placeholder.svg"}
+                      />
+                      <AvatarFallback className="rounded-lg text-xs font-medium">
+                        {computedData.userInitials}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {computedData.userName}
+                      </p>
+                      <p className="text-xs text-muted-foreground leading-none">
+                        {computedData.businessName}
+                      </p>
+                      <p className="text-xs text-muted-foreground leading-none">
+                        {computedData.userRole.charAt(0).toUpperCase() +
+                          computedData.userRole.slice(1).toLowerCase()}
+                      </p>
+                    </div>
+                  </div>
+                </MenuGroupLabel>
+
+                <MenuSeparator />
+
+                <div className="p-1">
+                  <MenuItem
+                    render={
+                      <Link
+                        className="cursor-pointer"
+                        href={`/users/${computedData.userId}`}
+                      />
+                    }
+                  >
+                    <UserIcon className="size-3.5" />
+                    <span>{t("profile")}</span>
+                  </MenuItem>
+
+                  <MenuItem
+                    render={
+                      <Link className="cursor-pointer" href="/settings" />
+                    }
+                  >
+                    <SettingsIcon className="size-3.5" />
+                    <span>{t("settings")}</span>
+                  </MenuItem>
+                </div>
+
+                <MenuSeparator />
+
+                <div className="p-1">
+                  <MenuItem onClick={handleLogout} variant="destructive">
+                    <LogOutIcon className="size-3.5" />
+                    <span>{t("signOut")}</span>
+                  </MenuItem>
+                </div>
+              </MenuGroup>
+            </MenuPopup>
+          </Menu>
+        )}
       </SidebarMenuItem>
     </SidebarMenu>
   );

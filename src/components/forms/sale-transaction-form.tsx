@@ -121,14 +121,14 @@ export default function SaleTransactionForm({
   const selectedWarehouseItem = useMemo(
     () =>
       productDetailsData?.warehouseItems.find(
-        (item) => item.id === warehouseItemId,
+        (item) => item.id === warehouseItemId
       ),
-    [productDetailsData?.warehouseItems, warehouseItemId],
+    [productDetailsData?.warehouseItems, warehouseItemId]
   );
 
   const hasInsufficientStock = useMemo(
     () => selectedWarehouseItem && quantity > selectedWarehouseItem.quantity,
-    [selectedWarehouseItem, quantity],
+    [selectedWarehouseItem, quantity]
   );
 
   if (productsError) {
@@ -142,18 +142,17 @@ export default function SaleTransactionForm({
 
   return (
     <form
+      className="space-y-6"
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className="space-y-6"
     >
       <FieldGroup>
         <Separator />
 
         <form.Field
-          name="productId"
           children={(field) => (
             <Field>
               <FieldLabel>{tInventory("productName")} *</FieldLabel>
@@ -203,7 +202,7 @@ export default function SaleTransactionForm({
                                 "h-4 w-4",
                                 product.id === field.state.value
                                   ? "opacity-100"
-                                  : "opacity-0",
+                                  : "opacity-0"
                               )}
                             />
                           </div>
@@ -216,11 +215,11 @@ export default function SaleTransactionForm({
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="productId"
         />
 
         {productId && (
           <form.Field
-            name="warehouseItemId"
             children={(field) => (
               <Field>
                 <FieldLabel>{t("warehouseLocation")} *</FieldLabel>
@@ -246,7 +245,7 @@ export default function SaleTransactionForm({
                           const warehouseId =
                             typeof item === "string"
                               ? productDetailsData?.warehouseItems.find(
-                                  (w) => w.id === item,
+                                  (w) => w.id === item
                                 )?.warehouseId
                               : (item as any).warehouseId;
                           if (warehouseId) {
@@ -282,7 +281,7 @@ export default function SaleTransactionForm({
                                   "h-4 w-4",
                                   item.id === field.state.value
                                     ? "opacity-100"
-                                    : "opacity-0",
+                                    : "opacity-0"
                                 )}
                               />
                             </div>
@@ -302,24 +301,24 @@ export default function SaleTransactionForm({
                 <FieldError errors={field.state.meta.errors} />
               </Field>
             )}
+            name="warehouseItemId"
           />
         )}
 
         <form.Field
-          name="quantity"
           children={(field) => (
             <Field>
               <FieldLabel>{tCommon("quantity")} *</FieldLabel>
               <Input
-                type="number"
-                placeholder={t("enterQuantity")}
-                min="1"
-                max={selectedWarehouseItem?.quantity || undefined}
-                step="1"
                 className={hasInsufficientStock ? "border-destructive" : ""}
-                value={field.state.value}
+                max={selectedWarehouseItem?.quantity || undefined}
+                min="1"
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+                placeholder={t("enterQuantity")}
+                step="1"
+                type="number"
+                value={field.state.value}
               />
               <FieldDescription className="flex items-center justify-between">
                 <span>{t("deductedFromInventory")}</span>
@@ -329,7 +328,7 @@ export default function SaleTransactionForm({
                       "text-sm font-medium",
                       hasInsufficientStock
                         ? "text-destructive"
-                        : "text-muted-foreground",
+                        : "text-muted-foreground"
                     )}
                   >
                     {tInventory("onHand")}: {selectedWarehouseItem.quantity}
@@ -349,66 +348,67 @@ export default function SaleTransactionForm({
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="quantity"
         />
 
         <form.Field
-          name="reference"
           children={(field) => (
             <Field>
               <FieldLabel>
                 {tCommon("reference")} {t("poNumber")}
               </FieldLabel>
               <Input
-                placeholder={t("referencePlaceholder")}
-                value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
+                placeholder={t("referencePlaceholder")}
+                value={field.state.value}
               />
               <FieldDescription>{t("referenceDescription")}</FieldDescription>
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="reference"
         />
 
         <form.Field
-          name="note"
           children={(field) => (
             <Field>
               <FieldLabel>{tCommon("note")}</FieldLabel>
               <Textarea
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
                 placeholder={t("notePlaceholder")}
                 rows={3}
                 value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
               />
               <FieldDescription>{t("noteDescription")}</FieldDescription>
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="note"
         />
       </FieldGroup>
 
       <div className="flex justify-end pt-6 border-t">
         <div className="flex gap-3">
           <Button
-            type="button"
-            variant="outline"
+            disabled={form.state.isSubmitting}
             onClick={() => {
               form.reset();
             }}
-            disabled={form.state.isSubmitting}
+            type="button"
+            variant="outline"
           >
             {t("resetForm")}
           </Button>
           <Button
-            type="submit"
+            className="min-w-[140px]"
             disabled={
               form.state.isSubmitting ||
               !form.state.isValid ||
               hasInsufficientStock
             }
-            className="min-w-[140px]"
+            type="submit"
           >
             {form.state.isSubmitting ? (
               <>
@@ -431,9 +431,9 @@ export default function SaleTransactionForm({
 export const CreateSaleTransactionDialog = () => {
   return (
     <TriggerDialog
+      description={useTranslations("forms")("recordSaleDescription")}
       title={useTranslations("forms")("recordSaleTransaction")}
       triggerText={useTranslations("forms")("recordSale")}
-      description={useTranslations("forms")("recordSaleDescription")}
     >
       <SaleTransactionForm />
     </TriggerDialog>

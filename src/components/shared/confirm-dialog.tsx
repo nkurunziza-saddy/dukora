@@ -30,10 +30,10 @@ const ConfirmDialog: FC<DialogProps> = ({
   const t = useTranslations("common");
   return (
     <Dialog
-      open={isDialogOpen}
       onOpenChange={(open) => {
         setIsDialogOpen(open);
       }}
+      open={isDialogOpen}
     >
       <DialogPopup className="sm:max-w-[425px]">
         <DialogHeader>
@@ -42,16 +42,16 @@ const ConfirmDialog: FC<DialogProps> = ({
         </DialogHeader>
         <DialogFooter className="gap-2">
           <Button
-            variant="outline"
             disabled={isLoading}
             onClick={() => setIsDialogOpen(false)}
+            variant="outline"
           >
             {t("cancel")}
           </Button>
           <Button
-            onClick={handleConfirm}
-            disabled={isLoading}
             className="min-w-[100px]"
+            disabled={isLoading}
+            onClick={handleConfirm}
           >
             {isLoading ? t("wait") : t("confirm")}
           </Button>

@@ -758,30 +758,6 @@
       "vatDueLabel": "Monthly VAT Due (RWF)"
     }
   },
-  "quickActions": {
-    "quickActions": "Ibikorwa byihuse",
-    "searchActionsPlaceholder": "Shakisha ibikorwa cyangwa ujye ku mapaji...",
-    "noResultsFound": "Nta bisubizo bibonetse.",
-    "quickActionsGroup": "Ibikorwa byihuse",
-    "managementGroup": "Imicungire",
-    "createNewProduct": "Hanga Igicuruzwa Gishya",
-    "createNewProductDesc": "Uzuza amakuru arambuye y'igicuruzwa gishya ushaka kongeramo.",
-    "createNewSupplier": "Hanga Umu-supplier Mushya",
-    "createNewSupplierDesc": "Uzuza amakuru arambuye y'umu-supplier mushya ushaka kongeramo.",
-    "recordSaleTransaction": "Andika Igikorwa cyo Kugurisha",
-    "recordSaleTransactionDesc": "Uzuza amakuru arambuye y'igikorwa ushaka kwandika.",
-    "recordPurchaseTransaction": "Andika Igikorwa cyo Kugura",
-    "recordPurchaseTransactionDesc": "Uzuza amakuru arambuye y'igikorwa ushaka kwandika.",
-    "productCategories": "Ibyiciro by'ibicuruzwa",
-    "supplierManagement": "Imicungire y'abatanga ibicuruzwa",
-    "recordAnyTransaction": "Andika igikorwa icyo ari cyo cyose",
-    "recordExpenseTransaction": "Andika igikorwa cy'igura",
-    "recordExpenseTransactionDesc": "Andika igikorwa cy'igura.",
-    "recordTransaction": "Andika igikorwa",
-    "recordTransactionDescription": "Andika ubwoko bw'igikorwa icyo ari cyo cyose.",
-    "settings": "Settings",
-    "productManagement": "Product Management"
-  },
   "notifications": {
     "stockLevelUpdated": "Urwego rw'ububiko rwavuguruwe kuri {product}",
     "newOrderReceived": "Itegeko rishya ryakiriwe: {orderId}",
@@ -829,6 +805,35 @@
     "products": "Products",
     "summary": "Summary",
     "date": "Date"
+  },
+  "quickActions": {
+    "quickActions": "Ibikorwa by'ihitamo",
+    "searchActionsPlaceholder": "Shakisha ibikorwa...",
+    "noResultsFound": "Nta bisubizo byabonetse.",
+    "quickActionsGroup": "Ibikorwa by'ihitamo",
+    "navigationGroup": "Kuyobora",
+    "managementGroup": "Gucunga",
+    "createNewProduct": "Kora Ibicuruzwa Bishya",
+    "createNewSupplier": "Kora Umutanga Mushya",
+    "recordSaleTransaction": "Andika Gahunda y'Ubucuruzi",
+    "recordPurchaseTransaction": "Andika Gahunda y'Ugura",
+    "recordExpenseTransaction": "Andika Gahunda y'Imari",
+    "recordTransaction": "Andika Gahunda",
+    "recordAnyTransaction": "Andika Gahunda Icyo ari cyo cyose",
+    "dashboard": "Dashibodi",
+    "products": "Ibicuruzwa",
+    "suppliers": "Abatanga",
+    "transactions": "Gahunda",
+    "analytics": "Gusuzuma",
+    "settings": "Igenamiterere",
+    "productManagement": "Gucunga Ibicuruzwa",
+    "supplierManagement": "Gucunga Abatanga",
+    "createNewProductDesc": "Ongeraho ibicuruzwa bishya kuri ibicuruzwa byawe",
+    "createNewSupplierDesc": "Ongeraho umutanga mushya kuri urusobe rwawe",
+    "recordSaleTransactionDesc": "Andika gahunda y'ubucuruzi",
+    "recordPurchaseTransactionDesc": "Andika gahunda y'ugura",
+    "recordExpenseTransactionDesc": "Andika gahunda y'imari",
+    "recordTransactionDescription": "Andika ubwoko bwose bw'gahunda"
   },
   "metadata": {
     "siteName": "Dukora",
@@ -910,6 +915,30 @@
       "setPassword": {
         "title": "Shiraho ijambo ry'ibanga ryawe",
         "description": "Nyamuneka shiraho ijambo ry'ibanga kuri konti yawe kugirango ukomeze gushyiraho"
+      },
+      "createProduct": {
+        "title": "Kora Ibicuruzwa",
+        "description": "Ongeraho ibicuruzwa bishya kuri ibicuruzwa byawe"
+      },
+      "createSupplier": {
+        "title": "Kora Umutanga",
+        "description": "Ongeraho umutanga mushya kuri urusobe rwawe"
+      },
+      "createSale": {
+        "title": "Andika Ubucuruzi",
+        "description": "Andika gahunda nshya y'ubucuruzi"
+      },
+      "createPurchase": {
+        "title": "Andika Ugura",
+        "description": "Andika gahunda nshya y'ugura"
+      },
+      "createExpense": {
+        "title": "Andika Imari",
+        "description": "Andika gahunda nshya y'imari"
+      },
+      "createTransaction": {
+        "title": "Andika Gahunda",
+        "description": "Andika ubwoko bwose bw'gahunda"
       }
     }
   },

@@ -21,20 +21,20 @@ export function Navigation() {
 
           <nav className="hidden md:flex items-center gap-4">
             <Link
-              href="#features"
               className="text-xs text-text-secondary hover:text-foreground transition"
+              href="#features"
             >
               {t("features")}
             </Link>
             <Link
-              href="#about"
               className="text-xs text-text-secondary hover:text-foreground transition"
+              href="#about"
             >
               {t("about")}
             </Link>
             <Link
-              href="#insights"
               className="text-xs text-text-secondary hover:text-foreground transition"
+              href="#insights"
             >
               {t("insights")}
             </Link>
@@ -42,17 +42,17 @@ export function Navigation() {
 
           <div className="hidden md:flex items-center gap-3">
             <Link
-              href="/auth/sign-up"
               className="px-4 py-1.5 text-xs font-medium text-foreground hover:bg-surface transition border border-border"
+              href="/auth/sign-up"
             >
               {t("signUp")}
             </Link>
           </div>
 
           <button
-            type="button"
             className="md:hidden text-text-secondary hover:text-foreground"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            type="button"
           >
             {mobileMenuOpen ? (
               <XIcon className="w-5 h-5" />
@@ -72,27 +72,27 @@ export function Navigation() {
             <div className="py-4 border-t border-border">
               <nav className="flex flex-col gap-3">
                 <Link
-                  href="#features"
                   className="text-xs text-text-secondary hover:text-foreground transition"
+                  href="#features"
                 >
                   {t("features")}
                 </Link>
                 <Link
-                  href="#about"
                   className="text-xs text-text-secondary hover:text-foreground transition"
+                  href="#about"
                 >
                   {t("about")}
                 </Link>
                 <Link
-                  href="#insights"
                   className="text-xs text-text-secondary hover:text-foreground transition"
+                  href="#insights"
                 >
                   {t("insights")}
                 </Link>
                 <div className="pt-3 border-t border-border">
                   <Link
-                    href="/auth/sign-up"
                     className="block px-4 py-1.5 text-xs font-medium text-center text-foreground border border-border hover:bg-surface transition"
+                    href="/auth/sign-up"
                   >
                     {t("signUp")}
                   </Link>

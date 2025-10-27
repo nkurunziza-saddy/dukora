@@ -1026,30 +1026,6 @@
     "officeSupplies": "Office Supplies",
     "title": "Product Catalog"
   },
-  "quickActions": {
-    "createNewProduct": "Create new product",
-    "createNewProductDesc": "Fill in the details to create a new product.",
-    "createNewSupplier": "Create new supplier",
-    "createNewSupplierDesc": "Fill in the details to create a new supplier.",
-    "managementGroup": "Management",
-    "noResultsFound": "No results found.",
-    "productCategories": "Product Categories",
-    "productManagement": "Product Management",
-    "quickActions": "Quick Actions",
-    "quickActionsGroup": "Quick Actions",
-    "recordAnyTransaction": "Record any transaction",
-    "recordExpenseTransaction": "Record expense transaction",
-    "recordExpenseTransactionDesc": "Record an expense transaction.",
-    "recordPurchaseTransaction": "Record purchase transaction",
-    "recordPurchaseTransactionDesc": "Record a purchase transaction.",
-    "recordSaleTransaction": "Record sale transaction",
-    "recordSaleTransactionDesc": "Record a sale transaction.",
-    "recordTransaction": "Record Transaction",
-    "recordTransactionDescription": "Record any type of transaction.",
-    "searchActionsPlaceholder": "Type a command or search...",
-    "settings": "Settings",
-    "supplierManagement": "Supplier Management"
-  },
   "sales": {
     "dailySalesRevenue": "Daily sales revenue",
     "profitFromYesterday": "Profit from yesterday",
@@ -1210,6 +1186,35 @@
     "noDataAvailable": "No data available",
     "selectTimeRange": "Select time range"
   },
+  "quickActions": {
+    "quickActions": "Quick Actions",
+    "searchActionsPlaceholder": "Search actions...",
+    "noResultsFound": "No results found.",
+    "quickActionsGroup": "Quick Actions",
+    "navigationGroup": "Navigation",
+    "managementGroup": "Management",
+    "createNewProduct": "Create New Product",
+    "createNewSupplier": "Create New Supplier",
+    "recordSaleTransaction": "Record Sale Transaction",
+    "recordPurchaseTransaction": "Record Purchase Transaction",
+    "recordExpenseTransaction": "Record Expense Transaction",
+    "recordTransaction": "Record Transaction",
+    "recordAnyTransaction": "Record Any Transaction",
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "suppliers": "Suppliers",
+    "transactions": "Transactions",
+    "analytics": "Analytics",
+    "settings": "Settings",
+    "productManagement": "Product Management",
+    "supplierManagement": "Supplier Management",
+    "createNewProductDesc": "Add a new product to your inventory",
+    "createNewSupplierDesc": "Add a new supplier to your network",
+    "recordSaleTransactionDesc": "Record a sale transaction",
+    "recordPurchaseTransactionDesc": "Record a purchase transaction",
+    "recordExpenseTransactionDesc": "Record an expense transaction",
+    "recordTransactionDescription": "Record any type of transaction"
+  },
   "metadata": {
     "siteName": "Dukora",
     "siteDescription": "Dukora is a comprehensive platform to track inventory across multiple warehouses, manage sales in real-time, and get AI-powered insights—all in one unified dashboard.",
@@ -1290,6 +1295,30 @@
       "setPassword": {
         "title": "Set Your Password",
         "description": "Please set a password for your account to complete the registration process"
+      },
+      "createProduct": {
+        "title": "Create Product",
+        "description": "Add a new product to your inventory"
+      },
+      "createSupplier": {
+        "title": "Create Supplier",
+        "description": "Add a new supplier to your network"
+      },
+      "createSale": {
+        "title": "Record Sale",
+        "description": "Record a new sale transaction"
+      },
+      "createPurchase": {
+        "title": "Record Purchase",
+        "description": "Record a new purchase transaction"
+      },
+      "createExpense": {
+        "title": "Record Expense",
+        "description": "Record a new expense transaction"
+      },
+      "createTransaction": {
+        "title": "Record Transaction",
+        "description": "Record any type of transaction"
       }
     }
   },

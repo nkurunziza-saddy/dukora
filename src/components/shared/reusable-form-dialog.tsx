@@ -70,7 +70,7 @@ export function StateDialog({
   className?: string;
 }) {
   return (
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+    <Dialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
       <DialogPopup
         className={cn("sm:max-w-4xl max-h-[90vh] flex flex-col", className)}
       >

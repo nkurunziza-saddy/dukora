@@ -758,30 +758,6 @@
       "vatDueLabel": "Monthly VAT Due (RWF)"
     }
   },
-  "quickActions": {
-    "quickActions": "Actions rapides",
-    "searchActionsPlaceholder": "Rechercher des actions ou naviguer vers des pages...",
-    "noResultsFound": "Aucun résultat trouvé.",
-    "quickActionsGroup": "Actions rapides",
-    "managementGroup": "Gestion",
-    "createNewProduct": "Créer un nouveau produit",
-    "createNewProductDesc": "Remplissez les détails du nouveau produit que vous souhaitez ajouter.",
-    "createNewSupplier": "Créer un nouveau fournisseur",
-    "createNewSupplierDesc": "Remplissez les détails du nouveau fournisseur que vous souhaitez ajouter.",
-    "recordSaleTransaction": "Enregistrer une transaction de vente",
-    "recordSaleTransactionDesc": "Remplissez les détails de la transaction que vous souhaitez enregistrer.",
-    "recordPurchaseTransaction": "Enregistrer une transaction d'achat",
-    "recordPurchaseTransactionDesc": "Remplissez les détails de la transaction que vous souhaitez enregistrer.",
-    "productCategories": "Catégories de produits",
-    "supplierManagement": "Gestion des fournisseurs",
-    "recordAnyTransaction": "Enregistrer toute transaction",
-    "recordExpenseTransaction": "Enregistrer une transaction de dépense",
-    "recordExpenseTransactionDesc": "Enregistrer une transaction de dépense.",
-    "recordTransaction": "Enregistrer la transaction",
-    "recordTransactionDescription": "Enregistrer tout type de transaction.",
-    "settings": "Settings",
-    "productManagement": "Product Management"
-  },
   "notifications": {
     "stockLevelUpdated": "Niveau de stock mis à jour pour {product}",
     "newOrderReceived": "Nouvelle commande reçue : {orderId}",
@@ -829,6 +805,35 @@
     "products": "Products",
     "summary": "Summary",
     "date": "Date"
+  },
+  "quickActions": {
+    "quickActions": "Actions Rapides",
+    "searchActionsPlaceholder": "Rechercher des actions...",
+    "noResultsFound": "Aucun résultat trouvé.",
+    "quickActionsGroup": "Actions Rapides",
+    "navigationGroup": "Navigation",
+    "managementGroup": "Gestion",
+    "createNewProduct": "Créer un Nouveau Produit",
+    "createNewSupplier": "Créer un Nouveau Fournisseur",
+    "recordSaleTransaction": "Enregistrer une Transaction de Vente",
+    "recordPurchaseTransaction": "Enregistrer une Transaction d'Achat",
+    "recordExpenseTransaction": "Enregistrer une Transaction de Dépense",
+    "recordTransaction": "Enregistrer une Transaction",
+    "recordAnyTransaction": "Enregistrer Toute Transaction",
+    "dashboard": "Tableau de Bord",
+    "products": "Produits",
+    "suppliers": "Fournisseurs",
+    "transactions": "Transactions",
+    "analytics": "Analyses",
+    "settings": "Paramètres",
+    "productManagement": "Gestion des Produits",
+    "supplierManagement": "Gestion des Fournisseurs",
+    "createNewProductDesc": "Ajouter un nouveau produit à votre inventaire",
+    "createNewSupplierDesc": "Ajouter un nouveau fournisseur à votre réseau",
+    "recordSaleTransactionDesc": "Enregistrer une transaction de vente",
+    "recordPurchaseTransactionDesc": "Enregistrer une transaction d'achat",
+    "recordExpenseTransactionDesc": "Enregistrer une transaction de dépense",
+    "recordTransactionDescription": "Enregistrer tout type de transaction"
   },
   "metadata": {
     "siteName": "Dukora",
@@ -910,6 +915,30 @@
       "setPassword": {
         "title": "Définir votre mot de passe",
         "description": "Veuillez définir un mot de passe pour votre compte pour terminer le processus d'inscription"
+      },
+      "createProduct": {
+        "title": "Créer un Produit",
+        "description": "Ajouter un nouveau produit à votre inventaire"
+      },
+      "createSupplier": {
+        "title": "Créer un Fournisseur",
+        "description": "Ajouter un nouveau fournisseur à votre réseau"
+      },
+      "createSale": {
+        "title": "Enregistrer une Vente",
+        "description": "Enregistrer une nouvelle transaction de vente"
+      },
+      "createPurchase": {
+        "title": "Enregistrer un Achat",
+        "description": "Enregistrer une nouvelle transaction d'achat"
+      },
+      "createExpense": {
+        "title": "Enregistrer une Dépense",
+        "description": "Enregistrer une nouvelle transaction de dépense"
+      },
+      "createTransaction": {
+        "title": "Enregistrer une Transaction",
+        "description": "Enregistrer tout type de transaction"
       }
     }
   },
