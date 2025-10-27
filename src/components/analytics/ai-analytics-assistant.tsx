@@ -1,24 +1,36 @@
 "use client";
 
-import { useChat } from "@ai-sdk/react";
 import {
-  BotIcon,
   ChevronDownIcon,
   ChevronUpIcon,
-  SendIcon,
-  SquareIcon,
+  CopyIcon,
+  DownloadIcon,
+  RefreshCcwIcon,
+  SparklesIcon,
+  Trash2Icon,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
+import { Action, Actions } from "@/components/ai-components/actions";
+import {
+  Conversation,
+  ConversationContent,
+  ConversationScrollButton,
+} from "@/components/ai-components/conversation";
+import { Message, MessageContent } from "@/components/ai-components/message";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { usePersistedMessages } from "@/lib/hooks/use-persisted-messages";
 import { cn } from "@/lib/utils";
+import {
+  Reasoning,
+  ReasoningContent,
+  ReasoningTrigger,
+} from "../ai-components/reasoning";
+import { Response } from "../ai-components/response";
 
 interface AIAnalyticsAssistantProps {
   analyticsData: Record<string, unknown>;
@@ -34,32 +46,21 @@ export function AIAnalyticsAssistant({
   year,
 }: AIAnalyticsAssistantProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-  const {
-    messages: chatMessages,
-    sendMessage: sendChatMessage,
-    stop,
-    error,
-  } = useChat({
-    onFinish: () => {
-      setIsLoading(false);
-    },
-    onError: () => {
-      setIsLoading(false);
-    },
-  });
+  const { messages, sendMessage, regenerate, status, clearMessages } =
+    usePersistedMessages({
+      api: "/api/chat/analytics",
+      storageKey: "ai-analytics-messages",
+      maxMessages: 30,
+    });
 
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault();
-      if (!input.trim() || isLoading) return;
+  const isLoading = status === "submitted" || status === "streaming";
 
-      const userMessage = input.trim();
-      setInput("");
-      setIsLoading(true);
+  const handleSendMessage = useCallback(
+    async (text: string) => {
+      if (!text.trim() || isLoading) return;
+
+      const userMessage = text.trim();
 
       const systematicPrompt = createAnalyticsPrompt(
         analyticsData,
@@ -69,33 +70,44 @@ export function AIAnalyticsAssistant({
         userMessage
       );
 
-      sendChatMessage({ text: systematicPrompt });
+      sendMessage({ text: systematicPrompt });
     },
-    [
-      input,
-      isLoading,
-      analyticsData,
-      timeRange,
-      monthName,
-      year,
-      sendChatMessage,
-    ]
+    [analyticsData, timeRange, monthName, year, sendMessage, isLoading]
   );
 
-  const handleClear = useCallback(() => {
-    window.location.reload();
-  }, []);
-
-  const handleSuggestionClick = useCallback((suggestion: string) => {
-    setInput(suggestion);
-  }, []);
-
-  useEffect(() => {
-    const scrollArea = scrollAreaRef.current;
-    if (scrollArea) {
-      scrollArea.scrollTo({ top: scrollArea.scrollHeight, behavior: "smooth" });
+  const handleClearMessages = useCallback(() => {
+    if (
+      confirm(
+        "Are you sure you want to clear all analytics messages? This action cannot be undone."
+      )
+    ) {
+      clearMessages();
     }
-  }, []);
+  }, [clearMessages]);
+
+  console.log({ messages });
+  const handleDownload = () => {
+    const chatContent = messages
+      .map((msg) => {
+        const role = msg.role === "user" ? "You" : "AI Analytics Assistant";
+        const content = msg.parts
+          .filter((part) => part.type === "text")
+          .map((part) => (part.type === "text" ? part.text : ""))
+          .join("\n");
+        return `${role}:\n${content}\n\n`;
+      })
+      .join("---\n\n");
+
+    const blob = new Blob([chatContent], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `financial-chat-${new Date().toISOString().split("T")[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   const suggestions = [
     "Analyze the revenue trends and provide insights",
@@ -106,161 +118,130 @@ export function AIAnalyticsAssistant({
   ];
 
   return (
-    <div className="mt-6 border rounded-md p-4">
+    <div className="mt-6 border rounded-lg p-4 bg-card shadow-sm">
       <Collapsible onOpenChange={setIsOpen} open={isOpen}>
-        <CollapsibleTrigger className={""}>
-          <div className="flex gap-4 items-center justify-between">
-            <h4 className="flex items-center gap-2">AI Analytics Assistant</h4>
+        <CollapsibleTrigger className="w-full">
+          <div className="flex gap-4 items-center justify-between p-2 hover:bg-muted/50 rounded-md transition-colors">
+            <div className="flex items-center gap-2">
+              <SparklesIcon className="size-4 text-primary" />
+              <h4 className="font-medium text-foreground">
+                AI Analytics Assistant
+              </h4>
+            </div>
             {isOpen ? (
-              <ChevronUpIcon className="h-4 w-4" />
+              <ChevronUpIcon className="h-4 w-4 text-muted-foreground" />
             ) : (
-              <ChevronDownIcon className="h-4 w-4" />
+              <ChevronDownIcon className="h-4 w-4 text-muted-foreground" />
             )}
           </div>
         </CollapsibleTrigger>
-
         <CollapsibleContent className="mt-4">
-          <div className="pt-0">
-            <div className="space-y-4">
-              {chatMessages.length === 0 && (
-                <div className="space-y-2">
-                  <p className="text-sm text-muted-foreground">
-                    Ask me anything about your analytics data:
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {suggestions.map((suggestion) => (
-                      <Button
-                        className="text-xs"
-                        key={suggestion}
-                        onClick={() => handleSuggestionClick(suggestion)}
-                        size="sm"
-                        variant="outline"
-                      >
-                        {suggestion}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {chatMessages.length > 0 && (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium">Conversation</p>
-                    <Button
-                      className="h-7 px-2 text-xs"
-                      onClick={handleClear}
-                      size="sm"
-                      variant="ghost"
-                    >
-                      Clear
-                    </Button>
-                  </div>
-
-                  <ScrollArea
-                    className="h-64 border rounded-lg"
-                    ref={scrollAreaRef}
-                  >
-                    <div className="p-4 space-y-4">
-                      {chatMessages.map((message) => {
-                        const textContent = message.parts
-                          .filter((part: any) => part.type === "text")
-                          .map((part: any) => part.text)
-                          .join("");
-                        return (
-                          <div
-                            className={cn(
-                              "flex gap-3",
-                              message.role === "user" ? "flex-row-reverse" : ""
-                            )}
-                            key={message.id}
-                          >
-                            <div
-                              className={cn(
-                                "flex-1 space-y-2",
-                                message.role === "user"
-                                  ? "max-w-[75%]"
-                                  : "max-w-[85%]"
-                              )}
-                            >
-                              <div
-                                className={cn(
-                                  "px-3 py-2 rounded-lg text-sm",
-                                  message.role === "user"
-                                    ? "bg-muted/40 text-foreground ml-auto"
-                                    : "bg-background text-foreground border"
-                                )}
-                              >
-                                <div className="prose prose-sm max-w-none dark:prose-invert [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
-                                  {textContent}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-
-                      {isLoading && (
-                        <div className="flex gap-3">
-                          <div className="flex-1 space-y-2 max-w-[85%]">
-                            <div className="px-3 py-2 rounded-lg text-sm bg-background text-foreground border">
-                              <div className="flex items-center gap-2">
-                                <div className="flex space-x-1">
-                                  <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" />
-                                  <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce [animation-delay:0.1s]" />
-                                  <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce [animation-delay:0.2s]" />
-                                </div>
-                                <span className="text-muted-foreground">
-                                  Analyzing your data...
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </ScrollArea>
-                </div>
-              )}
-
-              {error && (
-                <div className="p-3 bg-destructive/5 border border-destructive/20 rounded-lg">
-                  <p className="text-sm text-destructive">
-                    Something went wrong. Please try again.
-                  </p>
-                </div>
-              )}
-
-              <form className="flex gap-2" onSubmit={handleSubmit}>
-                <Input
-                  className="flex-1"
-                  disabled={isLoading}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask about your analytics data..."
-                  value={input}
-                />
-                {isLoading ? (
+          <div className="flex flex-col gap-4">
+            <div className="flex gap-2 flex-wrap items-center justify-between">
+              <div className="flex gap-2 flex-wrap">
+                {suggestions.map((suggestion) => (
                   <Button
-                    className="px-3"
-                    onClick={stop}
+                    className="text-xs hover:bg-primary/10 hover:border-primary/50 transition-colors"
+                    key={suggestion}
+                    onClick={() => handleSendMessage(suggestion.trim())}
                     size="sm"
-                    type="button"
                     variant="outline"
                   >
-                    <SquareIcon className="w-4 h-4" />
+                    {suggestion}
                   </Button>
-                ) : (
-                  <Button
-                    className="px-3"
-                    disabled={!input.trim()}
-                    size="sm"
-                    type="submit"
-                  >
-                    <SendIcon className="w-4 h-4" />
-                  </Button>
-                )}
-              </form>
+                ))}
+              </div>
+              {messages.length > 0 && (
+                <Button
+                  className="text-xs hover:bg-destructive/10 hover:border-destructive/50 transition-colors"
+                  onClick={handleClearMessages}
+                  size="sm"
+                  variant="outline"
+                >
+                  <Trash2Icon className="size-3 mr-1" />
+                  Clear
+                </Button>
+              )}
             </div>
+            <Conversation className="flex-1">
+              <ConversationContent
+                className={cn(messages.length > 0 ? "py-0" : "py-4")}
+              >
+                <div className="space-y-4">
+                  {(() => {
+                    const latestAssistantMessage = [...messages]
+                      .reverse()
+                      .find((m) => m.role === "assistant");
+                    if (!latestAssistantMessage) return null;
+                    return (
+                      <Message from="assistant" key={latestAssistantMessage.id}>
+                        <div className="flex flex-col gap-0.5">
+                          <MessageContent>
+                            {latestAssistantMessage.parts.map((part, i) => {
+                              switch (part.type) {
+                                case "text":
+                                  return (
+                                    <Response
+                                      key={`${latestAssistantMessage.id}-${i}`}
+                                    >
+                                      {part.text}
+                                    </Response>
+                                  );
+                                case "reasoning":
+                                  return (
+                                    <Reasoning
+                                      defaultOpen={false}
+                                      isStreaming={status === "streaming"}
+                                      key={`${latestAssistantMessage.id}-${i}`}
+                                    >
+                                      <ReasoningTrigger />
+                                      <ReasoningContent>
+                                        {part.text}
+                                      </ReasoningContent>
+                                    </Reasoning>
+                                  );
+                                default:
+                                  return null;
+                              }
+                            })}
+                          </MessageContent>
+                          <Actions className="mt-2">
+                            <Action label="Retry" onClick={() => regenerate()}>
+                              <RefreshCcwIcon className="size-3.5" />
+                            </Action>
+                            <Action
+                              label="Copy"
+                              onClick={() =>
+                                navigator.clipboard.writeText(
+                                  latestAssistantMessage.parts.find(
+                                    (part) => part.type === "text"
+                                  )?.text || ""
+                                )
+                              }
+                            >
+                              <CopyIcon className="size-3.5" />
+                            </Action>
+                            <Action
+                              label="Download"
+                              onClick={handleDownload}
+                              tooltip="Download conversation"
+                            >
+                              <DownloadIcon className="size-3.5" />
+                            </Action>
+                          </Actions>
+                        </div>
+                      </Message>
+                    );
+                  })()}
+                  {isLoading && (
+                    <div className="py-2 text-muted-foreground animate-pulse text-sm">
+                      Generating response ...
+                    </div>
+                  )}
+                </div>
+              </ConversationContent>
+              <ConversationScrollButton />
+            </Conversation>
           </div>
         </CollapsibleContent>
       </Collapsible>
@@ -313,10 +294,10 @@ PROFITABILITY METRICS:
 - Asset Turnover: ${analyticsData?.assetTurnover || 0}
 
 DATA QUALITY:
-- Total Transactions: ${(analyticsData?.dataQuality as any)?.totalTransactions || 0}
-- Valid Transactions: ${(analyticsData?.dataQuality as any)?.validTransactions || 0}
-- Has Inventory Data: ${(analyticsData?.dataQuality as any)?.hasInventoryData ? "Yes" : "No"}
-- Has Expense Data: ${(analyticsData?.dataQuality as any)?.hasExpenseData ? "Yes" : "No"}
+- Total Transactions: ${(analyticsData?.dataQuality as Record<string, unknown>)?.totalTransactions || 0}
+- Valid Transactions: ${(analyticsData?.dataQuality as Record<string, unknown>)?.validTransactions || 0}
+- Has Inventory Data: ${(analyticsData?.dataQuality as Record<string, unknown>)?.hasInventoryData ? "Yes" : "No"}
+- Has Expense Data: ${(analyticsData?.dataQuality as Record<string, unknown>)?.hasExpenseData ? "Yes" : "No"}
 
 INSTRUCTIONS:
 You are a financial analytics expert. Analyze the provided data and answer the user's question with:
