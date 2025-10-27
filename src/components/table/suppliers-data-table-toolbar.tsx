@@ -19,24 +19,25 @@ export function SuppliersDataTableToolbar<TData>({
   const isFiltered = table.getState().columnFilters.length > 0;
   const t = useTranslations("table");
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-1 items-center gap-2">
-        <DataTableSearch table={table} placeholder="Filter suppliers..." />
+        <DataTableSearch placeholder="Filter suppliers..." table={table} />
         {isFiltered && (
           <Button
-            variant="ghost"
-            size="sm"
+            className="flex items-center gap-1"
             onClick={() => table.resetColumnFilters()}
+            size="sm"
+            variant="ghost"
           >
-            {t("reset")}
-            <XIcon />
+            <span className="hidden sm:inline">{t("reset")}</span>
+            <XIcon className="size-4" />
           </Button>
         )}
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2">
         <DataTableExportPDF
-          table={table}
           filename="suppliers_export"
+          table={table}
           title="Suppliers Report"
         />
         <DataTableViewOptions table={table} />

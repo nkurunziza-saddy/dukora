@@ -10,7 +10,6 @@ import {
 } from "@tanstack/react-table";
 import { InfoIcon } from "lucide-react";
 import * as React from "react";
-
 import {
   Table,
   TableBody,
@@ -48,12 +47,12 @@ export function ExtendableDataTable<TData, TValue>({
       if (expansion?.contentKey) {
         const content = row[expansion.contentKey];
         return Boolean(
-          content && (typeof content === "string" ? content.trim() : content),
+          content && (typeof content === "string" ? content.trim() : content)
         );
       }
       return false;
     },
-    [expansionEnabled, expansion],
+    [expansionEnabled, expansion]
   );
 
   const table = useReactTable({
@@ -74,8 +73,8 @@ export function ExtendableDataTable<TData, TValue>({
         return (
           <div className="text-muted-foreground flex items-start py-2 bg-muted/80 rounded-md">
             <span
-              className="me-3 mt-0.5 flex w-7 shrink-0 justify-center"
               aria-hidden="true"
+              className="me-3 mt-0.5 flex w-7 shrink-0 justify-center"
             >
               <InfoIcon className="opacity-60" size={16} />
             </span>
@@ -96,19 +95,22 @@ export function ExtendableDataTable<TData, TValue>({
       <Table className="min-w-full border border-separate border-spacing-0">
         <TableHeader className="bg-muted/50 backdrop-blur-xs">
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} className="hover:bg-transparent">
-              {headerGroup.headers.map((header) => {
+            <TableRow className="hover:bg-transparent" key={headerGroup.id}>
+              {headerGroup.headers.map((header, index) => {
                 return (
                   <TableHead
-                    key={header.id}
+                    className={`text-foreground font-semibold text-sm ${
+                      // Hide headers after index 2 on mobile (keep first 3 columns)
+                      index >= 3 ? "hidden md:table-cell" : ""
+                    }`}
                     colSpan={header.colSpan}
-                    className="text-foreground font-semibold text-sm"
+                    key={header.id}
                   >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext(),
+                          header.getContext()
                         )}
                   </TableHead>
                 );
@@ -121,8 +123,6 @@ export function ExtendableDataTable<TData, TValue>({
             table.getRowModel().rows.map((row, idx) => (
               <React.Fragment key={row.id}>
                 <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
                   className={`transition-colors ${
                     row.getIsExpanded()
                       ? "bg-muted/60 border-l-4 border-muted"
@@ -130,15 +130,20 @@ export function ExtendableDataTable<TData, TValue>({
                         ? "bg-background"
                         : "bg-muted/40"
                   } hover:bg-muted/60 border-b border-border`}
+                  data-state={row.getIsSelected() && "selected"}
+                  key={row.id}
                 >
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map((cell, index) => (
                     <TableCell
+                      className={`whitespace-nowrap [&:has([aria-expanded])]:w-px [&:has([aria-expanded])]:py-0 [&:has([aria-expanded])]:pr-0 px-3 py-2 text-sm text-foreground ${
+                        // Hide columns after index 2 on mobile (keep first 3 columns)
+                        index >= 3 ? "hidden md:table-cell" : ""
+                      }`}
                       key={cell.id}
-                      className="whitespace-nowrap [&:has([aria-expanded])]:w-px [&:has([aria-expanded])]:py-0 [&:has([aria-expanded])]:pr-0 px-3 py-2 text-sm text-foreground"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext(),
+                        cell.getContext()
                       )}
                     </TableCell>
                   ))}
@@ -146,8 +151,8 @@ export function ExtendableDataTable<TData, TValue>({
                 {expansionEnabled && row.getIsExpanded() && (
                   <TableRow className="bg-muted/80">
                     <TableCell
-                      colSpan={row.getVisibleCells().length}
                       className="p-4 border-b border-border"
+                      colSpan={row.getVisibleCells().length}
                     >
                       {renderExpandedContent(row.original)}
                     </TableCell>
@@ -158,8 +163,8 @@ export function ExtendableDataTable<TData, TValue>({
           ) : (
             <TableRow>
               <TableCell
-                colSpan={columns.length}
                 className="h-24 text-center text-muted-foreground"
+                colSpan={columns.length}
               >
                 No results.
               </TableCell>

@@ -21,32 +21,32 @@ export function ProductsDataTableToolbar<TData>({
   const isFiltered = table.getState().columnFilters.length > 0;
   const t = useTranslations("table");
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-1 items-center gap-2">
-        <DataTableSearch table={table} placeholder="Filter products..." />
+        <DataTableSearch placeholder="Filter products..." table={table} />
         {table.getColumn("status") && (
           <DataTableDashFilter
             column={table.getColumn("status")}
-            title="Status"
             options={productStatuses}
+            title="Status"
           />
         )}
         {isFiltered && (
           <Button
-            variant="ghost"
-            size="xs"
-            className=""
+            className="flex items-center gap-1"
             onClick={() => table.resetColumnFilters()}
+            size="sm"
+            variant="ghost"
           >
-            {t("reset")}
-            <XIcon />
+            <span className="hidden sm:inline">{t("reset")}</span>
+            <XIcon className="size-4" />
           </Button>
         )}
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2">
         <DataTableExportPDF
-          table={table}
           filename="products_export"
+          table={table}
           title="Products Report"
         />
         <DataTableViewOptions table={table} />

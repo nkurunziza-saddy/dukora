@@ -19,8 +19,8 @@ export function DataTableSearch<TData>({
   return (
     <input
       className={cn(
-        "w-[150px] rounded-lg border border-input bg-background text-base/5 ring-ring/24 has-focus-visible:border-ring has-focus-visible:ring-[3px] h-7 px-[calc(--spacing(3)-1px)] py-[calc(--spacing(1.5)-1px)] outline-none placeholder:text-muted-foreground/64 sm:text-sm dark:bg-input/32 outline-0 shadow-none lg:w-[250px] gap-1.5",
-        className,
+        "w-[120px] rounded-lg border border-input bg-background text-base/5 ring-ring/24 has-focus-visible:border-ring has-focus-visible:ring-[3px] h-7 px-[calc(--spacing(3)-1px)] py-[calc(--spacing(1.5)-1px)] outline-none placeholder:text-muted-foreground/64 sm:text-sm dark:bg-input/32 outline-0 shadow-none sm:w-[150px] lg:w-[250px] gap-1.5",
+        className
       )}
       data-role="table-search-input"
       data-slot="input"

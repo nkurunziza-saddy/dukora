@@ -62,12 +62,12 @@ export function DataTableExportPDF<TData>({
           (header) =>
             header.id !== "select" &&
             header.id !== "actions" &&
-            header.column.getIsVisible(),
+            header.column.getIsVisible()
         );
 
       const headers = visibleColumns.map((header) => formatKeys(header.id));
 
-      const data = rows.map((row: any) =>
+      const data = rows.map((row: Record<string, unknown>) =>
         visibleColumns.map((header) => {
           const value = row[header.id];
 
@@ -83,7 +83,7 @@ export function DataTableExportPDF<TData>({
                 ? String(value)
                 : "N/A";
           }
-        }),
+        })
       );
 
       autoTable(doc, {
@@ -121,7 +121,7 @@ export function DataTableExportPDF<TData>({
         doc.text(
           `Page ${i} of ${pageCount}`,
           doc.internal.pageSize.getWidth() - 30,
-          doc.internal.pageSize.getHeight() - 10,
+          doc.internal.pageSize.getHeight() - 10
         );
       }
 
@@ -145,22 +145,22 @@ export function DataTableExportPDF<TData>({
       <MenuTrigger
         render={
           <Button
-            variant="outline"
-            size="sm"
+            className="flex items-center gap-1"
             disabled={isExporting || totalRows === 0}
-            className="gap-2"
+            size="sm"
+            variant="outline"
           />
         }
       >
         {isExporting ? (
           <>
-            <div className="animate-spin rounded-full size-3.5 border-b-2 border-current"></div>
-            {t("exporting")}
+            <div className="animate-spin rounded-full size-4 border-b-2 border-current"></div>
+            <span className="hidden sm:inline">{t("exporting")}</span>
           </>
         ) : (
           <>
-            <DownloadIcon className="size-3.5" />
-            {t("export")}
+            <DownloadIcon className="size-4" />
+            <span className="hidden sm:inline">{t("export")}</span>
           </>
         )}
       </MenuTrigger>
@@ -182,42 +182,42 @@ export function DataTableExportPDF<TData>({
           {totalRows > 0 && (
             <>
               <MenuItem
-                onClick={() => exportToPDF(20)}
-                disabled={totalRows < 1}
                 className="flex items-center justify-between"
+                disabled={totalRows < 1}
+                onClick={() => exportToPDF(20)}
               >
                 <span>{t("firstRecords", { count: 20 })}</span>
-                <Badge variant="secondary" className="text-xs">
+                <Badge className="text-xs" variant="secondary">
                   {Math.min(20, totalRows)}
                 </Badge>
               </MenuItem>
               <MenuItem
-                onClick={() => exportToPDF(50)}
-                disabled={totalRows < 1}
                 className="flex items-center justify-between"
+                disabled={totalRows < 1}
+                onClick={() => exportToPDF(50)}
               >
                 <span>{t("firstRecords", { count: 50 })}</span>
-                <Badge variant="secondary" className="text-xs">
+                <Badge className="text-xs" variant="secondary">
                   {Math.min(50, totalRows)}
                 </Badge>
               </MenuItem>
               <MenuItem
-                onClick={() => exportToPDF(70)}
-                disabled={totalRows < 1}
                 className="flex items-center justify-between"
+                disabled={totalRows < 1}
+                onClick={() => exportToPDF(70)}
               >
                 <span>{t("firstRecords", { count: 70 })}</span>
-                <Badge variant="secondary" className="text-xs">
+                <Badge className="text-xs" variant="secondary">
                   {Math.min(70, totalRows)}
                 </Badge>
               </MenuItem>
               <MenuSeparator />
               <MenuItem
-                onClick={() => exportToPDF()}
                 className="flex items-center justify-between font-medium"
+                onClick={() => exportToPDF()}
               >
                 <span>{t("allRecords")}</span>
-                <Badge variant="default" className="text-xs">
+                <Badge className="text-xs" variant="default">
                   {totalRows}
                 </Badge>
               </MenuItem>

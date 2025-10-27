@@ -15,9 +15,10 @@ import {
   type CompressedTransactionPayload,
   TransactionType,
 } from "@/lib/schema/schema-types";
+import { AbbreviatedText, MobileResponsive } from "@/utils/mobile-responsive";
 
 export function TransactionColumn(
-  t: (key: string) => string,
+  t: (key: string) => string
 ): ColumnDef<CompressedTransactionPayload>[] {
   return [
     {
@@ -25,7 +26,14 @@ export function TransactionColumn(
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t("name")} />
       ),
-      cell: ({ row }) => row.original.product ?? "",
+      cell: ({ row }) => {
+        const productName = row.original.product ?? "";
+        return (
+          <div className="font-medium">
+            <AbbreviatedText maxLength={15} text={productName} />
+          </div>
+        );
+      },
     },
     {
       accessorKey: "type",
@@ -34,25 +42,42 @@ export function TransactionColumn(
       ),
       cell: ({ row }) => {
         const status = transactionStatuses.find(
-          (s) => s.value === row.original.type.toLowerCase(),
+          (s) => s.value === row.original.type.toLowerCase()
         );
+
         if (!status) {
           return (
-            <Badge variant="outline" className="capitalize">
+            <Badge className="capitalize" variant="outline">
               <span>{row.original.type}</span>
             </Badge>
           );
         }
+
+        // Mobile: Show only icon, Desktop: Show icon + label
         return (
-          <Badge
-            variant={status.variant}
-            className="capitalize flex gap-1 items-center"
-          >
-            {status.icon && (
-              <status.icon className="text-muted-foreground size-4" />
-            )}
-            <span>{status.label}</span>
-          </Badge>
+          <MobileResponsive
+            desktop={
+              <Badge
+                className="capitalize flex gap-1 items-center"
+                variant={status.variant}
+              >
+                {status.icon && (
+                  <status.icon className="text-muted-foreground size-4" />
+                )}
+                <span>{status.label}</span>
+              </Badge>
+            }
+            mobile={
+              <Badge
+                className="capitalize flex gap-1 items-center"
+                variant={status.variant}
+              >
+                {status.icon && (
+                  <status.icon className="text-muted-foreground size-4" />
+                )}
+              </Badge>
+            }
+          />
         );
       },
       filterFn: (row, id, value) => {

@@ -16,20 +16,21 @@ export function DefaultDataTableToolbar<TData>({
   const isFiltered = table.getState().columnFilters.length > 0;
   const t = useTranslations("table");
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between gap-2">
       <div className="flex flex-1 items-center gap-2">
         {isFiltered && (
           <Button
-            variant="ghost"
-            size="sm"
+            className="flex items-center gap-1"
             onClick={() => table.resetColumnFilters()}
+            size="sm"
+            variant="ghost"
           >
-            {t("reset")}
-            <XIcon />
+            <span className="hidden sm:inline">{t("reset")}</span>
+            <XIcon className="size-4" />
           </Button>
         )}
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2">
         <DataTableViewOptions table={table} />
       </div>
     </div>

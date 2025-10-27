@@ -235,7 +235,7 @@ export default async function InventoryDashboard() {
                             aria-hidden="true"
                             className={cn(
                               "inline-block size-2.5 rounded-md mr-2 align-middle opacity-60",
-                              colorClass,
+                              colorClass
                             )}
                           />
                           {schedule.title}
@@ -315,7 +315,7 @@ export default async function InventoryDashboard() {
                         <TableCell>
                           {log.audit_logs.performedAt
                             ? new Date(
-                                log.audit_logs.performedAt,
+                                log.audit_logs.performedAt
                               ).toLocaleString()
                             : "-"}
                         </TableCell>

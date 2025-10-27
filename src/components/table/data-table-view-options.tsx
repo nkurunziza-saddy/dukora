@@ -27,14 +27,14 @@ export function DataTableViewOptions<TData>({
       <MenuTrigger
         render={
           <Button
-            variant="outline"
+            className="ml-auto flex items-center gap-1"
             size="sm"
-            className="ml-auto hidden lg:flex"
+            variant="outline"
           />
         }
       >
-        <Settings2Icon className="size-3.5" />
-        {t("view")}
+        <Settings2Icon className="size-4" />
+        <span className="hidden sm:inline">{t("view")}</span>
       </MenuTrigger>
       <MenuPopup align="end" className="w-[150px]">
         <MenuGroup>
@@ -45,14 +45,14 @@ export function DataTableViewOptions<TData>({
             .getAllColumns()
             .filter(
               (column) =>
-                typeof column.accessorFn !== "undefined" && column.getCanHide(),
+                typeof column.accessorFn !== "undefined" && column.getCanHide()
             )
             .map((column) => {
               return (
                 <MenuCheckboxItem
-                  key={column.id}
-                  className="capitalize"
                   checked={column.getIsVisible()}
+                  className="capitalize"
+                  key={column.id}
                   onCheckedChange={(value) => column.toggleVisibility(value)}
                 >
                   {column.id !== "isbn"

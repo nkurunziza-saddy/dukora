@@ -40,25 +40,29 @@ export function DataTableDashFilter<TData, TValue>({
     <Popover>
       <PopoverTrigger
         render={
-          <Button variant="outline" size="sm" className="border-dashed" />
+          <Button
+            className="border-dashed flex items-center gap-1"
+            size="sm"
+            variant="outline"
+          />
         }
       >
-        <PlusCircleIcon className="size-3.5" />
-        {title}
+        <PlusCircleIcon className="size-4" />
+        <span className="hidden sm:inline">{title}</span>
         {selectedValues?.size > 0 && (
           <>
-            <Separator orientation="vertical" className="mx-2 h-4" />
+            <Separator className="mx-1 h-4" orientation="vertical" />
             <Badge
+              className="rounded-sm px-1 font-normal text-xs"
               variant="secondary"
-              className="rounded-sm px-1 font-normal lg:hidden"
             >
               {selectedValues.size}
             </Badge>
             <div className="hidden gap-1 lg:flex">
               {selectedValues.size > 2 ? (
                 <Badge
+                  className="rounded-sm px-1 font-normal text-xs"
                   variant="secondary"
-                  className="rounded-sm px-1 font-normal"
                 >
                   {t("selectedCount", { count: selectedValues.size })}
                 </Badge>
@@ -67,9 +71,9 @@ export function DataTableDashFilter<TData, TValue>({
                   .filter((option) => selectedValues.has(option.value))
                   .map((option) => (
                     <Badge
-                      variant="secondary"
+                      className="rounded-sm px-1 font-normal text-xs"
                       key={option.value}
-                      className="rounded-sm px-1 font-normal"
+                      variant="secondary"
                     >
                       {option.label}
                     </Badge>
@@ -79,7 +83,7 @@ export function DataTableDashFilter<TData, TValue>({
           </>
         )}
       </PopoverTrigger>
-      <PopoverPopup className="w-[200px] p-0" align="start">
+      <PopoverPopup align="start" className="w-[200px] p-0">
         <Command>
           <CommandInput placeholder={title} />
           <CommandList>
@@ -98,7 +102,7 @@ export function DataTableDashFilter<TData, TValue>({
                       }
                       const filterValues = Array.from(selectedValues);
                       column?.setFilterValue(
-                        filterValues.length ? filterValues : undefined,
+                        filterValues.length ? filterValues : undefined
                       );
                     }}
                   >
@@ -107,7 +111,7 @@ export function DataTableDashFilter<TData, TValue>({
                         "flex size-4 items-center justify-center rounded-sm border",
                         isSelected
                           ? "bg-primary border-primary text-primary-foreground"
-                          : "border-input [&_svg]:invisible",
+                          : "border-input [&_svg]:invisible"
                       )}
                     >
                       <CheckIcon className="text-primary-foreground size-3.5" />
@@ -130,8 +134,8 @@ export function DataTableDashFilter<TData, TValue>({
                 <CommandSeparator />
                 <CommandGroup>
                   <CommandItem
-                    onSelect={() => column?.setFilterValue(undefined)}
                     className="justify-center text-center"
+                    onSelect={() => column?.setFilterValue(undefined)}
                   >
                     {t("clearFilters")}
                   </CommandItem>

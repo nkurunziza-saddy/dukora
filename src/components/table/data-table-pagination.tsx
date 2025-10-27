@@ -43,15 +43,15 @@ export function DataTablePagination<TData>({
   };
 
   return (
-    <div className="flex items-center justify-between gap-x-4">
+    <div className="flex items-center justify-between gap-2 sm:gap-4">
       <div className="flex items-center space-x-2">
         <Select
-          value={`${table.getState().pagination.pageSize}`}
           onValueChange={(value) => {
             handlePageSizeChange(Number(value));
           }}
+          value={`${table.getState().pagination.pageSize}`}
         >
-          <SelectTrigger size="sm">
+          <SelectTrigger className="w-16 sm:w-20" size="sm">
             <SelectValue />
           </SelectTrigger>
           <SelectPopup side="top">
@@ -62,55 +62,63 @@ export function DataTablePagination<TData>({
             ))}
           </SelectPopup>
         </Select>
+        <span className="hidden sm:inline text-sm text-muted-foreground">
+          {t("perPage")}
+        </span>
       </div>
 
-      <div className="flex w-[100px] items-center text-foreground/85 justify-center text-sm">
-        {table.getState().pagination.pageIndex + 1} {t("of")}{" "}
-        {table.getPageCount()}
+      <div className="flex items-center text-foreground/85 justify-center text-xs sm:text-sm">
+        <span className="hidden sm:inline">
+          {table.getState().pagination.pageIndex + 1} {t("of")}{" "}
+          {table.getPageCount()}
+        </span>
+        <span className="sm:hidden">
+          {table.getState().pagination.pageIndex + 1}/{table.getPageCount()}
+        </span>
       </div>
 
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-1 sm:space-x-2">
         <Button
-          variant="outline"
-          size="icon-sm"
           className="hidden lg:flex"
-          onClick={() => handlePageChange(1)}
           disabled={!table.getCanPreviousPage()}
+          onClick={() => handlePageChange(1)}
+          size="icon-sm"
+          variant="outline"
         >
           <span className="sr-only">{t("goToFirstPage")}</span>
-          <ChevronsLeftIcon className="size-3.5" />
+          <ChevronsLeftIcon className="size-4" />
         </Button>
         <Button
-          variant="outline"
-          size="icon-sm"
+          disabled={!table.getCanPreviousPage()}
           onClick={() =>
             handlePageChange(table.getState().pagination.pageIndex)
           }
-          disabled={!table.getCanPreviousPage()}
+          size="icon-sm"
+          variant="outline"
         >
           <span className="sr-only">{t("goToPreviousPage")}</span>
-          <ChevronLeftIcon className="size-3.5" />
+          <ChevronLeftIcon className="size-4" />
         </Button>
         <Button
-          variant="outline"
-          size="icon-sm"
+          disabled={!table.getCanNextPage()}
           onClick={() =>
             handlePageChange(table.getState().pagination.pageIndex + 2)
           }
-          disabled={!table.getCanNextPage()}
+          size="icon-sm"
+          variant="outline"
         >
           <span className="sr-only">{t("goToNextPage")}</span>
-          <ChevronRightIcon className="size-3.5" />
+          <ChevronRightIcon className="size-4" />
         </Button>
         <Button
-          variant="outline"
-          size="icon-sm"
           className="hidden lg:flex"
-          onClick={() => handlePageChange(table.getPageCount())}
           disabled={!table.getCanNextPage()}
+          onClick={() => handlePageChange(table.getPageCount())}
+          size="icon-sm"
+          variant="outline"
         >
           <span className="sr-only">{t("goToLastPage")}</span>
-          <ChevronsRightIcon className="size-3.5" />
+          <ChevronsRightIcon className="size-4" />
         </Button>
       </div>
     </div>
