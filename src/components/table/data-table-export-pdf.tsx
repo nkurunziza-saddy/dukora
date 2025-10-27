@@ -67,22 +67,32 @@ export function DataTableExportPDF<TData>({
 
       const headers = visibleColumns.map((header) => formatKeys(header.id));
 
-      const data = rows.map((row: Record<string, unknown>) =>
+      const data = rows.map((row) =>
         visibleColumns.map((header) => {
-          const value = row[header.id];
+          const value = (row as Record<string, unknown>)[header.id];
 
-          switch (header.id) {
-            case "status":
-              return value
-                ? value.charAt(0).toUpperCase() + value.slice(1)
-                : "N/A";
-            case "createdAt":
-              return value ? new Date(value).toLocaleDateString() : "N/A";
-            default:
-              return value !== null && value !== undefined
-                ? String(value)
-                : "N/A";
+          if (header.id === "status") {
+            if (typeof value === "string" && value.length > 0) {
+              return value.charAt(0).toUpperCase() + value.slice(1);
+            }
+            return "N/A";
           }
+
+          if (header.id === "createdAt") {
+            if (
+              typeof value === "string" ||
+              typeof value === "number" ||
+              value instanceof Date
+            ) {
+              const date = new Date(value as string | number | Date);
+              if (!isNaN(date.getTime())) {
+                return date.toLocaleDateString();
+              }
+            }
+            return "N/A";
+          }
+
+          return value !== null && value !== undefined ? String(value) : "N/A";
         })
       );
 
