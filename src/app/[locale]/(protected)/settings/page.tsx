@@ -16,7 +16,6 @@ import UserProfileForm from "@/components/forms/user-profile-form";
 import { UserSettingsForm } from "@/components/forms/user-settings-form";
 import { SettingsSkeleton } from "@/components/skeletons";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardDescription,
@@ -24,9 +23,7 @@ import {
   CardPanel,
   CardTitle,
 } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { getCurrentSession } from "@/server/actions/auth-actions";
@@ -37,6 +34,8 @@ import { EditBusinessDetails } from "./_components/edit-business-details";
 import { EditBusinessSettings } from "./_components/edit-business-settings";
 import { EditCategories } from "./_components/edit-categories";
 import { EditWarehouses } from "./_components/edit-warehouses";
+import { NotificationsSettings } from "./_components/notifications-settings";
+import { SecuritySettings } from "./_components/security-settings";
 
 export async function generateMetadata(): Promise<Metadata> {
   return constructI18nMetadata({
@@ -105,8 +104,8 @@ function ProtectedSettings({
   user,
   tStripe,
 }: {
-  business: any;
-  user: any;
+  business: Awaited<ReturnType<typeof getBusinessById>>["data"];
+  user: Awaited<ReturnType<typeof getUserById>>["data"];
   tStripe: TStripeFn;
 }) {
   const tabConfig = [
@@ -144,13 +143,11 @@ function ProtectedSettings({
           value: "notifications",
           label: "Notifications",
           icon: BellIcon,
-          disabled: true,
         },
         {
           value: "security",
           label: "Security",
           icon: ShieldIcon,
-          disabled: true,
         },
       ],
     },
@@ -231,7 +228,9 @@ function ProtectedSettings({
             <TabsPanel className="m-0" value="business-settings">
               <Card>
                 <CardPanel>
-                  <EditBusinessSettings settings={business.businessSettings} />
+                  <EditBusinessSettings
+                    settings={business?.businessSettings ?? []}
+                  />
                 </CardPanel>
               </Card>
             </TabsPanel>
@@ -244,7 +243,7 @@ function ProtectedSettings({
                   </CardDescription>
                 </CardHeader>
                 <CardPanel>
-                  <EditCategories categories={business.categories} />
+                  <EditCategories categories={business?.categories ?? []} />
                 </CardPanel>
               </Card>
             </TabsPanel>
@@ -258,7 +257,7 @@ function ProtectedSettings({
                   </CardDescription>
                 </CardHeader>
                 <CardPanel>
-                  <EditWarehouses warehouses={business.warehouses} />
+                  <EditWarehouses warehouses={business?.warehouses ?? []} />
                 </CardPanel>
               </Card>
             </TabsPanel>
@@ -273,7 +272,7 @@ function ProtectedSettings({
                 </CardHeader>
                 <CardPanel>
                   <ConnectStripe
-                    stripeAccountId={business.stripeAccountId ?? undefined}
+                    stripeAccountId={business?.stripeAccountId ?? undefined}
                   />
                 </CardPanel>
               </Card>
@@ -308,108 +307,11 @@ function ProtectedSettings({
             </TabsPanel>
 
             <TabsPanel className="m-0" value="notifications">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Notification Settings</CardTitle>
-                  <CardDescription>
-                    Manage how and when you receive notifications
-                  </CardDescription>
-                </CardHeader>
-                <CardPanel className="space-y-6">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label>Order Updates</Label>
-                        <p className="text-sm text-muted-foreground">
-                          Get notified about order status changes
-                        </p>
-                      </div>
-                      <Switch defaultChecked />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label>Inventory Alerts</Label>
-                        <p className="text-sm text-muted-foreground">
-                          Low stock and inventory warnings
-                        </p>
-                      </div>
-                      <Switch defaultChecked />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label>System Updates</Label>
-                        <p className="text-sm text-muted-foreground">
-                          Platform updates and maintenance notices
-                        </p>
-                      </div>
-                      <Switch />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label>Marketing Emails</Label>
-                        <p className="text-sm text-muted-foreground">
-                          Receive promotional content and newsletters
-                        </p>
-                      </div>
-                      <Switch />
-                    </div>
-                  </div>
-                  <Button>Update Notifications</Button>
-                </CardPanel>
-              </Card>
+              <NotificationsSettings />
             </TabsPanel>
 
             <TabsPanel className="m-0" value="security">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Security Settings</CardTitle>
-                  <CardDescription>
-                    Manage your account security and authentication
-                  </CardDescription>
-                </CardHeader>
-                <CardPanel className="space-y-6">
-                  <div className="space-y-4">
-                    <div className="p-4 border rounded-lg">
-                      <h4 className="font-medium mb-2">Password</h4>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        Last changed 30 days ago
-                      </p>
-                      <Button size="sm" variant="outline">
-                        Change Password
-                      </Button>
-                    </div>
-                    <div className="p-4 border rounded-lg">
-                      <h4 className="font-medium mb-2">
-                        Two-Factor Authentication
-                      </h4>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        Add an extra layer of security to your account
-                      </p>
-                      <Button size="sm" variant="outline">
-                        Enable 2FA
-                      </Button>
-                    </div>
-                    <div className="p-4 border rounded-lg">
-                      <h4 className="font-medium mb-2">Active Sessions</h4>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        Manage your active login sessions across devices
-                      </p>
-                      <Button size="sm" variant="outline">
-                        View Sessions
-                      </Button>
-                    </div>
-                    <div className="p-4 border rounded-lg">
-                      <h4 className="font-medium mb-2">Login History</h4>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        Review recent login activity
-                      </p>
-                      <Button size="sm" variant="outline">
-                        View History
-                      </Button>
-                    </div>
-                  </div>
-                </CardPanel>
-              </Card>
+              <SecuritySettings />
             </TabsPanel>
           </div>
         </Tabs>

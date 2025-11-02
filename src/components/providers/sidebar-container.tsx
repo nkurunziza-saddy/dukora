@@ -1,5 +1,6 @@
 import type React from "react";
 import { AppSidebar } from "@/components/navigation/app-sidebar";
+import { MobileDrawer } from "@/components/navigation/mobile-drawer";
 import QuickActions from "@/components/quick-actions";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -18,10 +19,15 @@ const SidebarContainer = ({ children }: { children: React.ReactNode }) => {
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <div className="flex justify-between items-center w-full px-4">
             <div className="flex items-center gap-2 ">
-              <SidebarTrigger className="my-0" />
+              <div className="hidden md:block">
+                <SidebarTrigger className="my-0" />
+              </div>
+              <div className="md:hidden">
+                <MobileDrawer />
+              </div>
               <Separator
-                orientation="vertical"
                 className="mr-2 my-auto data-[orientation=vertical]:h-4"
+                orientation="vertical"
               />
               <CurrentPage />
             </div>

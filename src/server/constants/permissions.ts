@@ -160,6 +160,12 @@ export enum Permission {
   // Inter-Business Payments permissions
   INTER_BUSINESS_PAYMENT_INITIATE = "inter_business_payment:initiate",
   INTER_BUSINESS_PAYMENT_VIEW = "inter_business_payment:view",
+
+  // Notification permissions
+  NOTIFICATION_VIEW = "notification:view",
+  NOTIFICATION_CREATE = "notification:create",
+  NOTIFICATION_UPDATE = "notification:update",
+  NOTIFICATION_DELETE = "notification:delete",
 }
 
 // Group permissions by feature for easier management
@@ -168,6 +174,12 @@ export const PermissionGroups = {
   INTER_BUSINESS_PAYMENTS: [
     Permission.INTER_BUSINESS_PAYMENT_INITIATE,
     Permission.INTER_BUSINESS_PAYMENT_VIEW,
+  ],
+  NOTIFICATIONS: [
+    Permission.NOTIFICATION_VIEW,
+    Permission.NOTIFICATION_CREATE,
+    Permission.NOTIFICATION_UPDATE,
+    Permission.NOTIFICATION_DELETE,
   ],
   BUSINESS: [
     Permission.BUSINESS_VIEW,

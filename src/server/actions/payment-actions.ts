@@ -21,7 +21,7 @@ export const initiateInterBusinessPayment = createProtectedAction(
       amount: number;
       currency: string;
       applicationFeeAmount?: number;
-    },
+    }
   ) => {
     if (!user.businessId) {
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
@@ -63,7 +63,7 @@ export const initiateInterBusinessPayment = createProtectedAction(
           applicationFeeAmount: String(applicationFeeAmount),
           initiatedByUserId: user.id,
         },
-        user.id,
+        user.id
       );
 
       if (paymentRecord.error) {
@@ -78,7 +78,7 @@ export const initiateInterBusinessPayment = createProtectedAction(
         error: ErrorCode.FAILED_REQUEST,
       };
     }
-  },
+  }
 );
 
 export const getInterBusinessPayments = createProtectedAction(
@@ -90,11 +90,114 @@ export const getInterBusinessPayments = createProtectedAction(
     const payments = await interBusinessPaymentsRepo.get_all_paginated(
       user.businessId,
       page,
-      pageSize,
+      pageSize
     );
     if (payments.error) {
       return { data: null, error: payments.error };
     }
     return { data: payments.data, error: null };
-  },
+  }
+);
+
+export const createCustomerPaymentLink = createProtectedAction(
+  Permission.INTER_BUSINESS_PAYMENT_INITIATE,
+  async (
+    user,
+    {
+      amount,
+      currency,
+      description,
+      customerEmail,
+    }: {
+      amount: number;
+      currency: string;
+      description: string;
+      customerEmail?: string;
+    }
+  ) => {
+    if (!user.businessId) {
+      return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
+    }
+
+    const business = await get_business_by_id(user.businessId);
+    if (business.error || !business.data?.stripeAccountId) {
+      return { data: null, error: ErrorCode.STRIPE_ACCOUNT_NOT_CONNECTED };
+    }
+
+    try {
+      const paymentLink = await stripe.paymentLinks.create({
+        line_items: [
+          {
+            price_data: {
+              currency: currency,
+              product_data: {
+                name: description,
+              },
+              unit_amount: Math.round(amount * 100),
+            },
+            quantity: 1,
+          },
+        ],
+        after_completion: {
+          type: "redirect",
+          redirect: {
+            url: `${process.env.NEXT_PUBLIC_APP_URL}/payments/success`,
+          },
+        },
+        metadata: {
+          businessId: user.businessId,
+          createdBy: user.id,
+          customerEmail: customerEmail || "",
+        },
+      });
+
+      return { data: paymentLink, error: null };
+    } catch (error) {
+      console.error("Failed to create customer payment link:", error);
+      return {
+        data: null,
+        error: ErrorCode.FAILED_REQUEST,
+      };
+    }
+  }
+);
+
+export const getCustomerPayments = createProtectedAction(
+  Permission.INTER_BUSINESS_PAYMENT_VIEW,
+  async (user, { page, pageSize }: { page: number; pageSize: number }) => {
+    if (!user.businessId) {
+      return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
+    }
+
+    try {
+      const business = await get_business_by_id(user.businessId);
+      if (business.error || !business.data?.stripeAccountId) {
+        return { data: null, error: ErrorCode.STRIPE_ACCOUNT_NOT_CONNECTED };
+      }
+
+      // Get payment intents for this business
+      const paymentIntents = await stripe.paymentIntents.list({
+        limit: pageSize,
+        starting_after: page > 1 ? undefined : undefined, // TODO: Implement pagination
+      });
+
+      // Filter payment intents that belong to this business
+      const businessPayments = paymentIntents.data.filter(
+        (pi) => pi.metadata?.businessId === user.businessId
+      );
+
+      return {
+        data: {
+          payments: businessPayments,
+          totalCount: businessPayments.length,
+          page,
+          pageSize,
+        },
+        error: null,
+      };
+    } catch (error) {
+      console.error("Failed to get customer payments:", error);
+      return { data: null, error: ErrorCode.FAILED_REQUEST };
+    }
+  }
 );

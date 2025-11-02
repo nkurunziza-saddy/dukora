@@ -6,6 +6,7 @@ import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as productRepo from "../repos/product-repo";
+import type { StoreProductFilters } from "../repos/product-repo/product-query-repo";
 
 export const getProducts = createProtectedAction(
   Permission.PRODUCT_VIEW,
@@ -15,7 +16,7 @@ export const getProducts = createProtectedAction(
       return { data: null, error: products.error };
     }
     return { data: products.data, error: null };
-  },
+  }
 );
 
 export const getProductsPaginated = createProtectedAction(
@@ -24,13 +25,13 @@ export const getProductsPaginated = createProtectedAction(
     const products = await productRepo.get_all_paginated(
       user.businessId ?? "",
       page,
-      pageSize,
+      pageSize
     );
     if (products.error) {
       return { data: null, error: products.error };
     }
     return { data: products.data, error: null };
-  },
+  }
 );
 
 export const getOverviewProducts = createProtectedAction(
@@ -38,13 +39,13 @@ export const getOverviewProducts = createProtectedAction(
   async (user, limit: number) => {
     const products = await productRepo.get_overview(
       user.businessId ?? "",
-      limit,
+      limit
     );
     if (products.error) {
       return { data: null, error: products.error };
     }
     return { data: products.data, error: null };
-  },
+  }
 );
 
 export const getProductById = createProtectedAction(
@@ -55,13 +56,13 @@ export const getProductById = createProtectedAction(
     }
     const product = await productRepo.get_by_id(
       productId,
-      user.businessId ?? "",
+      user.businessId ?? ""
     );
     if (product.error) {
       return { data: null, error: product.error };
     }
     return { data: product.data, error: null };
-  },
+  }
 );
 
 export const createProduct = createProtectedAction(
@@ -81,7 +82,7 @@ export const createProduct = createProtectedAction(
     revalidateTag(`products-${user.businessId}`, "max");
     revalidateTag("products", "max");
     return { data: res.data, error: null };
-  },
+  }
 );
 
 export const updateProduct = createProtectedAction(
@@ -94,7 +95,7 @@ export const updateProduct = createProtectedAction(
     }: {
       productId: string;
       updates: Partial<Omit<InsertProduct, "id" | "businessId">>;
-    },
+    }
   ) => {
     if (!productId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -103,7 +104,7 @@ export const updateProduct = createProtectedAction(
       productId,
       user.businessId ?? "",
       user.id,
-      updates,
+      updates
     );
     if (updatedProduct.error) {
       return { data: null, error: updatedProduct.error };
@@ -111,7 +112,7 @@ export const updateProduct = createProtectedAction(
     revalidateTag(`products-${user.businessId}`, "max");
     revalidateTag(`product-${productId}`, "max");
     return { data: updatedProduct.data, error: null };
-  },
+  }
 );
 
 export const deleteProduct = createProtectedAction(
@@ -123,7 +124,7 @@ export const deleteProduct = createProtectedAction(
     const res = await productRepo.remove(
       productId,
       user.businessId ?? "",
-      user.id,
+      user.id
     );
     if (res.error) {
       return { data: null, error: res.error };
@@ -131,7 +132,7 @@ export const deleteProduct = createProtectedAction(
     revalidateTag(`products-${user.businessId}`, "max");
     revalidateTag(`product-${productId}`, "max");
     return { data: { success: true }, error: null };
-  },
+  }
 );
 
 export const createManyProducts = createProtectedAction(
@@ -151,5 +152,30 @@ export const createManyProducts = createProtectedAction(
     revalidateTag(`products-${user.businessId}`, "max");
     revalidateTag("products", "max");
     return { data: createdProducts.data, error: null };
-  },
+  }
 );
+
+// Public store actions (no auth required)
+export const getProductsForStore = async (filters: StoreProductFilters) => {
+  const result = await productRepo.get_products_for_store(filters);
+  if (result.error) {
+    return { data: null, error: result.error };
+  }
+  return { data: result.data, error: null };
+};
+
+export const getProductByIdForStore = async (productId: string) => {
+  const result = await productRepo.get_product_by_id_for_store(productId);
+  if (result.error) {
+    return { data: null, error: result.error };
+  }
+  return { data: result.data, error: null };
+};
+
+export const getCategoriesForStore = async () => {
+  const result = await productRepo.get_categories_for_store();
+  if (result.error) {
+    return { data: null, error: result.error };
+  }
+  return { data: result.data, error: null };
+};

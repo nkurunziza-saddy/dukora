@@ -35,8 +35,11 @@ export function DataTableExportPDF<TData>({
     setIsExporting(true);
 
     try {
-      const jsPDF = (await import("jspdf")).default;
-      const autoTable = (await import("jspdf-autotable")).default;
+      // Lazy load PDF libraries only when needed
+      const [{ default: jsPDF }, { default: autoTable }] = await Promise.all([
+        import("jspdf"),
+        import("jspdf-autotable"),
+      ]);
 
       const doc = new jsPDF();
 
@@ -85,7 +88,7 @@ export function DataTableExportPDF<TData>({
               value instanceof Date
             ) {
               const date = new Date(value as string | number | Date);
-              if (!isNaN(date.getTime())) {
+              if (!Number.isNaN(date.getTime())) {
                 return date.toLocaleDateString();
               }
             }

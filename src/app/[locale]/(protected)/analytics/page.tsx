@@ -1,4 +1,4 @@
-import { AlertCircleIcon, CheckCircleIcon, InfoIcon } from "lucide-react";
+import { AlertCircleIcon, InfoIcon, Loader2Icon } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
@@ -105,10 +105,17 @@ const Analytics = async ({
     }
 
     return (
-      <Alert variant="error">
-        <AlertCircleIcon className="h-4 w-4" />
-        <AlertDescription>{formatKeys(metrics.error)}</AlertDescription>
-      </Alert>
+      <div className="flex items-center justify-center p-8">
+        <Alert className="max-w-md" variant="error">
+          <AlertCircleIcon className="h-4 w-4" />
+          <AlertDescription>
+            <div className="flex items-center gap-2">
+              <Loader2Icon className="h-4 w-4 animate-spin" />
+              {formatKeys(metrics.error)}
+            </div>
+          </AlertDescription>
+        </Alert>
+      </div>
     );
   }
 

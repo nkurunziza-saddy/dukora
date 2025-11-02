@@ -1,0 +1,31 @@
+---
+alwaysApply: true
+---
+
+UI Components:
+
+- Use shadcn/ui styled components, but based on base-ui (not radix-ui).
+- Apply my custom naming conventions from base-ui (e.g., use CardPanel instead of CardContent).
+- All UI is minimal, professional, dark-themed, with sharp edges.
+
+Style and Theming:
+
+- All colors come from theme variables set in global.css.
+- Use subtle, modern animations for interactive elements.
+
+Coding Practices:
+
+- Follow my code style and naming patterns strictly.
+- Prioritize consistency across code for clear follow-up and readability.
+- Suggest improvements or alternatives if you spot bad or suboptimal practices.
+- If uncertain about my style, ask before implementing.
+
+i18n and Content:
+
+- For user-facing content/text, ensure keys exist in messages language JSONs and always use i18n.
+
+Structure:
+
+- Avoid comments unless absolutely necessary.
+- Do not create new directories unless really required; organize code by type where possible.
+- Use naming that matches my existing conventions in the codebase.

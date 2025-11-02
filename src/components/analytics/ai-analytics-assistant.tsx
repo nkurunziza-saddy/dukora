@@ -85,7 +85,6 @@ export function AIAnalyticsAssistant({
     }
   }, [clearMessages]);
 
-  console.log({ messages });
   const handleDownload = () => {
     const chatContent = messages
       .map((msg) => {

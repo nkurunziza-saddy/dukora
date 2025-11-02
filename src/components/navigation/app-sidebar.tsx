@@ -3,6 +3,7 @@
 import {
   ArrowRightLeftIcon,
   BarChart3Icon,
+  BellIcon,
   BotIcon,
   CalculatorIcon,
   CalendarIcon,
@@ -90,7 +91,18 @@ export const data = {
           title: "Payments & Invoices",
           url: "/payments",
           icon: CreditCardIcon,
-          disabled: true,
+        },
+        {
+          id: "orders",
+          title: "Customer Orders",
+          url: "/orders",
+          icon: ShoppingCartIcon,
+        },
+        {
+          id: "notifications",
+          title: "Notifications",
+          url: "/notifications",
+          icon: BellIcon,
         },
       ],
     },
@@ -115,7 +127,6 @@ export const data = {
           title: "E-commerce Sync",
           url: "/commerce",
           icon: StoreIcon,
-          disabled: true,
         },
       ],
     },
@@ -156,11 +167,12 @@ export function AppSidebar() {
               <SidebarMenu>
                 {group.items.map((item) => {
                   const isActive = pathname === `/${locale}${item.url}`;
+                  const isDisabled = "disabled" in item && item.disabled;
                   return (
                     <SidebarMenuItem key={item.id}>
-                      {item.disabled ? (
+                      {isDisabled ? (
                         <SidebarMenuButton disabled>
-                          {/* <item.icon className="h-4 w-4" /> */}
+                          <item.icon className="h-4 w-4" />
                           <span className="opacity-50">{t(item.id)}</span>
                         </SidebarMenuButton>
                       ) : (
@@ -168,7 +180,7 @@ export function AppSidebar() {
                           render={<Link href={item.url} />}
                           variant={isActive ? "active" : undefined}
                         >
-                          {/* <item.icon className="h-4 w-4" /> */}
+                          <item.icon className="h-4 w-4" />
                           <span>{t(item.id)}</span>
                         </SidebarMenuButton>
                       )}

@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
-import OnTopBlurOverlay from "@/components/on-top-blur";
+import { Suspense } from "react";
+import ColumnWrapper from "@/components/providers/column-wrapper";
+import { TableSkeleton } from "@/components/skeletons";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
+import { getProductsPaginated } from "@/server/actions/product-actions";
+import { ProductColumn } from "@/utils/columns/product-column";
 
 export async function generateMetadata(): Promise<Metadata> {
   return constructI18nMetadata({
@@ -8,13 +12,47 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-const commerce = () => {
+async function CommerceTable({
+  page,
+  pageSize,
+}: {
+  page: number;
+  pageSize: number;
+}) {
+  const products = await getProductsPaginated({ page, pageSize });
+
+  if (!products.data) {
+    return (
+      <div className="text-center py-12 text-muted-foreground">
+        No products found
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <OnTopBlurOverlay />
-      commerce page with syncing stores and many more
+    <ColumnWrapper
+      column={ProductColumn}
+      data={products.data.products}
+      page={page}
+      pageSize={pageSize}
+      tag="products"
+      totalCount={products.data.totalCount}
+    />
+  );
+}
+
+export default async function CommercePage(
+  props: PageProps<"/[locale]/commerce">
+) {
+  const query = await props.searchParams;
+  const page = Number(query.page) || 1;
+  const pageSize = Number(query.pageSize) || 10;
+
+  return (
+    <div className="space-y-6">
+      <Suspense fallback={<TableSkeleton />}>
+        <CommerceTable page={page} pageSize={pageSize} />
+      </Suspense>
     </div>
   );
-};
-
-export default commerce;
+}
