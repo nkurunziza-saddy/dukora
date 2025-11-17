@@ -25,7 +25,7 @@ import { ErrorCode } from "@/server/constants/errors";
 import {
   getCurrentMonthBoundary,
   getMonthData,
-} from "@/server/helpers/time-date-forrmatters";
+} from "@/server/helpers/time-date-formatters";
 
 export async function generateMetadata(): Promise<Metadata> {
   return constructI18nMetadata({

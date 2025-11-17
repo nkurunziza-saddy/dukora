@@ -26,7 +26,7 @@ export const onboardingSchema = z.object({
       z.object({
         email: z.string().email("Invalid email address"),
         role: z.enum([...USER_ROLES]),
-      }),
+      })
     )
     .max(INVITATIONS_LIMIT, `Maximum invitations is ${INVITATIONS_LIMIT}`),
   categories: z
@@ -37,7 +37,7 @@ export const onboardingSchema = z.object({
       z.object({
         name: z.string().min(1, "Warehouse name is required"),
         isDefault: z.boolean(),
-      }),
+      })
     )
     .min(1, "At least one warehouse is required")
     .max(WAREHOUSES_LIMIT, `Allowed warehouses up to ${WAREHOUSES_LIMIT}`),
@@ -48,32 +48,32 @@ export type OnboardingFormData = z.infer<typeof onboardingSchema>;
 export const getSteps = (t: (key: string) => string) => [
   {
     step: 1,
-    title: t("onboarding.steps.businessProfile"),
-    description: t("onboarding.steps.businessProfileDescription"),
+    title: t("steps.businessProfile"),
+    description: t("steps.businessProfileDescription"),
     icon: Building2Icon,
   },
   {
     step: 2,
-    title: t("onboarding.steps.taxSettings"),
-    description: t("onboarding.steps.taxSettingsDescription"),
+    title: t("steps.taxSettings"),
+    description: t("steps.taxSettingsDescription"),
     icon: SettingsIcon,
   },
   {
     step: 3,
-    title: t("onboarding.steps.teamSetup"),
-    description: t("onboarding.steps.teamSetupDescription"),
+    title: t("steps.teamSetup"),
+    description: t("steps.teamSetupDescription"),
     icon: UsersIcon,
   },
   {
     step: 4,
-    title: t("onboarding.steps.categories"),
-    description: t("onboarding.steps.categoriesDescription"),
+    title: t("steps.categories"),
+    description: t("steps.categoriesDescription"),
     icon: PackageIcon,
   },
   {
     step: 5,
-    title: t("onboarding.steps.warehousesBranches"),
-    description: t("onboarding.steps.warehousesBranchesDescription"),
+    title: t("steps.warehousesBranches"),
+    description: t("steps.warehousesBranchesDescription"),
     icon: MapPinIcon,
   },
 ];

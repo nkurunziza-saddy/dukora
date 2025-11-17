@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { SessionSession } from "@/lib/auth";
-import { getAvailableMonthsForAnalytics } from "@/server/helpers/time-date-forrmatters";
+import { getAvailableMonthsForAnalytics } from "@/server/helpers/time-date-formatters";
 import { Skeleton } from "./ui/skeleton";
 
 interface TimeRangeProps {
@@ -54,15 +54,15 @@ export function TimeRange({ currentValue = "0", session }: TimeRangeProps) {
 
   if (availableMonths && availableMonths.length === 0) {
     return (
-      <Select value={timeRange} onValueChange={setTimeRange} disabled>
+      <Select disabled onValueChange={setTimeRange} value={timeRange}>
         <SelectTrigger
-          className="w-40 rounded-lg sm:ml-auto"
           aria-label={t("selectTimeRange")}
+          className="w-40 rounded-lg sm:ml-auto"
         >
           <SelectValue />
         </SelectTrigger>
         <SelectPopup className="rounded-xl">
-          <SelectItem value="0" className="rounded-lg">
+          <SelectItem className="rounded-lg" value="0">
             {t("noDataAvailable")}
           </SelectItem>
         </SelectPopup>
@@ -76,27 +76,27 @@ export function TimeRange({ currentValue = "0", session }: TimeRangeProps) {
 
   return (
     <Select
-      value={timeRange}
-      onValueChange={setTimeRange}
       items={
         availableMonths?.map((p) => ({
           value: p.value.toString(),
           label: p.label,
         })) || []
       }
+      onValueChange={setTimeRange}
+      value={timeRange}
     >
       <SelectTrigger
-        className="w-40 rounded-lg sm:ml-auto"
         aria-label={t("selectTimeRange")}
+        className="w-40 rounded-lg sm:ml-auto"
       >
         <SelectValue />
       </SelectTrigger>
       <SelectPopup className="rounded-xl">
         {availableMonths?.map((month) => (
           <SelectItem
+            className="rounded-lg"
             key={month.value}
             value={month.value.toString()}
-            className="rounded-lg"
           >
             {month.label}
           </SelectItem>

@@ -43,6 +43,7 @@ interface DataTableProps<TData, TValue> {
     | "transactions"
     | "users"
     | "invitations"
+    | "orders"
     | "payments";
 }
 

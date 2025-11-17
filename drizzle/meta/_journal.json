@@ -43,6 +43,13 @@
       "when": 1761645346819,
       "tag": "0005_fair_the_fury",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1763304316952,
+      "tag": "0006_happy_deathbird",
+      "breakpoints": true
     }
   ]
 }

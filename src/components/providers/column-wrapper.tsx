@@ -15,6 +15,7 @@ type ColumnWrapperProps<T> = {
     | "transactions"
     | "users"
     | "invitations"
+    | "orders"
     | "payments";
 };
 
@@ -31,10 +32,10 @@ const ColumnWrapper = <T,>({
     <DataTable
       columns={column(t)}
       data={data}
-      tag={tag}
-      totalCount={totalCount}
       page={page}
       pageSize={pageSize}
+      tag={tag}
+      totalCount={totalCount}
     />
   );
 };

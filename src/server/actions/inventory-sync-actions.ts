@@ -2,7 +2,11 @@
 
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { customerOrderItemsTable, productsTable } from "@/lib/schema";
+import {
+  customerOrderItemsTable,
+  productsTable,
+  warehouseItemsTable,
+} from "@/lib/schema";
 import { ErrorCode } from "@/server/constants/errors";
 import type { ServiceResponse } from "@/server/types";
 
@@ -14,7 +18,6 @@ export const syncInventoryAfterOrder = async (
   }
 
   try {
-    // Get order items
     const orderItems = await db
       .select()
       .from(customerOrderItemsTable)
@@ -26,31 +29,32 @@ export const syncInventoryAfterOrder = async (
 
     let syncedItems = 0;
 
-    // Update inventory for each item
     for (const item of orderItems) {
-      // Get current product stock
-      const product = await db
+      const [warehouseItem] = await db
         .select()
-        .from(productsTable)
-        .where(eq(productsTable.id, item.productId))
+        .from(warehouseItemsTable)
+        .where(eq(warehouseItemsTable.id, item.warehouseItemId))
+        .leftJoin(
+          productsTable,
+          eq(warehouseItemsTable.productId, productsTable.id)
+        )
         .limit(1);
 
-      if (!product[0]) {
-        console.warn(`Product not found: ${item.productId}`);
+      if (!warehouseItem) {
+        console.warn(`Product not found: ${item.warehouseItemId}`);
         continue;
       }
 
-      const currentStock = product[0].stockQuantity || 0;
+      const currentStock = warehouseItem.warehouse_items.quantity || 0;
       const newStock = Math.max(0, currentStock - item.quantity);
 
-      // Update product stock
       await db
-        .update(productsTable)
+        .update(warehouseItemsTable)
         .set({
-          stockQuantity: newStock,
-          updatedAt: new Date(),
+          quantity: newStock,
+          lastUpdated: new Date(),
         })
-        .where(eq(productsTable.id, item.productId));
+        .where(eq(warehouseItemsTable.id, item.warehouseItemId));
 
       syncedItems++;
 
@@ -58,7 +62,7 @@ export const syncInventoryAfterOrder = async (
       if (newStock <= 5) {
         // TODO: Send low stock notification
         console.log(
-          `Low stock alert: ${product[0].name} has ${newStock} units left`
+          `Low stock alert: ${warehouseItem.products?.name} has ${newStock} units left`
         );
       }
     }

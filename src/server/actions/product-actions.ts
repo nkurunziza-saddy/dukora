@@ -155,7 +155,6 @@ export const createManyProducts = createProtectedAction(
   }
 );
 
-// Public store actions (no auth required)
 export const getProductsForStore = async (filters: StoreProductFilters) => {
   const result = await productRepo.get_products_for_store(filters);
   if (result.error) {

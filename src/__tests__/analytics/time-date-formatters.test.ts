@@ -7,7 +7,7 @@ import {
   getPreviousMonth,
   parseMonth,
   parseMonthYearShort,
-} from "@/server/helpers/time-date-forrmatters";
+} from "@/server/helpers/time-date-formatters";
 
 describe("Time Date Formatters", () => {
   beforeEach(() => {
@@ -154,7 +154,7 @@ describe("Time Date Formatters", () => {
 
     it("should throw error for invalid format", () => {
       expect(() => parseMonthYearShort("invalid")).toThrow(
-        "Invalid argument invalid",
+        "Invalid argument invalid"
       );
     });
 

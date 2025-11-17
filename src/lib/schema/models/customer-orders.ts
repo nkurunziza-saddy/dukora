@@ -14,6 +14,7 @@ import { businessesTable } from "./businesses";
 import { orderStatusEnum } from "./enums";
 import { productsTable } from "./products";
 import { usersTable } from "./users";
+import { warehouseItemsTable } from "./warehouses";
 
 export const customerOrdersTable = pgTable(
   "customer_orders",
@@ -81,9 +82,9 @@ export const customerOrderItemsTable = pgTable(
     customerOrderId: text("customer_order_id")
       .notNull()
       .references(() => customerOrdersTable.id, { onDelete: "cascade" }),
-    productId: text("product_id")
+    warehouseItemId: text("product_id")
       .notNull()
-      .references(() => productsTable.id),
+      .references(() => warehouseItemsTable.id),
     quantity: integer("quantity").notNull(),
     unitPrice: numeric("unit_price", { precision: 10, scale: 2 }).notNull(),
     discount: numeric("discount", { precision: 10, scale: 2 })
@@ -93,6 +94,6 @@ export const customerOrderItemsTable = pgTable(
   },
   (table) => [
     index("customer_order_items_customer_order_id").on(table.customerOrderId),
-    index("customer_order_items_product_id").on(table.productId),
+    index("customer_order_items_product_id").on(table.warehouseItemId),
   ]
 );

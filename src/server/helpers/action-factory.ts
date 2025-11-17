@@ -1,4 +1,5 @@
 import type { SessionUser } from "@/lib/auth";
+import type { UserRole } from "@/lib/schema/schema-types";
 import { getCurrentSession } from "@/server/actions/auth-actions";
 import { ErrorCode } from "@/server/constants/errors";
 import type { Permission } from "@/server/constants/permissions";
@@ -13,12 +14,15 @@ export function createProtectedAction<TInput, TOutput>(
   permission: Permission,
   handler: (
     user: SessionUser,
-    input: TInput,
-  ) => Promise<ServiceResponse<TOutput>>,
+    input: TInput
+  ) => Promise<ServiceResponse<TOutput>>
 ) {
   return async (input: TInput): Promise<ServiceResponse<TOutput>> => {
     const session = await getCurrentSession();
-    if (!session || !roleHasPermission(session.user.role!, permission)) {
+    if (
+      !session ||
+      !roleHasPermission(session.user.role as UserRole, permission)
+    ) {
       return { data: null, error: ErrorCode.UNAUTHORIZED };
     }
 
@@ -37,7 +41,7 @@ export function createProtectedAction<TInput, TOutput>(
   };
 }
 export function createPublicAction<TInput, TOutput>(
-  handler: (input: TInput) => Promise<ServiceResponse<TOutput>>,
+  handler: (input: TInput) => Promise<ServiceResponse<TOutput>>
 ) {
   return async (input: TInput): Promise<ServiceResponse<TOutput>> => {
     try {

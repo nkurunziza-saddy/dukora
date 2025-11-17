@@ -112,7 +112,7 @@ export default function OnboardingFlow() {
     onSubmitInvalid({ formApi }) {
       const errorMap = formApi.state.errorMap.onChange!;
       const inputs = Array.from(
-        document.querySelectorAll("#onboarding-form input"),
+        document.querySelectorAll("#onboarding-form input")
       ) as HTMLInputElement[];
 
       let firstInput: HTMLInputElement | undefined;
@@ -182,12 +182,12 @@ export default function OnboardingFlow() {
         </CardHeader>
 
         <div className="mb-8">
-          <Stepper value={currentStep} onValueChange={setCurrentStep}>
+          <Stepper onValueChange={setCurrentStep} value={currentStep}>
             {steps.map((stepInfo) => (
               <StepperItem
+                className="not-last:flex-1 max-md:items-start"
                 key={stepInfo.step}
                 step={stepInfo.step}
-                className="not-last:flex-1 max-md:items-start"
               >
                 <StepperTrigger className="rounded hover:cursor-pointer max-md:flex-col">
                   <StepperIndicator />
@@ -220,12 +220,12 @@ export default function OnboardingFlow() {
           </CardHeader>
 
           <form
+            className="space-y-6"
             id="onboarding-form"
             onSubmit={(e) => {
               e.preventDefault();
               form.handleSubmit();
             }}
-            className="space-y-6"
           >
             <CardPanel>
               {currentStep === 1 && (
@@ -238,22 +238,22 @@ export default function OnboardingFlow() {
                       return (
                         <div className="space-y-2">
                           <label
-                            htmlFor={field.name}
                             className="text-sm font-medium"
+                            htmlFor={field.name}
                           >
                             {tOnboarding("businessName.label")} *
                           </label>
                           <Input
+                            aria-invalid={isInvalid}
+                            autoComplete="off"
                             id={field.name}
                             name={field.name}
-                            value={field.state.value}
                             onBlur={field.handleBlur}
                             onChange={(e) => field.handleChange(e.target.value)}
                             placeholder={tOnboarding(
-                              "businessName.placeholder",
+                              "businessName.placeholder"
                             )}
-                            aria-invalid={isInvalid}
-                            autoComplete="off"
+                            value={field.state.value}
                           />
                           {isInvalid && (
                             <p className="text-sm text-destructive">
@@ -274,15 +274,15 @@ export default function OnboardingFlow() {
                       return (
                         <div className="space-y-2">
                           <label
-                            htmlFor={field.name}
                             className="text-sm font-medium"
+                            htmlFor={field.name}
                           >
                             {tOnboarding("businessType.label")} *
                           </label>
                           <Select
-                            value={field.state.value}
-                            onValueChange={(value) => field.handleChange(value)}
                             items={getBusinessTypes(t)}
+                            onValueChange={(value) => field.handleChange(value)}
+                            value={field.state.value}
                           >
                             <SelectTrigger id={field.name}>
                               <SelectValue />
@@ -314,17 +314,17 @@ export default function OnboardingFlow() {
                         return (
                           <div className="space-y-2">
                             <label
-                              htmlFor={field.name}
                               className="text-sm font-medium"
+                              htmlFor={field.name}
                             >
                               {tOnboarding("currency.label")} *
                             </label>
                             <Select
-                              value={field.state.value}
+                              items={getCurrencies(t)}
                               onValueChange={(value) =>
                                 field.handleChange(value)
                               }
-                              items={getCurrencies(t)}
+                              value={field.state.value}
                             >
                               <SelectTrigger id={field.name}>
                                 <SelectValue />
@@ -358,26 +358,26 @@ export default function OnboardingFlow() {
                         return (
                           <div className="space-y-2">
                             <label
-                              htmlFor={field.name}
                               className="text-sm font-medium"
+                              htmlFor={field.name}
                             >
                               {tOnboarding("country.label")} *
                             </label>
                             <Select
-                              value={field.state.value}
+                              items={getCountries(t)}
                               onValueChange={(value) => {
                                 field.handleChange(value);
                                 const country = getCountries(t).find(
-                                  (c) => c.value === value,
+                                  (c) => c.value === value
                                 );
                                 if (country) {
                                   form.setFieldValue(
                                     "timezone",
-                                    country.timezone,
+                                    country.timezone
                                   );
                                 }
                               }}
-                              items={getCountries(t)}
+                              value={field.state.value}
                             >
                               <SelectTrigger id={field.name}>
                                 <SelectValue />
@@ -409,16 +409,16 @@ export default function OnboardingFlow() {
                       {(field) => (
                         <div className="space-y-2">
                           <label
-                            htmlFor={field.name}
                             className="text-sm font-medium"
+                            htmlFor={field.name}
                           >
                             {tOnboarding("timezone.label")}
                           </label>
                           <Input
+                            disabled
                             id={field.name}
                             name={field.name}
                             value={field.state.value}
-                            disabled
                           />
                           <p className="text-sm text-muted-foreground">
                             {tOnboarding("timezone.autoFillDescription")}
@@ -435,17 +435,17 @@ export default function OnboardingFlow() {
                         return (
                           <div className="space-y-2">
                             <label
-                              htmlFor={field.name}
                               className="text-sm font-medium"
+                              htmlFor={field.name}
                             >
                               {tOnboarding("fiscalYearStartMonth.label")} *
                             </label>
                             <Select
-                              value={field.state.value}
+                              items={getMonths(t)}
                               onValueChange={(value) =>
                                 field.handleChange(value)
                               }
-                              items={getMonths(t)}
+                              value={field.state.value}
                             >
                               <SelectTrigger id={field.name}>
                                 <SelectValue />
@@ -481,8 +481,8 @@ export default function OnboardingFlow() {
                       <div className="flex flex-row items-center justify-between rounded-lg border p-4">
                         <div className="space-y-0.5">
                           <label
-                            htmlFor="pricesIncludeTax"
                             className="text-base font-medium"
+                            htmlFor="pricesIncludeTax"
                           >
                             {tOnboarding("pricesIncludeTax.label")}
                           </label>
@@ -491,8 +491,8 @@ export default function OnboardingFlow() {
                           </p>
                         </div>
                         <Switch
-                          id="pricesIncludeTax"
                           checked={field.state.value}
+                          id="pricesIncludeTax"
                           onCheckedChange={(checked) =>
                             field.handleChange(checked)
                           }
@@ -509,22 +509,22 @@ export default function OnboardingFlow() {
                       return (
                         <div className="space-y-2">
                           <label
-                            htmlFor={field.name}
                             className="text-sm font-medium"
+                            htmlFor={field.name}
                           >
                             {tOnboarding("defaultVatRate.label")}
                           </label>
                           <Input
                             id={field.name}
                             name={field.name}
-                            type="number"
-                            step="0.01"
-                            value={field.state.value}
                             onBlur={field.handleBlur}
                             onChange={(e) => field.handleChange(e.target.value)}
                             placeholder={tOnboarding(
-                              "defaultVatRate.placeholder",
+                              "defaultVatRate.placeholder"
                             )}
+                            step="0.01"
+                            type="number"
+                            value={field.state.value}
                           />
                           <p className="text-sm text-muted-foreground">
                             {tOnboarding("defaultVatRate.description")}
@@ -542,7 +542,7 @@ export default function OnboardingFlow() {
               )}
 
               {currentStep === 3 && (
-                <form.Field name="teamMembers" mode="array">
+                <form.Field mode="array" name="teamMembers">
                   {(field) => {
                     const isInvalid =
                       field.state.meta.isTouched && !field.state.meta.isValid;
@@ -558,8 +558,8 @@ export default function OnboardingFlow() {
                           {(field.state.value || []).map(
                             (_: any, index: number) => (
                               <div
-                                key={index}
                                 className="flex gap-1 items-start"
+                                key={index}
                               >
                                 <form.Field
                                   name={`teamMembers[${index}].email` as any}
@@ -570,27 +570,27 @@ export default function OnboardingFlow() {
                                       !subField.state.meta.isValid;
                                     return (
                                       <Field
-                                        orientation="horizontal"
                                         data-invalid={isSubFieldInvalid}
+                                        orientation="horizontal"
                                       >
                                         <FieldContent>
                                           <InputGroup>
                                             <InputGroupInput
+                                              aria-invalid={isSubFieldInvalid}
+                                              autoComplete="email"
                                               id={`onboarding-form-teamMember-email-${index}`}
                                               name={subField.name}
-                                              value={subField.state.value}
                                               onBlur={subField.handleBlur}
-                                              aria-invalid={isSubFieldInvalid}
                                               onChange={(e) =>
                                                 subField.handleChange(
-                                                  e.target.value as any,
+                                                  e.target.value as any
                                                 )
                                               }
                                               placeholder={tOnboarding(
-                                                "teamMembers.emailPlaceholder",
+                                                "teamMembers.emailPlaceholder"
                                               )}
                                               type="email"
-                                              autoComplete="email"
+                                              value={subField.state.value}
                                             />
                                           </InputGroup>
                                           {isSubFieldInvalid && (
@@ -615,18 +615,18 @@ export default function OnboardingFlow() {
                                       !subField.state.meta.isValid;
                                     return (
                                       <Field
-                                        orientation="horizontal"
-                                        data-invalid={isSubFieldInvalid}
                                         className="w-48"
+                                        data-invalid={isSubFieldInvalid}
+                                        orientation="horizontal"
                                       >
                                         <FieldContent>
                                           <Select
-                                            value={subField.state.value}
                                             onValueChange={(value) =>
                                               subField.handleChange(
-                                                value as any,
+                                                value as any
                                               )
                                             }
+                                            value={subField.state.value}
                                           >
                                             <SelectTrigger id={subField.name}>
                                               <SelectValue />
@@ -661,13 +661,13 @@ export default function OnboardingFlow() {
                                   {(field.state.value || []).length > 1 && (
                                     <InputGroupAddon align="inline-end">
                                       <InputGroupButton
-                                        type="button"
-                                        variant="ghost"
-                                        size="icon-xs"
-                                        onClick={() => field.removeValue(index)}
                                         aria-label={`Remove teammember ${
                                           index + 1
                                         }`}
+                                        onClick={() => field.removeValue(index)}
+                                        size="icon-xs"
+                                        type="button"
+                                        variant="ghost"
                                       >
                                         <XIcon />
                                       </InputGroupButton>
@@ -675,24 +675,24 @@ export default function OnboardingFlow() {
                                   )}
                                 </div>
                               </div>
-                            ),
+                            )
                           )}
 
                           <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
                             className="w-fit"
+                            disabled={
+                              (field.state.value || []).length >=
+                              INVITATIONS_LIMIT
+                            }
                             onClick={() =>
                               field.pushValue({
                                 email: "",
                                 role: UserRole.MEMBER,
                               })
                             }
-                            disabled={
-                              (field.state.value || []).length >=
-                              INVITATIONS_LIMIT
-                            }
+                            size="sm"
+                            type="button"
+                            variant="outline"
                           >
                             {tOnboarding("teamMembers.addMember")}
                           </Button>
@@ -708,7 +708,7 @@ export default function OnboardingFlow() {
               )}
 
               {currentStep === 4 && (
-                <form.Field name="categories" mode="array">
+                <form.Field mode="array" name="categories">
                   {(field) => {
                     const isInvalid =
                       field.state.meta.isTouched && !field.state.meta.isValid;
@@ -721,7 +721,7 @@ export default function OnboardingFlow() {
                       } else {
                         if (currentCategories.length >= CATEGORY_LIMIT) {
                           toast.error(
-                            `You can select up to ${CATEGORY_LIMIT} categories.`,
+                            `You can select up to ${CATEGORY_LIMIT} categories.`
                           );
                           return;
                         }
@@ -740,7 +740,7 @@ export default function OnboardingFlow() {
                         toast.error(
                           tOnboarding("errors.maxCategories", {
                             limit: CATEGORY_LIMIT,
-                          }),
+                          })
                         );
                         return;
                       }
@@ -758,17 +758,17 @@ export default function OnboardingFlow() {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {defaultCategories.map((category) => {
                               const isSelected = currentCategories.some(
-                                (c: any) => c === category,
+                                (c: any) => c === category
                               );
                               return (
                                 <button
-                                  type="button"
-                                  key={category}
+                                  aria-pressed={isSelected}
                                   className={`p-4 border rounded-lg cursor-pointer transition-colors w-full text-left flex items-center justify-between ${
                                     isSelected ? "border bg-muted/70" : ""
                                   }`}
+                                  key={category}
                                   onClick={() => toggleCategory(category)}
-                                  aria-pressed={isSelected}
+                                  type="button"
                                 >
                                   <div className="flex-1">
                                     <h5 className="font-medium text-sm">
@@ -788,23 +788,23 @@ export default function OnboardingFlow() {
                           <div className="flex gap-2 items-center">
                             <Input
                               id="new-category"
-                              value={newCategory}
                               onChange={(e) => setNewCategory(e.target.value)}
-                              placeholder={tOnboarding(
-                                "categories.placeholder",
-                              )}
                               onKeyDown={(e) => {
                                 if (e.key === "Enter") {
                                   e.preventDefault();
                                   handleAddCustom();
                                 }
                               }}
+                              placeholder={tOnboarding(
+                                "categories.placeholder"
+                              )}
+                              value={newCategory}
                             />
                             <Button
-                              type="button"
                               onClick={handleAddCustom}
-                              variant="outline"
                               size="sm"
+                              type="button"
+                              variant="outline"
                             >
                               {tOnboarding("categories.addButton")}
                             </Button>
@@ -817,19 +817,19 @@ export default function OnboardingFlow() {
                               {currentCategories.map(
                                 (cat: any, idx: number) => (
                                   <Button
+                                    aria-label={`Remove category ${idx + 1}`}
                                     key={`${cat}-${idx}`}
+                                    onClick={() => field.removeValue(idx)}
+                                    size="xs"
                                     type="button"
                                     variant="outline"
-                                    size="xs"
-                                    onClick={() => field.removeValue(idx)}
-                                    aria-label={`Remove category ${idx + 1}`}
                                   >
                                     <span className="">
                                       {cat}{" "}
                                       <XIcon className="inline-block ml-1" />
                                     </span>
                                   </Button>
-                                ),
+                                )
                               )}
                             </div>
                           )}
@@ -845,7 +845,7 @@ export default function OnboardingFlow() {
               )}
 
               {currentStep === 5 && (
-                <form.Field name="warehouses" mode="array">
+                <form.Field mode="array" name="warehouses">
                   {(field) => {
                     const isInvalid =
                       field.state.meta.isTouched && !field.state.meta.isValid;
@@ -854,7 +854,7 @@ export default function OnboardingFlow() {
                         (w: any, i: number) => ({
                           ...w,
                           isDefault: i === index,
-                        }),
+                        })
                       );
                       if (!newArr.some((w: any) => w.isDefault)) {
                         newArr[0].isDefault = true;
@@ -873,8 +873,8 @@ export default function OnboardingFlow() {
                         <FieldGroup className="gap-4">
                           {field.state.value.map((_, index) => (
                             <div
-                              key={index}
                               className="flex gap-1 items-center"
+                              key={index}
                             >
                               <form.Field name={`warehouses[${index}].name`}>
                                 {(subField) => {
@@ -883,25 +883,25 @@ export default function OnboardingFlow() {
                                     !subField.state.meta.isValid;
                                   return (
                                     <Field
-                                      orientation="horizontal"
                                       data-invalid={isSubFieldInvalid}
+                                      orientation="horizontal"
                                     >
                                       <FieldContent>
                                         <InputGroup>
                                           <InputGroupInput
+                                            aria-invalid={isSubFieldInvalid}
                                             id={`onboarding-form-warehouse-name-${index}`}
                                             name={subField.name}
-                                            value={subField.state.value}
                                             onBlur={subField.handleBlur}
                                             onChange={(e) =>
                                               subField.handleChange(
-                                                e.target.value,
+                                                e.target.value
                                               )
                                             }
-                                            aria-invalid={isSubFieldInvalid}
                                             placeholder={tOnboarding(
-                                              "warehouses.placeholder",
+                                              "warehouses.placeholder"
                                             )}
+                                            value={subField.state.value}
                                           />
                                         </InputGroup>
                                         {isSubFieldInvalid && (
@@ -916,16 +916,16 @@ export default function OnboardingFlow() {
                               </form.Field>
 
                               <Button
+                                className="w-fit"
                                 id={`warehouse-default-${index}`}
+                                onClick={() => handleSetDefault(index)}
+                                size="sm"
                                 type="button"
                                 variant={
                                   field.state.value[index]?.isDefault === true
                                     ? "default"
                                     : "outline"
                                 }
-                                className="w-fit"
-                                size="sm"
-                                onClick={() => handleSetDefault(index)}
                               >
                                 {field.state.value[index]?.isDefault === true
                                   ? tOnboarding("warehouses.isDefault")
@@ -936,13 +936,13 @@ export default function OnboardingFlow() {
                                 {(field.state.value || []).length > 1 && (
                                   <InputGroupAddon align="inline-end">
                                     <InputGroupButton
-                                      type="button"
-                                      variant="ghost"
-                                      size="icon-xs"
-                                      onClick={() => field.removeValue(index)}
                                       aria-label={`Remove warehouse ${
                                         index + 1
                                       }`}
+                                      onClick={() => field.removeValue(index)}
+                                      size="icon-xs"
+                                      type="button"
+                                      variant="ghost"
                                     >
                                       <XIcon />
                                     </InputGroupButton>
@@ -953,17 +953,17 @@ export default function OnboardingFlow() {
                           ))}
 
                           <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
                             className="w-fit"
-                            onClick={() =>
-                              field.pushValue({ name: "", isDefault: false })
-                            }
                             disabled={
                               (field.state.value || []).length >=
                               WAREHOUSES_LIMIT
                             }
+                            onClick={() =>
+                              field.pushValue({ name: "", isDefault: false })
+                            }
+                            size="sm"
+                            type="button"
+                            variant="outline"
                           >
                             {tOnboarding("warehouses.addWarehouse")}
                           </Button>
@@ -981,27 +981,27 @@ export default function OnboardingFlow() {
               <Separator className={"my-4"} />
             </CardPanel>
             <CardFooter>
-              <Field orientation="horizontal" className="flex justify-between">
+              <Field className="flex justify-between" orientation="horizontal">
                 <Button
+                  disabled={currentStep === 1}
+                  onClick={prevStep}
                   type="button"
                   variant="outline"
-                  onClick={prevStep}
-                  disabled={currentStep === 1}
                 >
                   {tOnboarding("buttons.previous")}
                 </Button>
 
                 {currentStep < getSteps(tOnboarding).length && (
-                  <Button type="button" onClick={nextStep}>
+                  <Button onClick={nextStep} type="button">
                     {tOnboarding("buttons.next")}
                   </Button>
                 )}
 
                 {currentStep === getSteps(tOnboarding).length && (
                   <Button
-                    type="submit"
-                    form="onboarding-form"
                     disabled={form.state.isSubmitting}
+                    form="onboarding-form"
+                    type="submit"
                   >
                     {form.state.isSubmitting
                       ? tOnboarding("buttons.settingUp")

@@ -16,7 +16,7 @@ import { getWarehouseItemsByBusiness } from "@/server/actions/warehouse-item-act
 import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
 import { calculateClosingStock } from "@/server/helpers/accounting-formulas";
-import { getCurrentMonthBoundary } from "@/server/helpers/time-date-forrmatters";
+import { getCurrentMonthBoundary } from "@/server/helpers/time-date-formatters";
 import * as metricsRepo from "@/server/repos/metrics-repo";
 import * as transactionRepo from "@/server/repos/transaction-repo";
 import { calculateAllMetrics } from "../helpers/accounting-formulas";

@@ -70,7 +70,7 @@ export enum Permission {
   SUPPLIER_UPDATE = "supplier:update",
   SUPPLIER_DELETE = "supplier:delete",
 
-  // Sched permissions
+  // Schedule permissions
   SCHEDULE_VIEW = "schedule:view",
   SCHEDULE_CREATE = "schedule:create",
   SCHEDULE_UPDATE = "schedule:update",

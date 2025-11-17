@@ -38,7 +38,7 @@ export function getCurrentMonthBoundary(): Date {
 }
 
 export async function getAvailableMonthsForAnalytics(
-  businessId: string | null | undefined,
+  businessId: string | null | undefined
 ): Promise<
   {
     value: number;
@@ -47,9 +47,9 @@ export async function getAvailableMonthsForAnalytics(
   }[]
 > {
   const months = [];
-  const currentBusiness = await getBusinessByIdMinimized(businessId!);
+  const currentBusiness = await getBusinessByIdMinimized(businessId as string);
   const currentBoundary = getCurrentMonthBoundary();
-  const businessStart = startOfMonth(currentBusiness.data?.createdAt!);
+  const businessStart = startOfMonth(currentBusiness.data?.createdAt as Date);
 
   let monthsBack = 1;
   let targetDate = currentBoundary;
