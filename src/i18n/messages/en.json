@@ -270,6 +270,10 @@
     "SKUDescription": "Enter unique SKU",
     "sort": "Sort",
     "status": "Status",
+    "orderNumber": "Order Number",
+    "totalAmount": "Total Amount",
+    "supplier": "Supplier",
+    "orderDate": "Order Date",
     "submitting": "Submitting",
     "subtotal": "Subtotal",
     "supplierPrice": "Supplier price",
@@ -1187,6 +1191,10 @@
         "title": "Payments & Invoices",
         "description": "Manage and track your payment methods and transactions"
       },
+      "orders": {
+        "title": "Orders",
+        "description": "Manage and track your customer orders"
+      },
       "users": {
         "title": "Users & Permissions",
         "description": "Manage user roles and permissions for your business"
@@ -1194,6 +1202,10 @@
       "settings": {
         "title": "Settings",
         "description": "Configure your business settings and preferences"
+      },
+      "notifications": {
+        "title": "Notifications",
+        "description": "Stay updated with your business activities and alerts"
       },
       "scheduler": {
         "title": "Scheduler",
@@ -1629,6 +1641,8 @@
       "shipped": "Shipped"
     },
     "total": "Total",
-    "viewDetails": "View Details"
+    "viewDetails": "View Details",
+    "createOrder": "Create Order",
+    "categoriesList": "Categories List"
   }
 }

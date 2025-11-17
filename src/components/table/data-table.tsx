@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/table";
 import { DataTablePagination } from "./data-table-pagination";
 import { InvitationDataTableToolbar } from "./invitation-data-table-toolbar";
+import { OrdersDataTableToolbar } from "./orders-data-table-toolbar";
 import { ProductsDataTableToolbar } from "./products-data-table-toolbar";
 import { SuppliersDataTableToolbar } from "./suppliers-data-table-toolbar";
 
@@ -103,6 +104,8 @@ export function DataTable<TData, TValue>({
         return <UsersDataTableToolbar table={table} />;
       case "invitations":
         return <InvitationDataTableToolbar table={table} />;
+      case "orders":
+        return <OrdersDataTableToolbar table={table} />;
       default:
         return <DefaultDataTableToolbar table={table} />;
     }

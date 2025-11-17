@@ -33,6 +33,12 @@ export enum Permission {
   ORDER_APPROVE = "order:approve",
   ORDER_FULFILL = "order:fulfill",
 
+  // Purchase Order permissions
+  PURCHASE_ORDER_VIEW = "purchase_order:view",
+  PURCHASE_ORDER_CREATE = "purchase_order:create",
+  PURCHASE_ORDER_UPDATE = "purchase_order:update",
+  PURCHASE_ORDER_DELETE = "purchase_order:delete",
+
   // User management permissions
   USER_VIEW = "user:view",
   USER_CREATE = "user:create",
@@ -214,6 +220,12 @@ export const PermissionGroups = {
     Permission.ORDER_DELETE,
     Permission.ORDER_APPROVE,
     Permission.ORDER_FULFILL,
+  ],
+  PURCHASE_ORDERS: [
+    Permission.PURCHASE_ORDER_VIEW,
+    Permission.PURCHASE_ORDER_CREATE,
+    Permission.PURCHASE_ORDER_UPDATE,
+    Permission.PURCHASE_ORDER_DELETE,
   ],
   USERS: [
     Permission.USER_VIEW,
