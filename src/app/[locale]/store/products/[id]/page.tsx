@@ -1,16 +1,36 @@
-import { ArrowLeftIcon } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { ProductView } from "@/components/store/product/product-view";
-import { Button } from "@/components/ui/button";
+import { Suspense } from "react";
+
+import ProductDetails from "@/components/store/product/product-details";
+import { Skeleton } from "@/components/ui/skeleton";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
-import { getProductByIdForStore } from "@/server/actions/product-actions";
 
 export async function generateMetadata(): Promise<Metadata> {
   return constructI18nMetadata({
     pageKey: "store.product",
   });
+}
+
+function ProductLoading() {
+  return (
+    <div className="container py-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="aspect-square bg-muted rounded-lg overflow-hidden">
+          <Skeleton className="h-full w-full" />
+        </div>
+
+        <div className="space-y-6">
+          <Skeleton className="h-10 w-3/4" />
+          <Skeleton className="h-6 w-1/2" />
+          <Skeleton className="h-6 w-1/4" />
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-20 w-full" />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default async function ProductPage({
@@ -20,26 +40,11 @@ export default async function ProductPage({
 }) {
   const t = await getTranslations("store");
 
-  const { data: product, error } = await getProductByIdForStore(
-    (await params).id,
+  return (
+    <>
+      <Suspense fallback={<ProductLoading />}>
+        <ProductDetails productId={(await params).id} />
+      </Suspense>
+    </>
   );
-
-  if (error || !product) {
-    return (
-      <div className="container py-8">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">{t("productNotFound")}</h1>
-          <p className="text-muted-foreground mb-6">
-            {t("productNotFoundDescription")}
-          </p>
-          <Button render={<Link href="/store/products" />}>
-            <ArrowLeftIcon className="mr-2 h-4 w-4" />
-            {t("backToProducts")}
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  return <ProductView product={product} />;
 }
