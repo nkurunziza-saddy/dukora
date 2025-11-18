@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AddToCartButton } from "@/components/store/cart/add-to-cart-button";
+import { AddToCartButton } from "@/components/store/add-to-cart-button";
 import type { CartItem } from "@/lib/types";
 
 const ProductCard = ({ product }: { product: CartItem }) => {

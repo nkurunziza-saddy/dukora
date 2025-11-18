@@ -2,6 +2,7 @@ import { CheckCircleIcon } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card";
 import type {
@@ -14,28 +15,27 @@ interface CheckoutSuccessPageProps {
   searchParams: {
     order?: string;
   };
+  t: (key: string) => string;
 }
 
-export default async function CheckoutSuccessPage({
+async function CheckoutSuccessContent({
   searchParams,
+  t,
 }: CheckoutSuccessPageProps) {
-  const t = await getTranslations("store.checkout.success");
-
+  const orderResult = await getCustomerOrderByOrderNumber(
+    searchParams.order as string
+  );
   if (!searchParams.order) {
     redirect("/store");
   }
 
-  // Get order details
-  const orderResult = await getCustomerOrderByOrderNumber(searchParams.order);
   if (orderResult.error || !orderResult.data) {
     redirect("/store");
   }
 
   const orderData = orderResult.data;
 
-  const normalizedItems: ExtendedCustomerOrderItem[] = (
-    orderData.items || []
-  ).map((it) => {
+  const normalizedItems = (orderData.items || []).map((it) => {
     const co = it.customerOrderItem || {};
     return {
       id: co.id ?? "",
@@ -47,13 +47,25 @@ export default async function CheckoutSuccessPage({
       discount: co.discount ?? "0",
       productName: it.productName ?? null,
       productId: it.productId ?? null,
-    } as ExtendedCustomerOrderItem;
+    };
   });
 
   const order = {
     ...orderData,
     items: normalizedItems,
-  } as SelectCustomerOrder & { items: ExtendedCustomerOrderItem[] };
+  } as SelectCustomerOrder & {
+    items: {
+      id: string;
+      notes: string | null;
+      customerOrderId: string;
+      quantity: number;
+      warehouseItemId: string;
+      unitPrice: string;
+      discount: string;
+      productName: string | null;
+      productId: string | null;
+    }[];
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -158,5 +170,19 @@ export default async function CheckoutSuccessPage({
         </Card>
       </div>
     </div>
+  );
+}
+
+export default async function CheckoutSuccessPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const t = await getTranslations("store.checkout.success");
+
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CheckoutSuccessContent searchParams={await searchParams} t={t} />
+    </Suspense>
   );
 }

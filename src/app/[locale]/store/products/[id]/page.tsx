@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 
-import ProductDetails from "@/components/store/product/product-details";
+import ProductDetails from "@/components/store/product-details";
 import { Skeleton } from "@/components/ui/skeleton";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 
@@ -38,13 +37,9 @@ export default async function ProductPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const t = await getTranslations("store");
-
   return (
-    <>
-      <Suspense fallback={<ProductLoading />}>
-        <ProductDetails productId={(await params).id} />
-      </Suspense>
-    </>
+    <Suspense fallback={<ProductLoading />}>
+      <ProductDetails productId={(await params).id} />
+    </Suspense>
   );
 }

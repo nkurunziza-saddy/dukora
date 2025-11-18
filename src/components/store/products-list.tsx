@@ -5,7 +5,7 @@ import { Empty, EmptyDescription, EmptyTitle } from "@/components/ui/empty";
 import { getProductsForStore } from "@/server/actions/product-actions";
 
 interface ProductsListProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 export default async function ProductsList({

@@ -25,9 +25,7 @@ function CategoriesLoading() {
   );
 }
 
-export default async function CategoriesPage() {
-  const t = await getTranslations("store");
-
+async function CategoryContent({ t }: { t: (key: string) => string }) {
   return (
     <div className="pt-10 pb-24 md:pb-32 md:pt-16 lg:pb-40 min-h-[calc(100vh-3rem)]">
       <div className="pgtx">
@@ -44,5 +42,14 @@ export default async function CategoriesPage() {
         </Suspense>
       </div>
     </div>
+  );
+}
+export default async function CategoriesPage() {
+  const t = await getTranslations("store");
+
+  return (
+    <Suspense fallback={<CategoriesLoading />}>
+      <CategoryContent t={t} />
+    </Suspense>
   );
 }

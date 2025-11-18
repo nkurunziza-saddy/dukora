@@ -1,7 +1,7 @@
 import { ArrowLeftIcon } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { ProductView } from "@/components/store/product/product-view";
+import { ProductView } from "@/components/store/product-view";
 import { Button } from "@/components/ui/button";
 import { getProductByIdForStore } from "@/server/actions/product-actions";
 
@@ -9,7 +9,9 @@ interface ProductDetailsProps {
   productId: string;
 }
 
-export default async function ProductDetails({ productId }: ProductDetailsProps) {
+export default async function ProductDetails({
+  productId,
+}: ProductDetailsProps) {
   const t = await getTranslations("store");
   const { data: product, error } = await getProductByIdForStore(productId);
 

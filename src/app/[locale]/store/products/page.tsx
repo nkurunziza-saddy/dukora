@@ -36,15 +36,17 @@ function ProductsLoading() {
   );
 }
 
-export default async function ProductsPage({
+async function ProductsContent({
+  t,
+  search,
+  sortBy,
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  t: (key: string) => string;
+  search: string;
+  sortBy: string;
+  searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const t = await getTranslations("store");
-  const search = (await searchParams).search as string;
-  const sortBy = ((await searchParams).sortBy as string) || "name";
-
   return (
     <div className="pt-10 pb-24 md:pb-32 md:pt-16 lg:pb-40 min-h-[calc(100vh-3rem)] ">
       <div className="pgtx ">
@@ -57,7 +59,6 @@ export default async function ProductsPage({
           </p>
         </div>
 
-        {/* Filters and Search */}
         <div className="mb-8 space-y-4">
           <div className="flex flex-col md:flex-row md:justify-between gap-4">
             <div className="flex-1 max-w-sm">
@@ -116,5 +117,26 @@ export default async function ProductsPage({
         </Suspense>
       </div>
     </div>
+  );
+}
+
+export default async function ProductsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const t = await getTranslations("store");
+  const search = (await searchParams).search as string;
+  const sortBy = ((await searchParams).sortBy as string) || "name";
+
+  return (
+    <Suspense fallback={<ProductsLoading />}>
+      <ProductsContent
+        search={search}
+        searchParams={await searchParams}
+        sortBy={sortBy}
+        t={t}
+      />
+    </Suspense>
   );
 }

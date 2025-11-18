@@ -4,7 +4,7 @@ import { ArrowLeftIcon, MinusIcon, PlusIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { AddToCartButton } from "@/components/store/cart/add-to-cart-button";
+import { AddToCartButton } from "@/components/store/add-to-cart-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card";

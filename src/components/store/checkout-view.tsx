@@ -1,7 +1,7 @@
 "use client";
 
 import { useCart } from "@/contexts/cart-context";
-import { CheckoutForm } from "./checkout-form";
+import { CheckoutForm } from "../forms/checkout-form";
 import { OrderSummary } from "./order-summary";
 
 export function CheckoutView() {

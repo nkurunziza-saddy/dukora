@@ -3,7 +3,7 @@
 import { SearchIcon, ShoppingCartIcon } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { CartSidebar } from "@/components/store/cart/cart-sidebar";
+import { CartSidebar } from "@/components/store/cart-sidebar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
