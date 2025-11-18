@@ -41,8 +41,8 @@ export default async function page() {
     <EventCalendar
       events={schedules.data}
       onEventAdd={createSchedule}
-      onEventUpdate={updateSchedule}
       onEventDelete={deleteSchedule}
+      onEventUpdate={updateSchedule}
     />
   );
 }

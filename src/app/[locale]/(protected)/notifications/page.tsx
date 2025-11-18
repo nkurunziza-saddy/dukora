@@ -61,7 +61,7 @@ export default async function NotificationsPage() {
   const notifications = notificationsData?.notifications || [];
   const unreadCount = unreadCountData || 0;
   const highPriorityCount = notifications.filter(
-    (n) => n.priority === "high" && !n.read
+    (n) => n.priority === "high" && !n.read,
   ).length;
 
   const getNotificationIcon = (type: string) => {
@@ -96,7 +96,7 @@ export default async function NotificationsPage() {
     const date = new Date(createdAt);
     const now = new Date();
     const diffInMinutes = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60)
+      (now.getTime() - date.getTime()) / (1000 * 60),
     );
 
     if (diffInMinutes < 1) return "Just now";

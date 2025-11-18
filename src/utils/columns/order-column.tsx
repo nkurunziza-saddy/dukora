@@ -18,7 +18,7 @@ import { ORDER_STATUS } from "@/lib/schema/models/enums";
 import type { SelectPurchaseOrder } from "@/lib/schema/schema-types";
 
 export function OrderColumn(
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<SelectPurchaseOrder>[] {
   return [
     {
@@ -28,7 +28,7 @@ export function OrderColumn(
       ),
       cell: ({ row }) => {
         const status = orderStatuses.find(
-          (s) => s.value === row.original.status
+          (s) => s.value === row.original.status,
         );
         if (!status) {
           return (
@@ -39,13 +39,13 @@ export function OrderColumn(
         }
         return (
           <Badge
-            className="capitalize flex gap-1 items-center"
+            className="capitalize flex w-fit px-0.5 gap-1 items-center"
             variant={status.variant}
           >
             {status.icon && (
-              <status.icon className="text-muted-foreground size-4" />
+              <status.icon className="text-muted-foreground size-3.5" />
             )}
-            <span>{status.label}</span>
+            <span className="text-sm">{status.label}</span>
           </Badge>
         );
       },

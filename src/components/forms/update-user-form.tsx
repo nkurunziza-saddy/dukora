@@ -66,16 +66,15 @@ export function UpdateUserForm({ user }: { user: SelectUser }) {
 
   return (
     <form
+      className="space-y-6"
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className="space-y-6"
     >
       <FieldGroup>
         <form.Field
-          name="name"
           children={(field) => {
             const isInvalid =
               field.state.meta.isTouched && !field.state.meta.isValid;
@@ -83,22 +82,22 @@ export function UpdateUserForm({ user }: { user: SelectUser }) {
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>{t("userName")} *</FieldLabel>
                 <Input
+                  aria-invalid={isInvalid}
+                  disabled={!isSelf}
                   id={field.name}
                   name={field.name}
-                  value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  disabled={!isSelf}
                   placeholder={t("enterUserName")}
-                  aria-invalid={isInvalid}
+                  value={field.state.value}
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
             );
           }}
+          name="name"
         />
         <form.Field
-          name="email"
           children={(field) => {
             const isInvalid =
               field.state.meta.isTouched && !field.state.meta.isValid;
@@ -106,23 +105,23 @@ export function UpdateUserForm({ user }: { user: SelectUser }) {
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>{t("userEmail")} *</FieldLabel>
                 <Input
+                  aria-invalid={isInvalid}
+                  disabled={!isSelf}
                   id={field.name}
                   name={field.name}
-                  value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  disabled={!isSelf}
-                  type="email"
                   placeholder={t("email")}
-                  aria-invalid={isInvalid}
+                  type="email"
+                  value={field.state.value}
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
             );
           }}
+          name="email"
         />
         <form.Field
-          name="role"
           children={(field) => {
             const isInvalid =
               field.state.meta.isTouched && !field.state.meta.isValid;
@@ -130,8 +129,8 @@ export function UpdateUserForm({ user }: { user: SelectUser }) {
               <Field data-invalid={isInvalid}>
                 <FieldLabel>{tCommon("role")}</FieldLabel>
                 <Select
-                  value={field.state.value}
                   onValueChange={field.handleChange}
+                  value={field.state.value}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue />
@@ -148,13 +147,14 @@ export function UpdateUserForm({ user }: { user: SelectUser }) {
               </Field>
             );
           }}
+          name="role"
         />
       </FieldGroup>
       <div className="flex justify-end pt-2">
         <Button
-          type="submit"
-          disabled={form.state.isSubmitting}
           className="min-w-[120px]"
+          disabled={form.state.isSubmitting}
+          type="submit"
         >
           {form.state.isSubmitting ? (
             <>

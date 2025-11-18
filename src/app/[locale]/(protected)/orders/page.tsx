@@ -41,9 +41,7 @@ async function OrdersTable({
   );
 }
 
-export default async function OrdersPage(
-  props: PageProps<"/[locale]/orders">
-) {
+export default async function OrdersPage(props: PageProps<"/[locale]/orders">) {
   const query = await props.searchParams;
   const page = Number(query.page) || 1;
   const pageSize = Number(query.pageSize) || 10;

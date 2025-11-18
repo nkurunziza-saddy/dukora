@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { ProductStatus, type SelectProduct } from "@/lib/schema/schema-types";
 
 export function ProductColumn(
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<SelectProduct>[] {
   return [
     {
@@ -19,7 +19,7 @@ export function ProductColumn(
       ),
       cell: ({ row }) => {
         const status = productStatuses.find(
-          (s) => s.value === row.original.status.toLowerCase()
+          (s) => s.value === row.original.status.toLowerCase(),
         );
         if (!status) {
           return (

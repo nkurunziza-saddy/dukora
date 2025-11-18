@@ -72,7 +72,7 @@ export function EditWarehouses({
         form.handleSubmit();
       }}
     >
-      <form.Field name="warehouses" mode="array">
+      <form.Field mode="array" name="warehouses">
         {(field) => {
           const currentWarehouses = field.state.value;
           const isAtLimit = currentWarehouses.length >= LIMITS.WAREHOUSE_LIMIT;
@@ -104,12 +104,12 @@ export function EditWarehouses({
                     {currentWarehouses.length}/{LIMITS.WAREHOUSE_LIMIT}
                   </Badge>
                   <Button
-                    type="button"
-                    variant="outline"
+                    disabled={isAtLimit}
                     onClick={() =>
                       field.pushValue({ name: "", isDefault: false })
                     }
-                    disabled={isAtLimit}
+                    type="button"
+                    variant="outline"
                   >
                     <PlusIcon className="h-4 w-4 mr-2" />
                     {t("addLocation")}
@@ -137,33 +137,33 @@ export function EditWarehouses({
 
                   return (
                     <div
-                      key={index}
                       className="flex gap-4 items-start p-4 border rounded-lg"
+                      key={index}
                     >
                       <div className="flex-1 space-y-2">
                         <form.Field name={`warehouses[${index}].name` as const}>
                           {(subField) => (
                             <Field>
                               <Input
-                                placeholder={t("warehousePlaceholder")}
-                                maxLength={LIMITS.NAME_MAX}
                                 id={subField.name}
+                                maxLength={LIMITS.NAME_MAX}
                                 name={subField.name}
-                                value={subField.state.value}
                                 onBlur={subField.handleBlur}
                                 onChange={(e) =>
                                   subField.handleChange(e.target.value)
                                 }
+                                placeholder={t("warehousePlaceholder")}
+                                value={subField.state.value}
                               />
                               <div className="flex items-center justify-between text-xs text-muted-foreground">
                                 <span>
                                   {nameRemaining} characters remaining
                                 </span>
                                 <Badge
+                                  className="text-xs"
                                   variant={
                                     isNameNearLimit ? "error" : "secondary"
                                   }
-                                  className="text-xs"
                                 >
                                   {nameLength}/{LIMITS.NAME_MAX}
                                 </Badge>
@@ -181,10 +181,10 @@ export function EditWarehouses({
 
                         {!warehouse.isDefault && (
                           <Button
+                            onClick={() => setDefaultWarehouse(index)}
+                            size="sm"
                             type="button"
                             variant="outline"
-                            size="sm"
-                            onClick={() => setDefaultWarehouse(index)}
                           >
                             {t("setDefault")}
                           </Button>
@@ -192,11 +192,11 @@ export function EditWarehouses({
 
                         {currentWarehouses.length > 1 && (
                           <Button
+                            className="text-destructive hover:text-destructive"
+                            onClick={() => field.removeValue(index)}
+                            size="icon"
                             type="button"
                             variant="outline"
-                            size="icon"
-                            onClick={() => field.removeValue(index)}
-                            className="text-destructive hover:text-destructive"
                           >
                             <Trash2Icon className="h-4 w-4" />
                           </Button>
@@ -212,9 +212,9 @@ export function EditWarehouses({
       </form.Field>
       <div className="mt-6">
         <Button
-          type="submit"
-          form="edit-warehouses-form"
           disabled={form.state.isSubmitting}
+          form="edit-warehouses-form"
+          type="submit"
         >
           {form.state.isSubmitting ? t("saving") : t("saveWarehouses")}
         </Button>

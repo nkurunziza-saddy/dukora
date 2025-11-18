@@ -192,9 +192,7 @@ export default function QuickActions() {
           onOpenChange={(open) => (open ? openDrawer() : closeDrawer())}
           open={drawerOpen}
         >
-          <DrawerTrigger>
-            <div />
-          </DrawerTrigger>
+          <DrawerTrigger className="text-sm">{t("quickActions")}</DrawerTrigger>
           <DrawerContent>
             <DrawerHeader>
               <DrawerTitle>{t("quickActions")}</DrawerTitle>

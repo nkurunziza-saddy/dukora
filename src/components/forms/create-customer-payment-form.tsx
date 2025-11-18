@@ -1,11 +1,10 @@
 "use client";
 
 import { useForm } from "@tanstack/react-form";
-import { AlertCircleIcon, Check, Loader2Icon } from "lucide-react";
+import { Check, Loader2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import z from "zod";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -27,7 +26,7 @@ const paymentLinkSchema = z.object({
   amount: z.number().positive("Amount must be a positive number"),
   currency: z.string().min(1, "Currency is required"),
   description: z.string().min(1, "Description is required"),
-  customerEmail: z.string().email("Invalid email address").optional(),
+  customerEmail: z.string().email("Invalid email address"),
 });
 
 export default function CreateCustomerPaymentForm() {
@@ -42,15 +41,16 @@ export default function CreateCustomerPaymentForm() {
       description: "",
       customerEmail: "",
     },
+    validators: {
+      onSubmit: paymentLinkSchema,
+    },
     onSubmit: async ({ value }) => {
       try {
-        const validatedData = paymentLinkSchema.parse(value);
-
         const { data, error } = await createCustomerPaymentLink({
-          amount: validatedData.amount,
-          currency: validatedData.currency,
-          description: validatedData.description,
-          customerEmail: validatedData.customerEmail,
+          amount: value.amount,
+          currency: value.currency,
+          description: value.description,
+          customerEmail: value.customerEmail,
         });
 
         if (error) {
@@ -80,93 +80,120 @@ export default function CreateCustomerPaymentForm() {
       }}
     >
       <FieldGroup>
-        <Field
-          name={form.getFieldValue("description")}
-          valid={form.state.errors.description}
-        >
-          <FieldLabel>{t("description")}</FieldLabel>
-          <Input
-            onChange={(e) => form.setFieldValue("description", e.target.value)}
-            placeholder={tPayments("enterDescription")}
-            value={form.getFieldValue("description")}
-          />
-          <FieldError>{form.state.errors.description}</FieldError>
-        </Field>
+        <form.Field
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>{t("description")}</FieldLabel>
+                <Input
+                  aria-invalid={isInvalid}
+                  id={field.name}
+                  name={field.name}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder={tPayments("enterDescription")}
+                  value={field.state.value}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+          name="description"
+        />
       </FieldGroup>
 
       <div className="grid grid-cols-2 gap-4">
         <FieldGroup>
-          <Field
-            name={form.getFieldValue("amount")}
-            valid={form.state.errors.amount}
-          >
-            <FieldLabel>{t("amount")}</FieldLabel>
-            <Input
-              onChange={(e) =>
-                form.setFieldValue("amount", parseFloat(e.target.value) || 0)
-              }
-              placeholder="0.00"
-              step="0.01"
-              type="number"
-              value={form.getFieldValue("amount")}
-            />
-            <FieldError>{form.state.errors.amount}</FieldError>
-          </Field>
+          <form.Field
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>{t("amount")}</FieldLabel>
+                  <Input
+                    aria-invalid={isInvalid}
+                    id={field.name}
+                    name={field.name}
+                    onBlur={field.handleBlur}
+                    onChange={(e) =>
+                      field.handleChange(parseFloat(e.target.value) || 0)
+                    }
+                    placeholder="0.00"
+                    step="0.01"
+                    type="number"
+                    value={field.state.value}
+                  />
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+            name="amount"
+          />
         </FieldGroup>
 
         <FieldGroup>
-          <Field
-            name={form.getFieldValue("currency")}
-            valid={form.state.errors.currency}
-          >
-            <FieldLabel>{t("currency")}</FieldLabel>
-            <Select
-              onValueChange={(value) => form.setFieldValue("currency", value)}
-              value={form.getFieldValue("currency")}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder={t("selectCurrency")} />
-              </SelectTrigger>
-              <SelectPopup>
-                <SelectItem value="USD">USD</SelectItem>
-                <SelectItem value="EUR">EUR</SelectItem>
-                <SelectItem value="GBP">GBP</SelectItem>
-                <SelectItem value="RWF">RWF</SelectItem>
-                <SelectItem value="KES">KES</SelectItem>
-                <SelectItem value="TZS">TZS</SelectItem>
-              </SelectPopup>
-            </Select>
-            <FieldError>{form.state.errors.currency}</FieldError>
-          </Field>
+          <form.Field
+            children={(field) => {
+              const isInvalid =
+                field.state.meta.isTouched && !field.state.meta.isValid;
+              return (
+                <Field data-invalid={isInvalid}>
+                  <FieldLabel htmlFor={field.name}>{t("currency")}</FieldLabel>
+                  <Select
+                    onValueChange={(value) => field.handleChange(value)}
+                    value={field.state.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectPopup>
+                      <SelectItem value="USD">USD</SelectItem>
+                      <SelectItem value="EUR">EUR</SelectItem>
+                      <SelectItem value="GBP">GBP</SelectItem>
+                      <SelectItem value="RWF">RWF</SelectItem>
+                      <SelectItem value="KES">KES</SelectItem>
+                      <SelectItem value="TZS">TZS</SelectItem>
+                    </SelectPopup>
+                  </Select>
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                </Field>
+              );
+            }}
+            name="currency"
+          />
         </FieldGroup>
       </div>
 
       <FieldGroup>
-        <Field
-          name={form.getFieldValue("customerEmail")}
-          valid={form.state.errors.customerEmail}
-        >
-          <FieldLabel>
-            {t("customerEmail")} ({t("optional")})
-          </FieldLabel>
-          <Input
-            onChange={(e) =>
-              form.setFieldValue("customerEmail", e.target.value)
-            }
-            placeholder={tPayments("enterCustomerEmail")}
-            type="email"
-            value={form.getFieldValue("customerEmail")}
-          />
-          <FieldError>{form.state.errors.customerEmail}</FieldError>
-        </Field>
+        <form.Field
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>
+                  {t("customerEmail")} ({t("optional")})
+                </FieldLabel>
+                <Input
+                  aria-invalid={isInvalid}
+                  id={field.name}
+                  name={field.name}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder={tPayments("enterCustomerEmail")}
+                  type="email"
+                  value={field.state.value}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+          name="customerEmail"
+        />
       </FieldGroup>
-
-      {form.state.errors.root && (
-        <Alert variant="error">
-          <AlertCircleIcon className="h-4 w-4" />
-          <AlertDescription>{form.state.errors.root}</AlertDescription>
-        </Alert>
-      )}
 
       <Button
         className="w-full"

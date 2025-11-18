@@ -148,18 +148,17 @@ export default function PurchaseTransactionForm({
 
   return (
     <form
+      className="space-y-6"
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className="space-y-6"
     >
       <FieldGroup>
         <Separator />
 
         <form.Field
-          name="productId"
           children={(field) => (
             <Field>
               <FieldLabel>{tInventory("productName")} *</FieldLabel>
@@ -223,11 +222,11 @@ export default function PurchaseTransactionForm({
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="productId"
         />
 
         {form.state.values.productId && (
           <form.Field
-            name="warehouseId"
             children={(field) => (
               <Field>
                 <FieldLabel>{tInventory("warehouse")} *</FieldLabel>
@@ -259,9 +258,9 @@ export default function PurchaseTransactionForm({
                       <AutocompleteList>
                         {(item) => (
                           <AutocompleteItem
+                            disabled={!item.isActive}
                             key={item.id}
                             value={item.value}
-                            disabled={!item.isActive}
                           >
                             <div className="flex items-center justify-between w-full">
                               <div className="flex flex-col">
@@ -294,11 +293,11 @@ export default function PurchaseTransactionForm({
                 <FieldError errors={field.state.meta.errors} />
               </Field>
             )}
+            name="warehouseId"
           />
         )}
 
         <form.Field
-          name="supplierId"
           children={(field) => (
             <Field>
               <FieldLabel>{tInventory("supplierName")} *</FieldLabel>
@@ -356,40 +355,40 @@ export default function PurchaseTransactionForm({
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="supplierId"
         />
 
         <form.Field
-          name="quantity"
           children={(field) => (
             <Field>
               <FieldLabel>{tCommon("quantity")} *</FieldLabel>
               <Input
-                type="number"
-                placeholder={tCommon("quantity")}
                 min="1"
-                step="1"
-                value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) =>
                   field.handleChange(e.target.valueAsNumber || 0)
                 }
+                placeholder={tCommon("quantity")}
+                step="1"
+                type="number"
+                value={field.state.value}
               />
               <FieldDescription>{t("addedToInventory")}</FieldDescription>
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="quantity"
         />
 
         <form.Field
-          name="reference"
           children={(field) => (
             <Field>
               <FieldLabel>{tCommon("reference")}</FieldLabel>
               <Input
-                placeholder={t("referencePurchasePlaceholder")}
-                value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
+                placeholder={t("referencePurchasePlaceholder")}
+                value={field.state.value}
               />
               <FieldDescription>
                 {t("referencePurchaseDescription")}
@@ -397,19 +396,19 @@ export default function PurchaseTransactionForm({
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="reference"
         />
 
         <form.Field
-          name="note"
           children={(field) => (
             <Field>
               <FieldLabel>{tCommon("note")}</FieldLabel>
               <Textarea
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
                 placeholder={t("notePurchasePlaceholder")}
                 rows={3}
                 value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
               />
               <FieldDescription>
                 {t("notePurchaseDescription")}
@@ -417,25 +416,26 @@ export default function PurchaseTransactionForm({
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="note"
         />
       </FieldGroup>
 
       <div className="flex justify-end pt-6 border-t">
         <div className="flex gap-3">
           <Button
-            type="button"
-            variant="outline"
+            disabled={form.state.isSubmitting}
             onClick={() => {
               form.reset();
             }}
-            disabled={form.state.isSubmitting}
+            type="button"
+            variant="outline"
           >
             {t("resetForm")}
           </Button>
           <Button
-            type="submit"
-            disabled={form.state.isSubmitting || !form.state.isValid}
             className="min-w-[140px]"
+            disabled={form.state.isSubmitting || !form.state.isValid}
+            type="submit"
           >
             {form.state.isSubmitting ? (
               <>
@@ -458,9 +458,9 @@ export const CreatePurchaseTransactionDialog = () => {
   const t = useTranslations("forms");
   return (
     <TriggerDialog
+      description={t("recordPurchaseDescription")}
       title={t("recordPurchaseTransaction")}
       triggerText={t("recordPurchase")}
-      description={t("recordPurchaseDescription")}
     >
       <PurchaseTransactionForm />
     </TriggerDialog>

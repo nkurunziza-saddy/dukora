@@ -56,7 +56,7 @@ export function NotificationsSettings() {
   const updateSetting = (
     category: keyof NotificationSettings,
     key: string,
-    value: boolean
+    value: boolean,
   ) => {
     setSettings((prev) => ({
       ...prev,

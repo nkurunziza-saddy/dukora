@@ -1,18 +1,12 @@
 "use client";
 
-import { ShoppingCartIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { useCartActions } from "@/contexts/cart-context";
+import type { CartItem } from "@/lib/types";
 
 interface AddToCartButtonProps {
-  product: {
-    id: string;
-    name: string;
-    sellingPrice?: number;
-    imageUrl?: string;
-    stockQuantity?: number;
-  };
+  product: CartItem;
   className?: string;
   variant?:
     | "default"
@@ -34,21 +28,15 @@ export function AddToCartButton({
   const { addItem } = useCartActions();
 
   const handleAddToCart = () => {
-    if (!product.sellingPrice) {
+    if (!product.costPrice) {
       return;
     }
 
-    addItem({
-      id: `cart-${product.id}-${Date.now()}`,
-      productId: product.id,
-      name: product.name,
-      price: product.sellingPrice,
-      imageUrl: product.imageUrl,
-      maxQuantity: product.stockQuantity || 0,
-    });
+    addItem(product);
   };
 
-  const isOutOfStock = !product.stockQuantity || product.stockQuantity <= 0;
+  const isOutOfStock =
+    !product.availableStock || Number(product.availableStock) <= 0;
 
   return (
     <Button
@@ -58,7 +46,6 @@ export function AddToCartButton({
       size={size}
       variant={variant}
     >
-      <ShoppingCartIcon className="mr-2 h-4 w-4" />
       {isOutOfStock ? t("outOfStock") : t("addToCart")}
     </Button>
   );

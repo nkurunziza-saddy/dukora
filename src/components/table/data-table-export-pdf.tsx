@@ -65,7 +65,7 @@ export function DataTableExportPDF<TData>({
           (header) =>
             header.id !== "select" &&
             header.id !== "actions" &&
-            header.column.getIsVisible()
+            header.column.getIsVisible(),
         );
 
       const headers = visibleColumns.map((header) => formatKeys(header.id));
@@ -96,7 +96,7 @@ export function DataTableExportPDF<TData>({
           }
 
           return value !== null && value !== undefined ? String(value) : "N/A";
-        })
+        }),
       );
 
       autoTable(doc, {
@@ -134,7 +134,7 @@ export function DataTableExportPDF<TData>({
         doc.text(
           `Page ${i} of ${pageCount}`,
           doc.internal.pageSize.getWidth() - 30,
-          doc.internal.pageSize.getHeight() - 10
+          doc.internal.pageSize.getHeight() - 10,
         );
       }
 

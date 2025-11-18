@@ -64,6 +64,7 @@ export default function AnyTransactionForm({
     warehouseId: z.string().min(1, "Warehouse ID is required"),
   });
 
+  type FormData = z.infer<typeof saleTransactionSchema>;
   const {
     data: productsData,
     error: productsError,
@@ -78,9 +79,8 @@ export default function AnyTransactionForm({
       reference: transaction ? (transaction.reference ?? "") : "",
       type: transaction ? transaction.type : "DAMAGE",
       warehouseId: transaction ? transaction.warehouseId : "",
-    },
+    } satisfies FormData as FormData,
     validators: {
-      // @ts-expect-error
       onSubmit: saleTransactionSchema,
     },
     onSubmit: async ({ value }) => {
@@ -128,7 +128,7 @@ export default function AnyTransactionForm({
   const selectedWarehouseItem = useMemo(
     () =>
       productDetailsData?.warehouseItems.find(
-        (item: any) => item.id === warehouseItemId,
+        (item) => item.id === warehouseItemId,
       ),
     [productDetailsData, warehouseItemId],
   );
@@ -144,24 +144,23 @@ export default function AnyTransactionForm({
 
   return (
     <form
+      className="space-y-6"
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className="space-y-6"
     >
       <FieldGroup>
         <Separator />
         <form.Field
-          name="type"
           children={(field) => (
             <Field>
               <FieldLabel>{t("type")}</FieldLabel>
               <Select
-                onValueChange={field.handleChange}
                 defaultValue={field.state.value}
                 items={transactionTypesObject}
+                onValueChange={field.handleChange}
               >
                 <SelectTrigger className="w-full">
                   <SelectValue />
@@ -177,9 +176,9 @@ export default function AnyTransactionForm({
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="type"
         />
         <form.Field
-          name="productId"
           children={(field) => (
             <Field>
               <FieldLabel>{tInventory("productName")} *</FieldLabel>
@@ -242,11 +241,11 @@ export default function AnyTransactionForm({
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="productId"
         />
 
         {productId && (
           <form.Field
-            name="warehouseItemId"
             children={(field) => (
               <Field>
                 <FieldLabel>{t("warehouseLocation")} *</FieldLabel>
@@ -325,83 +324,84 @@ export default function AnyTransactionForm({
                 <FieldError errors={field.state.meta.errors} />
               </Field>
             )}
+            name="warehouseItemId"
           />
         )}
 
         <form.Field
-          name="quantity"
           children={(field) => (
             <Field>
               <FieldLabel>{tCommon("quantity")} *</FieldLabel>
               <Input
-                type="number"
-                placeholder={t("enterQuantity")}
-                min="1"
                 max={selectedWarehouseItem?.quantity || undefined}
-                step="1"
-                value={field.state.value}
+                min="1"
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+                placeholder={t("enterQuantity")}
+                step="1"
+                type="number"
+                value={field.state.value}
               />
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="quantity"
         />
 
         <form.Field
-          name="reference"
           children={(field) => (
             <Field>
               <FieldLabel>
                 {tCommon("reference")} {t("poNumber")}
               </FieldLabel>
               <Input
-                placeholder={t("referencePlaceholder")}
-                value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
+                placeholder={t("referencePlaceholder")}
+                value={field.state.value}
               />
               <FieldDescription>{t("referenceDescription")}</FieldDescription>
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="reference"
         />
 
         <form.Field
-          name="note"
           children={(field) => (
             <Field>
               <FieldLabel>{tCommon("note")}</FieldLabel>
               <Textarea
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
                 placeholder={t("notePlaceholder")}
                 rows={3}
                 value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
               />
               <FieldDescription>{t("noteDescription")}</FieldDescription>
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="note"
         />
       </FieldGroup>
 
       <div className="flex justify-end pt-6 border-t">
         <div className="flex gap-3">
           <Button
-            type="button"
-            variant="outline"
+            disabled={form.state.isSubmitting}
             onClick={() => {
               form.reset();
             }}
-            disabled={form.state.isSubmitting}
+            type="button"
+            variant="outline"
           >
             {t("resetForm")}
           </Button>
           <Button
-            type="submit"
-            disabled={form.state.isSubmitting || !form.state.isValid}
             className="min-w-[140px]"
+            disabled={form.state.isSubmitting || !form.state.isValid}
+            type="submit"
           >
             {form.state.isSubmitting ? (
               <>
@@ -424,9 +424,9 @@ export default function AnyTransactionForm({
 export const CreateSaleTransactionDialog = () => {
   return (
     <TriggerDialog
+      description={useTranslations("forms")("recordTransactionDescription")}
       title={useTranslations("forms")("recordTransaction")}
       triggerText={useTranslations("common")("record")}
-      description={useTranslations("forms")("recordTransactionDescription")}
     >
       <AnyTransactionForm />
     </TriggerDialog>

@@ -29,7 +29,7 @@ const components: Options["components"] = {
     <ol
       className={cn(
         "list-decimal pl-5 mb-3 space-y-1 text-foreground",
-        className
+        className,
       )}
       {...props}
     >
@@ -79,7 +79,7 @@ const components: Options["components"] = {
     <h1
       className={cn(
         "mt-4 mb-2 font-semibold text-xl text-foreground",
-        className
+        className,
       )}
       {...props}
     >
@@ -90,7 +90,7 @@ const components: Options["components"] = {
     <h2
       className={cn(
         "mt-3 mb-2 font-semibold text-lg text-foreground",
-        className
+        className,
       )}
       {...props}
     >
@@ -101,7 +101,7 @@ const components: Options["components"] = {
     <h3
       className={cn(
         "mt-2 mb-2 font-semibold text-base text-foreground",
-        className
+        className,
       )}
       {...props}
     >
@@ -112,7 +112,7 @@ const components: Options["components"] = {
     <h4
       className={cn(
         "mt-2 mb-2 font-medium text-base text-foreground",
-        className
+        className,
       )}
       {...props}
     >
@@ -148,7 +148,7 @@ const components: Options["components"] = {
     <th
       className={cn(
         "px-4 py-2 text-left font-semibold text-sm text-foreground",
-        className
+        className,
       )}
       {...props}
     >
@@ -167,7 +167,7 @@ const components: Options["components"] = {
     <blockquote
       className={cn(
         "my-4 border-muted-foreground/30 border-l-4 pl-4 text-muted-foreground italic",
-        className
+        className,
       )}
       {...props}
     >
@@ -183,7 +183,7 @@ const components: Options["components"] = {
       <code
         className={cn(
           "rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground",
-          className
+          className,
         )}
         {...props}
       />
@@ -208,7 +208,7 @@ const components: Options["components"] = {
       <pre
         className={cn(
           "my-4 h-auto overflow-x-auto rounded-lg border bg-muted p-4 font-mono text-sm",
-          className
+          className,
         )}
       >
         <code className={`language-${language}`}>{code}</code>
@@ -231,7 +231,7 @@ export const Response = memo(
       <div
         className={cn(
           "size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
-          className
+          className,
         )}
         {...props}
       >
@@ -249,6 +249,6 @@ export const Response = memo(
       </div>
     );
   },
-  (prevProps, nextProps) => prevProps.children === nextProps.children
+  (prevProps, nextProps) => prevProps.children === nextProps.children,
 );
 Response.displayName = "Response";

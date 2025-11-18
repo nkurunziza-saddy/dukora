@@ -8,7 +8,7 @@ export default async function CreateLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const t = await getTranslations("create");
+  const t = await getTranslations("common");
 
   return (
     <div className="flex flex-col">
@@ -18,7 +18,7 @@ export default async function CreateLayout({
           {t("backToDashboard")}
         </Button>
         <div className="flex-1">
-          <h1 className="text-lg font-semibold">{t("createNew")}</h1>
+          <h1 className=" font-medium">{t("createNew")}</h1>
         </div>
       </div>
 
@@ -26,4 +26,3 @@ export default async function CreateLayout({
     </div>
   );
 }
-

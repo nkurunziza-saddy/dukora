@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function CreateProductPage() {
-  const t = await getTranslations("createProduct");
+  const t = await getTranslations("metadata.pages.createProduct");
 
   return (
     <div className="container mx-auto py-6">

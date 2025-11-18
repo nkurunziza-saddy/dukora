@@ -55,16 +55,15 @@ export default function UserProfileForm({
 
   return (
     <form
+      className="space-y-6"
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className="space-y-6"
     >
       <FieldGroup>
         <form.Field
-          name="name"
           children={(field) => {
             const isInvalid =
               field.state.meta.isTouched && !field.state.meta.isValid;
@@ -72,22 +71,22 @@ export default function UserProfileForm({
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>{t("userName")} *</FieldLabel>
                 <Input
+                  aria-invalid={isInvalid}
                   id={field.name}
                   name={field.name}
-                  value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder={t("enterUserName")}
-                  aria-invalid={isInvalid}
+                  value={field.state.value}
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
             );
           }}
+          name="name"
         />
 
         <form.Field
-          name="email"
           children={(field) => {
             const isInvalid =
               field.state.meta.isTouched && !field.state.meta.isValid;
@@ -95,27 +94,28 @@ export default function UserProfileForm({
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>{t("userEmail")} *</FieldLabel>
                 <Input
+                  aria-invalid={isInvalid}
                   id={field.name}
                   name={field.name}
-                  value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  type="email"
                   placeholder={t("email")}
-                  aria-invalid={isInvalid}
+                  type="email"
+                  value={field.state.value}
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
             );
           }}
+          name="email"
         />
       </FieldGroup>
 
       <div className="flex justify-end pt-6 border-t">
         <Button
-          type="submit"
-          disabled={form.state.isSubmitting}
           className="min-w-[120px]"
+          disabled={form.state.isSubmitting}
+          type="submit"
         >
           {form.state.isSubmitting ? (
             <>

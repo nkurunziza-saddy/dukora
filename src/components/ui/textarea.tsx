@@ -13,7 +13,7 @@ function Textarea({
     <span
       className={cn(
         "relative inline-flex w-full rounded-lg border border-input bg-background bg-clip-padding text-base ring-ring/24 transition-[color,background-color,box-shadow,border-color] before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-lg)-1px)] has-focus-visible:border-ring has-focus-visible:ring-[3px] has-disabled:opacity-64 has-aria-invalid:border-destructive/36 has-aria-invalid:before:shadow-none has-focus-visible:has-aria-invalid:border-destructive/64 has-focus-visible:has-aria-invalid:ring-destructive/16 sm:text-sm dark:bg-input/32 dark:bg-clip-border dark:has-aria-invalid:ring-destructive/24",
-        className
+        className,
       )}
       data-slot="textarea-control"
     >
@@ -23,7 +23,7 @@ function Textarea({
           size === "sm" &&
             "min-h-16.5 px-[calc(--spacing(2.5)-1px)] py-[calc(--spacing(1)-1px)] max-sm:min-h-19.5",
           size === "lg" &&
-            "min-h-18.5 py-[calc(--spacing(2)-1px)] max-sm:min-h-21.5"
+            "min-h-18.5 py-[calc(--spacing(2)-1px)] max-sm:min-h-21.5",
         )}
         data-slot="textarea"
         {...props}

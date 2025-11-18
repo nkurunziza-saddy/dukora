@@ -60,7 +60,7 @@ function NotFoundGuard({
             {t("needHelp")}{" "}
             <a
               href={`mailto:${process.env.NEXT_PUBLIC_SUPPORT_EMAIL}?subject=${encodeURIComponent(
-                t("requestForSupport")
+                t("requestForSupport"),
               )}`}
               title="Email Dukora Support"
             >

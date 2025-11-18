@@ -86,7 +86,7 @@ Examples:
 
 function compareFiles(
   sourceFile: string,
-  targetFile: string
+  targetFile: string,
 ): ComparisonResult {
   const source = readTranslationFile(sourceFile);
   const target = readTranslationFile(targetFile);
@@ -115,14 +115,14 @@ function generateReport(options: CheckOptions): MissingKeysReport[] {
 
   if (options.targetFiles) {
     targetFiles = options.targetFiles.map((file) =>
-      path.isAbsolute(file) ? file : path.join(options.targetDirectory!, file)
+      path.isAbsolute(file) ? file : path.join(options.targetDirectory!, file),
     );
   } else {
     const files = fs.readdirSync(options.targetDirectory!);
     targetFiles = files
       .filter(
         (file) =>
-          file.endsWith(".json") && file !== path.basename(options.sourceFile!)
+          file.endsWith(".json") && file !== path.basename(options.sourceFile!),
       )
       .map((file) => path.join(options.targetDirectory!, file));
   }
@@ -188,14 +188,14 @@ function formatTable(reports: MissingKeysReport[]): string {
 function formatSummary(reports: MissingKeysReport[]): string {
   const totalMissing = reports.reduce(
     (sum, report) => sum + report.totalMissing,
-    0
+    0,
   );
   const totalExtra = reports.reduce(
     (sum, report) => sum + report.totalExtra,
-    0
+    0,
   );
   const filesWithIssues = reports.filter(
-    (report) => report.totalMissing > 0 || report.totalExtra > 0
+    (report) => report.totalMissing > 0 || report.totalExtra > 0,
   );
 
   let output = "\n📋 Summary\n";
@@ -228,7 +228,7 @@ function main(): void {
 
     if (!fs.existsSync(options.targetDirectory!)) {
       console.error(
-        `Error: Target directory not found: ${options.targetDirectory}`
+        `Error: Target directory not found: ${options.targetDirectory}`,
       );
       process.exit(1);
     }
@@ -257,7 +257,7 @@ function main(): void {
     }
 
     const hasIssues = reports.some(
-      (report) => report.totalMissing > 0 || report.totalExtra > 0
+      (report) => report.totalMissing > 0 || report.totalExtra > 0,
     );
     if (hasIssues) {
       process.exit(1);

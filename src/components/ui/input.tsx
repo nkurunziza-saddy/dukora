@@ -13,14 +13,13 @@ function Input({
 }) {
   return (
     <span
-      data-slot="input-control"
       className={cn(
         "relative inline-flex w-full rounded-lg border border-input bg-background text-base/5 ring-ring/24 transition-[color,background-color,box-shadow,border-color] has-focus-visible:border-ring has-focus-visible:ring-[3px] has-disabled:opacity-64 has-aria-invalid:border-destructive/36  has-focus-visible:has-aria-invalid:border-destructive/64 has-focus-visible:has-aria-invalid:ring-destructive/16 sm:text-sm dark:bg-input/32 dark:has-aria-invalid:ring-destructive/24",
         className,
       )}
+      data-slot="input-control"
     >
       <InputPrimitive
-        data-slot="input"
         className={cn(
           "w-full min-w-0 rounded-[inherit] px-[calc(--spacing(3)-1px)] py-[calc(--spacing(1.5)-1px)] outline-none placeholder:text-muted-foreground/64",
           size === "sm" &&
@@ -31,6 +30,7 @@ function Input({
           props.type === "file" &&
             "text-muted-foreground file:me-3 file:bg-transparent file:text-sm file:font-medium file:text-foreground",
         )}
+        data-slot="input"
         size={typeof size === "number" ? size : undefined}
         {...props}
       />

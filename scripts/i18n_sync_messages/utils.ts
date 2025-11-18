@@ -4,10 +4,7 @@
 
 import * as fs from "node:fs";
 import * as path from "node:path";
-import type {
-  TranslationFile,
-  ValidationResult,
-} from "./types";
+import type { TranslationFile, ValidationResult } from "./types";
 
 /**
  * Read and parse a JSON translation file

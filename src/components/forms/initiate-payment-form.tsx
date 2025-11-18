@@ -90,16 +90,15 @@ export default function InitiatePaymentForm() {
 
   return (
     <form
+      className="space-y-6"
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className="space-y-6"
     >
       <FieldGroup>
         <form.Field
-          name="receiverBusinessId"
           children={(field) => (
             <Field>
               <FieldLabel>{tPayments("receiverBusiness")} *</FieldLabel>
@@ -160,34 +159,34 @@ export default function InitiatePaymentForm() {
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="receiverBusinessId"
         />
 
         <form.Field
-          name="amount"
           children={(field) => (
             <Field>
               <FieldLabel>{tPayments("amount")}</FieldLabel>
               <Input
-                type="number"
-                step="0.01"
-                placeholder={tPayments("enterAmount")}
-                value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+                placeholder={tPayments("enterAmount")}
+                step="0.01"
+                type="number"
+                value={field.state.value}
               />
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="amount"
         />
 
         <form.Field
-          name="currency"
           children={(field) => (
             <Field>
               <FieldLabel>{tPayments("currency")}</FieldLabel>
               <Select
-                onValueChange={field.handleChange}
                 defaultValue={field.state.value}
+                onValueChange={field.handleChange}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -201,27 +200,28 @@ export default function InitiatePaymentForm() {
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="currency"
         />
 
         <form.Field
-          name="applicationFeeAmount"
           children={(field) => (
             <Field>
               <FieldLabel>{tPayments("applicationFee")}</FieldLabel>
               <Input
-                type="number"
-                step="0.01"
-                placeholder={tPayments("enterApplicationFee")}
-                value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+                placeholder={tPayments("enterApplicationFee")}
+                step="0.01"
+                type="number"
+                value={field.state.value}
               />
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="applicationFeeAmount"
         />
 
-        <Button type="submit" disabled={form.state.isSubmitting}>
+        <Button disabled={form.state.isSubmitting} type="submit">
           {form.state.isSubmitting ? (
             <>
               <Loader2Icon className="size-3.5 animate-spin" />

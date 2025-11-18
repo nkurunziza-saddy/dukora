@@ -60,8 +60,8 @@ export function BusinessSettings({ business }: BusinessSettingsProps) {
         <div className="flex items-center justify-between">
           <div></div>
           <Badge
-            variant={completionPercentage === 100 ? "default" : "secondary"}
             className="text-sm"
+            variant={completionPercentage === 100 ? "default" : "secondary"}
           >
             {completionPercentage}% Complete
           </Badge>
@@ -72,8 +72,8 @@ export function BusinessSettings({ business }: BusinessSettingsProps) {
             <div>
               <p className="text-xs font-medium">Details</p>
               <Badge
-                variant={completionStats.details ? "default" : "secondary"}
                 className="text-xs"
+                variant={completionStats.details ? "default" : "secondary"}
               >
                 {completionStats.details ? "Complete" : "Pending"}
               </Badge>
@@ -84,8 +84,8 @@ export function BusinessSettings({ business }: BusinessSettingsProps) {
             <div>
               <p className="text-xs font-medium">Settings</p>
               <Badge
-                variant={completionStats.settings ? "default" : "secondary"}
                 className="text-xs"
+                variant={completionStats.settings ? "default" : "secondary"}
               >
                 {completionStats.settings ? "Complete" : "Pending"}
               </Badge>
@@ -96,8 +96,8 @@ export function BusinessSettings({ business }: BusinessSettingsProps) {
             <div>
               <p className="text-xs font-medium">Categories</p>
               <Badge
-                variant={completionStats.categories ? "default" : "secondary"}
                 className="text-xs"
+                variant={completionStats.categories ? "default" : "secondary"}
               >
                 {business.categories.length} Items
               </Badge>
@@ -108,8 +108,8 @@ export function BusinessSettings({ business }: BusinessSettingsProps) {
             <div>
               <p className="text-xs font-medium">Warehouses</p>
               <Badge
-                variant={completionStats.warehouses ? "default" : "secondary"}
                 className="text-xs"
+                variant={completionStats.warehouses ? "default" : "secondary"}
               >
                 {business.warehouses.length} Locations
               </Badge>
@@ -120,8 +120,8 @@ export function BusinessSettings({ business }: BusinessSettingsProps) {
             <div>
               <p className="text-xs font-medium">Stripe</p>
               <Badge
-                variant={completionStats.stripe ? "default" : "secondary"}
                 className="text-xs"
+                variant={completionStats.stripe ? "default" : "secondary"}
               >
                 {completionStats.stripe ? "Connected" : "Not Connected"}
               </Badge>

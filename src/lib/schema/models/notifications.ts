@@ -13,10 +13,7 @@ import { usersTable } from "./users";
 export const notificationsTable = pgTable(
   "notifications",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     businessId: text("business_id")
       .notNull()
       .references(() => businessesTable.id, { onDelete: "cascade" }),
@@ -41,5 +38,5 @@ export const notificationsTable = pgTable(
     index("notifications_priority").on(table.priority),
     index("notifications_read").on(table.read),
     index("notifications_created_at").on(table.createdAt),
-  ]
+  ],
 );

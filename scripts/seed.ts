@@ -47,6 +47,9 @@ const main = async () => {
     const users = await db.query.usersTable.findMany({
       where: (table, { eq }) => eq(table.businessId, business.id),
     });
+    console.log(
+      `  Found ${JSON.stringify(await db.query.usersTable.findMany())} for the business.`,
+    );
 
     if (users.length === 0) {
       console.error(

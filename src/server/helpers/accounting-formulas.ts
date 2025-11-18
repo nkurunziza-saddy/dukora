@@ -28,7 +28,7 @@ function sumTransactionsAtCost(transactions: TransactionPayload[]): number {
 }
 
 function sumTransactionsAtSalePrice(
-  transactions: TransactionPayload[]
+  transactions: TransactionPayload[],
 ): number {
   if (!Array.isArray(transactions)) return 0;
 
@@ -68,7 +68,7 @@ export function calculateAllMetrics(
   transactions: TransactionPayload[],
   expenses: SelectExpense[],
   openingStock: number,
-  closingStock: number
+  closingStock: number,
 ) {
   if (!Array.isArray(transactions)) {
     console.error("Invalid transactions array provided");
@@ -86,13 +86,13 @@ export function calculateAllMetrics(
   // Filter transactions by type
   const salesTransactions = transactions.filter((t) => t?.type === "SALE");
   const purchaseTransactions = transactions.filter(
-    (t) => t?.type === "PURCHASE"
+    (t) => t?.type === "PURCHASE",
   );
   const salesReturnTransactions = transactions.filter(
-    (t) => t?.type === "RETURN_SALE"
+    (t) => t?.type === "RETURN_SALE",
   );
   const purchaseReturnTransactions = transactions.filter(
-    (t) => t?.type === "RETURN_PURCHASE"
+    (t) => t?.type === "RETURN_PURCHASE",
   );
 
   // Revenue calculations
@@ -103,7 +103,7 @@ export function calculateAllMetrics(
   // Purchase calculations
   const grossPurchases = sumTransactionsAtCost(purchaseTransactions);
   const purchaseReturnsValue = sumTransactionsAtCost(
-    purchaseReturnTransactions
+    purchaseReturnTransactions,
   );
   const netPurchases = Math.max(0, grossPurchases - purchaseReturnsValue);
 
@@ -161,7 +161,7 @@ export function calculateAllMetrics(
           (
             ((validClosingStock - validOpeningStock) / validOpeningStock) *
             100
-          ).toFixed(2)
+          ).toFixed(2),
         )
       : 0;
 
@@ -184,9 +184,9 @@ export function calculateAllMetrics(
           (
             salesTransactions.reduce(
               (sum, t) => sum + (Math.abs(Number(t.quantity)) || 0),
-              0
+              0,
             ) / transactionCount
-          ).toFixed(2)
+          ).toFixed(2),
         )
       : 0;
 
@@ -250,18 +250,18 @@ export function calculateAllMetrics(
 }
 
 export function calculateClosingStock(
-  warehouseItems: ExtendedWarehouseItemPayload[]
+  warehouseItems: ExtendedWarehouseItemPayload[],
 ): number {
   return warehouseItems.reduce(
     (sum, w) => sum + w.quantity * parseFloat(w.product.costPrice),
-    0
+    0,
   );
 }
 
 export function calculateCOGS(
   openingStock: number,
   purchases: number,
-  closingStock: number
+  closingStock: number,
 ): number {
   const validOpeningStock = Math.max(0, Number(openingStock) || 0);
   const validPurchases = Math.max(0, Number(purchases) || 0);

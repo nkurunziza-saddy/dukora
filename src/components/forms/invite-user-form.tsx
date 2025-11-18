@@ -70,17 +70,16 @@ export function InviteUserForm() {
         </AlertDescription>
       </Alert>
       <form
+        className="space-y-6"
         id="invite-user-form"
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
           form.handleSubmit();
         }}
-        className="space-y-6"
       >
         <FieldGroup>
           <form.Field
-            name="name"
             children={(field) => {
               const isInvalid =
                 field.state.meta.isTouched && !field.state.meta.isValid;
@@ -90,21 +89,21 @@ export function InviteUserForm() {
                     {t("userName")} *
                   </FieldLabel>
                   <Input
+                    aria-invalid={isInvalid}
                     id={field.name}
                     name={field.name}
-                    value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                     placeholder={t("enterUserName")}
-                    aria-invalid={isInvalid}
+                    value={field.state.value}
                   />
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               );
             }}
+            name="name"
           />
           <form.Field
-            name="email"
             children={(field) => {
               const isInvalid =
                 field.state.meta.isTouched && !field.state.meta.isValid;
@@ -114,23 +113,23 @@ export function InviteUserForm() {
                     {t("userEmail")} *
                   </FieldLabel>
                   <Input
+                    aria-invalid={isInvalid}
                     id={field.name}
                     name={field.name}
-                    type="email"
-                    placeholder={t("enterUserEmail")}
-                    value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={isInvalid}
+                    placeholder={t("enterUserEmail")}
+                    type="email"
+                    value={field.state.value}
                   />
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               );
             }}
+            name="email"
           />
 
           <form.Field
-            name="role"
             children={(field) => {
               const isInvalid =
                 field.state.meta.isTouched && !field.state.meta.isValid;
@@ -138,10 +137,10 @@ export function InviteUserForm() {
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor={field.name}>{t("role")}</FieldLabel>
                   <Select
-                    name={field.name}
-                    value={field.state.value}
-                    onValueChange={field.handleChange}
                     items={userRolesObject}
+                    name={field.name}
+                    onValueChange={field.handleChange}
+                    value={field.state.value}
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue />
@@ -158,14 +157,15 @@ export function InviteUserForm() {
                 </Field>
               );
             }}
+            name="role"
           />
         </FieldGroup>
         <div className="flex justify-end pt-2">
           <Button
-            type="submit"
-            form="invite-user-form"
-            disabled={form.state.isSubmitting}
             className="min-w-[120px]"
+            disabled={form.state.isSubmitting}
+            form="invite-user-form"
+            type="submit"
           >
             {form.state.isSubmitting ? (
               <>

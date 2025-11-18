@@ -1,4 +1,3 @@
-import "../globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -12,6 +11,7 @@ import { fontMono, fontSans } from "@/lib/config/fonts";
 import { getI18nSiteMetadata } from "@/lib/config/i18n-metadata";
 import { MY_HANDLE, SITE_KEYWORDS } from "@/lib/config/site";
 import { QueryProvider } from "@/lib/providers/query-provider";
+import "@/styles/globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   const metadata = await getI18nSiteMetadata();

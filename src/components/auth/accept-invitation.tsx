@@ -31,7 +31,7 @@ export const AcceptInvitation: React.FC<{ code: string }> = ({ code }) => {
           <Button className="w-full" onClick={accept}>
             {t("acceptButton")}
           </Button>
-          <Button className="w-full" variant="outline" onClick={decline}>
+          <Button className="w-full" onClick={decline} variant="outline">
             {t("declineButton")}
           </Button>
         </div>

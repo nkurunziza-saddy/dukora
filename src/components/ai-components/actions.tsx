@@ -43,7 +43,7 @@ export const Action = ({
                 className={cn(
                   "text-muted-foreground hover:text-foreground transition-colors",
                   "hover:bg-muted/50 focus:bg-muted/50",
-                  className
+                  className,
                 )}
                 size={size}
                 type="button"
@@ -66,7 +66,7 @@ export const Action = ({
       className={cn(
         "text-muted-foreground hover:text-foreground transition-colors",
         "hover:bg-muted/50 focus:bg-muted/50",
-        className
+        className,
       )}
       size={size}
       type="button"

@@ -67,18 +67,18 @@ export function AIAnalyticsAssistant({
         timeRange,
         monthName,
         year,
-        userMessage
+        userMessage,
       );
 
       sendMessage({ text: systematicPrompt });
     },
-    [analyticsData, timeRange, monthName, year, sendMessage, isLoading]
+    [analyticsData, timeRange, monthName, year, sendMessage, isLoading],
   );
 
   const handleClearMessages = useCallback(() => {
     if (
       confirm(
-        "Are you sure you want to clear all analytics messages? This action cannot be undone."
+        "Are you sure you want to clear all analytics messages? This action cannot be undone.",
       )
     ) {
       clearMessages();
@@ -213,8 +213,8 @@ export function AIAnalyticsAssistant({
                               onClick={() =>
                                 navigator.clipboard.writeText(
                                   latestAssistantMessage.parts.find(
-                                    (part) => part.type === "text"
-                                  )?.text || ""
+                                    (part) => part.type === "text",
+                                  )?.text || "",
                                 )
                               }
                             >
@@ -253,7 +253,7 @@ function createAnalyticsPrompt(
   timeRange: string,
   monthName: string,
   year: number,
-  userQuestion: string
+  userQuestion: string,
 ): string {
   const dataContext = `
 ANALYTICS DATA CONTEXT:

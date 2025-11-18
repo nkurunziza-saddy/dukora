@@ -2,16 +2,9 @@
 
 import { createContext, useContext, useEffect, useReducer } from "react";
 import { toast } from "sonner";
+import type { CartItem as RawCartItem } from "@/lib/types";
 
-interface CartItem {
-  id: string;
-  productId: string;
-  name: string;
-  price: number;
-  imageUrl?: string;
-  quantity: number;
-  maxQuantity: number;
-}
+type CartItem = RawCartItem & { quantity: number };
 
 interface CartState {
   items: CartItem[];
@@ -37,20 +30,20 @@ function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case "ADD_ITEM": {
       const existingItem = state.items.find(
-        (item) => item.productId === action.payload.productId
+        (item) => item.id === action.payload.id,
       );
 
       if (existingItem) {
         const updatedItems = state.items.map((item) =>
-          item.productId === action.payload.productId
+          item.id === action.payload.id
             ? {
                 ...item,
                 quantity: Math.min(
                   item.quantity + 1,
-                  action.payload.maxQuantity
+                  Number(action.payload.availableStock),
                 ),
               }
-            : item
+            : item,
         );
 
         return {
@@ -58,11 +51,11 @@ function cartReducer(state: CartState, action: CartAction): CartState {
           items: updatedItems,
           totalItems: updatedItems.reduce(
             (sum, item) => sum + item.quantity,
-            0
+            0,
           ),
           totalPrice: updatedItems.reduce(
-            (sum, item) => sum + item.price * item.quantity,
-            0
+            (sum, item) => sum + Number(item.price) * item.quantity,
+            0,
           ),
         };
       }
@@ -79,15 +72,15 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         items: updatedItems,
         totalItems: updatedItems.reduce((sum, item) => sum + item.quantity, 0),
         totalPrice: updatedItems.reduce(
-          (sum, item) => sum + item.price * item.quantity,
-          0
+          (sum, item) => sum + Number(item.price) * item.quantity,
+          0,
         ),
       };
     }
 
     case "REMOVE_ITEM": {
       const updatedItems = state.items.filter(
-        (item) => item.id !== action.payload
+        (item) => item.id !== action.payload,
       );
 
       return {
@@ -95,8 +88,8 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         items: updatedItems,
         totalItems: updatedItems.reduce((sum, item) => sum + item.quantity, 0),
         totalPrice: updatedItems.reduce(
-          (sum, item) => sum + item.price * item.quantity,
-          0
+          (sum, item) => sum + Number(item.price) * item.quantity,
+          0,
         ),
       };
     }
@@ -109,10 +102,10 @@ function cartReducer(state: CartState, action: CartAction): CartState {
                 ...item,
                 quantity: Math.min(
                   Math.max(action.payload.quantity, 0),
-                  item.maxQuantity
+                  Number(item.availableStock),
                 ),
               }
-            : item
+            : item,
         )
         .filter((item) => item.quantity > 0);
 
@@ -121,8 +114,8 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         items: updatedItems,
         totalItems: updatedItems.reduce((sum, item) => sum + item.quantity, 0),
         totalPrice: updatedItems.reduce(
-          (sum, item) => sum + item.price * item.quantity,
-          0
+          (sum, item) => sum + Number(item.price) * item.quantity,
+          0,
         ),
       };
     }
@@ -148,8 +141,8 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         items,
         totalItems: items.reduce((sum, item) => sum + item.quantity, 0),
         totalPrice: items.reduce(
-          (sum, item) => sum + item.price * item.quantity,
-          0
+          (sum, item) => sum + Number(item.price) * item.quantity,
+          0,
         ),
       };
     }

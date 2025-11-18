@@ -296,10 +296,10 @@ export function CalendarDndProvider({
   return (
     <DndContext
       id={dndContextId}
-      sensors={sensors}
-      onDragStart={handleDragStart}
-      onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
+      onDragOver={handleDragOver}
+      onDragStart={handleDragStart}
+      sensors={sensors}
     >
       <CalendarDndContext.Provider
         value={{
@@ -325,13 +325,13 @@ export function CalendarDndProvider({
               }}
             >
               <EventItem
-                event={activeEvent}
-                view={activeView}
-                isDragging={true}
-                showTime={activeView !== "month"}
                 currentTime={currentTime || undefined}
+                event={activeEvent}
+                isDragging={true}
                 isFirstDay={dragHandlePosition?.data?.isFirstDay !== false}
                 isLastDay={dragHandlePosition?.data?.isLastDay !== false}
+                showTime={activeView !== "month"}
+                view={activeView}
               />
             </div>
           )}

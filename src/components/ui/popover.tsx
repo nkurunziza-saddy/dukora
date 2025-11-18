@@ -25,19 +25,19 @@ function PopoverPopup({
   return (
     <PopoverPrimitive.Portal>
       <PopoverPrimitive.Positioner
-        data-slot="popover-positioner"
+        align={align}
         className="z-50"
+        data-slot="popover-positioner"
         side={side}
         sideOffset={sideOffset}
-        align={align}
       >
         <span className="relative flex origin-(--transform-origin) rounded-lg border bg-popover transition-[scale,opacity] has-data-starting-style:scale-98 has-data-starting-style:opacity-0">
           <PopoverPrimitive.Popup
-            data-slot="popover-content"
             className={cn(
               "max-h-(--available-height) min-w-80 overflow-y-auto p-4",
               className,
             )}
+            data-slot="popover-content"
             {...props}
           >
             {children}
@@ -55,8 +55,8 @@ function PopoverClose({ ...props }: PopoverPrimitive.Close.Props) {
 function PopoverTitle({ className, ...props }: PopoverPrimitive.Title.Props) {
   return (
     <PopoverPrimitive.Title
-      data-slot="popover-title"
       className={cn("text-lg leading-none font-semibold", className)}
+      data-slot="popover-title"
       {...props}
     />
   );
@@ -68,8 +68,8 @@ function PopoverDescription({
 }: PopoverPrimitive.Description.Props) {
   return (
     <PopoverPrimitive.Description
-      data-slot="popover-description"
       className={cn("text-sm text-muted-foreground", className)}
+      data-slot="popover-description"
       {...props}
     />
   );

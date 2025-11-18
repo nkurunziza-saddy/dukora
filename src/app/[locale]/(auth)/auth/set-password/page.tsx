@@ -74,17 +74,17 @@ export default function SetPassword() {
         >
           <div className="grid gap-2">
             <Label htmlFor="email">{t("fields.email")}</Label>
-            <Input id="email" type="email" value={email} disabled />
+            <Input disabled id="email" type="email" value={email} />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password">{t("fields.password")}</Label>
             <Input
+              autoComplete="new-password"
               id="password"
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder={t("fields.passwordPlaceholder")}
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="new-password"
-              placeholder={t("fields.passwordPlaceholder")}
             />
           </div>
           <div className="grid gap-2">
@@ -92,17 +92,17 @@ export default function SetPassword() {
               {t("fields.confirmPassword")}
             </Label>
             <Input
+              autoComplete="new-password"
               id="passwordConfirmation"
+              onChange={(e) => setPasswordConfirmation(e.target.value)}
+              placeholder={t("fields.confirmPasswordPlaceholder")}
               type="password"
               value={passwordConfirmation}
-              onChange={(e) => setPasswordConfirmation(e.target.value)}
-              autoComplete="new-password"
-              placeholder={t("fields.confirmPasswordPlaceholder")}
             />
           </div>
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button className="w-full" disabled={loading} type="submit">
             {loading ? (
-              <Loader2Icon size={16} className="animate-spin" />
+              <Loader2Icon className="animate-spin" size={16} />
             ) : (
               t("setPassword.setPasswordButton")
             )}
@@ -115,8 +115,8 @@ export default function SetPassword() {
         </p>
         <Button
           className="text-xs p-0 ml-1"
-          variant="link"
           onClick={() => router.push("/auth/sign-in")}
+          variant="link"
         >
           {t("setPassword.signInLink")}
         </Button>

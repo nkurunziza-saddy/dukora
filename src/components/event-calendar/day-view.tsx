@@ -177,7 +177,7 @@ export function DayView({
   );
 
   return (
-    <div data-slot="day-view" className="contents">
+    <div className="contents" data-slot="day-view">
       {showAllDaySection && (
         <div className="border-border/70 bg-muted/50 border-t">
           <div className="grid grid-cols-[3rem_1fr] sm:grid-cols-[4rem_1fr]">
@@ -195,12 +195,12 @@ export function DayView({
 
                 return (
                   <EventItem
-                    key={`spanning-${event.id}`}
-                    onClick={(e) => handleEventClick(event, e)}
                     event={event}
-                    view="month"
                     isFirstDay={isFirstDay}
                     isLastDay={isLastDay}
+                    key={`spanning-${event.id}`}
+                    onClick={(e) => handleEventClick(event, e)}
+                    view="month"
                   >
                     <div>{event.title}</div>
                   </EventItem>
@@ -215,8 +215,8 @@ export function DayView({
         <div>
           {hours.map((hour, index) => (
             <div
-              key={hour.toString()}
               className="border-border/70 relative h-[var(--week-cells-height)] border-b last:border-b-0"
+              key={hour.toString()}
             >
               {index > 0 && (
                 <span className="bg-background text-muted-foreground/70 absolute -top-3 left-0 flex h-6 w-16 max-w-full items-center justify-end pe-2 text-[10px] sm:pe-4 sm:text-xs">
@@ -230,8 +230,8 @@ export function DayView({
         <div className="relative">
           {positionedEvents.map((positionedEvent) => (
             <div
-              key={positionedEvent.event.id}
               className="absolute z-10 px-0.5"
+              key={positionedEvent.event.id}
               style={{
                 top: `${positionedEvent.top}px`,
                 height: `${positionedEvent.height}px`,
@@ -243,10 +243,10 @@ export function DayView({
               <div className="size-full">
                 <DraggableEvent
                   event={positionedEvent.event}
-                  view="day"
+                  height={positionedEvent.height}
                   onClick={(e) => handleEventClick(positionedEvent.event, e)}
                   showTime
-                  height={positionedEvent.height}
+                  view="day"
                 />
               </div>
             </div>
@@ -268,17 +268,13 @@ export function DayView({
             const hourValue = getHours(hour);
             return (
               <div
-                key={hour.toString()}
                 className="border-border/70 relative h-[var(--week-cells-height)] border-b last:border-b-0"
+                key={hour.toString()}
               >
                 {[0, 1, 2, 3].map((quarter) => {
                   const quarterHourTime = hourValue + quarter * 0.25;
                   return (
                     <DroppableCell
-                      key={`${hour.toString()}-${quarter}`}
-                      id={`day-cell-${currentDate.toISOString()}-${quarterHourTime}`}
-                      date={currentDate}
-                      time={quarterHourTime}
                       className={cn(
                         "absolute h-[calc(var(--week-cells-height)/4)] w-full",
                         quarter === 0 && "top-0",
@@ -289,12 +285,16 @@ export function DayView({
                         quarter === 3 &&
                           "top-[calc(var(--week-cells-height)/4*3)]",
                       )}
+                      date={currentDate}
+                      id={`day-cell-${currentDate.toISOString()}-${quarterHourTime}`}
+                      key={`${hour.toString()}-${quarter}`}
                       onClick={() => {
                         const startTime = new Date(currentDate);
                         startTime.setHours(hourValue);
                         startTime.setMinutes(quarter * 15);
                         onEventCreate(startTime);
                       }}
+                      time={quarterHourTime}
                     />
                   );
                 })}

@@ -41,14 +41,14 @@ export function DroppableCell({
 
   return (
     <div
-      ref={setNodeRef}
-      onClick={onClick}
       className={cn(
         "data-dragging:bg-accent flex h-full flex-col overflow-hidden px-0.5 py-1 sm:px-1",
         className,
       )}
-      title={formattedTime ? `${formattedTime}` : undefined}
       data-dragging={isOver && activeEvent ? true : undefined}
+      onClick={onClick}
+      ref={setNodeRef}
+      title={formattedTime ? `${formattedTime}` : undefined}
     >
       {children}
     </div>

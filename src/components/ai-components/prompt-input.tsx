@@ -15,7 +15,7 @@ export const PromptInput = ({ className, ...props }: PromptInputProps) => (
   <form
     className={cn(
       "w-full divide-y overflow-hidden border bg-background",
-      className
+      className,
     )}
     {...props}
   />
@@ -50,7 +50,7 @@ export const PromptInputTextarea = ({
         "w-full resize-none rounded-none border-none p-3 dark:shadow-none shadow-none outline-none ring-0",
         "field-sizing-content max-h-[6lh] bg-transparent dark:bg-transparent",
         "focus-visible:ring-0 focus-visible:outline-none",
-        className
+        className,
       )}
       name="message"
       onChange={(e) => {
@@ -83,7 +83,7 @@ export const PromptInputTools = ({
     className={cn(
       "flex items-center gap-1",
       "[&_button:first-child]:rounded-bl-xl",
-      className
+      className,
     )}
     {...props}
   />
@@ -104,7 +104,7 @@ export const PromptInputButton = ({
         "shrink-0 gap-1.5",
         variant === "ghost" && "text-muted-foreground",
         newSize === "default" && "px-3",
-        className
+        className,
       )}
       size={newSize}
       type="button"

@@ -65,7 +65,7 @@ export function MetricsTable({
             <TableRow
               className={cn(
                 "hover:bg-muted/50 transition-colors",
-                index % 2 === 0 ? "bg-background" : "bg-muted/20"
+                index % 2 === 0 ? "bg-background" : "bg-muted/20",
               )}
               key={metric.label}
             >

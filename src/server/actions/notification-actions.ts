@@ -15,7 +15,7 @@ export const getNotifications = createProtectedAction(
     const notifications = await notificationRepo.get_all_paginated(
       user.businessId,
       page,
-      pageSize
+      pageSize,
     );
 
     if (notifications.error) {
@@ -23,7 +23,7 @@ export const getNotifications = createProtectedAction(
     }
 
     return { data: notifications.data, error: null };
-  }
+  },
 );
 
 export const markNotificationAsRead = createProtectedAction(
@@ -35,7 +35,7 @@ export const markNotificationAsRead = createProtectedAction(
 
     const result = await notificationRepo.mark_as_read(
       notificationId,
-      user.businessId
+      user.businessId,
     );
 
     if (result.error) {
@@ -43,7 +43,7 @@ export const markNotificationAsRead = createProtectedAction(
     }
 
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const markAllNotificationsAsRead = createProtectedAction(
@@ -60,7 +60,7 @@ export const markAllNotificationsAsRead = createProtectedAction(
     }
 
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const deleteNotification = createProtectedAction(
@@ -72,7 +72,7 @@ export const deleteNotification = createProtectedAction(
 
     const result = await notificationRepo.delete_notification(
       notificationId,
-      user.businessId
+      user.businessId,
     );
 
     if (result.error) {
@@ -80,7 +80,7 @@ export const deleteNotification = createProtectedAction(
     }
 
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const getUnreadCount = createProtectedAction(
@@ -97,5 +97,5 @@ export const getUnreadCount = createProtectedAction(
     }
 
     return { data: result.data, error: null };
-  }
+  },
 );

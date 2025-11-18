@@ -101,8 +101,8 @@ export function EditBusinessDetails({
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium">Name</span>
               <Badge
-                variant={isNameNearLimit ? "error" : "secondary"}
                 className="text-xs"
+                variant={isNameNearLimit ? "error" : "secondary"}
               >
                 {nameValue.length}/{LIMITS.NAME_MAX}
               </Badge>
@@ -112,8 +112,8 @@ export function EditBusinessDetails({
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium">Domain</span>
               <Badge
-                variant={isDomainNearLimit ? "error" : "secondary"}
                 className="text-xs"
+                variant={isDomainNearLimit ? "error" : "secondary"}
               >
                 {domainValue.length}/{LIMITS.DOMAIN_MAX}
               </Badge>
@@ -123,8 +123,8 @@ export function EditBusinessDetails({
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium">Logo URL</span>
               <Badge
-                variant={isLogoUrlNearLimit ? "error" : "secondary"}
                 className="text-xs"
+                variant={isLogoUrlNearLimit ? "error" : "secondary"}
               >
                 {logoUrlValue.length}/{LIMITS.LOGO_URL_MAX}
               </Badge>
@@ -151,18 +151,18 @@ export function EditBusinessDetails({
             <form.Field name="name">
               {(field) => (
                 <Field>
-                  <label htmlFor={field.name} className="text-sm font-medium">
+                  <label className="text-sm font-medium" htmlFor={field.name}>
                     {t("businessName")}
                   </label>
                   <Input
-                    placeholder={t("enterBusinessName")}
-                    maxLength={LIMITS.NAME_MAX}
+                    aria-invalid={field.state.meta.errors.length > 0}
                     id={field.name}
+                    maxLength={LIMITS.NAME_MAX}
                     name={field.name}
-                    value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={field.state.meta.errors.length > 0}
+                    placeholder={t("enterBusinessName")}
+                    value={field.state.value}
                   />
                   <FieldDescription>
                     {nameRemaining} characters remaining
@@ -175,19 +175,19 @@ export function EditBusinessDetails({
             <form.Field name="domain">
               {(field) => (
                 <Field>
-                  <label htmlFor={field.name} className="text-sm font-medium">
+                  <label className="text-sm font-medium" htmlFor={field.name}>
                     {t("domain")}
                   </label>
                   <Input
-                    placeholder={t("enterDomain")}
-                    maxLength={LIMITS.DOMAIN_MAX}
+                    aria-invalid={field.state.meta.errors.length > 0}
                     id={field.name}
+                    maxLength={LIMITS.DOMAIN_MAX}
                     name={field.name}
-                    value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={field.state.meta.errors.length > 0}
+                    placeholder={t("enterDomain")}
                     type="url"
+                    value={field.state.value}
                   />
                   <FieldDescription>
                     {domainRemaining} characters remaining •{" "}
@@ -201,18 +201,18 @@ export function EditBusinessDetails({
             <form.Field name="description">
               {(field) => (
                 <Field>
-                  <label htmlFor={field.name} className="text-sm font-medium">
+                  <label className="text-sm font-medium" htmlFor={field.name}>
                     {t("description")}
                   </label>
                   <Textarea
-                    placeholder={t("enterBusinessDescription")}
+                    aria-invalid={field.state.meta.errors.length > 0}
                     className="field-sizing-content max-h-29.5 min-h-0 resize-none py-1.75"
                     id={field.name}
                     name={field.name}
-                    value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={field.state.meta.errors.length > 0}
+                    placeholder={t("enterBusinessDescription")}
+                    value={field.state.value}
                   />
                   <FieldError errors={field.state.meta.errors} />
                 </Field>
@@ -222,13 +222,13 @@ export function EditBusinessDetails({
             <form.Field name="businessType">
               {(field) => (
                 <Field>
-                  <label htmlFor={field.name} className="text-sm font-medium">
+                  <label className="text-sm font-medium" htmlFor={field.name}>
                     {t("businessType")}
                   </label>
                   <Select
+                    items={businessTypes}
                     onValueChange={field.handleChange}
                     value={field.state.value || ""}
-                    items={businessTypes}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -252,19 +252,19 @@ export function EditBusinessDetails({
             <form.Field name="logoUrl">
               {(field) => (
                 <Field>
-                  <label htmlFor={field.name} className="text-sm font-medium">
+                  <label className="text-sm font-medium" htmlFor={field.name}>
                     {t("logoUrl")}
                   </label>
                   <Input
-                    type="url"
-                    placeholder={t("enterLogoUrl")}
-                    maxLength={LIMITS.LOGO_URL_MAX}
+                    aria-invalid={field.state.meta.errors.length > 0}
                     id={field.name}
+                    maxLength={LIMITS.LOGO_URL_MAX}
                     name={field.name}
-                    value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={field.state.meta.errors.length > 0}
+                    placeholder={t("enterLogoUrl")}
+                    type="url"
+                    value={field.state.value}
                   />
                   <FieldDescription>
                     {logoUrlRemaining} characters remaining
@@ -284,16 +284,16 @@ export function EditBusinessDetails({
             <form.Field name="registrationNumber">
               {(field) => (
                 <Field>
-                  <label htmlFor={field.name} className="text-sm font-medium">
+                  <label className="text-sm font-medium" htmlFor={field.name}>
                     {t("registrationNumber")}
                   </label>
                   <Input
+                    aria-invalid={field.state.meta.errors.length > 0}
                     id={field.name}
                     name={field.name}
-                    value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={field.state.meta.errors.length > 0}
+                    value={field.state.value}
                   />
                   <FieldDescription>
                     {t("registrationNumberDescription")}
@@ -330,9 +330,9 @@ export function EditBusinessDetails({
 
       <div className="mt-6">
         <Button
-          type="submit"
-          form="edit-business-details-form"
           disabled={form.state.isSubmitting}
+          form="edit-business-details-form"
+          type="submit"
         >
           {form.state.isSubmitting ? t("saving") : t("saveDetails")}
         </Button>

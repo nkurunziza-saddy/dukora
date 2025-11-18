@@ -10,8 +10,8 @@ const SessionCardSkeleton = memo(() => (
   <SidebarMenu>
     <SidebarMenuItem>
       <SidebarMenuButton
-        size="lg"
         className="cursor-default hover:bg-transparent"
+        size="lg"
       >
         <div className="min-w-0 flex-1 space-y-1.5">
           <Skeleton className="h-3.5 w-24" />

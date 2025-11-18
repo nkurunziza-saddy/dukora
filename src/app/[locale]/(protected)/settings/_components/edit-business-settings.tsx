@@ -117,8 +117,8 @@ export function EditBusinessSettings({
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium">VAT Rate</span>
               <Badge
-                variant={isVatRateAtLimit ? "error" : "secondary"}
                 className="text-xs"
+                variant={isVatRateAtLimit ? "error" : "secondary"}
               >
                 {vatRate}%/{LIMITS.VAT_RATE_MAX}%
               </Badge>
@@ -129,8 +129,8 @@ export function EditBusinessSettings({
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium">Invoice Prefix</span>
               <Badge
-                variant={invoicePrefixLength > 8 ? "error" : "secondary"}
                 className="text-xs"
+                variant={invoicePrefixLength > 8 ? "error" : "secondary"}
               >
                 {invoicePrefixLength}/10
               </Badge>
@@ -154,13 +154,13 @@ export function EditBusinessSettings({
             <form.Field name="currency">
               {(field) => (
                 <Field>
-                  <Label htmlFor={field.name} className="text-sm font-medium">
+                  <Label className="text-sm font-medium" htmlFor={field.name}>
                     {t("currency")} *
                   </Label>
                   <Select
+                    items={getCurrencies(t)}
                     onValueChange={field.handleChange}
                     value={field.state.value}
-                    items={getCurrencies(t)}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -181,7 +181,7 @@ export function EditBusinessSettings({
             <form.Field name="country">
               {(field) => (
                 <Field>
-                  <Label htmlFor={field.name} className="text-sm font-medium">
+                  <Label className="text-sm font-medium" htmlFor={field.name}>
                     {t("country")} *
                   </Label>
                   <Select
@@ -216,14 +216,14 @@ export function EditBusinessSettings({
               <form.Field name="timezone">
                 {(field) => (
                   <Field>
-                    <Label htmlFor={field.name} className="text-sm font-medium">
+                    <Label className="text-sm font-medium" htmlFor={field.name}>
                       {t("timezone")}
                     </Label>
                     <Input
+                      disabled
                       id={field.name}
                       name={field.name}
                       value={field.state.value}
-                      disabled
                     />
                     <FieldDescription>{t("timezoneAutoFill")}</FieldDescription>
                     <FieldError errors={field.state.meta.errors} />
@@ -234,13 +234,13 @@ export function EditBusinessSettings({
               <form.Field name="fiscalStartMonth">
                 {(field) => (
                   <Field>
-                    <Label htmlFor={field.name} className="text-sm font-medium">
+                    <Label className="text-sm font-medium" htmlFor={field.name}>
                       {t("fiscalStartMonth")} *
                     </Label>
                     <Select
+                      items={getMonths(t)}
                       onValueChange={field.handleChange}
                       value={field.state.value}
-                      items={getMonths(t)}
                     >
                       <SelectTrigger id={field.name}>
                         <SelectValue />
@@ -267,8 +267,8 @@ export function EditBusinessSettings({
             <form.Field name="pricesIncludeTax">
               {(field) => (
                 <Field
-                  orientation="horizontal"
                   className="flex flex-row items-center justify-between rounded-lg border p-4"
+                  orientation="horizontal"
                 >
                   <FieldContent>
                     <Label className="text-base font-medium">
@@ -289,18 +289,14 @@ export function EditBusinessSettings({
             <form.Field name="defaultVatRate">
               {(field) => (
                 <Field>
-                  <Label htmlFor={field.name} className="text-sm font-medium">
+                  <Label className="text-sm font-medium" htmlFor={field.name}>
                     {t("defaultVatRate")}
                   </Label>
                   <Input
-                    type="number"
-                    step="0.01"
-                    min={LIMITS.VAT_RATE_MIN}
-                    max={LIMITS.VAT_RATE_MAX}
-                    placeholder={t("vatRatePlaceholder")}
                     id={field.name}
+                    max={LIMITS.VAT_RATE_MAX}
+                    min={LIMITS.VAT_RATE_MIN}
                     name={field.name}
-                    value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => {
                       const value = Number.parseFloat(e.target.value);
@@ -312,6 +308,10 @@ export function EditBusinessSettings({
                         field.handleChange(value);
                       }
                     }}
+                    placeholder={t("vatRatePlaceholder")}
+                    step="0.01"
+                    type="number"
+                    value={field.state.value}
                   />
                   <FieldDescription>
                     {t("defaultVatRateDescription")} (Range:{" "}
@@ -330,17 +330,17 @@ export function EditBusinessSettings({
             <form.Field name="invoicePrefix">
               {(field) => (
                 <Field>
-                  <Label htmlFor={field.name} className="text-sm font-medium">
+                  <Label className="text-sm font-medium" htmlFor={field.name}>
                     {t("invoicePrefix")}
                   </Label>
                   <Input
-                    placeholder={t("invoicePrefixPlaceholder")}
-                    maxLength={10}
                     id={field.name}
+                    maxLength={10}
                     name={field.name}
-                    value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder={t("invoicePrefixPlaceholder")}
+                    value={field.state.value}
                   />
                   <FieldDescription>
                     {10 - invoicePrefixLength} characters remaining
@@ -353,20 +353,20 @@ export function EditBusinessSettings({
             <form.Field name="invoiceNumberStart">
               {(field) => (
                 <Field>
-                  <Label htmlFor={field.name} className="text-sm font-medium">
+                  <Label className="text-sm font-medium" htmlFor={field.name}>
                     {t("invoiceNumberStart")}
                   </Label>
                   <Input
-                    type="number"
-                    min={1}
-                    placeholder="1"
                     id={field.name}
+                    min={1}
                     name={field.name}
-                    value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) =>
                       field.handleChange(Number.parseInt(e.target.value, 10))
                     }
+                    placeholder="1"
+                    type="number"
+                    value={field.state.value}
                   />
                   <FieldDescription>
                     {t("invoiceNumberStartDescription")}
@@ -380,7 +380,7 @@ export function EditBusinessSettings({
       </FieldGroup>
 
       <div className="mt-6">
-        <Button type="submit" disabled={form.state.isSubmitting}>
+        <Button disabled={form.state.isSubmitting} type="submit">
           {form.state.isSubmitting ? t("saving") : t("saveSettings")}
         </Button>
       </div>

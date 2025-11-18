@@ -20,12 +20,12 @@ export function RefreshButton() {
 
   return (
     <Button
+      disabled={loading}
+      onClick={reloadAction}
       size="icon"
       variant="outline"
-      onClick={reloadAction}
-      disabled={loading}
     >
-      <RefreshCwIcon size={16} className={loading ? "animate-spin" : ""} />
+      <RefreshCwIcon className={loading ? "animate-spin" : ""} size={16} />
     </Button>
   );
 }

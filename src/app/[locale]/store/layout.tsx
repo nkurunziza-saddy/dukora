@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import { StoreFooter } from "@/components/store/store-footer";
+import StoreHeader from "@/components/store/store-header";
 import { CartProvider } from "@/contexts/cart-context";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
-import { StoreFooter } from "./_components/store-footer";
-import { StoreHeader } from "./_components/store-header";
 
 export async function generateMetadata(): Promise<Metadata> {
   return constructI18nMetadata({
@@ -17,9 +17,9 @@ export default function StoreLayout({
 }) {
   return (
     <CartProvider>
-      <div className="min-h-screen bg-background">
+      <div className="">
         <StoreHeader />
-        <main className="flex-1">{children}</main>
+        {children}
         <StoreFooter />
       </div>
     </CartProvider>

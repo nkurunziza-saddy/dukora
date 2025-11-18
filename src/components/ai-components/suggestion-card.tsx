@@ -21,7 +21,7 @@ export function SuggestionCard({
         "w-full p-4 text-left border rounded-lg hover:bg-muted/50 transition-all duration-200 group cursor-pointer",
         "hover:border-muted-foreground/50 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-muted-foreground/20",
         "active:scale-[0.98] active:transition-transform",
-        className
+        className,
       )}
       onClick={onClick}
       type="button"

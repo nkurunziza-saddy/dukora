@@ -26,14 +26,14 @@ export function ThemeSwitcher() {
     return (
       <FieldSet className="space-y-4">
         <FieldLegend
-          variant="label"
           className="text-foreground text-sm leading-none font-medium"
+          variant="label"
         >
           Choose a theme
         </FieldLegend>
         <div className="flex gap-3">
           {themeItems.map((item) => (
-            <div key={item.value} className="animate-pulse">
+            <div className="animate-pulse" key={item.value}>
               <div className="w-[88px] h-[70px] bg-muted rounded-md" />
               <div className="mt-2 h-4 bg-muted rounded w-12" />
             </div>
@@ -47,35 +47,35 @@ export function ThemeSwitcher() {
     <FieldSet className="space-y-4">
       <RadioGroup
         className="flex gap-3"
-        value={theme}
         onValueChange={(value: unknown, _eventDetails) =>
           setTheme(value as string)
         }
+        value={theme}
       >
         {themeItems.map((item) => (
-          <label key={`${id}-${item.value}`} className="cursor-pointer">
+          <label className="cursor-pointer" key={`${id}-${item.value}`}>
             <RadioGroupItem
+              className="peer sr-only after:absolute after:inset-0"
               id={`${id}-${item.value}`}
               value={item.value}
-              className="peer sr-only after:absolute after:inset-0"
             />
             <Image
-              src={item.image || "/placeholder.svg"}
               alt={`${item.label} theme preview`}
-              width={88}
-              height={70}
               className="border-input peer-focus-visible:ring-ring/50 peer-data-[state=checked]:border-ring peer-data-[state=checked]:bg-accent relative cursor-pointer overflow-hidden rounded-md border shadow-xs transition-[color,box-shadow] outline-none peer-focus-visible:ring-[3px] peer-data-disabled:cursor-not-allowed peer-data-disabled:opacity-50"
+              height={70}
+              src={item.image || "/placeholder.svg"}
+              width={88}
             />
             <span className="group peer-data-[state=unchecked]:text-muted-foreground/70 mt-2 flex items-center gap-1">
               <CheckIcon
-                size={16}
-                className="group-peer-data-[state=unchecked]:hidden text-primary"
                 aria-hidden="true"
+                className="group-peer-data-[state=unchecked]:hidden text-primary"
+                size={16}
               />
               <MinusIcon
-                size={16}
-                className="group-peer-data-[state=checked]:hidden"
                 aria-hidden="true"
+                className="group-peer-data-[state=checked]:hidden"
+                size={16}
               />
               <span className="text-xs font-medium">{item.label}</span>
             </span>

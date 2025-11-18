@@ -19,7 +19,7 @@ export const getUsers = createProtectedAction(
       return { data: null, error: users.error };
     }
     return { data: users.data, error: null };
-  }
+  },
 );
 
 export const getUsersPaginated = createProtectedAction(
@@ -28,13 +28,13 @@ export const getUsersPaginated = createProtectedAction(
     const users = await userRepo.get_all_paginated(
       user.businessId ?? "",
       page,
-      pageSize
+      pageSize,
     );
     if (users.error) {
       return { data: null, error: users.error };
     }
     return { data: users.data, error: null };
-  }
+  },
 );
 
 export const getUserById = createProtectedAction(
@@ -48,7 +48,7 @@ export const getUserById = createProtectedAction(
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const createUser = createProtectedAction(
@@ -67,14 +67,14 @@ export const createUser = createProtectedAction(
     revalidateTag(`users-${user.businessId}`, "max");
     revalidateTag("users", "max");
     return { data: newUser.data, error: null };
-  }
+  },
 );
 
 export const updateUser = createProtectedAction(
   Permission.USER_UPDATE,
   async (
     user,
-    { userId, userData }: { userId: string; userData: Partial<InsertUser> }
+    { userId, userData }: { userId: string; userData: Partial<InsertUser> },
   ) => {
     if (!userId?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -82,7 +82,7 @@ export const updateUser = createProtectedAction(
     const updatedUser = await userRepo.update(
       userId,
       userData,
-      user.businessId ?? ""
+      user.businessId ?? "",
     );
     if (updatedUser.error) {
       return { data: null, error: updatedUser.error };
@@ -90,7 +90,7 @@ export const updateUser = createProtectedAction(
     revalidateTag(`users-${user.businessId}`, "max");
     revalidateTag(`user-${userId}`, "max");
     return { data: updatedUser.data, error: null };
-  }
+  },
 );
 
 export const deleteUser = createProtectedAction(
@@ -109,7 +109,7 @@ export const deleteUser = createProtectedAction(
     revalidateTag(`users-${user.businessId}`, "max");
     revalidateTag(`user-${userId}`, "max");
     return { data: { success: true }, error: null };
-  }
+  },
 );
 
 export const toggleUserStatus = createProtectedAction(
@@ -123,7 +123,7 @@ export const toggleUserStatus = createProtectedAction(
     }
     const updatedUser = await userRepo.toggle_active(
       userId,
-      user.businessId as string
+      user.businessId as string,
     );
     if (updatedUser.error) {
       return { data: null, error: updatedUser.error };
@@ -131,7 +131,7 @@ export const toggleUserStatus = createProtectedAction(
     revalidateTag(`users-${user.businessId}`, "max");
     revalidateTag(`user-${userId}`, "max");
     return { data: updatedUser.data, error: null };
-  }
+  },
 );
 
 export const assignRole = createProtectedAction(
@@ -143,7 +143,7 @@ export const assignRole = createProtectedAction(
     const updatedUser = await userRepo.update(
       userId,
       { role },
-      user.businessId ?? ""
+      user.businessId ?? "",
     );
     if (updatedUser.error) {
       return { data: null, error: updatedUser.error };
@@ -151,7 +151,7 @@ export const assignRole = createProtectedAction(
     revalidateTag(`users-${user.businessId}`, "max");
     revalidateTag(`user-${userId}`, "max");
     return { data: updatedUser.data, error: null };
-  }
+  },
 );
 
 export const changeUserPassword = createProtectedAction(
@@ -181,5 +181,5 @@ export const changeUserPassword = createProtectedAction(
     revalidateTag(`users-${user.businessId}`, "max");
     revalidateTag(`user-${updateResult.user.id}`, "max");
     return { data: updateResult, error: null };
-  }
+  },
 );

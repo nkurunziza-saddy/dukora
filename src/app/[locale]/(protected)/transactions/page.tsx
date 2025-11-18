@@ -42,7 +42,7 @@ async function TransactionsTable({
 }
 
 export default async function TransactionsPage(
-  props: PageProps<"/[locale]/transactions">
+  props: PageProps<"/[locale]/transactions">,
 ) {
   const query = await props.searchParams;
   const page = Number(query.page) || 1;

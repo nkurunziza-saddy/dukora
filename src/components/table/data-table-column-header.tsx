@@ -38,9 +38,9 @@ export function DataTableColumnHeader<TData, TValue>({
         <MenuTrigger
           render={
             <Button
-              variant="ghost"
-              size="sm"
               className="data-[state=open]:bg-accent items-center flex -ml-3 h-8"
+              size="sm"
+              variant="ghost"
             />
           }
         >

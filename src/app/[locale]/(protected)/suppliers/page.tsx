@@ -42,7 +42,7 @@ async function SuppliersTable({
 }
 
 export default async function SuppliersPage(
-  props: PageProps<"/[locale]/suppliers">
+  props: PageProps<"/[locale]/suppliers">,
 ) {
   const query = await props.searchParams;
   const page = Number(query.page) || 1;

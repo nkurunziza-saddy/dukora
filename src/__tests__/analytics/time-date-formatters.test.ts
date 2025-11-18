@@ -154,7 +154,7 @@ describe("Time Date Formatters", () => {
 
     it("should throw error for invalid format", () => {
       expect(() => parseMonthYearShort("invalid")).toThrow(
-        "Invalid argument invalid"
+        "Invalid argument invalid",
       );
     });
 

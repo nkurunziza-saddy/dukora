@@ -9,8 +9,8 @@ const SessionCardError = memo(() => (
   <SidebarMenu>
     <SidebarMenuItem>
       <SidebarMenuButton
-        size="lg"
         className="cursor-default hover:bg-transparent opacity-50"
+        size="lg"
       >
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium">Unable to load</p>

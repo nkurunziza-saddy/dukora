@@ -84,7 +84,7 @@ export default function AIChat() {
   const handleClearAll = () => {
     if (
       confirm(
-        "Are you sure you want to clear all messages? This action cannot be undone."
+        "Are you sure you want to clear all messages? This action cannot be undone.",
       )
     ) {
       clearMessages();
@@ -193,8 +193,8 @@ export default function AIChat() {
                             onClick={() =>
                               navigator.clipboard.writeText(
                                 message.parts.find(
-                                  (part) => part.type === "text"
-                                )?.text || ""
+                                  (part) => part.type === "text",
+                                )?.text || "",
                               )
                             }
                           >

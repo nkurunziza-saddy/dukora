@@ -180,7 +180,7 @@ export function EventDialog({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Dialog onOpenChange={(open) => !open && onClose()} open={isOpen}>
       <DialogPopup className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>
@@ -200,8 +200,8 @@ export function EventDialog({
             <Label htmlFor="title">{t("title")}</Label>
             <Input
               id="title"
-              value={title}
               onChange={(e) => setTitle(e.target.value)}
+              value={title}
             />
           </div>
 
@@ -209,25 +209,25 @@ export function EventDialog({
             <Label htmlFor="category">{t("category")}</Label>
             <Textarea
               id="category"
-              value={category}
               onChange={(e) => setCategory(e.target.value)}
               rows={3}
+              value={category}
             />
           </div>
 
           <div className="flex gap-4">
             <div className="flex-1 *:not-first:mt-1.5">
               <Label htmlFor="start-date">{t("startDate")}</Label>
-              <Popover open={startDateOpen} onOpenChange={setStartDateOpen}>
+              <Popover onOpenChange={setStartDateOpen} open={startDateOpen}>
                 <PopoverTrigger
                   render={
                     <Button
-                      id="start-date"
-                      variant={"outline"}
                       className={cn(
                         "group bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]",
                         !startDate && "text-muted-foreground",
                       )}
+                      id="start-date"
+                      variant={"outline"}
                     />
                   }
                 >
@@ -240,16 +240,15 @@ export function EventDialog({
                     {startDate ? format(startDate, "PPP") : "Pick a date"}
                   </span>
                   <Calendar1
-                    size={16}
-                    className="text-muted-foreground/80 shrink-0"
                     aria-hidden="true"
+                    className="text-muted-foreground/80 shrink-0"
+                    size={16}
                   />
                 </PopoverTrigger>
-                <PopoverPopup className="w-auto p-2" align="start">
+                <PopoverPopup align="start" className="w-auto p-2">
                   <Calendar
-                    mode="single"
-                    selected={startDate}
                     defaultMonth={startDate}
+                    mode="single"
                     onSelect={(date) => {
                       if (date) {
                         setStartDate(date);
@@ -260,6 +259,7 @@ export function EventDialog({
                         setStartDateOpen(false);
                       }
                     }}
+                    selected={startDate}
                   />
                 </PopoverPopup>
               </Popover>
@@ -268,7 +268,7 @@ export function EventDialog({
             {!allDay && (
               <div className="min-w-28 *:not-first:mt-1.5">
                 <Label htmlFor="start-time">{t("startTime")}</Label>
-                <Select value={startTime} onValueChange={setStartTime}>
+                <Select onValueChange={setStartTime} value={startTime}>
                   <SelectTrigger id="start-time">
                     <SelectValue />
                   </SelectTrigger>
@@ -287,16 +287,16 @@ export function EventDialog({
           <div className="flex gap-4">
             <div className="flex-1 *:not-first:mt-1.5">
               <Label htmlFor="end-date">{t("endDate")}</Label>
-              <Popover open={endDateOpen} onOpenChange={setEndDateOpen}>
+              <Popover onOpenChange={setEndDateOpen} open={endDateOpen}>
                 <PopoverTrigger
                   render={
                     <Button
-                      id="end-date"
-                      variant={"outline"}
                       className={cn(
                         "group bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]",
                         !endDate && "text-muted-foreground",
                       )}
+                      id="end-date"
+                      variant={"outline"}
                     />
                   }
                 >
@@ -309,17 +309,16 @@ export function EventDialog({
                     {endDate ? format(endDate, "PPP") : "Pick a date"}
                   </span>
                   <Calendar1
-                    size={16}
-                    className="text-muted-foreground/80 shrink-0"
                     aria-hidden="true"
+                    className="text-muted-foreground/80 shrink-0"
+                    size={16}
                   />
                 </PopoverTrigger>
-                <PopoverPopup className="w-auto p-2" align="start">
+                <PopoverPopup align="start" className="w-auto p-2">
                   <Calendar
-                    mode="single"
-                    selected={endDate}
                     defaultMonth={endDate}
                     disabled={{ before: startDate }}
+                    mode="single"
                     onSelect={(date) => {
                       if (date) {
                         setEndDate(date);
@@ -327,6 +326,7 @@ export function EventDialog({
                         setEndDateOpen(false);
                       }
                     }}
+                    selected={endDate}
                   />
                 </PopoverPopup>
               </Popover>
@@ -335,7 +335,7 @@ export function EventDialog({
             {!allDay && (
               <div className="min-w-28 *:not-first:mt-1.5">
                 <Label htmlFor="end-time">{t("endTime")}</Label>
-                <Select value={endTime} onValueChange={setEndTime}>
+                <Select onValueChange={setEndTime} value={endTime}>
                   <SelectTrigger id="end-time">
                     <SelectValue />
                   </SelectTrigger>
@@ -353,8 +353,8 @@ export function EventDialog({
 
           <div className="flex items-center gap-2">
             <Checkbox
-              id="all-day"
               checked={allDay}
+              id="all-day"
               onCheckedChange={(checked) => setAllDay(checked === true)}
             />
             <Label htmlFor="all-day">{t("allDay")}</Label>
@@ -364,8 +364,8 @@ export function EventDialog({
             <Label htmlFor="location">{t("location")}</Label>
             <Input
               id="location"
-              value={location}
               onChange={(e) => setLocation(e.target.value)}
+              value={location}
             />
           </div>
           <fieldset className="space-y-4">
@@ -375,20 +375,20 @@ export function EventDialog({
             <RadioGroup
               className="flex gap-1.5"
               defaultValue={COLOR_OPTIONS[0]?.value}
-              value={color}
               onValueChange={(value: unknown) => setColor(value as EventColor)}
+              value={color}
             >
               {COLOR_OPTIONS.map((colorOption) => (
                 <RadioGroupItem
-                  key={colorOption.value}
-                  id={`color-${colorOption.value}`}
-                  value={colorOption.value}
                   aria-label={colorOption.label}
                   className={cn(
                     "size-6 shadow-none",
                     colorOption.bgClass,
                     colorOption.borderClass,
                   )}
+                  id={`color-${colorOption.value}`}
+                  key={colorOption.value}
+                  value={colorOption.value}
                 />
               ))}
             </RadioGroup>
@@ -397,16 +397,16 @@ export function EventDialog({
         <DialogFooter className="flex-row sm:justify-between">
           {event?.id && (
             <Button
-              variant="outline"
-              size="icon"
-              onClick={handleDelete}
               aria-label="Delete event"
+              onClick={handleDelete}
+              size="icon"
+              variant="outline"
             >
-              <Trash2 size={16} aria-hidden="true" />
+              <Trash2 aria-hidden="true" size={16} />
             </Button>
           )}
           <div className="flex flex-1 justify-end gap-2">
-            <Button variant="outline" onClick={onClose}>
+            <Button onClick={onClose} variant="outline">
               {t("cancel")}
             </Button>
             <Button onClick={handleSave}>{t("save")}</Button>

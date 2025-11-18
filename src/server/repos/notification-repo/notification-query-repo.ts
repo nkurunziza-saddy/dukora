@@ -8,7 +8,7 @@ import { ErrorCode } from "@/server/constants/errors";
 export const get_all_paginated = async (
   businessId: string,
   page: number,
-  pageSize: number
+  pageSize: number,
 ) => {
   if (!businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -61,8 +61,8 @@ export const get_unread_count = async (businessId: string) => {
       .where(
         and(
           eq(notificationsTable.businessId, businessId),
-          eq(notificationsTable.read, false)
-        )
+          eq(notificationsTable.read, false),
+        ),
       );
 
     return { data: result[0]?.count || 0, error: null };

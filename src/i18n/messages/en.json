@@ -262,6 +262,8 @@
     "role": "Role",
     "save": "Save",
     "saveChanges": "Save Changes",
+    "backToDashboard": "Back to dashboard",
+    "createNew": "Create new",
     "search": "Search",
     "selectedCount": "{count} selected",
     "settings": "Settings",
@@ -1517,7 +1519,7 @@
     "sku": "SKU",
     "category": "Category",
     "uncategorized": "Uncategorized",
-    "brand": "Brand",
+    "brand": "Dukora",
     "noBrand": "No Brand",
     "weight": "Weight",
     "notSpecified": "Not Specified",
@@ -1606,7 +1608,13 @@
         "trackOrder": "Track Order",
         "trackOrderDescription": "Enter your order number and email to track your order status",
         "trackingError": "Error tracking order",
-        "viewFullDetails": "View Full Details"
+        "viewFullDetails": "View Full Details",
+        "myOrders": "My orders",
+        "myOrdersDescription": "View and track your past orders",
+        "noOrdersFound": "No orders found",
+        "noOrdersFoundDescription": "You have not placed any orders yet.",
+        "backToStore": "Back to Store",
+        "continueShopping": "Continue Shopping"
       }
     },
     "trackOrder": "Track Order",
@@ -1643,6 +1651,7 @@
     "total": "Total",
     "viewDetails": "View Details",
     "createOrder": "Create Order",
-    "categoriesList": "Categories List"
+    "categoriesList": "Categories List",
+    "createOrderDescription": "Create a new customer order by adding products and customer details"
   }
 }

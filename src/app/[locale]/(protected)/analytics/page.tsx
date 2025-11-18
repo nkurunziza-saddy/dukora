@@ -125,9 +125,10 @@ const Analytics = async ({
     {
       title: t("totalRevenue"),
       value: formatCurrency(data?.grossRevenue || 0),
-      trend: (data?.grossRevenue && data.grossRevenue > 0
-        ? "up"
-        : "neutral") as "up" | "down" | "neutral",
+      trend: (data?.grossRevenue && data.grossRevenue > 0 ? "up" : "neutral") as
+        | "up"
+        | "down"
+        | "neutral",
       description: t("totalRevenueDesc"),
     },
     {
@@ -425,7 +426,7 @@ const Analytics = async ({
 };
 
 export default async function AnalyticsPage(
-  props: PageProps<"/[locale]/analytics">
+  props: PageProps<"/[locale]/analytics">,
 ) {
   const searchParams = await props.searchParams;
   return (

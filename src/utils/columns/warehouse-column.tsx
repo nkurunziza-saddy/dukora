@@ -41,8 +41,8 @@ export function WarehouseColumn(
       ),
       cell: ({ row }) => (
         <Badge
-          variant="secondary"
           className="text-xs font-medium bg-muted/60 text-foreground"
+          variant="secondary"
         >
           {row.original.warehouseItemCount}
         </Badge>

@@ -98,7 +98,7 @@ export default async function PaymentsPage() {
     .reduce((sum, p) => sum + p.amount, 0);
 
   const pendingPayments = allPayments.filter(
-    (p) => p.status === "pending"
+    (p) => p.status === "pending",
   ).length;
 
   return (
@@ -110,11 +110,9 @@ export default async function PaymentsPage() {
         </div>
         <div className="flex gap-2">
           <Dialog>
-            <DialogTrigger>
-              <Button variant="outline">
-                <ArrowDownIcon className="mr-2 h-4 w-4" />
-                {t("receivePayment")}
-              </Button>
+            <DialogTrigger render={<Button variant="outline" />}>
+              <ArrowDownIcon className="mr-2 h-4 w-4" />
+              {t("receivePayment")}
             </DialogTrigger>
             <DialogPopup>
               <DialogHeader>
@@ -291,11 +289,11 @@ export default async function PaymentsPage() {
           </CardHeader>
           <CardPanel>
             <Dialog>
-              <DialogTrigger>
-                <Button className="w-full" variant="outline">
-                  <ArrowDownIcon className="mr-2 h-4 w-4" />
-                  {t("createPaymentLink")}
-                </Button>
+              <DialogTrigger
+                render={<Button className="w-full" variant="outline" />}
+              >
+                <ArrowDownIcon className="mr-2 h-4 w-4" />
+                {t("createPaymentLink")}
               </DialogTrigger>
               <DialogPopup>
                 <DialogHeader>

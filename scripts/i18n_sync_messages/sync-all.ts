@@ -113,7 +113,7 @@ Examples:
 function syncFile(
   sourceFile: string,
   targetFile: string,
-  options: SyncAllOptions
+  options: SyncAllOptions,
 ): {
   keysAdded: number;
   keysRemoved: number;
@@ -201,12 +201,14 @@ export function syncAllFiles(options: SyncAllOptions): SyncResult {
 
     if (options.targetFiles) {
       targetFiles = options.targetFiles.map((file) =>
-        path.isAbsolute(file) ? file : path.join(options.targetDirectory!, file)
+        path.isAbsolute(file)
+          ? file
+          : path.join(options.targetDirectory!, file),
       );
     } else {
       const files = getTranslationFiles(options.targetDirectory!);
       targetFiles = files.filter(
-        (file) => path.basename(file) !== path.basename(options.sourceFile!)
+        (file) => path.basename(file) !== path.basename(options.sourceFile!),
       );
     }
 
@@ -234,7 +236,7 @@ export function syncAllFiles(options: SyncAllOptions): SyncResult {
         const { keysAdded, keysRemoved, addedKeys, removedKeys } = syncFile(
           options.sourceFile!,
           targetFile,
-          options
+          options,
         );
 
         result.filesProcessed++;
@@ -248,12 +250,12 @@ export function syncAllFiles(options: SyncAllOptions): SyncResult {
         if (options.dryRun) {
           if (keysAdded > 0) {
             console.log(
-              `  Would add: ${addedKeys.slice(0, 3).join(", ")}${addedKeys.length > 3 ? "..." : ""}`
+              `  Would add: ${addedKeys.slice(0, 3).join(", ")}${addedKeys.length > 3 ? "..." : ""}`,
             );
           }
           if (keysRemoved > 0) {
             console.log(
-              `  Would remove: ${removedKeys.slice(0, 3).join(", ")}${removedKeys.length > 3 ? "..." : ""}`
+              `  Would remove: ${removedKeys.slice(0, 3).join(", ")}${removedKeys.length > 3 ? "..." : ""}`,
             );
           }
         }
@@ -319,7 +321,7 @@ function main(): void {
 
     if (!fs.existsSync(options.targetDirectory!)) {
       console.error(
-        `Error: Target directory not found: ${options.targetDirectory}`
+        `Error: Target directory not found: ${options.targetDirectory}`,
       );
       process.exit(1);
     }

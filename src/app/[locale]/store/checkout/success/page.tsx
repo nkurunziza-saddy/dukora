@@ -4,6 +4,10 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card";
+import type {
+  ExtendedCustomerOrderItem,
+  SelectCustomerOrder,
+} from "@/lib/schema/schema-types";
 import { getCustomerOrderByOrderNumber } from "@/server/actions/customer-order-actions";
 
 interface CheckoutSuccessPageProps {
@@ -27,7 +31,29 @@ export default async function CheckoutSuccessPage({
     redirect("/store");
   }
 
-  const order = orderResult.data;
+  const orderData = orderResult.data;
+
+  const normalizedItems: ExtendedCustomerOrderItem[] = (
+    orderData.items || []
+  ).map((it) => {
+    const co = it.customerOrderItem || {};
+    return {
+      id: co.id ?? "",
+      notes: co.notes ?? null,
+      customerOrderId: co.customerOrderId ?? "",
+      quantity: co.quantity ?? 0,
+      warehouseItemId: co.warehouseItemId ?? "",
+      unitPrice: co.unitPrice ?? "0",
+      discount: co.discount ?? "0",
+      productName: it.productName ?? null,
+      productId: it.productId ?? null,
+    } as ExtendedCustomerOrderItem;
+  });
+
+  const order = {
+    ...orderData,
+    items: normalizedItems,
+  } as SelectCustomerOrder & { items: ExtendedCustomerOrderItem[] };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -79,32 +105,22 @@ export default async function CheckoutSuccessPage({
             <div>
               <h3 className="mb-3 font-medium">{t("orderItems")}</h3>
               <div className="space-y-2">
-                {order.items?.map(
-                  (item: {
-                    id: string;
-                    productId: string;
-                    quantity: number;
-                    unitPrice: string;
-                  }) => (
-                    <div
-                      className="flex items-center justify-between rounded-md border p-3"
-                      key={item.id}
-                    >
-                      <div>
-                        <p className="font-medium">{item.productId}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {t("quantity")}: {item.quantity}
-                        </p>
-                      </div>
-                      <p className="font-medium">
-                        $
-                        {(parseFloat(item.unitPrice) * item.quantity).toFixed(
-                          2
-                        )}
+                {order.items?.map((item) => (
+                  <div
+                    className="flex items-center justify-between rounded-md border p-3"
+                    key={item.id}
+                  >
+                    <div>
+                      <p className="font-medium">{item.productName}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {t("quantity")}: {item.quantity}
                       </p>
                     </div>
-                  )
-                )}
+                    <p className="font-medium">
+                      ${(parseFloat(item.unitPrice) * item.quantity).toFixed(2)}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -120,13 +136,22 @@ export default async function CheckoutSuccessPage({
 
             {/* Actions */}
             <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
-              <Button asChild className="flex-1">
-                <Link href={`/store/orders/track?order=${order.orderNumber}`}>
-                  {t("trackOrder")}
-                </Link>
+              <Button
+                className="flex-1"
+                render={
+                  <Link
+                    href={`/store/orders/track?order=${order.orderNumber}`}
+                  />
+                }
+              >
+                {t("trackOrder")}
               </Button>
-              <Button asChild className="flex-1" variant="outline">
-                <Link href="/store">{t("continueShopping")}</Link>
+              <Button
+                className="flex-1"
+                render={<Link href="/store" />}
+                variant="outline"
+              >
+                {t("continueShopping")}
               </Button>
             </div>
           </CardPanel>

@@ -4,18 +4,18 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card";
-import type { Product } from "@/lib/schema/schema-types";
+import type { CartItem } from "@/lib/types";
 
 interface OrderSummaryProps {
-  cartProducts: Array<Product & { quantity: number }>;
+  cartProducts: Array<CartItem & { quantity: number }>;
 }
 
 export function OrderSummary({ cartProducts }: OrderSummaryProps) {
   const t = useTranslations("store.checkout");
 
   const subtotal = cartProducts.reduce(
-    (sum, product) => sum + (product.sellingPrice || 0) * product.quantity,
-    0
+    (sum, product) => sum + (Number(product.price) || 0) * product.quantity,
+    0,
   );
 
   const discount = 0; // TODO: Calculate discounts
@@ -54,7 +54,7 @@ export function OrderSummary({ cartProducts }: OrderSummaryProps) {
                 <p className="text-xs text-muted-foreground">
                   {t("quantity")}: {product.quantity}
                 </p>
-                {product.stockQuantity && product.stockQuantity < 10 && (
+                {product.availableStock && product.availableStock < 10 && (
                   <Badge className="text-xs" variant="warning">
                     {t("lowStock")}
                   </Badge>
@@ -62,7 +62,7 @@ export function OrderSummary({ cartProducts }: OrderSummaryProps) {
               </div>
 
               <div className="text-sm font-medium">
-                ${((product.sellingPrice || 0) * product.quantity).toFixed(2)}
+                ${((Number(product.price) || 0) * product.quantity).toFixed(2)}
               </div>
             </div>
           ))}
@@ -89,9 +89,7 @@ export function OrderSummary({ cartProducts }: OrderSummaryProps) {
 
           <div className="flex justify-between text-sm">
             <span>{t("shipping")}</span>
-            <span>
-              {shipping === 0 ? t("free") : `$${shipping.toFixed(2)}`}
-            </span>
+            <span>{shipping === 0 ? t("free") : `$${shipping}`}</span>
           </div>
 
           <div className="border-t pt-2">

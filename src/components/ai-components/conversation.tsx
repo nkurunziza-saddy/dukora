@@ -41,7 +41,7 @@ export const ConversationScrollButton = ({
           "bg-background/95 backdrop-blur-sm border-border/50",
           "hover:bg-muted/80 hover:border-primary/50 hover:shadow-xl",
           "transition-all duration-200 hover:scale-105",
-          className
+          className,
         )}
         onClick={handleScrollToBottom}
         size="icon"

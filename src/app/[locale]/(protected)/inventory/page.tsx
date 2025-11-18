@@ -49,8 +49,8 @@ export default async function WarehousePage() {
       <div className="grid gap-4 md:grid-cols-3">
         {stats.map((item) => (
           <StatCard
-            key={`${item.title}-${item.subText}`}
             icon={item.icon}
+            key={`${item.title}-${item.subText}`}
             subText={item.subText}
             title={item.title}
             value={item.value}
@@ -58,9 +58,9 @@ export default async function WarehousePage() {
         ))}
       </div>
       <WarehouseTableClient
-        warehouses={warehouses}
-        warehouseItems={warehouseItems}
         products={products}
+        warehouseItems={warehouseItems}
+        warehouses={warehouses}
       />
     </div>
   );

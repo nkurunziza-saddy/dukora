@@ -11,7 +11,7 @@ import { ErrorCode } from "@/server/constants/errors";
 import type { ServiceResponse } from "@/server/types";
 
 export const syncInventoryAfterOrder = async (
-  orderId: string
+  orderId: string,
 ): Promise<ServiceResponse<{ syncedItems: number }>> => {
   if (!orderId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -36,7 +36,7 @@ export const syncInventoryAfterOrder = async (
         .where(eq(warehouseItemsTable.id, item.warehouseItemId))
         .leftJoin(
           productsTable,
-          eq(warehouseItemsTable.productId, productsTable.id)
+          eq(warehouseItemsTable.productId, productsTable.id),
         )
         .limit(1);
 
@@ -62,7 +62,7 @@ export const syncInventoryAfterOrder = async (
       if (newStock <= 5) {
         // TODO: Send low stock notification
         console.log(
-          `Low stock alert: ${warehouseItem.products?.name} has ${newStock} units left`
+          `Low stock alert: ${warehouseItem.products?.name} has ${newStock} units left`,
         );
       }
     }

@@ -23,15 +23,15 @@ export function InvitationColumn(
         );
         if (!role) {
           return (
-            <Badge variant="outline" className="capitalize">
+            <Badge className="capitalize" variant="outline">
               <span>{row.original.role}</span>
             </Badge>
           );
         }
         return (
           <Badge
-            variant={role.variant}
             className="capitalize flex gap-1 items-center"
+            variant={role.variant}
           >
             {role.icon && (
               <role.icon className="text-muted-foreground size-4" />

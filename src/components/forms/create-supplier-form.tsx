@@ -39,8 +39,8 @@ export default function SupplierForm({
       return digits.length >= 10 && digits.length <= 15;
     }, t("phoneDigits")),
     address: z.string(),
-    note: z.string().optional(),
-    contactName: z.string().optional(),
+    note: z.string(),
+    contactName: z.string(),
   });
 
   const form = useForm({
@@ -53,7 +53,6 @@ export default function SupplierForm({
       contactName: supplier ? (supplier.contactName ?? "") : "",
     },
     validators: {
-      // @ts-expect-error
       onSubmit: supplierSchema,
     },
     onSubmit: async ({ value }) => {
@@ -87,19 +86,18 @@ export default function SupplierForm({
 
   return (
     <form
+      className="space-y-6"
       id="supplier-form"
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className="space-y-6"
     >
       <FieldGroup>
         <Separator />
 
         <form.Field
-          name="name"
           children={(field) => {
             const isInvalid =
               field.state.meta.isTouched && !field.state.meta.isValid;
@@ -109,110 +107,111 @@ export default function SupplierForm({
                   {t("supplier")} {tCommon("name")} *
                 </FieldLabel>
                 <Input
+                  aria-invalid={isInvalid}
                   id={field.name}
                   name={field.name}
-                  placeholder={t("enterSupplierCompanyName")}
-                  value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
+                  placeholder={t("enterSupplierCompanyName")}
+                  value={field.state.value}
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
             );
           }}
+          name="name"
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
           <form.Field
-            name="email"
             children={(field) => {
               const isInvalid =
                 field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel
-                    htmlFor={field.name}
                     className="flex items-center gap-2"
+                    htmlFor={field.name}
                   >
                     {tCommon("email")} *
                   </FieldLabel>
                   <Input
+                    aria-invalid={isInvalid}
                     id={field.name}
                     name={field.name}
-                    type="email"
-                    placeholder={t("email")}
-                    value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    aria-invalid={isInvalid}
+                    placeholder={t("email")}
+                    type="email"
+                    value={field.state.value}
                   />
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               );
             }}
+            name="email"
           />
 
           <form.Field
-            name="phone"
             children={(field) => {
               const isInvalid =
                 field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel
-                    htmlFor={field.name}
                     className="flex items-center gap-2"
+                    htmlFor={field.name}
                   >
                     {tCommon("phone")} *
                   </FieldLabel>
                   <Input
+                    aria-invalid={isInvalid}
                     id={field.name}
                     name={field.name}
-                    placeholder={t("phone")}
-                    value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => {
                       const formatted = formatPhoneNumber(e.target.value);
                       field.handleChange(formatted);
                     }}
-                    aria-invalid={isInvalid}
+                    placeholder={t("phone")}
+                    value={field.state.value}
                   />
                   <FieldDescription>{t("enterPhoneNumber")}</FieldDescription>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               );
             }}
+            name="phone"
           />
         </div>
 
         <form.Field
-          name="address"
           children={(field) => {
             const isInvalid =
               field.state.meta.isTouched && !field.state.meta.isValid;
             return (
               <Field data-invalid={isInvalid}>
                 <FieldLabel
-                  htmlFor={field.name}
                   className="flex items-center gap-2"
+                  htmlFor={field.name}
                 >
                   {tCommon("address")}
                 </FieldLabel>
                 <Textarea
+                  aria-invalid={isInvalid}
+                  className="min-h-20"
                   id={field.name}
                   name={field.name}
-                  placeholder={t("enterBusinessAddress")}
-                  className="min-h-20"
-                  value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
+                  placeholder={t("enterBusinessAddress")}
+                  value={field.state.value}
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
             );
           }}
+          name="address"
         />
       </FieldGroup>
 
@@ -220,7 +219,6 @@ export default function SupplierForm({
         <Separator />
 
         <form.Field
-          name="contactName"
           children={(field) => {
             const isInvalid =
               field.state.meta.isTouched && !field.state.meta.isValid;
@@ -228,19 +226,20 @@ export default function SupplierForm({
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>{t("contactName")}</FieldLabel>
                 <Input
+                  aria-invalid={isInvalid}
                   id={field.name}
                   name={field.name}
-                  placeholder={t("enterContactName")}
-                  value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
+                  placeholder={t("enterContactName")}
+                  value={field.state.value}
                 />
                 <FieldDescription>{t("contactDescription")}</FieldDescription>
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
             );
           }}
+          name="contactName"
         />
       </FieldGroup>
 
@@ -248,7 +247,6 @@ export default function SupplierForm({
         <Separator />
 
         <form.Field
-          name="note"
           children={(field) => {
             const isInvalid =
               field.state.meta.isTouched && !field.state.meta.isValid;
@@ -256,14 +254,14 @@ export default function SupplierForm({
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>{tCommon("note")}</FieldLabel>
                 <Textarea
+                  aria-invalid={isInvalid}
+                  className="min-h-[100px]"
                   id={field.name}
                   name={field.name}
-                  placeholder={t("noteSupplierPlaceholder")}
-                  className="min-h-[100px]"
-                  value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  aria-invalid={isInvalid}
+                  placeholder={t("noteSupplierPlaceholder")}
+                  value={field.state.value}
                 />
                 <FieldDescription>
                   {t("noteSupplierDescription")}
@@ -272,24 +270,25 @@ export default function SupplierForm({
               </Field>
             );
           }}
+          name="note"
         />
       </FieldGroup>
 
       <div className="flex justify-end pt-6 border-t">
         <div className="flex gap-3">
           <Button
+            disabled={form.state.isSubmitting}
+            onClick={() => form.reset()}
             type="button"
             variant="outline"
-            onClick={() => form.reset()}
-            disabled={form.state.isSubmitting}
           >
             {t("resetForm")}
           </Button>
           <Button
-            type="submit"
-            form="supplier-form"
-            disabled={form.state.isSubmitting}
             className="min-w-[120px]"
+            disabled={form.state.isSubmitting}
+            form="supplier-form"
+            type="submit"
           >
             {form.state.isSubmitting ? (
               <>
@@ -310,9 +309,9 @@ export const CreateSupplierDialog = () => {
   const t = useTranslations("forms");
   return (
     <TriggerDialog
+      description={t("createSupplierDescription")}
       title={t("createNewSupplier")}
       triggerText={t("createSupplier")}
-      description={t("createSupplierDescription")}
     >
       <SupplierForm />
     </TriggerDialog>

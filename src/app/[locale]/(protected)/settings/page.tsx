@@ -43,8 +43,9 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-type TStripeFn =
-  ReturnType<typeof getTranslations> extends Promise<infer R> ? R : never;
+type TStripeFn = ReturnType<typeof getTranslations> extends Promise<infer R>
+  ? R
+  : never;
 
 export default function SettingsPage() {
   return (

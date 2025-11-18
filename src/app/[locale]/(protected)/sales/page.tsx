@@ -73,8 +73,8 @@ export default async function SalesTracking(
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {salesStatsData.map((item) => (
           <StatCard
-            key={`${item.title}-${item.subText}`}
             icon={item.icon}
+            key={`${item.title}-${item.subText}`}
             subText={item.subText}
             title={item.title}
             value={item.value}
@@ -95,9 +95,9 @@ export default async function SalesTracking(
           <ColumnWrapper
             column={TransactionColumn}
             data={transactionsData.data.result}
-            tag="transactions"
             page={page}
             pageSize={pageSize}
+            tag="transactions"
             totalCount={transactionsData.data.totalCount}
           />
         </CardPanel>

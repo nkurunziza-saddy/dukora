@@ -131,90 +131,89 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
 
   return (
     <form
+      className="space-y-6"
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className="space-y-6"
     >
       <FieldGroup>
         <Separator />
         <form.Field
-          name="name"
           children={(field) => (
             <Field>
               <FieldLabel>{t("productName")} *</FieldLabel>
               <Input
-                placeholder={t("enterProductName")}
-                value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
+                placeholder={t("enterProductName")}
+                value={field.state.value}
               />
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="name"
         />
 
         <form.Field
-          name="description"
           children={(field) => (
             <Field>
               <FieldLabel>{t("description")}</FieldLabel>
               <Textarea
-                placeholder={t("enterProductDescription")}
                 className="min-h-20"
-                value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
+                placeholder={t("enterProductDescription")}
+                value={field.state.value}
               />
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="description"
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
           <form.Field
-            name="sku"
             children={(field) => (
               <Field>
                 <FieldLabel>{t("SKU")} *</FieldLabel>
                 <Input
-                  placeholder={t("SKUDescription")}
-                  value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder={t("SKUDescription")}
+                  value={field.state.value}
                 />
                 <FieldDescription>{t("SKUDescription")}</FieldDescription>
                 <FieldError errors={field.state.meta.errors} />
               </Field>
             )}
+            name="sku"
           />
 
           <form.Field
-            name="barcode"
             children={(field) => (
               <Field>
                 <FieldLabel>{t("barcode")}</FieldLabel>
                 <Input
-                  placeholder={t("barcodePlaceholder")}
-                  value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder={t("barcodePlaceholder")}
+                  value={field.state.value}
                 />
                 <FieldError errors={field.state.meta.errors} />
               </Field>
             )}
+            name="barcode"
           />
         </div>
         <form.Field
-          name="categoryId"
           children={(field) => (
             <Field>
               <FieldLabel>{t("categoryId")}</FieldLabel>
               <Select
-                onValueChange={field.handleChange}
                 defaultValue={field.state.value || undefined}
+                onValueChange={field.handleChange}
               >
                 <SelectTrigger className="w-full sm:w-1/2">
                   <SelectValue />
@@ -225,9 +224,9 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
 
                   {categoriesData?.map((category) => (
                     <SelectItem
-                      value={category.id}
-                      key={category.id}
                       disabled={!category.isActive}
+                      key={category.id}
+                      value={category.id}
                     >
                       {category.value}
                     </SelectItem>
@@ -237,6 +236,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               <FieldError errors={field.state.meta.errors} />
             </Field>
           )}
+          name="categoryId"
         />
       </FieldGroup>
 
@@ -244,39 +244,39 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
         <Separator />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <form.Field
-            name="price"
             children={(field) => (
               <Field>
                 <FieldLabel>{t("price")} *</FieldLabel>
                 <Input
-                  type="number"
-                  step="0.01"
-                  placeholder={t("price")}
-                  value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder={t("price")}
+                  step="0.01"
+                  type="number"
+                  value={field.state.value}
                 />
                 <FieldError errors={field.state.meta.errors} />
               </Field>
             )}
+            name="price"
           />
 
           <form.Field
-            name="costPrice"
             children={(field) => (
               <Field>
                 <FieldLabel>{t("costPrice")} *</FieldLabel>
                 <Input
-                  type="number"
-                  step="0.01"
-                  placeholder={t("costPrice")}
-                  value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder={t("costPrice")}
+                  step="0.01"
+                  type="number"
+                  value={field.state.value}
                 />
                 <FieldError errors={field.state.meta.errors} />
               </Field>
             )}
+            name="costPrice"
           />
         </div>
       </FieldGroup>
@@ -285,50 +285,49 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
         <Separator />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
           <form.Field
-            name="reorderPoint"
             children={(field) => (
               <Field>
                 <FieldLabel>{t("reorderPoint")}</FieldLabel>
                 <Input
-                  type="number"
-                  value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
+                  type="number"
+                  value={field.state.value}
                 />
                 <FieldDescription>{t("reorderPoint")}</FieldDescription>
                 <FieldError errors={field.state.meta.errors} />
               </Field>
             )}
+            name="reorderPoint"
           />
 
           <form.Field
-            name="maxStock"
             children={(field) => (
               <Field>
                 <FieldLabel>{t("maxStock")}</FieldLabel>
                 <Input
-                  type="number"
-                  value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
+                  type="number"
+                  value={field.state.value}
                 />
                 <FieldDescription>{t("maxStockDescription")}</FieldDescription>
                 <FieldError errors={field.state.meta.errors} />
               </Field>
             )}
+            name="maxStock"
           />
         </div>
         <Separator />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
           <form.Field
-            name="unit"
             children={(field) => (
               <Field>
                 <FieldLabel>{t("unit")}</FieldLabel>
                 <Select
-                  onValueChange={field.handleChange}
                   defaultValue={field.state.value}
                   items={units}
+                  onValueChange={field.handleChange}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue />
@@ -344,24 +343,25 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
                 <FieldError errors={field.state.meta.errors} />
               </Field>
             )}
+            name="unit"
           />
           <form.Field
-            name="weight"
             children={(field) => (
               <Field>
                 <FieldLabel>{t("weight")}</FieldLabel>
                 <Input
-                  type="number"
-                  step="0.001"
-                  placeholder={t("weight")}
-                  value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder={t("weight")}
+                  step="0.001"
+                  type="number"
+                  value={field.state.value}
                 />
                 <FieldDescription>{t("weight")}</FieldDescription>
                 <FieldError errors={field.state.meta.errors} />
               </Field>
             )}
+            name="weight"
           />
         </div>
       </FieldGroup>
@@ -369,17 +369,17 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
       <div className="flex justify-end pt-6 border-t">
         <div className="flex gap-3">
           <Button
+            disabled={form.state.isSubmitting}
+            onClick={() => form.reset()}
             type="button"
             variant="outline"
-            onClick={() => form.reset()}
-            disabled={form.state.isSubmitting}
           >
             {tCommon("cancel")}
           </Button>
           <Button
-            type="submit"
-            disabled={form.state.isSubmitting}
             className="min-w-[120px]"
+            disabled={form.state.isSubmitting}
+            type="submit"
           >
             {form.state.isSubmitting ? (
               <>
@@ -402,9 +402,9 @@ export const CreateProductDialog = () => {
   // TODO: No translation for dialog title/trigger/description
   return (
     <TriggerDialog
+      description="Fill in the details of the new product you want to add."
       title="Create New Product"
       triggerText="Create Product"
-      description="Fill in the details of the new product you want to add."
     >
       <ProductForm />
     </TriggerDialog>

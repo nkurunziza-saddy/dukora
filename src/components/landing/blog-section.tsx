@@ -30,8 +30,8 @@ export function BlogSection() {
     },
   ];
   return (
-    <section id="insights" className="py-24 md:py-32 bg-surface">
-      <div className="max-w-7xl mx-auto px-4 lg:px-12">
+    <section className="py-24 md:py-32 bg-surface" id="insights">
+      <div className="pgtx">
         <div className="mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
             {t("latestInsights")}
@@ -42,9 +42,9 @@ export function BlogSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border">
           {posts.map((post) => (
             <Link
-              key={post.slug}
-              href={`/insights/${post.slug}`}
               className="bg-background p-8 hover:bg-surface-elevated transition-colors group"
+              href={`/insights/${post.slug}`}
+              key={post.slug}
             >
               <div className="space-y-4">
                 <div className="flex items-center justify-between">

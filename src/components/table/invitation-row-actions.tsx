@@ -71,7 +71,7 @@ const InvitationRowActions: FC<InvitationRowActionsProps> = ({
     <>
       <Menu>
         <MenuTrigger
-          render={<Button variant={"ghost"} className="h-8 w-8 p-0" />}
+          render={<Button className="h-8 w-8 p-0" variant={"ghost"} />}
         >
           <span className="sr-only">{t_common("openMenu")}</span>
           <MoreHorizontalIcon className="h-4 w-4" />
@@ -81,9 +81,9 @@ const InvitationRowActions: FC<InvitationRowActionsProps> = ({
             <MenuGroupLabel>{t("actions")}</MenuGroupLabel>
 
             <MenuItem
-              variant="destructive"
-              onClick={() => setIsDeleteDialogOpen(true)}
               className="cursor-pointer"
+              onClick={() => setIsDeleteDialogOpen(true)}
+              variant="destructive"
             >
               <Trash2Icon className="size-3.5" />
               {t("delete")}
@@ -93,12 +93,12 @@ const InvitationRowActions: FC<InvitationRowActionsProps> = ({
       </Menu>
 
       <ConfirmDialog
-        isDialogOpen={isDeleteDialogOpen}
-        setIsDialogOpen={setIsDeleteDialogOpen}
-        handleConfirm={handleDeleteConfirm}
-        isLoading={isLoading}
-        title={t("deleteInvitation")}
         description={t("deleteInvitationDesc")}
+        handleConfirm={handleDeleteConfirm}
+        isDialogOpen={isDeleteDialogOpen}
+        isLoading={isLoading}
+        setIsDialogOpen={setIsDeleteDialogOpen}
+        title={t("deleteInvitation")}
       />
     </>
   );

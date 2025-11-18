@@ -8,10 +8,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type { ValidationResult } from "./types";
-import {
-  getTranslationFiles,
-  validateTranslationFile,
-} from "./utils";
+import { getTranslationFiles, validateTranslationFile } from "./utils";
 
 interface ValidateOptions {
   directory?: string;

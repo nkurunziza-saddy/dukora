@@ -1,200 +1,112 @@
 "use client";
 
-import { SearchIcon } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card";
-import { Field, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { getCustomerOrderByOrderNumber } from "@/server/actions/customer-order-actions";
-
-interface Order {
-  id: string;
-  orderNumber: string;
-  status: string;
-  customerEmail: string;
-  customerName: string;
-  totalAmount: string;
-  createdAt: string;
-  items: Array<{
-    id: string;
-    productId: string;
-    quantity: number;
-    unitPrice: string;
-  }>;
-}
+import { Empty, EmptyDescription, EmptyTitle } from "@/components/ui/empty";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { getCustomerOrders } from "@/server/actions/customer-order-actions";
 
 export default function TrackOrderPage() {
   const t = useTranslations("store.orders.track");
-  const searchParams = useSearchParams();
-  const [orderNumber, setOrderNumber] = useState(
-    searchParams.get("order") || ""
-  );
-  const [customerEmail, setCustomerEmail] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [order, setOrder] = useState<Order | null>(null);
 
-  const handleTrackOrder = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!orderNumber || !customerEmail) {
-      toast.error(t("fillAllFields"));
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const result = await getCustomerOrderByOrderNumber(orderNumber);
+  const {
+    data: orders,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["customer-orders"],
+    queryFn: async () => {
+      const result = await getCustomerOrders({});
       if (result.error || !result.data) {
-        toast.error(t("orderNotFound"));
-        return;
+        toast.error(t("ordersNotFound"));
+        throw new Error(result.error || "Failed to fetch orders");
       }
+      return result.data;
+    },
+  });
 
-      // Verify email matches
-      if (
-        result.data.customerEmail.toLowerCase() !== customerEmail.toLowerCase()
-      ) {
-        toast.error(t("emailMismatch"));
-        return;
-      }
-
-      setOrder(result.data as Order);
-    } catch (error) {
-      console.error("Track order error:", error);
-      toast.error(t("trackingError"));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  if (order) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="mx-auto max-w-2xl">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("orderDetails")}</CardTitle>
-            </CardHeader>
-            <CardPanel className="space-y-6">
-              {/* Order Info */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <h3 className="font-medium">{t("orderNumber")}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {order.orderNumber}
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-medium">{t("orderDate")}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {new Date(order.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="font-medium">{t("status")}</h3>
-                <p className="text-sm text-muted-foreground">{order.status}</p>
-              </div>
-
-              <div>
-                <h3 className="font-medium">{t("totalAmount")}</h3>
-                <p className="text-lg font-semibold">
-                  ${parseFloat(order.totalAmount).toFixed(2)}
-                </p>
-              </div>
-
-              {/* Order Items */}
-              <div>
-                <h3 className="mb-3 font-medium">{t("orderItems")}</h3>
-                <div className="space-y-2">
-                  {order.items?.map((item) => (
-                    <div
-                      className="flex items-center justify-between rounded-md border p-3"
-                      key={item.id}
-                    >
-                      <div>
-                        <p className="font-medium">{item.productId}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {t("quantity")}: {item.quantity}
-                        </p>
-                      </div>
-                      <p className="font-medium">
-                        $
-                        {(parseFloat(item.unitPrice) * item.quantity).toFixed(
-                          2
-                        )}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex space-x-2">
-                <Button
-                  onClick={() => {
-                    setOrder(null);
-                    setOrderNumber("");
-                    setCustomerEmail("");
-                  }}
-                  variant="outline"
-                >
-                  {t("trackAnotherOrder")}
-                </Button>
-                <Button render={<Link href={`/store/orders/${order.id}`} />}>
-                  {t("viewFullDetails")}
-                </Button>
-              </div>
-            </CardPanel>
-          </Card>
-        </div>
-      </div>
-    );
+  if (isError) {
+    //TODO; Add a cleaner error
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mx-auto max-w-md">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("trackOrder")}</CardTitle>
-            <p className="text-muted-foreground">
-              {t("trackOrderDescription")}
-            </p>
-          </CardHeader>
-          <CardPanel>
-            <form className="space-y-4" onSubmit={handleTrackOrder}>
-              <Field>
-                <FieldLabel>{t("orderNumber")}</FieldLabel>
-                <Input
-                  onChange={(e) => setOrderNumber(e.target.value)}
-                  placeholder={t("enterOrderNumber")}
-                  value={orderNumber}
-                />
-              </Field>
+    <div className="pt-10 pb-24 md:pb-32 md:pt-16 lg:pb-40 min-h-[calc(100vh-3rem)]">
+      <div className="pgtx ">
+        <div className="mb-8">
+          <h1 className="text-xl font-medium text-foreground mb-2 text-balance">
+            {t("myOrders")}
+          </h1>
+          <p className="text-sm text-text-secondary text-pretty">
+            {t("myOrdersDescription")}
+          </p>
+        </div>
 
-              <Field>
-                <FieldLabel>{t("customerEmail")}</FieldLabel>
-                <Input
-                  onChange={(e) => setCustomerEmail(e.target.value)}
-                  placeholder={t("enterEmail")}
-                  type="email"
-                  value={customerEmail}
-                />
-              </Field>
-
-              <Button className="w-full" disabled={isLoading} type="submit">
-                <SearchIcon className="mr-2 h-4 w-4" />
-                {isLoading ? t("searching") : t("trackOrder")}
-              </Button>
-            </form>
-          </CardPanel>
-        </Card>
+        {isLoading ? (
+          <div className="space-y-2">
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+        ) : !orders || orders.length === 0 ? (
+          <Empty>
+            <EmptyTitle>{t("noOrdersFound")}</EmptyTitle>
+            <EmptyDescription>{t("noOrdersFoundDescription")}</EmptyDescription>
+            <Button render={<Link href="/store/products" />}>
+              {t("continueShopping")}
+            </Button>
+          </Empty>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{t("orderNumber")}</TableHead>
+                <TableHead>{t("orderDate")}</TableHead>
+                <TableHead>{t("status")}</TableHead>
+                <TableHead className="text-right">{t("total")}</TableHead>
+                <TableHead />
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {orders.map((order) => (
+                <TableRow key={order.id}>
+                  <TableCell className="font-medium">
+                    {order.orderNumber}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(order.createdAt).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{order.status}</Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    ${parseFloat(order.totalAmount).toFixed(2)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Button
+                      render={<Link href={`/store/orders/${order.id}`} />}
+                      size="sm"
+                      variant="outline"
+                    >
+                      {t("viewOrder")}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </div>
     </div>
   );

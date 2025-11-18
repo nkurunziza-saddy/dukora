@@ -40,6 +40,10 @@ export type SelectProductPriceHistory =
   typeof schema.productPriceHistoryTable.$inferSelect;
 export type SelectInterBusinessPayment =
   typeof schema.interBusinessPaymentsTable.$inferSelect;
+export type SelectCustomerOrder =
+  typeof schema.customerOrdersTable.$inferSelect;
+export type SelectCustomerOrderItem =
+  typeof schema.customerOrderItemsTable.$inferSelect;
 
 export type InsertBusiness = typeof schema.businessesTable.$inferInsert;
 export type InsertBusinessSetting =
@@ -161,4 +165,9 @@ export type ExtendedInvitationPayload = SelectInvitation & {
 };
 export type ExtendedWarehouseItemPayload = SelectWarehouseItem & {
   product: SelectProduct;
+};
+export type ExtendedCustomerOrderItem = SelectCustomerOrderItem & {
+  productName: string | null;
+  productImage: string | null;
+  productId: string;
 };

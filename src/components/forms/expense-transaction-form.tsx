@@ -34,8 +34,8 @@ export default function ExpenseTransactionForm({
       const num = Number.parseFloat(val);
       return !Number.isNaN(num) && num >= 0;
     }, t("amountPositive")),
-    note: z.string().optional(),
-    reference: z.string().optional(),
+    note: z.string(),
+    reference: z.string(),
   });
 
   const form = useForm({
@@ -45,7 +45,6 @@ export default function ExpenseTransactionForm({
       reference: expenseTransaction ? (expenseTransaction.reference ?? "") : "",
     },
     validators: {
-      // @ts-expect-error
       onSubmit: expenseTransactionSchema,
     },
     onSubmit: async ({ value }) => {
@@ -72,19 +71,18 @@ export default function ExpenseTransactionForm({
 
   return (
     <form
+      className="space-y-6"
       id="expense-transaction-form"
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
         form.handleSubmit();
       }}
-      className="space-y-6"
     >
       <FieldGroup>
         <Separator />
 
         <form.Field
-          name="amount"
           children={(field) => {
             const isInvalid =
               field.state.meta.isTouched && !field.state.meta.isValid;
@@ -94,25 +92,25 @@ export default function ExpenseTransactionForm({
                   {tCommon("amount")} *
                 </FieldLabel>
                 <Input
+                  aria-invalid={isInvalid}
                   id={field.name}
+                  min="1"
                   name={field.name}
-                  value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  type="number"
                   placeholder={t("enterAmount")}
-                  min="1"
                   step="0.01"
-                  aria-invalid={isInvalid}
+                  type="number"
+                  value={field.state.value}
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
             );
           }}
+          name="amount"
         />
 
         <form.Field
-          name="reference"
           children={(field) => {
             const isInvalid =
               field.state.meta.isTouched && !field.state.meta.isValid;
@@ -122,23 +120,23 @@ export default function ExpenseTransactionForm({
                   {tCommon("reference")} {t("poNumber")}
                 </FieldLabel>
                 <Input
+                  aria-invalid={isInvalid}
                   id={field.name}
                   name={field.name}
-                  value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder={t("referencePlaceholder")}
-                  aria-invalid={isInvalid}
+                  value={field.state.value}
                 />
                 <FieldDescription>{t("referenceDescription")}</FieldDescription>
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
             );
           }}
+          name="reference"
         />
 
         <form.Field
-          name="note"
           children={(field) => {
             const isInvalid =
               field.state.meta.isTouched && !field.state.meta.isValid;
@@ -146,39 +144,40 @@ export default function ExpenseTransactionForm({
               <Field data-invalid={isInvalid}>
                 <FieldLabel htmlFor={field.name}>{tCommon("note")}</FieldLabel>
                 <Textarea
+                  aria-invalid={isInvalid}
                   id={field.name}
                   name={field.name}
-                  value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder={t("notePlaceholder")}
                   rows={3}
-                  aria-invalid={isInvalid}
+                  value={field.state.value}
                 />
                 {isInvalid && <FieldError errors={field.state.meta.errors} />}
               </Field>
             );
           }}
+          name="note"
         />
       </FieldGroup>
 
       <div className="flex justify-end pt-6 border-t">
         <div className="flex gap-3">
           <Button
-            type="button"
-            variant="outline"
+            disabled={form.state.isSubmitting}
             onClick={() => {
               form.reset();
             }}
-            disabled={form.state.isSubmitting}
+            type="button"
+            variant="outline"
           >
             {t("resetForm")}
           </Button>
           <Button
-            type="submit"
-            form="expense-transaction-form"
-            disabled={form.state.isSubmitting || !form.state.isValid}
             className="min-w-[140px]"
+            disabled={form.state.isSubmitting || !form.state.isValid}
+            form="expense-transaction-form"
+            type="submit"
           >
             {form.state.isSubmitting ? (
               <>
@@ -202,9 +201,9 @@ export const CreateExpenseTransactionDialog = () => {
   const t = useTranslations("forms");
   return (
     <TriggerDialog
+      description={t("recordExpenseDescription")}
       title={t("recordExpenseTransaction")}
       triggerText={t("recordExpense")}
-      description={t("recordExpenseDescription")}
     >
       <ExpenseTransactionForm />
     </TriggerDialog>

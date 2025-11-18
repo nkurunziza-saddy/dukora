@@ -342,7 +342,7 @@ async function InsightContent({
 }
 
 export default async function InsightPage(
-  props: PageProps<"/[locale]/insights/[slug]">
+  props: PageProps<"/[locale]/insights/[slug]">,
 ) {
   const params = await props.params;
   return (

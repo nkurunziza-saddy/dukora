@@ -92,12 +92,12 @@ export function MonthView({
   }, []);
 
   return (
-    <div data-slot="month-view" className="contents">
+    <div className="contents" data-slot="month-view">
       <div className="border-border/70 grid grid-cols-7 border-b">
         {weekdays.map((day) => (
           <div
-            key={day}
             className="text-muted-foreground/70 py-2 text-center text-sm"
+            key={day}
           >
             {day}
           </div>
@@ -106,8 +106,8 @@ export function MonthView({
       <div className="grid flex-1 auto-rows-fr">
         {weeks.map((week, weekIndex) => (
           <div
-            key={`week-${weekIndex}`}
             className="grid grid-cols-7 [&:last-child>*]:border-b-0"
+            key={`week-${weekIndex}`}
           >
             {week.map((day, dayIndex) => {
               if (!day) return null;
@@ -132,14 +132,14 @@ export function MonthView({
 
               return (
                 <div
-                  key={day.toString()}
                   className="group border-border/70 data-outside-cell:bg-muted/25 data-outside-cell:text-muted-foreground/70 border-r border-b last:border-r-0"
-                  data-today={isToday(day) || undefined}
                   data-outside-cell={!isCurrentMonth || undefined}
+                  data-today={isToday(day) || undefined}
+                  key={day.toString()}
                 >
                   <DroppableCell
-                    id={cellId}
                     date={day}
+                    id={cellId}
                     onClick={() => {
                       const startTime = new Date(day);
                       startTime.setHours(DefaultStartHour, 0, 0);
@@ -150,8 +150,8 @@ export function MonthView({
                       {format(day, "d")}
                     </div>
                     <div
-                      ref={isReferenceCell ? contentRef : null}
                       className="min-h-[calc((var(--event-height)+var(--event-gap))*2)] sm:min-h-[calc((var(--event-height)+var(--event-gap))*3)] lg:min-h-[calc((var(--event-height)+var(--event-gap))*4)]"
+                      ref={isReferenceCell ? contentRef : null}
                     >
                       {sortEvents(allDayEvents).map((event, index) => {
                         const eventStart = new Date(event.start);
@@ -167,20 +167,20 @@ export function MonthView({
                         if (!isFirstDay) {
                           return (
                             <div
+                              aria-hidden={isHidden ? "true" : undefined}
+                              className="aria-hidden:hidden"
                               key={`spanning-${event.id}-${day
                                 .toISOString()
                                 .slice(0, 10)}`}
-                              className="aria-hidden:hidden"
-                              aria-hidden={isHidden ? "true" : undefined}
                             >
                               <EventItem
-                                onClick={(e) => handleEventClick(event, e)}
                                 event={event}
-                                view="month"
                                 isFirstDay={isFirstDay}
                                 isLastDay={isLastDay}
+                                onClick={(e) => handleEventClick(event, e)}
+                                view="month"
                               >
-                                <div className="invisible" aria-hidden={true}>
+                                <div aria-hidden={true} className="invisible">
                                   {!event.all_day && (
                                     <span>
                                       {format(
@@ -198,16 +198,16 @@ export function MonthView({
 
                         return (
                           <div
-                            key={event.id}
-                            className="aria-hidden:hidden"
                             aria-hidden={isHidden ? "true" : undefined}
+                            className="aria-hidden:hidden"
+                            key={event.id}
                           >
                             <DraggableEvent
                               event={event}
-                              view="month"
-                              onClick={(e) => handleEventClick(event, e)}
                               isFirstDay={isFirstDay}
                               isLastDay={isLastDay}
+                              onClick={(e) => handleEventClick(event, e)}
+                              view="month"
                             />
                           </div>
                         );
@@ -218,9 +218,9 @@ export function MonthView({
                           <PopoverTrigger
                             render={
                               <button
-                                type="button"
                                 className="focus-visible:border-ring focus-visible:ring-ring/50 text-muted-foreground hover:text-foreground hover:bg-muted/50 mt-[var(--event-gap)] flex h-[var(--event-height)] w-full items-center overflow-hidden px-1 text-left text-[10px] backdrop-blur-md transition outline-none select-none focus-visible:ring-[3px] sm:px-2 sm:text-xs"
                                 onClick={(e) => e.stopPropagation()}
+                                type="button"
                               />
                             }
                           >
@@ -253,14 +253,14 @@ export function MonthView({
 
                                   return (
                                     <EventItem
+                                      event={event}
+                                      isFirstDay={isFirstDay}
+                                      isLastDay={isLastDay}
                                       key={event.id}
                                       onClick={(e) =>
                                         handleEventClick(event, e)
                                       }
-                                      event={event}
                                       view="month"
-                                      isFirstDay={isFirstDay}
-                                      isLastDay={isLastDay}
                                     />
                                   );
                                 })}

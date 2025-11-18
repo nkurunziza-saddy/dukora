@@ -103,8 +103,8 @@ export default async function Users(props: PageProps<"/[locale]/users">) {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {statData.map((item) => (
           <StatCard
-            key={`${item.title}-`}
             icon={item.icon}
+            key={`${item.title}-`}
             title={item.title}
             value={item.value}
           />
@@ -126,10 +126,10 @@ export default async function Users(props: PageProps<"/[locale]/users">) {
               <ColumnWrapper
                 column={UserColumn}
                 data={usersData.data?.users ?? []}
-                totalCount={usersData.data?.totalCount || 0}
                 page={page}
                 pageSize={pageSize}
                 tag="users"
+                totalCount={usersData.data?.totalCount || 0}
               />
             </CardPanel>
           </Card>
@@ -147,10 +147,10 @@ export default async function Users(props: PageProps<"/[locale]/users">) {
                 <ColumnWrapper
                   column={InvitationColumn}
                   data={invitationsData.data?.invitations}
-                  totalCount={invitationsData.data?.totalCount || 0}
                   page={page}
                   pageSize={pageSize}
                   tag="invitations"
+                  totalCount={invitationsData.data?.totalCount || 0}
                 />
               </CardPanel>
             </Card>

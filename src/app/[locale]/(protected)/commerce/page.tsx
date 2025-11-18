@@ -42,7 +42,7 @@ async function CommerceTable({
 }
 
 export default async function CommercePage(
-  props: PageProps<"/[locale]/commerce">
+  props: PageProps<"/[locale]/commerce">,
 ) {
   const query = await props.searchParams;
   const page = Number(query.page) || 1;

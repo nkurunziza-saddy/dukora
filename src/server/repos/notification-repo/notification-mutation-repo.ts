@@ -48,7 +48,7 @@ export const create = async (data: {
 
 export const mark_as_read = async (
   notificationId: string,
-  businessId: string
+  businessId: string,
 ) => {
   if (!notificationId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -64,8 +64,8 @@ export const mark_as_read = async (
       .where(
         and(
           eq(notificationsTable.id, notificationId),
-          eq(notificationsTable.businessId, businessId)
-        )
+          eq(notificationsTable.businessId, businessId),
+        ),
       )
       .returning();
 
@@ -95,8 +95,8 @@ export const mark_all_as_read = async (businessId: string) => {
       .where(
         and(
           eq(notificationsTable.businessId, businessId),
-          eq(notificationsTable.read, false)
-        )
+          eq(notificationsTable.read, false),
+        ),
       );
 
     return { data: { success: true }, error: null };
@@ -108,7 +108,7 @@ export const mark_all_as_read = async (businessId: string) => {
 
 export const delete_notification = async (
   notificationId: string,
-  businessId: string
+  businessId: string,
 ) => {
   if (!notificationId || !businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -120,8 +120,8 @@ export const delete_notification = async (
       .where(
         and(
           eq(notificationsTable.id, notificationId),
-          eq(notificationsTable.businessId, businessId)
-        )
+          eq(notificationsTable.businessId, businessId),
+        ),
       )
       .returning();
 

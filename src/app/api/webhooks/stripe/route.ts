@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
   if (!signature) {
     return NextResponse.json(
       { error: "Missing stripe-signature header" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     console.error("Missing STRIPE_WEBHOOK_SECRET environment variable");
     return NextResponse.json(
       { error: "Webhook secret not configured" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     event = stripe.webhooks.constructEvent(
       body,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET
+      process.env.STRIPE_WEBHOOK_SECRET,
     );
   } catch (err) {
     console.error("Webhook signature verification failed:", err);
@@ -50,13 +50,13 @@ export async function POST(req: NextRequest) {
           console.error("Failed to confirm order:", orderResult.error);
           return NextResponse.json(
             { error: "Failed to confirm order" },
-            { status: 500 }
+            { status: 500 },
           );
         }
 
         // Sync inventory
         const syncResult = await syncInventoryAfterOrder(
-          orderResult.data.orderId
+          orderResult.data.orderId,
         );
         if (syncResult.error) {
           console.error("Failed to sync inventory:", syncResult.error);
@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
 
         console.log(
           "Order confirmed and inventory synced:",
-          orderResult.data.orderNumber
+          orderResult.data.orderNumber,
         );
         break;
       }
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
     console.error("Webhook handler error:", error);
     return NextResponse.json(
       { error: "Webhook handler failed" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

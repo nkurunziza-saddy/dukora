@@ -21,7 +21,7 @@ export const initiateInterBusinessPayment = createProtectedAction(
       amount: number;
       currency: string;
       applicationFeeAmount?: number;
-    }
+    },
   ) => {
     if (!user.businessId) {
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
@@ -63,7 +63,7 @@ export const initiateInterBusinessPayment = createProtectedAction(
           applicationFeeAmount: String(applicationFeeAmount),
           initiatedByUserId: user.id,
         },
-        user.id
+        user.id,
       );
 
       if (paymentRecord.error) {
@@ -78,7 +78,7 @@ export const initiateInterBusinessPayment = createProtectedAction(
         error: ErrorCode.FAILED_REQUEST,
       };
     }
-  }
+  },
 );
 
 export const getInterBusinessPayments = createProtectedAction(
@@ -90,13 +90,13 @@ export const getInterBusinessPayments = createProtectedAction(
     const payments = await interBusinessPaymentsRepo.get_all_paginated(
       user.businessId,
       page,
-      pageSize
+      pageSize,
     );
     if (payments.error) {
       return { data: null, error: payments.error };
     }
     return { data: payments.data, error: null };
-  }
+  },
 );
 
 export const createCustomerPaymentLink = createProtectedAction(
@@ -113,7 +113,7 @@ export const createCustomerPaymentLink = createProtectedAction(
       currency: string;
       description: string;
       customerEmail?: string;
-    }
+    },
   ) => {
     if (!user.businessId) {
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
@@ -159,7 +159,7 @@ export const createCustomerPaymentLink = createProtectedAction(
         error: ErrorCode.FAILED_REQUEST,
       };
     }
-  }
+  },
 );
 
 export const getCustomerPayments = createProtectedAction(
@@ -183,7 +183,7 @@ export const getCustomerPayments = createProtectedAction(
 
       // Filter payment intents that belong to this business
       const businessPayments = paymentIntents.data.filter(
-        (pi) => pi.metadata?.businessId === user.businessId
+        (pi) => pi.metadata?.businessId === user.businessId,
       );
 
       return {
@@ -199,5 +199,5 @@ export const getCustomerPayments = createProtectedAction(
       console.error("Failed to get customer payments:", error);
       return { data: null, error: ErrorCode.FAILED_REQUEST };
     }
-  }
+  },
 );

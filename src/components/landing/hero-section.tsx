@@ -7,7 +7,7 @@ export function HeroSection() {
   const t = useTranslations("landing.hero");
   return (
     <section className="pt-10 pb-24 md:pt-16 md:pb-32 lg:pt-20 lg:pb-40">
-      <div className="max-w-6xl mx-auto px-4 lg:px-12">
+      <div className="pgtx">
         <div className="max-w-3xl mx-auto text-center space-y-8">
           <div className="inline-flex items-center gap-2 px-3 py-1 border border-border text-xs text-text-secondary">
             {t("badge")}
@@ -23,14 +23,14 @@ export function HeroSection() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
             <Link
-              href={"/auth/sign-up"}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-foreground text-background text-xs font-medium hover:bg-primary-hover transition-all"
+              href={"/auth/sign-up"}
             >
               {t("ctaPrimary")}
             </Link>
             <Link
-              href="#features"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-border text-foreground text-xs font-medium hover:bg-surface transition-all"
+              href="#features"
             >
               {t("ctaSecondary")}
             </Link>

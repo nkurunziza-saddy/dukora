@@ -42,7 +42,7 @@ async function ProductsTable({
 }
 
 export default async function ProductsPage(
-  props: PageProps<"/[locale]/products">
+  props: PageProps<"/[locale]/products">,
 ) {
   const query = await props.searchParams;
   const page = Number(query.page) || 1;

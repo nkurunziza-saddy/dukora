@@ -41,7 +41,7 @@ export function AgendaView({
     <div className="border-border/70 border-t px-4">
       {!hasEvents ? (
         <div className="flex min-h-[70svh] flex-col items-center justify-center py-16 text-center">
-          <Calendar1 size={32} className="text-muted-foreground/50 mb-2" />
+          <Calendar1 className="text-muted-foreground/50 mb-2" size={32} />
           <h3 className="text-lg font-medium">{t("noEvent")}</h3>
           <p className="text-muted-foreground">{t("longNoEvent")}</p>
         </div>
@@ -53,8 +53,8 @@ export function AgendaView({
 
           return (
             <div
-              key={day.toString()}
               className="border-border/70 relative my-12 border-t"
+              key={day.toString()}
             >
               <span
                 className="bg-background absolute -top-3 left-0 flex h-6 items-center pe-4 text-[10px] uppercase data-today:font-medium sm:pe-4 sm:text-xs"
@@ -65,10 +65,10 @@ export function AgendaView({
               <div className="mt-6 space-y-2">
                 {dayEvents.map((event) => (
                   <EventItem
-                    key={event.id}
                     event={event}
-                    view="agenda"
+                    key={event.id}
                     onClick={(e) => handleEventClick(event, e)}
+                    view="agenda"
                   />
                 ))}
               </div>

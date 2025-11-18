@@ -102,7 +102,7 @@ const SessionCard = memo(() => {
       <SidebarMenuItem>
         {isMobile ? (
           <Drawer>
-            <DrawerTrigger className="w-full">
+            <DrawerTrigger asChild className="w-full">
               <SidebarMenuButton
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground w-full"
                 size="lg"

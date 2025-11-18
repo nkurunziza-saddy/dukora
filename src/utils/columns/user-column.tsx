@@ -23,7 +23,7 @@ export function UserColumn(
         );
         if (!role) {
           return (
-            <Badge variant="outline" className="capitalize">
+            <Badge className="capitalize" variant="outline">
               <span className="capitalize">
                 {row.original.role.split("_").join(" ").toLowerCase()}
               </span>
@@ -32,8 +32,8 @@ export function UserColumn(
         }
         return (
           <Badge
-            variant={role.variant}
             className="capitalize flex gap-1 items-center"
+            variant={role.variant}
           >
             {role.icon && (
               <role.icon className="text-muted-foreground size-4" />

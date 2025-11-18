@@ -202,18 +202,18 @@ export function WeekView({
   );
 
   return (
-    <div data-slot="week-view" className="flex h-full flex-col">
+    <div className="flex h-full flex-col" data-slot="week-view">
       <div className="bg-background/80 border-border/70 sticky top-0 z-30 grid grid-cols-8 border-b backdrop-blur-md">
         <div className="text-muted-foreground/70 py-2 text-center text-sm">
           <span className="max-[479px]:sr-only">{format(new Date(), "O")}</span>
         </div>
         {days.map((day) => (
           <div
-            key={day.toString()}
             className="data-today:text-foreground text-muted-foreground/70 py-2 text-center text-sm data-today:font-medium"
             data-today={isToday(day) || undefined}
+            key={day.toString()}
           >
-            <span className="sm:hidden" aria-hidden="true">
+            <span aria-hidden="true" className="sm:hidden">
               {format(day, "E")[0]} {format(day, "d")}
             </span>
             <span className="max-sm:hidden">{format(day, "EEE dd")}</span>
@@ -242,9 +242,9 @@ export function WeekView({
 
               return (
                 <div
-                  key={day.toString()}
                   className="border-border/70 relative border-r p-1 last:border-r-0"
                   data-today={isToday(day) || undefined}
+                  key={day.toString()}
                 >
                   {dayAllDayEvents.map((event) => {
                     const eventStart = new Date(event.start);
@@ -258,19 +258,19 @@ export function WeekView({
 
                     return (
                       <EventItem
-                        key={`spanning-${event.id}`}
-                        onClick={(e) => handleEventClick(event, e)}
                         event={event}
-                        view="month"
                         isFirstDay={isFirstDay}
                         isLastDay={isLastDay}
+                        key={`spanning-${event.id}`}
+                        onClick={(e) => handleEventClick(event, e)}
+                        view="month"
                       >
                         <div
+                          aria-hidden={!shouldShowTitle}
                           className={cn(
                             "truncate",
                             !shouldShowTitle && "invisible",
                           )}
-                          aria-hidden={!shouldShowTitle}
                         >
                           {event.title}
                         </div>
@@ -288,8 +288,8 @@ export function WeekView({
         <div className="border-border/70 grid auto-cols-fr border-r">
           {hours.map((hour, index) => (
             <div
-              key={hour.toString()}
               className="border-border/70 relative min-h-[var(--week-cells-height)] border-b last:border-b-0"
+              key={hour.toString()}
             >
               {index > 0 && (
                 <span className="bg-background text-muted-foreground/70 absolute -top-3 left-0 flex h-6 w-16 max-w-full items-center justify-end pe-2 text-[10px] sm:pe-4 sm:text-xs">
@@ -302,14 +302,15 @@ export function WeekView({
 
         {days.map((day, dayIndex) => (
           <div
-            key={day.toString()}
             className="border-border/70 relative grid auto-cols-fr border-r last:border-r-0"
             data-today={isToday(day) || undefined}
+            key={day.toString()}
           >
             {(processedDayEvents[dayIndex] ?? []).map((positionedEvent) => (
               <div
-                key={positionedEvent.event.id}
                 className="absolute z-10 px-0.5"
+                key={positionedEvent.event.id}
+                onClick={(e) => e.stopPropagation()}
                 style={{
                   top: `${positionedEvent.top}px`,
                   height: `${positionedEvent.height}px`,
@@ -317,15 +318,14 @@ export function WeekView({
                   width: `${positionedEvent.width * 100}%`,
                   zIndex: positionedEvent.zIndex,
                 }}
-                onClick={(e) => e.stopPropagation()}
               >
                 <div className="size-full">
                   <DraggableEvent
                     event={positionedEvent.event}
-                    view="week"
+                    height={positionedEvent.height}
                     onClick={(e) => handleEventClick(positionedEvent.event, e)}
                     showTime
-                    height={positionedEvent.height}
+                    view="week"
                   />
                 </div>
               </div>
@@ -346,17 +346,13 @@ export function WeekView({
               const hourValue = getHours(hour);
               return (
                 <div
-                  key={hour.toString()}
                   className="border-border/70 relative min-h-[var(--week-cells-height)] border-b last:border-b-0"
+                  key={hour.toString()}
                 >
                   {[0, 1, 2, 3].map((quarter) => {
                     const quarterHourTime = hourValue + quarter * 0.25;
                     return (
                       <DroppableCell
-                        key={`${hour.toString()}-${quarter}`}
-                        id={`week-cell-${day.toISOString()}-${quarterHourTime}`}
-                        date={day}
-                        time={quarterHourTime}
                         className={cn(
                           "absolute h-[calc(var(--week-cells-height)/4)] w-full",
                           quarter === 0 && "top-0",
@@ -367,12 +363,16 @@ export function WeekView({
                           quarter === 3 &&
                             "top-[calc(var(--week-cells-height)/4*3)]",
                         )}
+                        date={day}
+                        id={`week-cell-${day.toISOString()}-${quarterHourTime}`}
+                        key={`${hour.toString()}-${quarter}`}
                         onClick={() => {
                           const startTime = new Date(day);
                           startTime.setHours(hourValue);
                           startTime.setMinutes(quarter * 15);
                           onEventCreate(startTime);
                         }}
+                        time={quarterHourTime}
                       />
                     );
                   })}

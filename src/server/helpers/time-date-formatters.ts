@@ -38,7 +38,7 @@ export function getCurrentMonthBoundary(): Date {
 }
 
 export async function getAvailableMonthsForAnalytics(
-  businessId: string | null | undefined
+  businessId: string | null | undefined,
 ): Promise<
   {
     value: number;

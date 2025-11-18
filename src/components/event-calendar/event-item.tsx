@@ -142,18 +142,18 @@ export function EventItem({
   if (view === "month") {
     return (
       <EventWrapper
-        event={event}
-        isFirstDay={isFirstDay}
-        isLastDay={isLastDay}
-        isDragging={isDragging}
-        onClick={onClick}
         className={cn(
           "mt-[(--event-gap)] h-[(--event-height)] items-center text-[10px] sm:text-xs",
           className,
         )}
         currentTime={currentTime}
-        dndListeners={dndListeners}
         dndAttributes={dndAttributes}
+        dndListeners={dndListeners}
+        event={event}
+        isDragging={isDragging}
+        isFirstDay={isFirstDay}
+        isLastDay={isLastDay}
+        onClick={onClick}
         onMouseDown={onMouseDown}
         onTouchStart={onTouchStart}
       >
@@ -174,11 +174,6 @@ export function EventItem({
   if (view === "week" || view === "day") {
     return (
       <EventWrapper
-        event={event}
-        isFirstDay={isFirstDay}
-        isLastDay={isLastDay}
-        isDragging={isDragging}
-        onClick={onClick}
         className={cn(
           "py-1",
           durationMinutes < 45 ? "items-center" : "flex-col",
@@ -186,8 +181,13 @@ export function EventItem({
           className,
         )}
         currentTime={currentTime}
-        dndListeners={dndListeners}
         dndAttributes={dndAttributes}
+        dndListeners={dndListeners}
+        event={event}
+        isDragging={isDragging}
+        isFirstDay={isFirstDay}
+        isLastDay={isLastDay}
+        onClick={onClick}
         onMouseDown={onMouseDown}
         onTouchStart={onTouchStart}
       >

@@ -47,12 +47,12 @@ export function ExtendableDataTable<TData, TValue>({
       if (expansion?.contentKey) {
         const content = row[expansion.contentKey];
         return Boolean(
-          content && (typeof content === "string" ? content.trim() : content)
+          content && (typeof content === "string" ? content.trim() : content),
         );
       }
       return false;
     },
-    [expansionEnabled, expansion]
+    [expansionEnabled, expansion],
   );
 
   const table = useReactTable({
@@ -110,7 +110,7 @@ export function ExtendableDataTable<TData, TValue>({
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                   </TableHead>
                 );
@@ -143,7 +143,7 @@ export function ExtendableDataTable<TData, TValue>({
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

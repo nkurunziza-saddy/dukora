@@ -11,7 +11,7 @@ export const Message = ({ className, from, ...props }: MessageProps) => (
       "group flex w-full items-end justify-end gap-3 py-2",
       from === "user" ? "is-user" : "is-assistant flex-row-reverse justify-end",
       "[&>div]:max-w-[80%]",
-      className
+      className,
     )}
     {...props}
   />
@@ -28,7 +28,7 @@ export const MessageContent = ({
       "group-[.is-user]:bg-muted/40  group-[.is-user]:text-primary-foreground group-[.is-user]:border-muted/60 group-[.is-user]:shadow-sm",
       "group-[.is-assistant]:bg-secondary group-[.is-assistant]:text-foreground group-[.is-assistant]:border-border group-[.is-assistant]:shadow-sm",
       "transition-all duration-200 hover:shadow-md",
-      className
+      className,
     )}
     {...props}
   >
