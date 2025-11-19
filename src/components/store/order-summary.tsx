@@ -76,7 +76,7 @@ export function OrderSummary({ cartProducts }: OrderSummaryProps) {
           </div>
 
           {discount > 0 && (
-            <div className="flex justify-between text-sm text-green-600">
+            <div className="flex justify-between text-sm text-success-foreground">
               <span>{t("discount")}</span>
               <span>-${discount.toFixed(2)}</span>
             </div>

@@ -22,12 +22,12 @@ export function VATCalculator() {
     <div className="grid gap-4 md:grid-cols-2">
       <div className="space-y-4">
         <div className="rounded-lg border bg-muted/50 p-4">
-          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+          <h3 className="text-sm font-medium text-foreground mb-4">
             Business Details
           </h3>
           <div className="space-y-4">
             <div className="grid gap-2">
-              <Label className="text-sm font-medium" htmlFor="salesAmount">
+              <Label className="text-sm" htmlFor="salesAmount">
                 {t("vatCalculator.salesAmountLabel")}
               </Label>
               <Input
@@ -43,7 +43,7 @@ export function VATCalculator() {
               />
             </div>
             <div className="grid gap-2">
-              <Label className="text-sm font-medium" htmlFor="purchasesAmount">
+              <Label className="text-sm" htmlFor="purchasesAmount">
                 {t("vatCalculator.purchasesAmountLabel")}
               </Label>
               <Input
@@ -64,19 +64,19 @@ export function VATCalculator() {
 
       <div className="space-y-4">
         <div className="rounded-lg border border-success/20 bg-muted/50 p-4">
-          <h3 className="text-lg font-semibold text-success mb-4 flex items-center gap-2">
+          <h3 className="text-sm font-medium text-success-foreground mb-4">
             VAT Calculation
           </h3>
           <div className="space-y-4">
             <div className="grid gap-2">
               <Label
-                className="text-sm font-medium text-success"
+                className="text-sm text-success-foreground"
                 htmlFor="vatDue"
               >
                 {t("vatCalculator.vatDueLabel")}
               </Label>
               <Input
-                className="bg-success/10 text-success font-semibold text-lg border-success/20"
+                className="bg-success/10 text-success-foreground font-semibold text-lg border-success/20"
                 id="vatDue"
                 readOnly
                 type="number"
@@ -85,15 +85,15 @@ export function VATCalculator() {
             </div>
             {vatDue !== 0 && (
               <div className="mt-4 p-3 rounded-md bg-success/5 border border-success/20">
-                <p className="text-sm text-success">
+                <p className="text-sm text-success-foreground">
                   <span className="font-medium">Output VAT (18%):</span> $
                   {(salesAmount * 0.18).toFixed(2)}
                 </p>
-                <p className="text-sm text-success">
+                <p className="text-sm text-success-foreground">
                   <span className="font-medium">Input VAT (18%):</span> $
                   {(purchasesAmount * 0.18).toFixed(2)}
                 </p>
-                <p className="text-sm text-success">
+                <p className="text-sm text-success-foreground">
                   <span className="font-medium">VAT Rate:</span> 18%
                 </p>
               </div>

@@ -307,7 +307,7 @@ export function WeekView({
             key={day.toString()}
           >
             {(processedDayEvents[dayIndex] ?? []).map((positionedEvent) => (
-              <div
+              <button
                 className="absolute z-10 px-0.5"
                 key={positionedEvent.event.id}
                 onClick={(e) => e.stopPropagation()}
@@ -318,6 +318,7 @@ export function WeekView({
                   width: `${positionedEvent.width * 100}%`,
                   zIndex: positionedEvent.zIndex,
                 }}
+                type="button"
               >
                 <div className="size-full">
                   <DraggableEvent
@@ -328,7 +329,7 @@ export function WeekView({
                     view="week"
                   />
                 </div>
-              </div>
+              </button>
             ))}
 
             {currentTimeVisible && isToday(day) && (

@@ -814,23 +814,21 @@ export default function OnboardingFlow() {
                           </div>
                           {currentCategories.length > 0 && (
                             <div className="flex gap-0.5 flex-wrap">
-                              {currentCategories.map(
-                                (cat: any, idx: number) => (
-                                  <Button
-                                    aria-label={`Remove category ${idx + 1}`}
-                                    key={`${cat}-${idx}`}
-                                    onClick={() => field.removeValue(idx)}
-                                    size="xs"
-                                    type="button"
-                                    variant="outline"
-                                  >
-                                    <span className="">
-                                      {cat}{" "}
-                                      <XIcon className="inline-block ml-1" />
-                                    </span>
-                                  </Button>
-                                ),
-                              )}
+                              {currentCategories.map((cat, idx: number) => (
+                                <Button
+                                  aria-label={`Remove category ${idx + 1}`}
+                                  key={`${cat}-${idx}`}
+                                  onClick={() => field.removeValue(idx)}
+                                  size="xs"
+                                  type="button"
+                                  variant="outline"
+                                >
+                                  <span className="">
+                                    {cat}{" "}
+                                    <XIcon className="inline-block ml-1" />
+                                  </span>
+                                </Button>
+                              ))}
                             </div>
                           )}
                         </FieldGroup>

@@ -12,7 +12,7 @@ import {
   XCircleIcon,
 } from "lucide-react";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
-import OrdersRowActions from "@/components/table/orders-row-actions";
+import OrdersRowActions from "@/components/table/orders/orders-row-actions";
 import { Badge } from "@/components/ui/badge";
 import { ORDER_STATUS } from "@/lib/schema/models/enums";
 import type { SelectPurchaseOrder } from "@/lib/schema/schema-types";

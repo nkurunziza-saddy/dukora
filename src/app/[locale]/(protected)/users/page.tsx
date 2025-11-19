@@ -5,13 +5,7 @@ import { InviteUserForm } from "@/components/forms/invite-user-form";
 import ColumnWrapper from "@/components/providers/column-wrapper";
 import StatCard from "@/components/shared/stat-card";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardPanel,
-  CardTitle,
-} from "@/components/ui/card";
+import { CardPanel } from "@/components/ui/card";
 import {
   Dialog,
   DialogDescription,
@@ -117,12 +111,12 @@ export default async function Users(props: PageProps<"/[locale]/users">) {
           <TabsTab value="permissions">{t("tabsPermissions")}</TabsTab>
         </TabsList>
         <TabsPanel value="users">
-          <Card className="bg-transparent border-0 px-0">
-            <CardHeader className="px-0">
-              <CardTitle>{t("tabsUsers")}</CardTitle>
-              <CardDescription>{t("usersListDescription")}</CardDescription>
-            </CardHeader>
-            <CardPanel className="px-0">
+          <div>
+            <div className="en_head">
+              <h1>{t("tabsUsers")}</h1>
+              <p>{t("usersListDescription")}</p>
+            </div>
+            <div className="">
               <ColumnWrapper
                 column={UserColumn}
                 data={usersData.data?.users ?? []}
@@ -131,18 +125,16 @@ export default async function Users(props: PageProps<"/[locale]/users">) {
                 tag="users"
                 totalCount={usersData.data?.totalCount || 0}
               />
-            </CardPanel>
-          </Card>
+            </div>
+          </div>
         </TabsPanel>
         <TabsPanel value="invitations">
           {invitationsData.data && (
-            <Card className="bg-transparent border-0 px-0">
-              <CardHeader className="px-0">
-                <CardTitle>{t("tabsInvitations")}</CardTitle>
-                <CardDescription>
-                  {t("invitationsListDescription")}
-                </CardDescription>
-              </CardHeader>
+            <div className="">
+              <div className="en_head">
+                <h1>{t("tabsInvitations")}</h1>
+                <p>{t("invitationsListDescription")}</p>
+              </div>
               <CardPanel className="px-0">
                 <ColumnWrapper
                   column={InvitationColumn}
@@ -153,56 +145,54 @@ export default async function Users(props: PageProps<"/[locale]/users">) {
                   totalCount={invitationsData.data?.totalCount || 0}
                 />
               </CardPanel>
-            </Card>
+            </div>
           )}
         </TabsPanel>
         <TabsPanel value="permissions">
-          <Card className="bg-transparent border-0 px-0">
-            <CardHeader className="px-0">
-              <CardTitle>{t("tabsPermissions")}</CardTitle>
-              <CardDescription>{t("permissionsDescription")}</CardDescription>
-            </CardHeader>
-            <CardPanel className="px-0">
-              <div>
-                <Table className="min-w-full text-sm border">
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="px-4 py-2 border">
-                        {t("permissionsPermission")}
-                      </TableHead>
-                      <TableHead className="px-4 py-2 border">Owner</TableHead>
-                      <TableHead className="px-4 py-2 border">Admin</TableHead>
-                      <TableHead className="px-4 py-2 border">Member</TableHead>
-                      <TableHead className="px-4 py-2 border">
-                        View Only
-                      </TableHead>
+          <div className="">
+            <div className="en_head">
+              <h1>{t("tabsPermissions")}</h1>
+              <p>{t("permissionsDescription")}</p>
+            </div>
+            <div className="">
+              <Table className="min-w-full text-sm border">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="px-4 py-2 border">
+                      {t("permissionsPermission")}
+                    </TableHead>
+                    <TableHead className="px-4 py-2 border">Owner</TableHead>
+                    <TableHead className="px-4 py-2 border">Admin</TableHead>
+                    <TableHead className="px-4 py-2 border">Member</TableHead>
+                    <TableHead className="px-4 py-2 border">
+                      View Only
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {Object.values(Permission).map((perm) => (
+                    <TableRow key={perm}>
+                      <TableCell className="px-4 py-2 border font-mono">
+                        {perm}
+                      </TableCell>
+                      <TableCell className="px-4 py-2 border text-center">
+                        {RolePermissions.OWNER.includes(perm) ? "✔️" : ""}
+                      </TableCell>
+                      <TableCell className="px-4 py-2 border text-center">
+                        {RolePermissions.ADMIN.includes(perm) ? "✔️" : ""}
+                      </TableCell>
+                      <TableCell className="px-4 py-2 border text-center">
+                        {RolePermissions.MEMBER.includes(perm) ? "✔️" : ""}
+                      </TableCell>
+                      <TableCell className="px-4 py-2 border text-center">
+                        {RolePermissions.VIEW_ONLY.includes(perm) ? "✔️" : ""}
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {Object.values(Permission).map((perm) => (
-                      <TableRow key={perm}>
-                        <TableCell className="px-4 py-2 border font-mono">
-                          {perm}
-                        </TableCell>
-                        <TableCell className="px-4 py-2 border text-center">
-                          {RolePermissions.OWNER.includes(perm) ? "✔️" : ""}
-                        </TableCell>
-                        <TableCell className="px-4 py-2 border text-center">
-                          {RolePermissions.ADMIN.includes(perm) ? "✔️" : ""}
-                        </TableCell>
-                        <TableCell className="px-4 py-2 border text-center">
-                          {RolePermissions.MEMBER.includes(perm) ? "✔️" : ""}
-                        </TableCell>
-                        <TableCell className="px-4 py-2 border text-center">
-                          {RolePermissions.VIEW_ONLY.includes(perm) ? "✔️" : ""}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardPanel>
-          </Card>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
         </TabsPanel>
       </Tabs>
     </div>

@@ -22,12 +22,12 @@ export function SimpleCalculator() {
     <div className="grid gap-4 md:grid-cols-2">
       <div className="space-y-4">
         <div className="rounded-lg border bg-muted/50 p-4">
-          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-            Input Values
+          <h3 className="text-sm font-medium text-foreground mb-4">
+            Simple Interest Calculator
           </h3>
           <div className="space-y-4">
             <div className="grid gap-2">
-              <Label className="text-sm font-medium" htmlFor="principal">
+              <Label className="text-sm" htmlFor="principal">
                 {t("simpleCalculator.principalLabel")}
               </Label>
               <Input
@@ -41,7 +41,7 @@ export function SimpleCalculator() {
               />
             </div>
             <div className="grid gap-2">
-              <Label className="text-sm font-medium" htmlFor="interestRate">
+              <Label className="text-sm" htmlFor="interestRate">
                 {t("simpleCalculator.interestRateLabel")}
               </Label>
               <Input
@@ -57,7 +57,7 @@ export function SimpleCalculator() {
               />
             </div>
             <div className="grid gap-2">
-              <Label className="text-sm font-medium" htmlFor="time">
+              <Label className="text-sm" htmlFor="time">
                 {t("simpleCalculator.timeLabel")}
               </Label>
               <Input
@@ -76,19 +76,19 @@ export function SimpleCalculator() {
 
       <div className="space-y-4">
         <div className="rounded-lg border border-success/20 bg-muted/50 p-4">
-          <h3 className="text-lg font-semibold text-success mb-4 flex items-center gap-2">
+          <h3 className="text-sm front-medium mb-4 text-success-foreground">
             Calculation Result
           </h3>
           <div className="space-y-4">
             <div className="grid gap-2">
               <Label
-                className="text-sm font-medium text-success"
+                className="text-sm text-success-foreground"
                 htmlFor="result"
               >
                 {t("simpleCalculator.resultLabel")}
               </Label>
               <Input
-                className="bg-success/10 text-success font-semibold text-lg border-success/20"
+                className="bg-success/10 text-success-foreground font-semibold text-lg border-success/20"
                 id="result"
                 readOnly
                 type="number"
@@ -97,11 +97,11 @@ export function SimpleCalculator() {
             </div>
             {result > 0 && (
               <div className="mt-4 p-3 rounded-md bg-success/5 border border-success/20">
-                <p className="text-sm text-success">
+                <p className="text-sm text-success-foreground">
                   <span className="font-medium">Interest Earned:</span> $
                   {(result - principal).toFixed(2)}
                 </p>
-                <p className="text-sm text-success">
+                <p className="text-sm text-success-foreground">
                   <span className="font-medium">Total Amount:</span> $
                   {result.toFixed(2)}
                 </p>

@@ -4,7 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { CircleIcon, TimerIcon } from "lucide-react";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
-import UserRowActions from "@/components/table/user-row-actions";
+import UserRowActions from "@/components/table/users/user-row-actions";
 import { Badge } from "@/components/ui/badge";
 import type { SelectUser } from "@/lib/schema/schema-types";
 

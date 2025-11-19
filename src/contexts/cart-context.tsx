@@ -30,7 +30,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case "ADD_ITEM": {
       const existingItem = state.items.find(
-        (item) => item.id === action.payload.id
+        (item) => item.id === action.payload.id,
       );
 
       if (existingItem) {
@@ -40,10 +40,10 @@ function cartReducer(state: CartState, action: CartAction): CartState {
                 ...item,
                 quantity: Math.min(
                   item.quantity + 1,
-                  Number(action.payload.availableStock)
+                  Number(action.payload.availableStock),
                 ),
               }
-            : item
+            : item,
         );
 
         return {
@@ -51,11 +51,11 @@ function cartReducer(state: CartState, action: CartAction): CartState {
           items: updatedItems,
           totalItems: updatedItems.reduce(
             (sum, item) => sum + item.quantity,
-            0
+            0,
           ),
           totalPrice: updatedItems.reduce(
             (sum, item) => sum + Number(item.price) * item.quantity,
-            0
+            0,
           ),
         };
       }
@@ -73,14 +73,14 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         totalItems: updatedItems.reduce((sum, item) => sum + item.quantity, 0),
         totalPrice: updatedItems.reduce(
           (sum, item) => sum + Number(item.price) * item.quantity,
-          0
+          0,
         ),
       };
     }
 
     case "REMOVE_ITEM": {
       const updatedItems = state.items.filter(
-        (item) => item.id !== action.payload
+        (item) => item.id !== action.payload,
       );
 
       return {
@@ -89,7 +89,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         totalItems: updatedItems.reduce((sum, item) => sum + item.quantity, 0),
         totalPrice: updatedItems.reduce(
           (sum, item) => sum + Number(item.price) * item.quantity,
-          0
+          0,
         ),
       };
     }
@@ -102,10 +102,10 @@ function cartReducer(state: CartState, action: CartAction): CartState {
                 ...item,
                 quantity: Math.min(
                   Math.max(action.payload.quantity, 0),
-                  Number(item.availableStock)
+                  Number(item.availableStock),
                 ),
               }
-            : item
+            : item,
         )
         .filter((item) => item.quantity > 0);
 
@@ -115,7 +115,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         totalItems: updatedItems.reduce((sum, item) => sum + item.quantity, 0),
         totalPrice: updatedItems.reduce(
           (sum, item) => sum + Number(item.price) * item.quantity,
-          0
+          0,
         ),
       };
     }
@@ -142,7 +142,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         totalItems: items.reduce((sum, item) => sum + item.quantity, 0),
         totalPrice: items.reduce(
           (sum, item) => sum + Number(item.price) * item.quantity,
-          0
+          0,
         ),
       };
     }

@@ -1,7 +1,6 @@
 "use client";
 
 import { addDays, format, isToday } from "date-fns";
-import { Calendar1 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import {
@@ -10,6 +9,12 @@ import {
   EventItem,
   getAgendaEventsForDay,
 } from "@/components/event-calendar";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 interface AgendaViewProps {
   currentDate: Date;
@@ -40,11 +45,12 @@ export function AgendaView({
   return (
     <div className="border-border/70 border-t px-4">
       {!hasEvents ? (
-        <div className="flex min-h-[70svh] flex-col items-center justify-center py-16 text-center">
-          <Calendar1 className="text-muted-foreground/50 mb-2" size={32} />
-          <h3 className="text-lg font-medium">{t("noEvent")}</h3>
-          <p className="text-muted-foreground">{t("longNoEvent")}</p>
-        </div>
+        <Empty>
+          <EmptyHeader>
+            <EmptyTitle>{t("noEvent")}</EmptyTitle>
+            <EmptyDescription>{t("longNoEvent")}</EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       ) : (
         days.map((day) => {
           const dayEvents = getAgendaEventsForDay(events, day);

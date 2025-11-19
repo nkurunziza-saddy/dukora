@@ -5,6 +5,7 @@ import { XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef } from "react";
 import { type CalendarEvent, EventItem } from "@/components/event-calendar";
+import { Empty, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 
 interface EventsPopupProps {
   date: Date;
@@ -100,9 +101,11 @@ export function EventsPopup({
 
       <div className="space-y-2 p-3">
         {events.length === 0 ? (
-          <div className="text-muted-foreground py-2 text-sm">
-            {t("noEvents")}
-          </div>
+          <Empty>
+            <EmptyHeader>
+              <EmptyTitle>{t("noEvents")}</EmptyTitle>
+            </EmptyHeader>
+          </Empty>
         ) : (
           events.map((event) => {
             const eventStart = new Date(event.start);
@@ -111,10 +114,10 @@ export function EventsPopup({
             const isLastDay = isSameDay(date, eventEnd);
 
             return (
-              <div
-                className="cursor-pointer"
+              <button
                 key={event.id}
                 onClick={() => handleEventClick(event)}
+                type="button"
               >
                 <EventItem
                   event={event}
@@ -122,7 +125,7 @@ export function EventsPopup({
                   isLastDay={isLastDay}
                   view="agenda"
                 />
-              </div>
+              </button>
             );
           })
         )}

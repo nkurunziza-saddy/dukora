@@ -1,6 +1,5 @@
 "use client";
 
-import { BellIcon, MailIcon, SmartphoneIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { FieldLabel } from "@/components/ui/field";
-import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 
 interface NotificationSettings {
@@ -34,7 +32,7 @@ interface NotificationSettings {
 }
 
 export function NotificationsSettings() {
-  const t = useTranslations("settings.notifications");
+  const t = useTranslations("notifications");
   const [settings, setSettings] = useState<NotificationSettings>({
     email: {
       lowStock: true,
@@ -78,26 +76,15 @@ export function NotificationsSettings() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium">{t("title")}</h3>
-        <p className="text-sm text-muted-foreground">{t("description")}</p>
-      </div>
-
-      <Separator />
-
-      {/* Email Notifications */}
+    <div className="space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MailIcon className="h-5 w-5" />
-            {t("emailNotifications")}
-          </CardTitle>
+          <CardTitle>{t("emailNotifications")}</CardTitle>
           <CardDescription>
             {t("emailNotificationsDescription")}
           </CardDescription>
         </CardHeader>
-        <CardPanel className="space-y-4">
+        <CardPanel className="space-y-2">
           <FieldLabel
             className="flex items-center gap-6 rounded-lg border p-3 hover:bg-accent/50 has-data-[state=checked]:border-primary/48 has-data-[state=checked]:bg-accent/50"
             htmlFor="email-lowStock"
@@ -111,8 +98,8 @@ export function NotificationsSettings() {
               </p>
             </div>
             <Switch
-              id="email-lowStock"
               checked={settings.email.lowStock}
+              id="email-lowStock"
               onCheckedChange={(value) =>
                 updateSetting("email", "lowStock", value)
               }
@@ -124,14 +111,16 @@ export function NotificationsSettings() {
             htmlFor="email-newOrders"
           >
             <div className="flex flex-col gap-1">
-              <p className="text-sm font-medium leading-none">{t("newOrders")}</p>
+              <p className="text-sm font-medium leading-none">
+                {t("newOrders")}
+              </p>
               <p className="text-muted-foreground text-xs">
                 {t("newOrdersDescription")}
               </p>
             </div>
             <Switch
-              id="email-newOrders"
               checked={settings.email.newOrders}
+              id="email-newOrders"
               onCheckedChange={(value) =>
                 updateSetting("email", "newOrders", value)
               }
@@ -151,8 +140,8 @@ export function NotificationsSettings() {
               </p>
             </div>
             <Switch
-              id="email-payments"
               checked={settings.email.payments}
+              id="email-payments"
               onCheckedChange={(value) =>
                 updateSetting("email", "payments", value)
               }
@@ -170,8 +159,8 @@ export function NotificationsSettings() {
               </p>
             </div>
             <Switch
-              id="email-reports"
               checked={settings.email.reports}
+              id="email-reports"
               onCheckedChange={(value) =>
                 updateSetting("email", "reports", value)
               }
@@ -180,16 +169,12 @@ export function NotificationsSettings() {
         </CardPanel>
       </Card>
 
-      {/* Push Notifications */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BellIcon className="h-5 w-5" />
-            {t("pushNotifications")}
-          </CardTitle>
+          <CardTitle>{t("pushNotifications")}</CardTitle>
           <CardDescription>{t("pushNotificationsDescription")}</CardDescription>
         </CardHeader>
-        <CardPanel className="space-y-4">
+        <CardPanel className="space-y-2">
           <FieldLabel
             className="flex items-center gap-6 rounded-lg border p-3 hover:bg-accent/50 has-data-[state=checked]:border-primary/48 has-data-[state=checked]:bg-accent/50"
             htmlFor="push-lowStock"
@@ -203,8 +188,8 @@ export function NotificationsSettings() {
               </p>
             </div>
             <Switch
-              id="push-lowStock"
               checked={settings.push.lowStock}
+              id="push-lowStock"
               onCheckedChange={(value) =>
                 updateSetting("push", "lowStock", value)
               }
@@ -216,14 +201,16 @@ export function NotificationsSettings() {
             htmlFor="push-newOrders"
           >
             <div className="flex flex-col gap-1">
-              <p className="text-sm font-medium leading-none">{t("newOrders")}</p>
+              <p className="text-sm font-medium leading-none">
+                {t("newOrders")}
+              </p>
               <p className="text-muted-foreground text-xs">
                 {t("newOrdersDescription")}
               </p>
             </div>
             <Switch
-              id="push-newOrders"
               checked={settings.push.newOrders}
+              id="push-newOrders"
               onCheckedChange={(value) =>
                 updateSetting("push", "newOrders", value)
               }
@@ -243,8 +230,8 @@ export function NotificationsSettings() {
               </p>
             </div>
             <Switch
-              id="push-payments"
               checked={settings.push.payments}
+              id="push-payments"
               onCheckedChange={(value) =>
                 updateSetting("push", "payments", value)
               }
@@ -257,7 +244,6 @@ export function NotificationsSettings() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <SmartphoneIcon className="h-5 w-5" />
             {t("smsNotifications")}
           </CardTitle>
           <CardDescription>{t("smsNotificationsDescription")}</CardDescription>
@@ -276,8 +262,8 @@ export function NotificationsSettings() {
               </p>
             </div>
             <Switch
-              id="sms-criticalAlerts"
               checked={settings.sms.criticalAlerts}
+              id="sms-criticalAlerts"
               onCheckedChange={(value) =>
                 updateSetting("sms", "criticalAlerts", value)
               }
@@ -297,8 +283,8 @@ export function NotificationsSettings() {
               </p>
             </div>
             <Switch
-              id="sms-paymentConfirmations"
               checked={settings.sms.paymentConfirmations}
+              id="sms-paymentConfirmations"
               onCheckedChange={(value) =>
                 updateSetting("sms", "paymentConfirmations", value)
               }

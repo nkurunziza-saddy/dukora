@@ -17,11 +17,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function financialCalculatorPage() {
   return (
     <div className="flex flex-col gap-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">
-          Financial Calculators
-        </h1>
-        <p className="text-muted-foreground">
+      <div className="head">
+        <h1 className="">Financial Calculators</h1>
+        <p className="">
           Calculate loans, interest, savings goals, and taxes with precision
         </p>
       </div>
@@ -37,48 +35,23 @@ export default function financialCalculatorPage() {
 
         <div className="mt-6">
           <TabsPanel value="simple">
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold mb-4 text-primary">
-                Simple Interest Calculator
-              </h2>
-              <SimpleCalculator />
-            </div>
+            <SimpleCalculator />
           </TabsPanel>
 
           <TabsPanel value="loan">
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold mb-4 text-primary">
-                Loan Calculator
-              </h2>
-              <LoanCalculator />
-            </div>
+            <LoanCalculator />
           </TabsPanel>
 
           <TabsPanel value="compound">
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold mb-4 text-primary">
-                Compound Interest Calculator
-              </h2>
-              <CompoundInterestCalculator />
-            </div>
+            <CompoundInterestCalculator />
           </TabsPanel>
 
           <TabsPanel value="savings">
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold mb-4 text-primary">
-                Savings Goal Calculator
-              </h2>
-              <SavingsGoalCalculator />
-            </div>
+            <SavingsGoalCalculator />
           </TabsPanel>
 
           <TabsPanel value="tax">
-            <div className="space-y-4">
-              <h2 className="text-lg font-semibold mb-4 text-primary">
-                Tax Calculator
-              </h2>
-              <TaxCalculator />
-            </div>
+            <TaxCalculator />
           </TabsPanel>
         </div>
       </Tabs>

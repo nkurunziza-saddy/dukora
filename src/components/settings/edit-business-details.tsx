@@ -6,12 +6,7 @@ import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-} from "@/components/ui/field";
+import { Field, FieldDescription, FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -34,15 +29,12 @@ export function EditBusinessDetails({
 
   const form = useForm({
     validators: {
-      // @ts-expect-error
       onBlur: businessDetailsSchema,
     },
     defaultValues: {
       name: business?.name || "",
-      domain: business?.domain || "",
       description: business?.description || "",
       businessType: business?.businessType || "",
-      logoUrl: business?.logoUrl || "",
       registrationNumber: business?.registrationNumber || "",
       isActive: business?.isActive || false,
     },
@@ -63,11 +55,9 @@ export function EditBusinessDetails({
     },
   });
 
-  const { name, domain, logoUrl } = form.state.values;
+  const { name } = form.state.values;
 
   const nameValue = name || "";
-  const domainValue = domain || "";
-  const logoUrlValue = logoUrl || "";
 
   const businessTypes = [
     { value: "retail", label: t("businessTypeRetail") },
@@ -79,12 +69,8 @@ export function EditBusinessDetails({
   ];
 
   const nameRemaining = LIMITS.NAME_MAX - nameValue.length;
-  const domainRemaining = LIMITS.DOMAIN_MAX - domainValue.length;
-  const logoUrlRemaining = LIMITS.LOGO_URL_MAX - logoUrlValue.length;
 
   const isNameNearLimit = nameValue.length > LIMITS.NAME_MAX * 0.8;
-  const isDomainNearLimit = domainValue.length > LIMITS.DOMAIN_MAX * 0.8;
-  const isLogoUrlNearLimit = logoUrlValue.length > LIMITS.LOGO_URL_MAX * 0.8;
 
   return (
     <form
@@ -95,7 +81,7 @@ export function EditBusinessDetails({
         form.handleSubmit();
       }}
     >
-      <FieldGroup className="space-y-6">
+      <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="p-3 border rounded-lg">
             <div className="flex items-center justify-between">
@@ -105,28 +91,6 @@ export function EditBusinessDetails({
                 variant={isNameNearLimit ? "error" : "secondary"}
               >
                 {nameValue.length}/{LIMITS.NAME_MAX}
-              </Badge>
-            </div>
-          </div>
-          <div className="p-3 border rounded-lg">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium">Domain</span>
-              <Badge
-                className="text-xs"
-                variant={isDomainNearLimit ? "error" : "secondary"}
-              >
-                {domainValue.length}/{LIMITS.DOMAIN_MAX}
-              </Badge>
-            </div>
-          </div>
-          <div className="p-3 border rounded-lg">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium">Logo URL</span>
-              <Badge
-                className="text-xs"
-                variant={isLogoUrlNearLimit ? "error" : "secondary"}
-              >
-                {logoUrlValue.length}/{LIMITS.LOGO_URL_MAX}
               </Badge>
             </div>
           </div>
@@ -166,32 +130,6 @@ export function EditBusinessDetails({
                   />
                   <FieldDescription>
                     {nameRemaining} characters remaining
-                  </FieldDescription>
-                  <FieldError errors={field.state.meta.errors} />
-                </Field>
-              )}
-            </form.Field>
-
-            <form.Field name="domain">
-              {(field) => (
-                <Field>
-                  <label className="text-sm font-medium" htmlFor={field.name}>
-                    {t("domain")}
-                  </label>
-                  <Input
-                    aria-invalid={field.state.meta.errors.length > 0}
-                    id={field.name}
-                    maxLength={LIMITS.DOMAIN_MAX}
-                    name={field.name}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder={t("enterDomain")}
-                    type="url"
-                    value={field.state.value}
-                  />
-                  <FieldDescription>
-                    {domainRemaining} characters remaining •{" "}
-                    {t("domainDescription")}
                   </FieldDescription>
                   <FieldError errors={field.state.meta.errors} />
                 </Field>
@@ -243,31 +181,6 @@ export function EditBusinessDetails({
                   </Select>
                   <FieldDescription>
                     {t("businessTypeDescription")}
-                  </FieldDescription>
-                  <FieldError errors={field.state.meta.errors} />
-                </Field>
-              )}
-            </form.Field>
-
-            <form.Field name="logoUrl">
-              {(field) => (
-                <Field>
-                  <label className="text-sm font-medium" htmlFor={field.name}>
-                    {t("logoUrl")}
-                  </label>
-                  <Input
-                    aria-invalid={field.state.meta.errors.length > 0}
-                    id={field.name}
-                    maxLength={LIMITS.LOGO_URL_MAX}
-                    name={field.name}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder={t("enterLogoUrl")}
-                    type="url"
-                    value={field.state.value}
-                  />
-                  <FieldDescription>
-                    {logoUrlRemaining} characters remaining
                   </FieldDescription>
                   <FieldError errors={field.state.meta.errors} />
                 </Field>
@@ -326,7 +239,7 @@ export function EditBusinessDetails({
             </form.Field>
           </div>
         </div>
-      </FieldGroup>
+      </div>
 
       <div className="mt-6">
         <Button

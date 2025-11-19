@@ -69,7 +69,7 @@ export default function UserProfileForm({
               field.state.meta.isTouched && !field.state.meta.isValid;
             return (
               <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>{t("userName")} *</FieldLabel>
+                <FieldLabel htmlFor={field.name}>{t("userName")}</FieldLabel>
                 <Input
                   aria-invalid={isInvalid}
                   id={field.name}
@@ -92,7 +92,7 @@ export default function UserProfileForm({
               field.state.meta.isTouched && !field.state.meta.isValid;
             return (
               <Field data-invalid={isInvalid}>
-                <FieldLabel htmlFor={field.name}>{t("userEmail")} *</FieldLabel>
+                <FieldLabel htmlFor={field.name}>{t("userEmail")}</FieldLabel>
                 <Input
                   aria-invalid={isInvalid}
                   id={field.name}

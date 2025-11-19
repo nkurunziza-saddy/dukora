@@ -1,14 +1,4 @@
-import {
-  AlertCircleIcon,
-  BellIcon,
-  Building2Icon,
-  CreditCardIcon,
-  SettingsIcon,
-  ShieldIcon,
-  TagsIcon,
-  UserIcon,
-  WarehouseIcon,
-} from "lucide-react";
+import { AlertCircleIcon } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
@@ -43,9 +33,6 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-type TStripeFn =
-  ReturnType<typeof getTranslations> extends Promise<infer R> ? R : never;
-
 export default function SettingsPage() {
   return (
     <Suspense fallback={<SettingsSkeleton />}>
@@ -57,13 +44,14 @@ export default function SettingsPage() {
 async function SessionGuard() {
   const session = await getCurrentSession();
   const tStripe = await getTranslations("stripe");
+  const tForms = await getTranslations("forms");
   const userId = session?.user?.id;
   const businessId = session?.user?.businessId;
 
   if (!userId || !businessId) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Alert className="max-w-md" variant="error">
+        <Alert className="max-w-xl" variant="error">
           <AlertCircleIcon className="h-4 w-4" />
           <AlertDescription>
             Business or user not found. Please check your session.
@@ -84,7 +72,7 @@ async function SessionGuard() {
   if (!business) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Alert className="max-w-md" variant="error">
+        <Alert className="max-w-xl" variant="error">
           <AlertCircleIcon className="h-4 w-4" />
           <AlertDescription>
             Business data is not available. Please try refreshing the page.
@@ -95,7 +83,12 @@ async function SessionGuard() {
   }
 
   return (
-    <ProtectedSettings business={business} tStripe={tStripe} user={user} />
+    <ProtectedSettings
+      business={business}
+      tForms={tForms}
+      tStripe={tStripe}
+      user={user}
+    />
   );
 }
 
@@ -103,51 +96,46 @@ function ProtectedSettings({
   business,
   user,
   tStripe,
+  tForms,
 }: {
   business: Awaited<ReturnType<typeof getBusinessById>>["data"];
   user: Awaited<ReturnType<typeof getUserById>>["data"];
-  tStripe: TStripeFn;
+  tStripe: (key: string) => string;
+  tForms: (key: string) => string;
 }) {
   const tabConfig = [
     {
       section: "Business",
-      icon: Building2Icon,
       tabs: [
         {
           value: "business-details",
           label: "Business Details",
-          icon: Building2Icon,
         },
         {
           value: "business-settings",
           label: "Business Settings",
-          icon: SettingsIcon,
         },
-        { value: "categories", label: "Categories", icon: TagsIcon },
-        { value: "warehouses", label: "Warehouses", icon: WarehouseIcon },
+        { value: "categories", label: "Categories" },
+        { value: "warehouses", label: "Warehouses" },
         {
           value: "stripe",
           label: "Payments",
-          icon: CreditCardIcon,
           disabled: true,
         },
       ],
     },
     {
       section: "Account",
-      icon: UserIcon,
       tabs: [
-        { value: "user-details", label: "Profile", icon: UserIcon },
-        { value: "user-settings", label: "Preferences", icon: SettingsIcon },
+        { value: "user-details", label: "Profile" },
+        { value: "user-settings", label: "Preferences" },
         {
           value: "notifications",
           label: "Notifications",
-          icon: BellIcon,
         },
         {
           value: "security",
           label: "Security",
-          icon: ShieldIcon,
         },
       ],
     },
@@ -156,10 +144,10 @@ function ProtectedSettings({
   return (
     <div className="min-h-screen">
       <div className="container mx-auto py-8 px-4 max-w-7xl">
-        <div className="mb-8">
+        <div className="mb-2">
           <h1 className="font-medium tracking-tight">Settings</h1>
-          <p className="text-sm text-muted-foreground">
-            Manage your business and account preferences
+          <p className="text-sm text-muted-foreground max-w-48">
+            Manage your preferences
           </p>
         </div>
 
@@ -227,6 +215,12 @@ function ProtectedSettings({
 
             <TabsPanel className="m-0" value="business-settings">
               <Card>
+                <CardHeader className="">
+                  <CardTitle>{tForms("businessSettings")}</CardTitle>
+                  <CardDescription>
+                    {tForms("businessSettingsDescription")}
+                  </CardDescription>
+                </CardHeader>
                 <CardPanel>
                   <EditBusinessSettings
                     settings={business?.businessSettings ?? []}

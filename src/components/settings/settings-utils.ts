@@ -50,27 +50,9 @@ export const businessDetailsSchema = z.object({
     .string()
     .min(LIMITS.NAME_MIN, `Name must be at least ${LIMITS.NAME_MIN} characters`)
     .max(LIMITS.NAME_MAX, `Name cannot exceed ${LIMITS.NAME_MAX} characters`),
-  domain: z
-    .string()
-    .max(
-      LIMITS.DOMAIN_MAX,
-      `Domain cannot exceed ${LIMITS.DOMAIN_MAX} characters`,
-    ),
-  // TODO: Enble regex checking
-  // .regex(
-  //   /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/,
-  //   "Please enter a valid domain"
-  // )
   businessType: z.string(),
   description: z.string(),
-  logoUrl: z
-    // TODO: Add url validation in form
-    .string("Please enter a valid URL")
-    .max(
-      LIMITS.LOGO_URL_MAX,
-      `Logo URL cannot exceed ${LIMITS.LOGO_URL_MAX} characters`,
-    ),
-  registrationNumber: z.string().optional(),
+  registrationNumber: z.string(),
   isActive: z.boolean(),
 });
 

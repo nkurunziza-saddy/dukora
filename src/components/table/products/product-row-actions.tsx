@@ -16,16 +16,16 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
-import type { SelectPurchaseOrder } from "@/lib/schema/schema-types";
-import OrderForm from "../forms/create-order-form";
-import { HoverPrefetchLink } from "../hover-prefetch-link";
-import ConfirmDialog from "../shared/confirm-dialog";
+import type { SelectProduct } from "@/lib/schema/schema-types";
+import ProductForm from "../../forms/create-product-form";
+import { HoverPrefetchLink } from "../../hover-prefetch-link";
+import ConfirmDialog from "../../shared/confirm-dialog";
 
-export interface OrderRowActionsProps {
-  order: SelectPurchaseOrder;
+export interface ProductRowActionsProps {
+  product: SelectProduct;
 }
 
-const OrdersRowActions: FC<OrderRowActionsProps> = ({ order }) => {
+const ProductRowActions: FC<ProductRowActionsProps> = ({ product }) => {
   const t = useTranslations();
   const t_common = useTranslations("common");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -35,27 +35,27 @@ const OrdersRowActions: FC<OrderRowActionsProps> = ({ order }) => {
   const handleDeleteConfirm = async () => {
     setIsLoading(true);
     try {
-      const resp = await fetch("/api/orders", {
+      const resp = await fetch("/api/products", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: order.id }),
+        body: JSON.stringify({ id: product.id }),
       });
       const r = await resp.json();
       if (r.success) {
         setIsDeleteDialogOpen(false);
-        toast.success(t("order.deleteSuccess"), {
+        toast.success(t("product.deleteSuccess"), {
           description: `${format(new Date(), "PPP")}`,
         });
         return;
       }
 
       setIsLoading(false);
-      toast.error(t("order.deleteError"), {
+      toast.error(t("product.deleteError"), {
         description: `${t}`,
       });
     } catch (err) {
       console.error(err);
-      return toast.error(t("order.deleteError"), {
+      return toast.error(t("product.deleteError"), {
         description:
           err instanceof Error
             ? err.message
@@ -80,8 +80,8 @@ const OrdersRowActions: FC<OrderRowActionsProps> = ({ order }) => {
             <MenuGroupLabel>{t_common("actions")}</MenuGroupLabel>
 
             <MenuItem>
-              <HoverPrefetchLink href={`/orders/${order.id}`}>
-                {t("order.viewDetails")}
+              <HoverPrefetchLink href={`/products/${product.id}`}>
+                {t("product.viewDetails")}
               </HoverPrefetchLink>
             </MenuItem>
             <MenuSeparator />
@@ -105,23 +105,23 @@ const OrdersRowActions: FC<OrderRowActionsProps> = ({ order }) => {
       </Menu>
 
       <ConfirmDialog
-        description={t("order.deleteDialogDescription")}
+        description={t("product.deleteDialogDescription")}
         handleConfirm={handleDeleteConfirm}
         isDialogOpen={isDeleteDialogOpen}
         isLoading={isLoading}
         setIsDialogOpen={setIsDeleteDialogOpen}
-        title={t("order.deleteDialogTitle")}
+        title={t("product.deleteDialogTitle")}
       />
       <StateDialog
-        description={t("order.editDialogDescription")}
+        description={t("product.editDialogDescription")}
         isDialogOpen={isUpdateDialogOpen}
         setIsDialogOpen={setIsUpdateDialogOpen}
-        title={t("order.editDialogTitle")}
+        title={t("product.editDialogTitle")}
       >
-        <OrderForm order={order} />
+        <ProductForm product={product} />
       </StateDialog>
     </>
   );
 };
 
-export default React.memo(OrdersRowActions);
+export default React.memo(ProductRowActions);

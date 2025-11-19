@@ -85,7 +85,7 @@ async function CheckoutSuccessContent({
 }) {
   const t = await getTranslations("store.checkout.success");
   const orderResult = await getCustomerOrderByOrderNumber(
-    searchParams.order as string
+    searchParams.order as string,
   );
   if (!searchParams.order) {
     redirect("/store");
@@ -134,8 +134,8 @@ async function CheckoutSuccessContent({
       <div className="mx-auto max-w-2xl">
         <Card>
           <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-              <CheckCircleIcon className="h-8 w-8 text-green-600" />
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-success">
+              <CheckCircleIcon className="h-8 w-8 text-success-foreground" />
             </div>
             <CardTitle className="text-2xl">{t("orderConfirmed")}</CardTitle>
             <p className="text-muted-foreground">

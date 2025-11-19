@@ -5,7 +5,6 @@ import { EditIcon, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import React, { type FC, useState } from "react";
 import { toast } from "sonner";
-import { StateDialog } from "@/components/shared/reusable-form-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Menu,
@@ -16,16 +15,17 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
-import type { SelectProduct } from "@/lib/schema/schema-types";
-import ProductForm from "../forms/create-product-form";
-import { HoverPrefetchLink } from "../hover-prefetch-link";
-import ConfirmDialog from "../shared/confirm-dialog";
+import type { SelectSupplier } from "@/lib/schema/schema-types";
+import SupplierForm from "../../forms/create-supplier-form";
+import { HoverPrefetchLink } from "../../hover-prefetch-link";
+import ConfirmDialog from "../../shared/confirm-dialog";
+import { StateDialog } from "../../shared/reusable-form-dialog";
 
-export interface ProductRowActionsProps {
-  product: SelectProduct;
+export interface SupplierRowActionsProps {
+  supplier: SelectSupplier;
 }
 
-const ProductRowActions: FC<ProductRowActionsProps> = ({ product }) => {
+const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
   const t = useTranslations();
   const t_common = useTranslations("common");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -35,32 +35,35 @@ const ProductRowActions: FC<ProductRowActionsProps> = ({ product }) => {
   const handleDeleteConfirm = async () => {
     setIsLoading(true);
     try {
-      const resp = await fetch("/api/products", {
+      const resp = await fetch("/api/suppliers", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: product.id }),
+        body: JSON.stringify({ id: supplier.id }),
       });
       const r = await resp.json();
       if (r.success) {
         setIsDeleteDialogOpen(false);
-        toast.success(t("product.deleteSuccess"), {
+        toast.success(t("supplier.deleteSuccess"), {
           description: `${format(new Date(), "PPP")}`,
         });
         return;
       }
 
+      const message = await resp.json().catch(() => ({}));
       setIsLoading(false);
-      toast.error(t("product.deleteError"), {
-        description: `${t}`,
+      toast.error(t("supplier.deleteError"), {
+        description: `${message}`,
       });
+      return;
     } catch (err) {
       console.error(err);
-      return toast.error(t("product.deleteError"), {
+      toast.error(t("supplier.deleteError"), {
         description:
           err instanceof Error
             ? err.message
             : t_common("unexpectedErrorOccurred"),
       });
+      return;
     } finally {
       setIsLoading(false);
     }
@@ -78,10 +81,9 @@ const ProductRowActions: FC<ProductRowActionsProps> = ({ product }) => {
         <MenuPopup align="end">
           <MenuGroup>
             <MenuGroupLabel>{t_common("actions")}</MenuGroupLabel>
-
             <MenuItem>
-              <HoverPrefetchLink href={`/products/${product.id}`}>
-                {t("product.viewDetails")}
+              <HoverPrefetchLink href={`/suppliers/${supplier.id}`}>
+                {t("supplier.viewDetails")}
               </HoverPrefetchLink>
             </MenuItem>
             <MenuSeparator />
@@ -105,23 +107,23 @@ const ProductRowActions: FC<ProductRowActionsProps> = ({ product }) => {
       </Menu>
 
       <ConfirmDialog
-        description={t("product.deleteDialogDescription")}
+        description={t("supplier.deleteDialogDescription")}
         handleConfirm={handleDeleteConfirm}
         isDialogOpen={isDeleteDialogOpen}
         isLoading={isLoading}
         setIsDialogOpen={setIsDeleteDialogOpen}
-        title={t("product.deleteDialogTitle")}
+        title={t("supplier.deleteDialogTitle")}
       />
       <StateDialog
-        description={t("product.editDialogDescription")}
+        description={t("supplier.editDialogDescription")}
         isDialogOpen={isUpdateDialogOpen}
         setIsDialogOpen={setIsUpdateDialogOpen}
-        title={t("product.editDialogTitle")}
+        title={t("supplier.editDialogTitle")}
       >
-        <ProductForm product={product} />
+        <SupplierForm supplier={supplier} />
       </StateDialog>
     </>
   );
 };
 
-export default React.memo(ProductRowActions);
+export default React.memo(SupplierRowActions);

@@ -46,12 +46,12 @@ export function PAYECalculator() {
     <div className="grid gap-4 md:grid-cols-2">
       <div className="space-y-4">
         <div className="rounded-lg border bg-muted/50 p-4">
-          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+          <h3 className="text-sm font-medium text-foreground mb-4">
             Employee Details
           </h3>
           <div className="space-y-4">
             <div className="grid gap-2">
-              <Label className="text-sm font-medium" htmlFor="monthlyIncome">
+              <Label className="text-sm" htmlFor="monthlyIncome">
                 {t("payeCalculator.monthlyIncomeLabel")}
               </Label>
               <Input
@@ -67,7 +67,7 @@ export function PAYECalculator() {
               />
             </div>
             <div className="grid gap-2">
-              <Label className="text-sm font-medium" htmlFor="employeeType">
+              <Label className="text-sm" htmlFor="employeeType">
                 {t("payeCalculator.employeeTypeLabel")}
               </Label>
               <Select onValueChange={setEmployeeType} value={employeeType}>
@@ -93,19 +93,16 @@ export function PAYECalculator() {
 
       <div className="space-y-4">
         <div className="rounded-lg border border-success/20 bg-muted/50 p-4">
-          <h3 className="text-lg font-semibold text-success mb-4 flex items-center gap-2">
+          <h3 className="text-sm font-medium text-success-foreground mb-4">
             PAYE Calculation
           </h3>
           <div className="space-y-4">
             <div className="grid gap-2">
-              <Label
-                className="text-sm font-medium text-success"
-                htmlFor="paye"
-              >
+              <Label className="text-sm text-success-foreground" htmlFor="paye">
                 {t("payeCalculator.payeLabel")}
               </Label>
               <Input
-                className="bg-success/10 text-success font-semibold text-lg border-success/20"
+                className="bg-success/10 text-success-foreground font-semibold text-lg border-success/20"
                 id="paye"
                 readOnly
                 type="number"
@@ -114,15 +111,15 @@ export function PAYECalculator() {
             </div>
             {paye > 0 && (
               <div className="mt-4 p-3 rounded-md bg-success/5 border border-success/20">
-                <p className="text-sm text-success">
+                <p className="text-sm text-success-foreground">
                   <span className="font-medium">Net Monthly Income:</span> $
                   {(monthlyIncome - paye).toFixed(2)}
                 </p>
-                <p className="text-sm text-success">
+                <p className="text-sm text-success-foreground">
                   <span className="font-medium">Employee Type:</span>{" "}
                   {employeeType === "permanent" ? "Permanent" : "Casual"}
                 </p>
-                <p className="text-sm text-success">
+                <p className="text-sm text-success-foreground">
                   <span className="font-medium">Tax Rate:</span>{" "}
                   {((paye / monthlyIncome) * 100).toFixed(2)}%
                 </p>

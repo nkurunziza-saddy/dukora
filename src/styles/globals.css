@@ -198,4 +198,22 @@
   .pgtx {
     @apply max-w-7xl mx-auto px-4 lg:px-12;
   }
+  .en_head {
+    @apply mb-8;
+  }
+  .head h1 {
+    @apply font-medium tracking-tight;
+  }
+  .head p {
+    @apply text-sm text-muted-foreground;
+  }
+  .en_head {
+    @apply my-3;
+  }
+  .en_head h1 {
+    @apply font-medium tracking-tight;
+  }
+  .en_head p {
+    @apply text-sm text-muted-foreground;
+  }
 }

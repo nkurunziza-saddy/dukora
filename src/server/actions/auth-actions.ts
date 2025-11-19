@@ -6,7 +6,7 @@ import { auth } from "@/lib/auth";
 
 export const getCurrentSession = async () => {
   "use cache: private";
-  cacheLife("minutes");
+  cacheLife("hours");
   cacheTag("user-session");
 
   const session = await auth.api.getSession({

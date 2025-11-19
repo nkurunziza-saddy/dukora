@@ -142,7 +142,6 @@ export default async function InventoryDashboard() {
                 <CardDescription>
                   {t("showingItems", {
                     count: inventoryItems.length,
-                    total: inventoryItems.length,
                   })}
                 </CardDescription>
               </CardHeader>

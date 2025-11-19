@@ -6,15 +6,15 @@ import { useTranslations } from "next-intl";
 import { DataTableExportPDF } from "@/components/table/data-table-export-pdf";
 import { DataTableSearch } from "@/components/table/data-table-search";
 import { Button } from "@/components/ui/button";
-import { userStatuses } from "@/utils/columns/user-column";
-import { DataTableDashFilter } from "./data-table-faceted-filter";
-import { DataTableViewOptions } from "./data-table-view-options";
+import { productStatuses } from "@/utils/columns/commerce-column";
+import { DataTableDashFilter } from "../data-table-faceted-filter";
+import { DataTableViewOptions } from "../data-table-view-options";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
 }
 
-export function UsersDataTableToolbar<TData>({
+export function CommerceDataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
@@ -22,12 +22,12 @@ export function UsersDataTableToolbar<TData>({
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-1 items-center gap-2">
-        <DataTableSearch placeholder="Filter users..." table={table} />
-        {table.getColumn("role") && (
+        <DataTableSearch placeholder="Filter products..." table={table} />
+        {table.getColumn("status") && (
           <DataTableDashFilter
-            column={table.getColumn("role")}
-            options={userStatuses}
-            title="Role"
+            column={table.getColumn("status")}
+            options={productStatuses}
+            title="Status"
           />
         )}
         {isFiltered && (
@@ -44,9 +44,9 @@ export function UsersDataTableToolbar<TData>({
       </div>
       <div className="flex items-center gap-1 sm:gap-2">
         <DataTableExportPDF
-          filename="users_export"
+          filename="products_export"
           table={table}
-          title="Users Report"
+          title="Products Report"
         />
         <DataTableViewOptions table={table} />
       </div>

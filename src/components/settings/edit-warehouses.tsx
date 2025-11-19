@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Field, FieldError, FieldGroup } from "@/components/ui/field";
+import { Field, FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { SelectWarehouse } from "@/lib/schema/schema-types";
 import { createManyWarehouses } from "@/server/actions/warehouse-actions";
@@ -88,7 +88,7 @@ export function EditWarehouses({
           };
 
           return (
-            <FieldGroup className="space-y-6">
+            <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground mt-1">
@@ -138,7 +138,7 @@ export function EditWarehouses({
                   return (
                     <div
                       className="flex gap-4 items-start p-4 border rounded-lg"
-                      key={index}
+                      key={warehouse.name}
                     >
                       <div className="flex-1 space-y-2">
                         <form.Field name={`warehouses[${index}].name` as const}>
@@ -206,7 +206,7 @@ export function EditWarehouses({
                   );
                 })}
               </div>
-            </FieldGroup>
+            </div>
           );
         }}
       </form.Field>

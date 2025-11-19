@@ -4,7 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 // import { Checkbox } from "@/components/ui/checkbox";
 import { format } from "date-fns";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
-import SupplierRowActions from "@/components/table/supplier-row-actions";
+import SupplierRowActions from "@/components/table/suppliers/supplier-row-actions";
 import type { SelectSupplier } from "@/lib/schema/schema-types";
 
 export function SupplierColumn(

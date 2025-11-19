@@ -15,35 +15,35 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
-import type { SelectSupplier } from "@/lib/schema/schema-types";
-import SupplierForm from "../forms/create-supplier-form";
-import { HoverPrefetchLink } from "../hover-prefetch-link";
-import ConfirmDialog from "../shared/confirm-dialog";
-import { StateDialog } from "../shared/reusable-form-dialog";
+import type { SelectUser } from "@/lib/schema/schema-types";
+import { UpdateUserForm } from "../../forms/update-user-form";
+import { HoverPrefetchLink } from "../../hover-prefetch-link";
+import ConfirmDialog from "../../shared/confirm-dialog";
+import { StateDialog } from "../../shared/reusable-form-dialog";
 
-export interface SupplierRowActionsProps {
-  supplier: SelectSupplier;
+export interface UserRowActionsProps {
+  user: SelectUser;
 }
 
-const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
-  const t = useTranslations();
-  const t_common = useTranslations("common");
+const UserRowActions: FC<UserRowActionsProps> = ({ user }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const t = useTranslations("users");
+  const t_common = useTranslations("common");
 
   const handleDeleteConfirm = async () => {
     setIsLoading(true);
     try {
-      const resp = await fetch("/api/suppliers", {
+      const resp = await fetch("/api/users", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: supplier.id }),
+        body: JSON.stringify({ id: user.id }),
       });
       const r = await resp.json();
       if (r.success) {
         setIsDeleteDialogOpen(false);
-        toast.success(t("supplier.deleteSuccess"), {
+        toast.success(t("userDeletedSuccessfully"), {
           description: `${format(new Date(), "PPP")}`,
         });
         return;
@@ -51,13 +51,13 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
 
       const message = await resp.json().catch(() => ({}));
       setIsLoading(false);
-      toast.error(t("supplier.deleteError"), {
+      toast.error(t("errorDeletingUser"), {
         description: `${message}`,
       });
       return;
     } catch (err) {
       console.error(err);
-      toast.error(t("supplier.deleteError"), {
+      toast.error(t("errorDeletingUser"), {
         description:
           err instanceof Error
             ? err.message
@@ -73,7 +73,7 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
     <>
       <Menu>
         <MenuTrigger
-          render={<Button className="h-8 w-8 p-0" variant={"ghost"} />}
+          render={<Button className="h-8 w-8 p-0" variant="ghost" />}
         >
           <span className="sr-only">{t_common("openMenu")}</span>
           <MoreHorizontalIcon className="h-4 w-4" />
@@ -81,9 +81,13 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
         <MenuPopup align="end">
           <MenuGroup>
             <MenuGroupLabel>{t_common("actions")}</MenuGroupLabel>
+            <MenuItem onClick={() => navigator.clipboard.writeText(user.id)}>
+              {t_common("copyUserId")}
+            </MenuItem>
+            <MenuSeparator />
             <MenuItem>
-              <HoverPrefetchLink href={`/suppliers/${supplier.id}`}>
-                {t("supplier.viewDetails")}
+              <HoverPrefetchLink href={`/users/${user.id}`}>
+                {t_common("viewUserDetails")}
               </HoverPrefetchLink>
             </MenuItem>
             <MenuSeparator />
@@ -107,23 +111,23 @@ const SupplierRowActions: FC<SupplierRowActionsProps> = ({ supplier }) => {
       </Menu>
 
       <ConfirmDialog
-        description={t("supplier.deleteDialogDescription")}
+        description={t_common("areYouSureYouWantToDeleteThisUser")}
         handleConfirm={handleDeleteConfirm}
         isDialogOpen={isDeleteDialogOpen}
         isLoading={isLoading}
         setIsDialogOpen={setIsDeleteDialogOpen}
-        title={t("supplier.deleteDialogTitle")}
+        title={t_common("deleteUser")}
       />
       <StateDialog
-        description={t("supplier.editDialogDescription")}
+        description={t_common("updateTheDetailsOfTheSelectedUser")}
         isDialogOpen={isUpdateDialogOpen}
         setIsDialogOpen={setIsUpdateDialogOpen}
-        title={t("supplier.editDialogTitle")}
+        title={t_common("editUser")}
       >
-        <SupplierForm supplier={supplier} />
+        <UpdateUserForm user={user} />
       </StateDialog>
     </>
   );
 };
 
-export default React.memo(SupplierRowActions);
+export default React.memo(UserRowActions);

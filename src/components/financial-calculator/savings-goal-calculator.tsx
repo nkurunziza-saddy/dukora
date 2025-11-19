@@ -25,12 +25,12 @@ export function SavingsGoalCalculator() {
     <div className="grid gap-4 md:grid-cols-2">
       <div className="space-y-4">
         <div className="rounded-lg border bg-muted/50 p-4">
-          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+          <h3 className="text-sm font-medium text-foreground mb-4">
             Savings Details
           </h3>
           <div className="space-y-4">
             <div className="grid gap-2">
-              <Label className="text-sm font-medium" htmlFor="targetAmount">
+              <Label className="text-sm" htmlFor="targetAmount">
                 {t("savingsCalculator.targetAmountLabel")}
               </Label>
               <Input
@@ -46,7 +46,7 @@ export function SavingsGoalCalculator() {
               />
             </div>
             <div className="grid gap-2">
-              <Label className="text-sm font-medium" htmlFor="currentSavings">
+              <Label className="text-sm" htmlFor="currentSavings">
                 {t("savingsCalculator.currentSavingsLabel")}
               </Label>
               <Input
@@ -62,10 +62,7 @@ export function SavingsGoalCalculator() {
               />
             </div>
             <div className="grid gap-2">
-              <Label
-                className="text-sm font-medium"
-                htmlFor="annualContribution"
-              >
+              <Label className="text-sm" htmlFor="annualContribution">
                 {t("savingsCalculator.annualContributionLabel")}
               </Label>
               <Input
@@ -86,19 +83,19 @@ export function SavingsGoalCalculator() {
 
       <div className="space-y-4">
         <div className="rounded-lg border border-success/20 bg-muted/50 p-4">
-          <h3 className="text-lg font-semibold text-success mb-4 flex items-center gap-2">
+          <h3 className="text-sm font-medium text-success-foreground mb-4">
             Time to Goal
           </h3>
           <div className="space-y-4">
             <div className="grid gap-2">
               <Label
-                className="text-sm font-medium text-success"
+                className="text-sm text-success-foreground"
                 htmlFor="yearsToGoal"
               >
                 {t("savingsCalculator.yearsToGoalLabel")}
               </Label>
               <Input
-                className="bg-success/10 text-success font-semibold text-lg border-success/20"
+                className="bg-success/10 text-success-foreground font-semibold text-lg border-success/20"
                 id="yearsToGoal"
                 readOnly
                 type="number"
@@ -107,15 +104,15 @@ export function SavingsGoalCalculator() {
             </div>
             {yearsToGoal > 0 && yearsToGoal !== Infinity && (
               <div className="mt-4 p-3 rounded-md bg-success/5 border border-success/20">
-                <p className="text-sm text-success">
+                <p className="text-sm text-success-foreground">
                   <span className="font-medium">Remaining Amount:</span> $
                   {(targetAmount - currentSavings).toFixed(2)}
                 </p>
-                <p className="text-sm text-success">
+                <p className="text-sm text-success-foreground">
                   <span className="font-medium">Annual Contribution:</span> $
                   {annualContribution.toFixed(2)}
                 </p>
-                <p className="text-sm text-success">
+                <p className="text-sm text-success-foreground">
                   <span className="font-medium">Monthly Contribution:</span> $
                   {(annualContribution / 12).toFixed(2)}
                 </p>

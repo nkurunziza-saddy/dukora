@@ -1,4 +1,4 @@
-import { AlertCircleIcon, InfoIcon, Loader2Icon } from "lucide-react";
+import { AlertCircleIcon, Loader2Icon } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
@@ -7,7 +7,7 @@ import { MetricCard } from "@/components/analytics/metric-card";
 import { MetricsTable } from "@/components/analytics/metrics-table";
 import { AnalyticsSkeleton } from "@/components/skeletons";
 import { TimeRange } from "@/components/time-range";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -16,7 +16,6 @@ import {
   CardPanel,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { formatCurrency, formatKeys, formatNumber } from "@/lib/utils";
 import { getCurrentSession } from "@/server/actions/auth-actions";
@@ -42,25 +41,17 @@ async function AnalyticsEmptyState({
 
   return (
     <div className="space-y-8 p-4">
-      <div className="flex items-center justify-between">
-        <div className="">
-          <h1 className="font-medium tracking-tight">{t("title")}</h1>
-          <p className="text-sm text-muted-foreground">{t("description")}</p>
-        </div>
+      <div className="head">
+        <h1 className="">{t("title")}</h1>
+        <p className="">{t("description")}</p>
       </div>
-      <Separator />
 
-      <Card className="max-w-2xl">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            {t("noDataTitle")}
-          </CardTitle>
-          <CardDescription>{t("noDataDescription")}</CardDescription>
-        </CardHeader>
-        <CardPanel>
-          <div className="space-y-4">
+      <Alert className="max-w-xl" variant="info">
+        <AlertCircleIcon className="h-4 w-4" />
+        <AlertTitle>{t("noDataDescription")}</AlertTitle>
+        <AlertDescription>
+          <div className="space-y-4 mt-2">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <InfoIcon className="h-4 w-4" />
               <span>
                 {t("businessCreatedOn")}:{" "}
                 {businessCreatedAt.toLocaleDateString()}
@@ -75,8 +66,8 @@ async function AnalyticsEmptyState({
               </ul>
             </div>
           </div>
-        </CardPanel>
-      </Card>
+        </AlertDescription>
+      </Alert>
     </div>
   );
 }
@@ -106,7 +97,7 @@ const Analytics = async ({
 
     return (
       <div className="flex items-center justify-center p-8">
-        <Alert className="max-w-md" variant="error">
+        <Alert className="max-w-xl" variant="error">
           <AlertCircleIcon className="h-4 w-4" />
           <AlertDescription>
             <div className="flex items-center gap-2">
@@ -291,16 +282,14 @@ const Analytics = async ({
   return (
     <main aria-label="Analytics Dashboard" className="space-y-8 p-4">
       <header className="flex items-center justify-between">
-        <div className="">
-          <h1 className="font-medium tracking-tight">{t("title")}</h1>
-          <p className="text-sm text-muted-foreground">
+        <div className="head">
+          <h1 className="">{t("title")}</h1>
+          <p className="">
             {t("description")}: {monthName} {year}
           </p>
         </div>
         <TimeRange currentValue={time_range} session={session} />
       </header>
-
-      <Separator />
 
       <section aria-labelledby="revenue-section" className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
@@ -360,7 +349,7 @@ const Analytics = async ({
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="space-y-1">
                 <p className="font-medium text-sm">{t("totalTransactions")}</p>
-                <p className="text-2xl font-bold text-success">
+                <p className="text-2xl font-bold text-success-foreground">
                   {formatNumber(data.dataQuality.totalTransactions)}
                 </p>
               </div>

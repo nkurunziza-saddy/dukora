@@ -38,12 +38,12 @@ export function IncomeTaxCalculator() {
     <div className="grid gap-4 md:grid-cols-2">
       <div className="space-y-4">
         <div className="rounded-lg border bg-muted/50 p-4">
-          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+          <h3 className="text-sm font-medium text-foreground mb-4">
             Income Details
           </h3>
           <div className="space-y-4">
             <div className="grid gap-2">
-              <Label className="text-sm font-medium" htmlFor="annualIncome">
+              <Label className="text-sm" htmlFor="annualIncome">
                 {t("incomeTaxCalculator.annualIncomeLabel")}
               </Label>
               <Input
@@ -64,19 +64,19 @@ export function IncomeTaxCalculator() {
 
       <div className="space-y-4">
         <div className="rounded-lg border border-success/20 bg-muted/50 p-4">
-          <h3 className="text-lg font-semibold text-success mb-4 flex items-center gap-2">
+          <h3 className="text-sm font-medium text-success-foreground mb-4">
             Tax Calculation
           </h3>
           <div className="space-y-4">
             <div className="grid gap-2">
               <Label
-                className="text-sm font-medium text-success"
+                className="text-sm text-success-foreground"
                 htmlFor="annualTax"
               >
                 {t("incomeTaxCalculator.annualTaxLabel")}
               </Label>
               <Input
-                className="bg-success/10 text-success font-semibold text-lg border-success/20"
+                className="bg-success/10 text-success-foreground font-semibold text-lg border-success/20"
                 id="annualTax"
                 readOnly
                 type="number"
@@ -85,13 +85,13 @@ export function IncomeTaxCalculator() {
             </div>
             <div className="grid gap-2">
               <Label
-                className="text-sm font-medium text-success"
+                className="text-sm text-success-foreground"
                 htmlFor="monthlyTax"
               >
                 {t("incomeTaxCalculator.monthlyTaxLabel")}
               </Label>
               <Input
-                className="bg-success/10 text-success font-semibold text-lg border-success/20"
+                className="bg-success/10 text-success-foreground font-semibold text-lg border-success/20"
                 id="monthlyTax"
                 readOnly
                 type="number"
@@ -100,15 +100,15 @@ export function IncomeTaxCalculator() {
             </div>
             {annualTax > 0 && (
               <div className="mt-4 p-3 rounded-md bg-success/5 border border-success/20">
-                <p className="text-sm text-success">
+                <p className="text-sm text-success-foreground">
                   <span className="font-medium">Net Annual Income:</span> $
                   {(annualIncome - annualTax).toFixed(2)}
                 </p>
-                <p className="text-sm text-success">
+                <p className="text-sm text-success-foreground">
                   <span className="font-medium">Net Monthly Income:</span> $
                   {((annualIncome - annualTax) / 12).toFixed(2)}
                 </p>
-                <p className="text-sm text-success">
+                <p className="text-sm text-success-foreground">
                   <span className="font-medium">Tax Rate:</span>{" "}
                   {((annualTax / annualIncome) * 100).toFixed(2)}%
                 </p>

@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FieldError, FieldGroup } from "@/components/ui/field";
+import { FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { SelectCategory } from "@/lib/schema/schema-types";
 import { upsertManyCategories } from "@/server/actions/category-actions";
@@ -100,7 +100,7 @@ export function EditCategories({
           };
 
           return (
-            <FieldGroup className="space-y-6">
+            <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">
@@ -193,7 +193,7 @@ export function EditCategories({
                       {currentCategories.map((category, index) => (
                         <Button
                           aria-label={`Remove category ${index + 1}`}
-                          key={`${category}-${index}`}
+                          key={`${category}`}
                           onClick={() => field.removeValue(index)}
                           size="xs"
                           type="button"
@@ -208,7 +208,7 @@ export function EditCategories({
                   </div>
                 )}
               </div>
-            </FieldGroup>
+            </div>
           );
         }}
       </form.Field>

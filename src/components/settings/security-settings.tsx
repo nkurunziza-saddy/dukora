@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 
 export function SecuritySettings() {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -27,21 +26,10 @@ export function SecuritySettings() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-medium">Security Settings</h3>
-        <p className="text-sm text-muted-foreground">
-          Manage your account security and password
-        </p>
-      </div>
-
-      <Separator />
-
+    <div className="space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            Change Password
-          </CardTitle>
+          <CardTitle>Change Password</CardTitle>
           <CardDescription>
             Update your account password for better security
           </CardDescription>
@@ -57,9 +45,7 @@ export function SecuritySettings() {
                 value={currentPassword}
               />
             </Field>
-          </FieldGroup>
 
-          <FieldGroup>
             <Field>
               <FieldLabel>New Password</FieldLabel>
               <Input
@@ -69,9 +55,7 @@ export function SecuritySettings() {
                 value={newPassword}
               />
             </Field>
-          </FieldGroup>
 
-          <FieldGroup>
             <Field>
               <FieldLabel>Confirm New Password</FieldLabel>
               <Input
@@ -83,7 +67,11 @@ export function SecuritySettings() {
             </Field>
           </FieldGroup>
 
-          <Button onClick={handlePasswordChange}>Change Password</Button>
+          <div className="flex justify-end pt-6 border-t">
+            <Button className="min-w-[120px]" onClick={handlePasswordChange}>
+              Change Password
+            </Button>
+          </div>
         </CardPanel>
       </Card>
 

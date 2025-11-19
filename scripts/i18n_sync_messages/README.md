@@ -46,6 +46,26 @@ tsx scripts/i18n_sync_messages/validate-files.ts
 tsx scripts/i18n_sync_messages/sync-all.ts
 ```
 
+## Running scripts using bash
+
+```bash
+# Check for missing keys
+bash scripts/i18n_sync_messages/run.sh check
+
+# Add missing keys
+bash scripts/i18n_sync_messages/run.sh add --dry-run --verbose
+bash scripts/i18n_sync_messages/run.sh add
+
+# Remove extra keys
+bash scripts/i18n_sync_messages/run.sh remove
+
+# Validate all files
+bash scripts/i18n_sync_messages/run.sh validate
+
+# Complete synchronization
+bash scripts/i18n_sync_messages/run.sh sync
+```
+
 ## 📋 Commands Reference
 
 ### Check Missing Keys

@@ -1,4 +1,5 @@
 import {
+  AlertCircleIcon,
   ArrowDownIcon,
   DollarSignIcon,
   SendIcon,
@@ -8,6 +9,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import CreateCustomerPaymentForm from "@/components/forms/create-customer-payment-form";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,7 +27,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Separator } from "@/components/ui/separator";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import {
   getCustomerPayments,
@@ -41,7 +42,6 @@ export async function generateMetadata(): Promise<Metadata> {
 async function PaymentsContent() {
   const t = await getTranslations("payments");
 
-  // Get real data from server actions
   const { data: interBusinessPayments, error: interBusinessError } =
     await getInterBusinessPayments({
       page: 1,
@@ -57,13 +57,15 @@ async function PaymentsContent() {
   if (interBusinessError || customerPaymentsError) {
     return (
       <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-          <p className="text-muted-foreground">{t("description")}</p>
+        <div className="head">
+          <h1 className="">{t("title")}</h1>
+          <p className="">{t("description")}</p>
         </div>
-        <Separator />
-        <div className="text-center text-destructive/80">
-          Error loading payments
+        <div className="">
+          <Alert className="max-w-xl" variant="error">
+            <AlertCircleIcon className="h-4 w-4" />
+            <AlertDescription>Error loading payments</AlertDescription>
+          </Alert>
         </div>
       </div>
     );
@@ -99,15 +101,15 @@ async function PaymentsContent() {
     .reduce((sum, p) => sum + p.amount, 0);
 
   const pendingPayments = allPayments.filter(
-    (p) => p.status === "pending"
+    (p) => p.status === "pending",
   ).length;
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-          <p className="text-muted-foreground">{t("description")}</p>
+        <div className="head">
+          <h1 className="">{t("title")}</h1>
+          <p className="">{t("description")}</p>
         </div>
         <div className="flex gap-2">
           <Dialog>
@@ -132,9 +134,6 @@ async function PaymentsContent() {
         </div>
       </div>
 
-      <Separator />
-
-      {/* Payment Overview */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -159,7 +158,7 @@ async function PaymentsContent() {
             <ArrowDownIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardPanel>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-success-foreground">
               ${totalReceived.toFixed(2)}
             </div>
             <p className="text-xs text-muted-foreground">
@@ -177,7 +176,7 @@ async function PaymentsContent() {
           </CardHeader>
           <CardPanel>
             <div
-              className={`text-2xl font-bold ${totalReceived - totalSent >= 0 ? "text-green-600" : "text-red-600"}`}
+              className={`text-2xl font-bold ${totalReceived - totalSent >= 0 ? "text-success-foreground" : "text-destructive-foreground"}`}
             >
               ${(totalReceived - totalSent).toFixed(2)}
             </div>
@@ -205,7 +204,6 @@ async function PaymentsContent() {
         </Card>
       </div>
 
-      {/* Recent Payments */}
       <Card>
         <CardHeader>
           <CardTitle>{t("recentPayments")}</CardTitle>
@@ -222,8 +220,8 @@ async function PaymentsContent() {
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center ${
                       payment.type === "sent"
-                        ? "bg-red-100 text-red-600"
-                        : "bg-green-100 text-green-600"
+                        ? "bg-destructive text-destructive-foreground"
+                        : "bg-success text-success-foreground"
                     }`}
                   >
                     {payment.type === "sent" ? (
@@ -247,8 +245,8 @@ async function PaymentsContent() {
                   <div
                     className={`font-medium ${
                       payment.type === "sent"
-                        ? "text-red-600"
-                        : "text-green-600"
+                        ? "text-destructive-foreground"
+                        : "text-success-foreground"
                     }`}
                   >
                     {payment.type === "sent" ? "-" : "+"}$
@@ -268,7 +266,6 @@ async function PaymentsContent() {
         </CardPanel>
       </Card>
 
-      {/* Quick Actions */}
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>

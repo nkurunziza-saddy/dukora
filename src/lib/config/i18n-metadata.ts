@@ -56,7 +56,7 @@ export async function getI18nSiteMetadata(): Promise<Metadata> {
   const siteDescription = t("siteDescription");
 
   return {
-    metadataBase: new URL(SITE_HOME_URL),
+    metadataBase: new URL(SITE_HOME_URL).toString(),
     title: {
       template: `%s | ${siteName}`,
       default: siteName,

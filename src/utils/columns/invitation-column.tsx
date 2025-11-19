@@ -3,7 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
-import InvitationRowActions from "@/components/table/invitation-row-actions";
+import InvitationRowActions from "@/components/table/invitations/invitation-row-actions";
 import { Badge } from "@/components/ui/badge";
 import type { ExtendedInvitationPayload } from "@/lib/schema/schema-types";
 import { userStatuses } from "./user-column";

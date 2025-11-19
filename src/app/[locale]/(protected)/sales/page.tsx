@@ -4,13 +4,6 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import ColumnWrapper from "@/components/providers/column-wrapper";
 import StatCard from "@/components/shared/stat-card";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardPanel,
-  CardTitle,
-} from "@/components/ui/card";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { getTodayTransactions } from "@/server/actions/statistics-actions";
 import { getTransactionsByTimeIntervalPaginated } from "@/server/actions/transaction-actions";
@@ -82,16 +75,12 @@ export default async function SalesTracking(
         ))}
       </div>
 
-      <Card className="bg-transparent border-0 px-0">
-        <CardHeader className="px-0">
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>{t("weeklySalesRevenue")}</CardTitle>
-              <CardDescription>{t("revenueTrends7Days")}</CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardPanel className="px-0">
+      <div>
+        <div className="head">
+          <h1>{t("weeklySalesRevenue")}</h1>
+          <p>{t("revenueTrends7Days")}</p>
+        </div>
+        <div className="px-0">
           <ColumnWrapper
             column={TransactionColumn}
             data={transactionsData.data.result}
@@ -100,8 +89,8 @@ export default async function SalesTracking(
             tag="transactions"
             totalCount={transactionsData.data.totalCount}
           />
-        </CardPanel>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

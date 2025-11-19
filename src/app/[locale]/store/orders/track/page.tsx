@@ -67,8 +67,12 @@
 //           </p>
 //         </div>
 //         <Empty>
-//           <EmptyTitle>{t("noOrdersFound")}</EmptyTitle>
+//           <EmptyHeader>
+//
+// <EmptyTitle>{t("noOrdersFound")}</EmptyTitle>
 //           <EmptyDescription>{t("noOrdersFoundDescription")}</EmptyDescription>
+//
+// </EmptyHeader>
 //           <Button render={<Link href="/store/products" />}>
 //             {t("continueShopping")}
 //           </Button>

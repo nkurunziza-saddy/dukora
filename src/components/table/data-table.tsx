@@ -15,9 +15,10 @@ import {
 } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import * as React from "react";
+import { CommerceDataTableToolbar } from "@/components/table/commerce/commerce-data-table-toolbar";
 import { DefaultDataTableToolbar } from "@/components/table/data-table-toolbar";
-import { TransactionsDataTableToolbar } from "@/components/table/transactions-data-table-toolbar";
-import { UsersDataTableToolbar } from "@/components/table/users-data-table-toolbar";
+import { TransactionsDataTableToolbar } from "@/components/table/transactions/transactions-data-table-toolbar";
+import { UsersDataTableToolbar } from "@/components/table/users/users-data-table-toolbar";
 import {
   Table,
   TableBody,
@@ -26,11 +27,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import type { tagEnum } from "../providers/column-wrapper";
 import { DataTablePagination } from "./data-table-pagination";
-import { InvitationDataTableToolbar } from "./invitation-data-table-toolbar";
-import { OrdersDataTableToolbar } from "./orders-data-table-toolbar";
-import { ProductsDataTableToolbar } from "./products-data-table-toolbar";
-import { SuppliersDataTableToolbar } from "./suppliers-data-table-toolbar";
+import { InvitationDataTableToolbar } from "./invitations/invitation-data-table-toolbar";
+import { OrdersDataTableToolbar } from "./orders/orders-data-table-toolbar";
+import { ProductsDataTableToolbar } from "./products/products-data-table-toolbar";
+import { SuppliersDataTableToolbar } from "./suppliers/suppliers-data-table-toolbar";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -38,14 +40,7 @@ interface DataTableProps<TData, TValue> {
   totalCount: number;
   page: number;
   pageSize: number;
-  tag?:
-    | "products"
-    | "suppliers"
-    | "transactions"
-    | "users"
-    | "invitations"
-    | "orders"
-    | "payments";
+  tag?: tagEnum;
 }
 
 export function DataTable<TData, TValue>({
@@ -106,6 +101,8 @@ export function DataTable<TData, TValue>({
         return <InvitationDataTableToolbar table={table} />;
       case "orders":
         return <OrdersDataTableToolbar table={table} />;
+      case "commerce":
+        return <CommerceDataTableToolbar table={table} />;
       default:
         return <DefaultDataTableToolbar table={table} />;
     }
@@ -123,7 +120,6 @@ export function DataTable<TData, TValue>({
                   return (
                     <TableHead
                       className={`text-foreground font-semibold text-sm ${
-                        // Hide headers after index 2 on mobile (keep first 3 columns)
                         index >= 3 ? "hidden md:table-cell" : ""
                       }`}
                       colSpan={header.colSpan}
@@ -158,7 +154,6 @@ export function DataTable<TData, TValue>({
                     {row.getVisibleCells().map((cell, index) => (
                       <TableCell
                         className={`whitespace-nowrap [&:has([aria-expanded])]:w-px [&:has([aria-expanded])]:py-0 [&:has([aria-expanded])]:pr-0 px-3 py-2 text-sm text-foreground ${
-                          // Hide columns after index 2 on mobile (keep first 3 columns)
                           index >= 3 ? "hidden md:table-cell" : ""
                         }`}
                         key={cell.id}

@@ -2,6 +2,12 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import ColumnWrapper from "@/components/providers/column-wrapper";
 import { TableSkeleton } from "@/components/skeletons";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { getPurchaseOrdersPaginated } from "@/server/actions/purchase-order-actions";
 import { OrderColumn } from "@/utils/columns/order-column";
@@ -23,9 +29,12 @@ async function OrdersTable({
 
   if (!orders.data) {
     return (
-      <div className="text-center py-12 text-muted-foreground">
-        No orders found
-      </div>
+      <Empty>
+        <EmptyHeader>
+          <EmptyTitle>No orders</EmptyTitle>
+          <EmptyDescription>No orders found</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     );
   }
 

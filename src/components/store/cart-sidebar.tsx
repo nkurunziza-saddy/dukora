@@ -1,15 +1,16 @@
 "use client";
 
-import {
-  MinusIcon,
-  PlusIcon,
-  ShoppingCartIcon,
-  TrashIcon,
-  XIcon,
-} from "lucide-react";
+import { MinusIcon, PlusIcon, TrashIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { useCart, useCartActions } from "@/contexts/cart-context";
 
 export function CartSidebar() {
@@ -43,19 +44,19 @@ export function CartSidebar() {
 
           <div className="flex-1 overflow-y-auto p-4">
             {state.items.length === 0 ? (
-              <div className="flex h-full flex-col items-center justify-center text-center">
-                <ShoppingCartIcon className="size-8 text-muted-foreground mb-4" />
-                <h3 className="font-medium mb-1">{t("yourCartIsEmpty")}</h3>
-                <p className="text-muted-foreground text-sm mb-4">
-                  {t("addItemsToGetStarted")}
-                </p>
-                <Button
-                  onClick={toggleCart}
-                  render={<Link href="/store/products" />}
-                >
-                  {t("continueShopping")}
-                </Button>
-              </div>
+              <Empty>
+                <EmptyHeader>
+                  <EmptyTitle>{t("yourCartIsEmpty")}</EmptyTitle>
+                  <EmptyDescription>
+                    {t("addItemsToGetStarted")}
+                  </EmptyDescription>
+                </EmptyHeader>
+                <EmptyContent>
+                  <Button render={<Link href="/store" />} size={"sm"}>
+                    {t("continueShopping")}
+                  </Button>
+                </EmptyContent>
+              </Empty>
             ) : (
               <div className="space-y-4">
                 {state.items.map((item) => (

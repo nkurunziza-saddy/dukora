@@ -3,17 +3,18 @@
 import type { Table } from "@tanstack/react-table";
 import { XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { CreateSupplierDialog } from "@/components/forms/create-supplier-form";
 import { DataTableExportPDF } from "@/components/table/data-table-export-pdf";
 import { DataTableSearch } from "@/components/table/data-table-search";
 import { Button } from "@/components/ui/button";
-import { DataTableViewOptions } from "./data-table-view-options";
+import { orderStatuses } from "@/utils/columns/order-column";
+import { DataTableDashFilter } from "../data-table-faceted-filter";
+import { DataTableViewOptions } from "../data-table-view-options";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
 }
 
-export function SuppliersDataTableToolbar<TData>({
+export function OrdersDataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
@@ -21,7 +22,14 @@ export function SuppliersDataTableToolbar<TData>({
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-1 items-center gap-2">
-        <DataTableSearch placeholder="Filter suppliers..." table={table} />
+        <DataTableSearch placeholder="Filter orders..." table={table} />
+        {table.getColumn("status") && (
+          <DataTableDashFilter
+            column={table.getColumn("status")}
+            options={orderStatuses}
+            title="Status"
+          />
+        )}
         {isFiltered && (
           <Button
             className="flex items-center gap-1"
@@ -36,12 +44,12 @@ export function SuppliersDataTableToolbar<TData>({
       </div>
       <div className="flex items-center gap-1 sm:gap-2">
         <DataTableExportPDF
-          filename="suppliers_export"
+          filename="orders_export"
           table={table}
-          title="Suppliers Report"
+          title="Orders Report"
         />
         <DataTableViewOptions table={table} />
-        <CreateSupplierDialog />
+        {/* <CreateOrderDialog /> */}
       </div>
     </div>
   );

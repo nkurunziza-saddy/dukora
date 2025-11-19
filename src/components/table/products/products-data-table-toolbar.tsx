@@ -3,18 +3,19 @@
 import type { Table } from "@tanstack/react-table";
 import { XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { CreateProductDialog } from "@/components/forms/create-product-form";
 import { DataTableExportPDF } from "@/components/table/data-table-export-pdf";
 import { DataTableSearch } from "@/components/table/data-table-search";
 import { Button } from "@/components/ui/button";
-import { transactionStatuses } from "@/utils/columns/transaction-column";
-import { DataTableDashFilter } from "./data-table-faceted-filter";
-import { DataTableViewOptions } from "./data-table-view-options";
+import { productStatuses } from "@/utils/columns/product-column";
+import { DataTableDashFilter } from "../data-table-faceted-filter";
+import { DataTableViewOptions } from "../data-table-view-options";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
 }
 
-export function TransactionsDataTableToolbar<TData>({
+export function ProductsDataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
@@ -22,12 +23,12 @@ export function TransactionsDataTableToolbar<TData>({
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-1 items-center gap-2">
-        <DataTableSearch placeholder="Filter transactions..." table={table} />
-        {table.getColumn("type") && (
+        <DataTableSearch placeholder="Filter products..." table={table} />
+        {table.getColumn("status") && (
           <DataTableDashFilter
-            column={table.getColumn("type")}
-            options={transactionStatuses}
-            title="Type"
+            column={table.getColumn("status")}
+            options={productStatuses}
+            title="Status"
           />
         )}
         {isFiltered && (
@@ -44,11 +45,12 @@ export function TransactionsDataTableToolbar<TData>({
       </div>
       <div className="flex items-center gap-1 sm:gap-2">
         <DataTableExportPDF
-          filename="transactions_export"
+          filename="products_export"
           table={table}
-          title="Transactions Report"
+          title="Products Report"
         />
         <DataTableViewOptions table={table} />
+        <CreateProductDialog />
       </div>
     </div>
   );

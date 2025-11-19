@@ -10,7 +10,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { ScrollArea } from "../ui/scroll-area";
 
 export function TriggerDialog({
   children,
@@ -37,7 +36,7 @@ export function TriggerDialog({
           />
         }
       >
-        <PlusIcon className="size-3.5 " />
+        <PlusIcon />
         {triggerText ?? title}
       </DialogTrigger>
       <DialogPopup className="sm:max-w-4xl max-h-[90vh] flex flex-col">
@@ -46,9 +45,9 @@ export function TriggerDialog({
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 px-1 overflow-auto">
-          <div className="px-1 space-y-4">{children}</div>
-        </ScrollArea>
+        <div className="space-y-4 overflow-y-auto">
+          <div className="pr-1">{children}</div>
+        </div>
       </DialogPopup>
     </Dialog>
   );
@@ -72,16 +71,16 @@ export function StateDialog({
   return (
     <Dialog onOpenChange={setIsDialogOpen} open={isDialogOpen}>
       <DialogPopup
-        className={cn("sm:max-w-4xl max-h-[90vh] flex flex-col", className)}
+        className={cn("sm:max-w-5xl max-h-[90vh] flex flex-col", className)}
       >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 px-1 overflow-auto">
-          <div className="px-1 space-y-4">{children}</div>
-        </ScrollArea>
+        <div className="space-y-4 overflow-y-auto">
+          <div className="pr-1">{children}</div>
+        </div>
       </DialogPopup>
     </Dialog>
   );

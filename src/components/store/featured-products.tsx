@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
+import { Empty, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 import { getProductsForStore } from "@/server/actions/product-actions";
 import ProductCard from "./product-card";
 
@@ -47,9 +48,11 @@ export async function FeaturedProducts() {
         </div>
 
         {featuredProducts.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
-            <p>{t("noProductsAvailable")}</p>
-          </div>
+          <Empty>
+            <EmptyHeader>
+              <EmptyTitle>{t("noProductsAvailable")}</EmptyTitle>
+            </EmptyHeader>
+          </Empty>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border/2">
             {featuredProducts.map((product) => (

@@ -9,6 +9,8 @@ import {
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
+import StatCard from "@/components/shared/stat-card";
+import { ListSkeleton } from "@/components/skeletons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,8 +20,15 @@ import {
   CardPanel,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
+import { formatCurrency, formatNumber } from "@/lib/utils";
 import {
   getNotifications,
   getUnreadCount,
@@ -34,7 +43,6 @@ export async function generateMetadata(): Promise<Metadata> {
 async function NotificationsContent() {
   const t = await getTranslations("notifications");
 
-  // Get real data from server actions
   const { data: notificationsData, error: notificationsError } =
     await getNotifications({
       page: 1,
@@ -62,7 +70,7 @@ async function NotificationsContent() {
   const notifications = notificationsData?.notifications || [];
   const unreadCount = unreadCountData || 0;
   const highPriorityCount = notifications.filter(
-    (n) => n.priority === "high" && !n.read
+    (n) => n.priority === "high" && !n.read,
   ).length;
 
   const getNotificationIcon = (type: string) => {
@@ -83,7 +91,7 @@ async function NotificationsContent() {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "high":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive text-destructive-foreground";
       case "medium":
         return "bg-yellow-100 text-yellow-800";
       case "low":
@@ -97,7 +105,7 @@ async function NotificationsContent() {
     const date = new Date(createdAt);
     const now = new Date();
     const diffInMinutes = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60)
+      (now.getTime() - date.getTime()) / (1000 * 60),
     );
 
     if (diffInMinutes < 1) return "Just now";
@@ -107,74 +115,58 @@ async function NotificationsContent() {
     return `${Math.floor(diffInMinutes / 1440)} days ago`;
   };
 
+  const notificationStats = [
+    {
+      title: t("unread"),
+      subText: t("newNotifications"),
+      value: formatNumber(unreadCount),
+      icon: BellIcon,
+    },
+    {
+      title: t("highPriority"),
+      subText: t("requireAttention"),
+      value: formatNumber(highPriorityCount),
+      icon: BellIcon,
+    },
+    {
+      title: t("total"),
+      subText: t("allNotifications"),
+      value: formatCurrency(notifications.length),
+      icon: BellIcon,
+    },
+  ];
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-          <p className="text-muted-foreground">{t("description")}</p>
+        <div className="head">
+          <h1 className="">{t("title")}</h1>
+          <p className="">{t("description")}</p>
         </div>
         <div className="flex gap-2">
           <Button size="sm" variant="outline">
-            <FilterIcon className="mr-2 h-4 w-4" />
+            <FilterIcon className="" />
             {t("filter")}
           </Button>
           <Button size="sm" variant="outline">
-            <CheckIcon className="mr-2 h-4 w-4" />
+            <CheckIcon className="" />
             {t("markAllRead")}
           </Button>
         </div>
       </div>
 
-      <Separator />
-
-      {/* Notification Stats */}
       <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t("unread")}</CardTitle>
-            <BellIcon className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardPanel>
-            <div className="text-2xl font-bold">{unreadCount}</div>
-            <p className="text-xs text-muted-foreground">
-              {t("newNotifications")}
-            </p>
-          </CardPanel>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {t("highPriority")}
-            </CardTitle>
-            <BellIcon className="h-4 w-4 text-destructive-foreground/90" />
-          </CardHeader>
-          <CardPanel>
-            <div className="text-2xl font-bold text-destructive-foreground">
-              {highPriorityCount}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {t("requireAttention")}
-            </p>
-          </CardPanel>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t("total")}</CardTitle>
-            <BellIcon className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardPanel>
-            <div className="text-2xl font-bold">{notifications.length}</div>
-            <p className="text-xs text-muted-foreground">
-              {t("allNotifications")}
-            </p>
-          </CardPanel>
-        </Card>
+        {notificationStats.map((item) => (
+          <StatCard
+            icon={item.icon}
+            key={`${item.title}-${item.subText}`}
+            subText={item.subText}
+            title={item.title}
+            value={item.value}
+          />
+        ))}
       </div>
 
-      {/* Notifications List */}
       <Card>
         <CardHeader>
           <CardTitle>{t("recentNotifications")}</CardTitle>
@@ -182,11 +174,14 @@ async function NotificationsContent() {
         </CardHeader>
         <CardPanel>
           {notifications.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <BellIcon className="mx-auto h-12 w-12 mb-4 opacity-50" />
-              <p>{t("noNotifications")}</p>
-              <p className="text-sm">{t("noNotificationsDescription")}</p>
-            </div>
+            <Empty>
+              <EmptyHeader>
+                <EmptyTitle>{t("noNotifications")}</EmptyTitle>
+                <EmptyDescription>
+                  {t("noNotificationsDescription")}
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
           ) : (
             <div className="space-y-4">
               {notifications.map((notification) => (
@@ -265,44 +260,13 @@ async function NotificationsContent() {
           )}
         </CardPanel>
       </Card>
-
-      {/* Notification Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("notificationPreferences")}</CardTitle>
-          <CardDescription>{t("manageNotifications")}</CardDescription>
-        </CardHeader>
-        <CardPanel>
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <h4 className="font-medium">{t("emailNotifications")}</h4>
-              <p className="text-sm text-muted-foreground">
-                {t("receiveEmailNotifications")}
-              </p>
-              <Button size="sm" variant="outline">
-                {t("configureEmailSettings")}
-              </Button>
-            </div>
-
-            <div className="space-y-2">
-              <h4 className="font-medium">{t("pushNotifications")}</h4>
-              <p className="text-sm text-muted-foreground">
-                {t("getInstantNotifications")}
-              </p>
-              <Button size="sm" variant="outline">
-                {t("configurePushSettings")}
-              </Button>
-            </div>
-          </div>
-        </CardPanel>
-      </Card>
     </div>
   );
 }
 
 export default async function NotificationsPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<ListSkeleton />}>
       <NotificationsContent />
     </Suspense>
   );

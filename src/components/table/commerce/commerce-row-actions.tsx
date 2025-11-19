@@ -5,6 +5,10 @@ import { EditIcon, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import React, { type FC, useState } from "react";
 import { toast } from "sonner";
+import ProductForm from "@/components/forms/create-product-form";
+import { HoverPrefetchLink } from "@/components/hover-prefetch-link";
+import ConfirmDialog from "@/components/shared/confirm-dialog";
+import { StateDialog } from "@/components/shared/reusable-form-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Menu,
@@ -15,55 +19,48 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
-import type { SelectUser } from "@/lib/schema/schema-types";
-import { UpdateUserForm } from "../forms/update-user-form";
-import { HoverPrefetchLink } from "../hover-prefetch-link";
-import ConfirmDialog from "../shared/confirm-dialog";
-import { StateDialog } from "../shared/reusable-form-dialog";
+import type { SelectProduct } from "@/lib/schema/schema-types";
 
-export interface UserRowActionsProps {
-  user: SelectUser;
+export interface CommerceRowActionsProps {
+  product: SelectProduct;
 }
 
-const UserRowActions: FC<UserRowActionsProps> = ({ user }) => {
+const CommerceRowActions: FC<CommerceRowActionsProps> = ({ product }) => {
+  const t = useTranslations();
+  const t_common = useTranslations("common");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const t = useTranslations("users");
-  const t_common = useTranslations("common");
 
   const handleDeleteConfirm = async () => {
     setIsLoading(true);
     try {
-      const resp = await fetch("/api/users", {
+      const resp = await fetch("/api/products", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: user.id }),
+        body: JSON.stringify({ id: product.id }),
       });
       const r = await resp.json();
       if (r.success) {
         setIsDeleteDialogOpen(false);
-        toast.success(t("userDeletedSuccessfully"), {
+        toast.success(t("product.deleteSuccess"), {
           description: `${format(new Date(), "PPP")}`,
         });
         return;
       }
 
-      const message = await resp.json().catch(() => ({}));
       setIsLoading(false);
-      toast.error(t("errorDeletingUser"), {
-        description: `${message}`,
+      toast.error(t("product.deleteError"), {
+        description: `${t}`,
       });
-      return;
     } catch (err) {
       console.error(err);
-      toast.error(t("errorDeletingUser"), {
+      return toast.error(t("product.deleteError"), {
         description:
           err instanceof Error
             ? err.message
             : t_common("unexpectedErrorOccurred"),
       });
-      return;
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +70,7 @@ const UserRowActions: FC<UserRowActionsProps> = ({ user }) => {
     <>
       <Menu>
         <MenuTrigger
-          render={<Button className="h-8 w-8 p-0" variant="ghost" />}
+          render={<Button className="h-8 w-8 p-0" variant={"ghost"} />}
         >
           <span className="sr-only">{t_common("openMenu")}</span>
           <MoreHorizontalIcon className="h-4 w-4" />
@@ -81,13 +78,10 @@ const UserRowActions: FC<UserRowActionsProps> = ({ user }) => {
         <MenuPopup align="end">
           <MenuGroup>
             <MenuGroupLabel>{t_common("actions")}</MenuGroupLabel>
-            <MenuItem onClick={() => navigator.clipboard.writeText(user.id)}>
-              {t_common("copyUserId")}
-            </MenuItem>
-            <MenuSeparator />
+
             <MenuItem>
-              <HoverPrefetchLink href={`/users/${user.id}`}>
-                {t_common("viewUserDetails")}
+              <HoverPrefetchLink href={`/products/${product.id}`}>
+                {t("product.viewDetails")}
               </HoverPrefetchLink>
             </MenuItem>
             <MenuSeparator />
@@ -111,23 +105,23 @@ const UserRowActions: FC<UserRowActionsProps> = ({ user }) => {
       </Menu>
 
       <ConfirmDialog
-        description={t_common("areYouSureYouWantToDeleteThisUser")}
+        description={t("product.deleteDialogDescription")}
         handleConfirm={handleDeleteConfirm}
         isDialogOpen={isDeleteDialogOpen}
         isLoading={isLoading}
         setIsDialogOpen={setIsDeleteDialogOpen}
-        title={t_common("deleteUser")}
+        title={t("product.deleteDialogTitle")}
       />
       <StateDialog
-        description={t_common("updateTheDetailsOfTheSelectedUser")}
+        description={t("product.editDialogDescription")}
         isDialogOpen={isUpdateDialogOpen}
         setIsDialogOpen={setIsUpdateDialogOpen}
-        title={t_common("editUser")}
+        title={t("product.editDialogTitle")}
       >
-        <UpdateUserForm user={user} />
+        <ProductForm product={product} />
       </StateDialog>
     </>
   );
 };
 
-export default React.memo(UserRowActions);
+export default React.memo(CommerceRowActions);

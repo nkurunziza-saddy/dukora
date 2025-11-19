@@ -31,7 +31,7 @@ export function MetricCard({
   const getTrendColor = () => {
     switch (trend) {
       case "up":
-        return "text-success";
+        return "text-success-foreground";
       case "down":
         return "text-destructive";
       default:

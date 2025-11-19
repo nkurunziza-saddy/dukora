@@ -91,7 +91,7 @@ export function ProductView({ product }: { product: StoreProduct }) {
               )}
             </div>
             {isOnSale && (
-              <p className="text-sm text-green-600 font-medium">
+              <p className="text-sm text-success-foreground font-medium">
                 {t("youSave")} $
                 {(parseFloat(product.costPrice || "0") - finalPrice).toFixed(2)}
               </p>
@@ -105,8 +105,8 @@ export function ProductView({ product }: { product: StoreProduct }) {
               <span
                 className={
                   product.availableStock && product.availableStock > 0
-                    ? "text-green-600"
-                    : "text-red-600"
+                    ? "text-success-foreground"
+                    : "text-destructive-foreground"
                 }
               >
                 {product.availableStock && product.availableStock > 0

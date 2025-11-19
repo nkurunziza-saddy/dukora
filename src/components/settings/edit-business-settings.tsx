@@ -12,13 +12,11 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Field,
   FieldContent,
   FieldDescription,
   FieldError,
-  FieldGroup,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -106,12 +104,7 @@ export function EditBusinessSettings({
         form.handleSubmit();
       }}
     >
-      <FieldGroup className="space-y-6">
-        <CardHeader className="px-0">
-          <CardTitle>{t("businessSettings")}</CardTitle>
-          <CardDescription>{t("businessSettingsDescription")}</CardDescription>
-        </CardHeader>
-
+      <div className="space-y-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="p-3 border rounded-lg">
             <div className="flex items-center justify-between">
@@ -155,7 +148,7 @@ export function EditBusinessSettings({
               {(field) => (
                 <Field>
                   <Label className="text-sm font-medium" htmlFor={field.name}>
-                    {t("currency")} *
+                    {t("currency")}
                   </Label>
                   <Select
                     items={getCurrencies(t)}
@@ -377,7 +370,7 @@ export function EditBusinessSettings({
             </form.Field>
           </div>
         </div>
-      </FieldGroup>
+      </div>
 
       <div className="mt-6">
         <Button disabled={form.state.isSubmitting} type="submit">

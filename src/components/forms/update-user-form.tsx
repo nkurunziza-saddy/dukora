@@ -34,7 +34,7 @@ export function UpdateUserForm({ user }: { user: SelectUser }) {
 
   const supplierSchema = z.object({
     name: z.string().min(1, t("userNameRequired")),
-    email: z.string().min(1, t("userEmailRequired")).email(t("userEmailValid")),
+    email: z.email(t("userEmailValid")),
     role: z.enum([...USER_ROLES]),
   });
 

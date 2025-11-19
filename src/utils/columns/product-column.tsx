@@ -4,7 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { CircleIcon, TimerIcon } from "lucide-react";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
-import ProductRowActions from "@/components/table/product-row-actions";
+import ProductRowActions from "@/components/table/products/product-row-actions";
 import { Badge } from "@/components/ui/badge";
 import { ProductStatus, type SelectProduct } from "@/lib/schema/schema-types";
 
