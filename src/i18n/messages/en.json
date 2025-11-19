@@ -1262,6 +1262,10 @@
         "categories": {
           "title": "Categories",
           "description": "Browse products by category"
+        },
+        "checkout": {
+          "title": "Checkout",
+          "description": "Complete your purchase securely"
         }
       }
     }

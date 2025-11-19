@@ -10,7 +10,7 @@ export async function FeaturedProducts() {
 
   const { data: productsData, error } = await getProductsForStore({
     page: 1,
-    pageSize: 8,
+    pageSize: 9,
   });
 
   if (error) {

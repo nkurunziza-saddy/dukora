@@ -14,28 +14,22 @@ export async function generateMetadata(): Promise<Metadata> {
 
 function CheckoutLoading() {
   return (
-    <div>
-      <div className="bg-background border-b">
-        <div className="container py-6">
-          <Skeleton className="h-8 w-1/4 mb-2" />
-          <Skeleton className="h-4 w-1/2" />
-        </div>
+    <div className="mb-8 space-y-4">
+      <div className="py-6">
+        <Skeleton className="h-8 w-1/4 mb-2" />
+        <Skeleton className="h-4 w-1/2" />
       </div>
-      <div className="container py-12">
+      <div className="py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          <div>
-            <div className="space-y-4">
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-            </div>
+          <div className="space-y-4">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
           </div>
-          <div>
-            <div className="space-y-4">
-              <Skeleton className="h-20 w-full" />
-              <Skeleton className="h-40 w-full" />
-            </div>
+          <div className="space-y-4">
+            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-40 w-full" />
           </div>
         </div>
       </div>
@@ -46,22 +40,28 @@ function CheckoutLoading() {
 async function CheckoutContent() {
   const t = await getTranslations("store.checkout");
   return (
-    <div>
-      <div className="bg-background border-b">
-        <div className="container py-6">
-          <h1 className="text-2xl font-bold">{t("title")}</h1>
-          <p className="text-muted-foreground">{t("description")}</p>
-        </div>
+    <>
+      <div className="mb-8">
+        <h1 className="text-xl font-medium text-foreground mb-2 text-balance">
+          {t("title")}
+        </h1>
+        <p className="text-sm text-text-secondary text-pretty">
+          {t("description")}
+        </p>
       </div>
       <CheckoutView />
-    </div>
+    </>
   );
 }
 
 export default async function CheckoutPage() {
   return (
-    <Suspense fallback={<CheckoutLoading />}>
-      <CheckoutContent />
-    </Suspense>
+    <div className="pt-10 pb-24 md:pb-32 md:pt-16 lg:pb-40 min-h-[calc(100vh-3rem)] ">
+      <div className="pgtx ">
+        <Suspense fallback={<CheckoutLoading />}>
+          <CheckoutContent />
+        </Suspense>
+      </div>
+    </div>
   );
 }

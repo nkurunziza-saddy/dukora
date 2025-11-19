@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { stripe } from "@/lib/stripe";
+import { generateRandomCode } from "@/lib/utils/generate-random-code";
 import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
@@ -17,7 +18,6 @@ import {
   update_customer_order_payment,
   update_customer_order_status,
 } from "@/server/repos/customer-order-repo";
-import type { ServiceResponse } from "@/server/types";
 
 export const getCustomerOrders = createProtectedAction(
   Permission.USER_VIEW,
@@ -27,11 +27,11 @@ export const getCustomerOrders = createProtectedAction(
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  },
+  }
 );
 
 const createCustomerOrderSchema = z.object({
-  customerEmail: z.string().email(),
+  customerEmail: z.email(),
   customerName: z.string().min(1),
   customerPhone: z.string().optional(),
   shippingAddress: z.object({
@@ -54,7 +54,7 @@ const createCustomerOrderSchema = z.object({
       quantity: z.number().min(1),
       unitPrice: z.string(),
       discount: z.string().optional(),
-    }),
+    })
   ),
   guestCheckout: z.boolean(),
   userId: z.string().optional(),
@@ -74,21 +74,18 @@ export const createCustomerOrder = createProtectedAction(
     }
 
     try {
-      // Generate order number
-      const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const orderNumber = `ORD-${generateRandomCode()}-${Math.random().toString(36).substr(2, 9)}`;
 
-      // Calculate totals
       const subtotal = input.items.reduce(
         (sum, item) => sum + parseFloat(item.unitPrice) * item.quantity,
-        0,
+        0
       );
       const discountAmount = input.items.reduce(
         (sum, item) => sum + parseFloat(item.discount || "0") * item.quantity,
-        0,
+        0
       );
       const totalAmount = subtotal - discountAmount;
 
-      // Create order in database
       const orderResult = await create_customer_order({
         orderNumber,
         businessId: user.businessId,
@@ -111,7 +108,6 @@ export const createCustomerOrder = createProtectedAction(
         return { data: null, error: orderResult.error };
       }
 
-      // Create Stripe Payment Intent
       const paymentIntent = await stripe.paymentIntents.create({
         amount: Math.round(totalAmount * 100), // Convert to cents
         currency: "usd", // TODO: Make configurable
@@ -125,11 +121,10 @@ export const createCustomerOrder = createProtectedAction(
         },
       });
 
-      // Update order with payment intent
       await update_customer_order_payment(
         orderResult.data.id,
         paymentIntent.id,
-        paymentIntent.status,
+        paymentIntent.status
       );
 
       return {
@@ -144,12 +139,10 @@ export const createCustomerOrder = createProtectedAction(
       console.error("Failed to create customer order:", error);
       return { data: null, error: ErrorCode.FAILED_REQUEST };
     }
-  },
+  }
 );
 
-export const confirmCustomerOrder = async (
-  paymentIntentId: string,
-): Promise<ServiceResponse<{ orderId: string; orderNumber: string }>> => {
+export const confirmCustomerOrder = async (paymentIntentId: string) => {
   if (!paymentIntentId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
   }
@@ -165,7 +158,7 @@ export const confirmCustomerOrder = async (
     const updateResult = await update_customer_order_status(
       orderResult.data.id,
       "CONFIRMED",
-      "succeeded",
+      "succeeded"
     );
 
     if (updateResult.error) {
@@ -257,7 +250,7 @@ export const getCustomerOrdersByBusiness = createProtectedAction(
       pageSize: number;
       search?: string;
       status?: string;
-    },
+    }
   ) => {
     if (!user.businessId) {
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
@@ -269,7 +262,7 @@ export const getCustomerOrdersByBusiness = createProtectedAction(
         page,
         pageSize,
         search,
-        status,
+        status
       );
 
       return result;
@@ -277,7 +270,7 @@ export const getCustomerOrdersByBusiness = createProtectedAction(
       console.error("Failed to get customer orders by business:", error);
       return { data: null, error: ErrorCode.FAILED_REQUEST };
     }
-  },
+  }
 );
 
 export const updateOrderStatus = createProtectedAction(
@@ -290,7 +283,7 @@ export const updateOrderStatus = createProtectedAction(
     }: {
       orderId: string;
       status: string;
-    },
+    }
   ) => {
     if (!user.businessId) {
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
@@ -314,5 +307,5 @@ export const updateOrderStatus = createProtectedAction(
       console.error("Failed to update order status:", error);
       return { data: null, error: ErrorCode.FAILED_REQUEST };
     }
-  },
+  }
 );

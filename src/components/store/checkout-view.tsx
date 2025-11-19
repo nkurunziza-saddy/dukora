@@ -8,8 +8,8 @@ export function CheckoutView() {
   const { state } = useCart();
 
   return (
-    <div className="container py-12">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+    <div className="mb-8 space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
         <div>
           <CheckoutForm cartProducts={state.items} />
         </div>

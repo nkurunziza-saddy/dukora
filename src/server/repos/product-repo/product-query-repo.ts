@@ -22,8 +22,8 @@ export const get_all = async (businessId: string) => {
       .where(
         and(
           eq(productsTable.businessId, businessId),
-          isNull(productsTable.deletedAt),
-        ),
+          isNull(productsTable.deletedAt)
+        )
       )
       .orderBy(desc(productsTable.createdAt));
 
@@ -37,7 +37,7 @@ export const get_all = async (businessId: string) => {
 export const get_all_paginated = async (
   businessId: string,
   page: number,
-  pageSize: number,
+  pageSize: number
 ) => {
   if (!businessId) {
     return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -51,8 +51,8 @@ export const get_all_paginated = async (
       .where(
         and(
           eq(productsTable.businessId, businessId),
-          isNull(productsTable.deletedAt),
-        ),
+          isNull(productsTable.deletedAt)
+        )
       )
       .orderBy(desc(productsTable.createdAt))
       .limit(pageSize)
@@ -63,8 +63,8 @@ export const get_all_paginated = async (
       .where(
         and(
           eq(productsTable.businessId, businessId),
-          isNull(productsTable.deletedAt),
-        ),
+          isNull(productsTable.deletedAt)
+        )
       );
 
     return {
@@ -89,21 +89,21 @@ export const get_overview = async (businessId: string, limit?: number) => {
       .where(
         and(
           eq(productsTable.businessId, businessId),
-          isNull(productsTable.deletedAt),
-        ),
+          isNull(productsTable.deletedAt)
+        )
       )
       .orderBy(desc(productsTable.createdAt))
       .innerJoin(
         warehouseItemsTable,
-        eq(productsTable.id, warehouseItemsTable.productId),
+        eq(productsTable.id, warehouseItemsTable.productId)
       )
       .innerJoin(
         categoriesTable,
-        eq(productsTable.categoryId, categoriesTable.id),
+        eq(productsTable.categoryId, categoriesTable.id)
       )
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
       );
 
     const products = await (limit ? query.limit(limit) : query);
@@ -123,7 +123,7 @@ export async function get_by_id(productId: string, businessId: string) {
     const product = await db.query.productsTable.findFirst({
       where: and(
         eq(productsTable.id, productId),
-        eq(productsTable.businessId, businessId),
+        eq(productsTable.businessId, businessId)
       ),
       with: {
         category: true,
@@ -171,29 +171,25 @@ export const get_products_for_store = async (filters: StoreProductFilters) => {
     } = filters;
     const offset = (page - 1) * pageSize;
 
-    // Build where conditions
     const whereConditions = [
       eq(productsTable.status, "ACTIVE"),
       isNull(productsTable.deletedAt),
     ];
 
-    // Add search condition
     if (search) {
       whereConditions.push(
         or(
           like(productsTable.name, `%${search}%`),
           like(productsTable.description, `%${search}%`),
-          like(productsTable.sku, `%${search}%`),
-        )!,
+          like(productsTable.sku, `%${search}%`)
+        )!
       );
     }
 
-    // Add category condition
     if (category) {
       whereConditions.push(eq(categoriesTable.value, category));
     }
 
-    // Build order by
     let orderBy: any;
     switch (sortBy) {
       case "price":
@@ -234,11 +230,11 @@ export const get_products_for_store = async (filters: StoreProductFilters) => {
       .from(productsTable)
       .leftJoin(
         warehouseItemsTable,
-        eq(productsTable.id, warehouseItemsTable.productId),
+        eq(productsTable.id, warehouseItemsTable.productId)
       )
       .leftJoin(
         categoriesTable,
-        eq(productsTable.categoryId, categoriesTable.id),
+        eq(productsTable.categoryId, categoriesTable.id)
       )
       .where(and(...whereConditions))
       .groupBy(
@@ -253,7 +249,7 @@ export const get_products_for_store = async (filters: StoreProductFilters) => {
         productsTable.createdAt,
         productsTable.updatedAt,
         categoriesTable.value,
-        categoriesTable.description,
+        categoriesTable.description
       )
       .orderBy(orderBy)
       .limit(pageSize)
@@ -265,7 +261,7 @@ export const get_products_for_store = async (filters: StoreProductFilters) => {
       .from(productsTable)
       .leftJoin(
         categoriesTable,
-        eq(productsTable.categoryId, categoriesTable.id),
+        eq(productsTable.categoryId, categoriesTable.id)
       )
       .where(and(...whereConditions));
 
@@ -320,18 +316,18 @@ export const get_product_by_id_for_store = async (productId: string) => {
       .from(productsTable)
       .leftJoin(
         warehouseItemsTable,
-        eq(productsTable.id, warehouseItemsTable.productId),
+        eq(productsTable.id, warehouseItemsTable.productId)
       )
       .leftJoin(
         categoriesTable,
-        eq(productsTable.categoryId, categoriesTable.id),
+        eq(productsTable.categoryId, categoriesTable.id)
       )
       .where(
         and(
           eq(productsTable.id, productId),
           eq(productsTable.status, "ACTIVE"),
-          isNull(productsTable.deletedAt),
-        ),
+          isNull(productsTable.deletedAt)
+        )
       )
       .groupBy(
         productsTable.id,
@@ -350,7 +346,7 @@ export const get_product_by_id_for_store = async (productId: string) => {
         productsTable.createdAt,
         productsTable.updatedAt,
         categoriesTable.value,
-        categoriesTable.description,
+        categoriesTable.description
       );
 
     if (!product) {
@@ -379,13 +375,13 @@ export const get_categories_for_store = async () => {
         and(
           eq(categoriesTable.isActive, true),
           eq(productsTable.status, "ACTIVE"),
-          isNull(productsTable.deletedAt),
-        ),
+          isNull(productsTable.deletedAt)
+        )
       )
       .groupBy(
         categoriesTable.id,
         categoriesTable.value,
-        categoriesTable.description,
+        categoriesTable.description
       )
       .orderBy(categoriesTable.value);
 

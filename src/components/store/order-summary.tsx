@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card";
 import type { CartItem } from "@/lib/types";
+import { Separator } from "../ui/separator";
 
 interface OrderSummaryProps {
   cartProducts: Array<CartItem & { quantity: number }>;
@@ -15,7 +15,7 @@ export function OrderSummary({ cartProducts }: OrderSummaryProps) {
 
   const subtotal = cartProducts.reduce(
     (sum, product) => sum + (Number(product.price) || 0) * product.quantity,
-    0,
+    0
   );
 
   const discount = 0; // TODO: Calculate discounts
@@ -24,33 +24,18 @@ export function OrderSummary({ cartProducts }: OrderSummaryProps) {
   const total = subtotal - discount + tax + shipping;
 
   return (
-    <Card className="sticky top-8">
-      <CardHeader>
-        <CardTitle>{t("orderSummary")}</CardTitle>
-      </CardHeader>
-      <CardPanel className="space-y-4">
-        {/* Cart Items */}
+    <div className="sticky top-18 px-4 border-t border-r border-b py-4">
+      <div className="mb-6">
+        <div className="text-base font-medium">{t("orderSummary")}</div>
+      </div>
+      <div className="space-y-4">
         <div className="space-y-3">
           {cartProducts.map((product) => (
-            <div className="flex items-center space-x-3" key={product.id}>
-              <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md bg-muted">
-                {product.imageUrl ? (
-                  <Image
-                    alt={product.name}
-                    className="h-full w-full object-cover"
-                    height={48}
-                    src={product.imageUrl}
-                    width={48}
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">
-                    {t("noImage")}
-                  </div>
-                )}
-              </div>
-
+            <div className="flex items-start space-x-3" key={product.id}>
               <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-medium truncate">{product.name}</h4>
+                <h4 className="text-sm line-clamp-1 truncate">
+                  {product.name}
+                </h4>
                 <p className="text-xs text-muted-foreground">
                   {t("quantity")}: {product.quantity}
                 </p>
@@ -61,15 +46,16 @@ export function OrderSummary({ cartProducts }: OrderSummaryProps) {
                 )}
               </div>
 
-              <div className="text-sm font-medium">
+              <div className="text-sm">
                 ${((Number(product.price) || 0) * product.quantity).toFixed(2)}
               </div>
             </div>
           ))}
         </div>
 
-        {/* Price Breakdown */}
-        <div className="border-t pt-4 space-y-2">
+        <Separator className={"border-t border-dashed my-4"} />
+
+        <div className=" space-y-2">
           <div className="flex justify-between text-sm">
             <span>{t("subtotal")}</span>
             <span>${subtotal.toFixed(2)}</span>
@@ -92,19 +78,18 @@ export function OrderSummary({ cartProducts }: OrderSummaryProps) {
             <span>{shipping === 0 ? t("free") : `$${shipping}`}</span>
           </div>
 
-          <div className="border-t pt-2">
-            <div className="flex justify-between text-base font-semibold">
-              <span>{t("total")}</span>
-              <span>${total.toFixed(2)}</span>
-            </div>
+          <Separator className={"border-t border-dashed my-4"} />
+
+          <div className=" flex justify-between text-sm font-medium">
+            <span>{t("total")}</span>
+            <span>${total.toFixed(2)}</span>
           </div>
         </div>
 
-        {/* Security Notice */}
         <div className="text-xs text-muted-foreground bg-muted p-3 rounded-md">
           <p>{t("securityNotice")}</p>
         </div>
-      </CardPanel>
-    </Card>
+      </div>
+    </div>
   );
 }

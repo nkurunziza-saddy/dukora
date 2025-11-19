@@ -13,16 +13,16 @@ import { useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { CartItem } from "@/lib/types";
 import { createCustomerOrder } from "@/server/actions/customer-order-actions";
+import { Separator } from "../ui/separator";
 
 const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "",
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
 );
 
 const checkoutSchema = z.object({
@@ -66,7 +66,6 @@ function CheckoutFormContent({ cartProducts }: CheckoutFormProps) {
     setIsProcessing(true);
 
     try {
-      // Prepare order data
       const orderData = {
         customerEmail: value.customerEmail,
         customerName: value.customerName,
@@ -85,7 +84,6 @@ function CheckoutFormContent({ cartProducts }: CheckoutFormProps) {
         notes: value.notes,
       };
 
-      // Create order and get client secret
       const result = await createCustomerOrder(orderData);
       if (result.error || !result.data) {
         toast.error("Failed to create order. Please try again.");
@@ -94,7 +92,6 @@ function CheckoutFormContent({ cartProducts }: CheckoutFormProps) {
 
       setClientSecret(result.data.clientSecret);
 
-      // Confirm payment
       const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
@@ -145,50 +142,47 @@ function CheckoutFormContent({ cartProducts }: CheckoutFormProps) {
 
   if (clientSecret) {
     return (
-      <div className="space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("paymentDetails")}</CardTitle>
-          </CardHeader>
-          <CardPanel>
-            <PaymentElement />
-            <div className="mt-4 flex space-x-2">
-              <Button
-                disabled={isProcessing}
-                onClick={() => setClientSecret(null)}
-                variant="outline"
-              >
-                {t("backToForm")}
-              </Button>
-              <Button
-                className="flex-1"
-                disabled={!stripe || isProcessing}
-                onClick={() => form.handleSubmit()}
-              >
-                {isProcessing ? t("processing") : t("completeOrder")}
-              </Button>
-            </div>
-          </CardPanel>
-        </Card>
-      </div>
+      <section className="space-y-6">
+        <header className="border-b pb-8 px-4">
+          <h2 className="mb-6 text-base font-medium">{t("paymentDetails")}</h2>
+          <PaymentElement />
+        </header>
+
+        <footer className="px-4 flex gap-2">
+          <Button
+            disabled={isProcessing}
+            onClick={() => setClientSecret(null)}
+            variant="outline"
+          >
+            {t("backToForm")}
+          </Button>
+          <Button
+            className="flex-1"
+            disabled={!stripe || isProcessing}
+            onClick={() => form.handleSubmit()}
+          >
+            {isProcessing ? t("processing") : t("completeOrder")}
+          </Button>
+        </footer>
+      </section>
     );
   }
 
   return (
     <form
-      className="space-y-6"
+      className="space-y-4 border py-4"
       onSubmit={(e) => {
         e.preventDefault();
         e.stopPropagation();
         form.handleSubmit();
       }}
     >
-      {/* Customer Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("customerInformation")}</CardTitle>
-        </CardHeader>
-        <CardPanel className="space-y-4">
+      <section className="px-4">
+        <header className="mb-6">
+          <h2 className="text-base font-medium">{t("customerInformation")}</h2>
+        </header>
+
+        <div className="space-y-4">
           <form.Field
             children={(field) => {
               const isInvalid =
@@ -213,6 +207,7 @@ function CheckoutFormContent({ cartProducts }: CheckoutFormProps) {
             }}
             name="customerName"
           />
+
           <form.Field
             children={(field) => {
               const isInvalid =
@@ -238,6 +233,7 @@ function CheckoutFormContent({ cartProducts }: CheckoutFormProps) {
             }}
             name="customerEmail"
           />
+
           <form.Field
             children={(field) => {
               const isInvalid =
@@ -263,15 +259,17 @@ function CheckoutFormContent({ cartProducts }: CheckoutFormProps) {
             }}
             name="customerPhone"
           />
-        </CardPanel>
-      </Card>
+        </div>
+      </section>
 
-      {/* Shipping Address */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("shippingAddress")}</CardTitle>
-        </CardHeader>
-        <CardPanel className="space-y-4">
+      <Separator />
+
+      <section className="px-4">
+        <header className="mb-6">
+          <h2 className="text-base font-medium">{t("shippingAddress")}</h2>
+        </header>
+
+        <div className="space-y-4">
           <form.Field
             children={(field) => {
               const isInvalid =
@@ -402,15 +400,17 @@ function CheckoutFormContent({ cartProducts }: CheckoutFormProps) {
               name="shippingAddress.country"
             />
           </div>
-        </CardPanel>
-      </Card>
+        </div>
+      </section>
 
-      {/* Billing Address */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("billingAddress")}</CardTitle>
-        </CardHeader>
-        <CardPanel className="space-y-4">
+      <Separator />
+
+      <section className="px-4">
+        <header className="mb-6">
+          <h2 className="text-base font-medium">{t("billingAddress")}</h2>
+        </header>
+
+        <div className="space-y-4">
           <form.Field
             children={(field) => {
               const isInvalid =
@@ -418,18 +418,18 @@ function CheckoutFormContent({ cartProducts }: CheckoutFormProps) {
               return (
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor={field.name}>
+                    <Checkbox
+                      aria-invalid={isInvalid}
+                      checked={field.state.value}
+                      id={field.name}
+                      name={field.name}
+                      onBlur={field.handleBlur}
+                      onCheckedChange={(checked) =>
+                        field.handleChange(checked as boolean)
+                      }
+                    />
                     {t("sameAsShipping")}
                   </FieldLabel>
-                  <Checkbox
-                    aria-invalid={isInvalid}
-                    checked={field.state.value}
-                    id={field.name}
-                    name={field.name}
-                    onBlur={field.handleBlur}
-                    onCheckedChange={(checked) =>
-                      field.handleChange(checked as boolean)
-                    }
-                  />
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               );
@@ -579,50 +579,52 @@ function CheckoutFormContent({ cartProducts }: CheckoutFormProps) {
               </div>
             </>
           )}
-        </CardPanel>
-      </Card>
+        </div>
+      </section>
 
-      {/* Order Notes */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("orderNotes")}</CardTitle>
-        </CardHeader>
-        <CardPanel>
-          <form.Field
-            children={(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor={field.name}>
-                    {t("specialInstructions")}
-                  </FieldLabel>
-                  <Textarea
-                    aria-invalid={isInvalid}
-                    id={field.name}
-                    name={field.name}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder={t("enterSpecialInstructions")}
-                    rows={3}
-                    value={field.state.value}
-                  />
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              );
-            }}
-            name="notes"
-          />
-        </CardPanel>
-      </Card>
+      <Separator />
 
-      <Button
-        className="w-full"
-        disabled={isProcessing || !form.state.isValid}
-        type="submit"
-      >
-        {isProcessing ? t("processing") : t("proceedToPayment")}
-      </Button>
+      <section className="px-4">
+        <header className="mb-6">
+          <h2 className="text-base font-medium">{t("orderNotes")}</h2>
+        </header>
+
+        <form.Field
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <Field data-invalid={isInvalid}>
+                <FieldLabel htmlFor={field.name}>
+                  {t("specialInstructions")}
+                </FieldLabel>
+                <Textarea
+                  aria-invalid={isInvalid}
+                  id={field.name}
+                  name={field.name}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder={t("enterSpecialInstructions")}
+                  rows={3}
+                  value={field.state.value}
+                />
+                {isInvalid && <FieldError errors={field.state.meta.errors} />}
+              </Field>
+            );
+          }}
+          name="notes"
+        />
+      </section>
+
+      <footer className="px-4 pt-4">
+        <Button
+          className="w-full"
+          disabled={isProcessing || !form.state.isValid}
+          type="submit"
+        >
+          {isProcessing ? t("processing") : t("proceedToPayment")}
+        </Button>
+      </footer>
     </form>
   );
 }
