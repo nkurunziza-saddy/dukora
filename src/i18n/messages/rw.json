@@ -1620,7 +1620,10 @@
         "trackOrder": "Kurikirana itumizwa"
       },
       "tax": "Imisoro",
-      "title": "Kwishyura"
+      "title": "Kwishyura",
+      "shipping": "Ioherezwa",
+      "free": "Ubuntu",
+      "total": "Igiteranyo"
     },
     "orders": {
       "track": {

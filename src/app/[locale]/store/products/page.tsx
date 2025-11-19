@@ -22,7 +22,49 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-function ProductsLoading() {
+function ProductsPageLoading() {
+  return (
+    <div className="pt-10 pb-24 md:pb-32 md:pt-16 lg:pb-40 min-h-[calc(100vh-3rem)] ">
+      <div className="pgtx ">
+        <div className="mb-8">
+          <Skeleton className="h-8 w-1/4 mb-2" />
+          <Skeleton className="h-4 w-1/2" />
+        </div>
+
+        <div className="mb-8 space-y-4">
+          <div className="flex flex-col md:flex-row md:justify-between gap-4">
+            <div className="flex-1 max-w-sm">
+              <Skeleton className="h-10 w-full" />
+            </div>
+
+            <div className="flex gap-2">
+              <Skeleton className="h-10 w-48" />
+              <Skeleton className="h-10 w-20" />
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Skeleton className="h-9 w-24" />
+            <Skeleton className="h-9 w-24" />
+            <Skeleton className="h-9 w-24" />
+            <Skeleton className="h-9 w-24" />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border/2">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div className="bg-background p-4" key={`product-skeleton-${i}`}>
+              <Skeleton className="h-40 w-full mb-4" />
+              <Skeleton className="h-6 w-3/4 mb-2" />
+              <Skeleton className="h-4 w-1/2" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProductsListLoading() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border/2">
       {Array.from({ length: 12 }).map((_, i) => (
@@ -37,16 +79,14 @@ function ProductsLoading() {
 }
 
 async function ProductsContent({
-  t,
-  search,
-  sortBy,
   searchParams,
 }: {
-  t: (key: string) => string;
-  search: string;
-  sortBy: string;
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
+  const t = await getTranslations("store");
+  const search = (searchParams?.search as string) || "";
+  const sortBy = (searchParams?.sortBy as string) || "name";
+
   return (
     <div className="pt-10 pb-24 md:pb-32 md:pt-16 lg:pb-40 min-h-[calc(100vh-3rem)] ">
       <div className="pgtx ">
@@ -112,7 +152,7 @@ async function ProductsContent({
           </div>
         </div>
 
-        <Suspense fallback={<ProductsLoading />}>
+        <Suspense fallback={<ProductsListLoading />}>
           <ProductsList searchParams={searchParams} />
         </Suspense>
       </div>
@@ -125,18 +165,9 @@ export default async function ProductsPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const t = await getTranslations("store");
-  const search = (await searchParams).search as string;
-  const sortBy = ((await searchParams).sortBy as string) || "name";
-
   return (
-    <Suspense fallback={<ProductsLoading />}>
-      <ProductsContent
-        search={search}
-        searchParams={await searchParams}
-        sortBy={sortBy}
-        t={t}
-      />
+    <Suspense fallback={<ProductsPageLoading />}>
+      <ProductsContent searchParams={await searchParams} />
     </Suspense>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { KeyIcon, ShieldIcon } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,8 +20,7 @@ export function SecuritySettings() {
 
   const handlePasswordChange = () => {
     if (newPassword !== confirmPassword) {
-      // TODO: Show error
-      return;
+      // authClient.changePassword(currentPassword, newPassword);
     }
     // TODO: Implement password change
     console.log("Changing password...");
@@ -39,11 +37,9 @@ export function SecuritySettings() {
 
       <Separator />
 
-      {/* Password Security */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <KeyIcon className="h-5 w-5" />
             Change Password
           </CardTitle>
           <CardDescription>
@@ -91,11 +87,9 @@ export function SecuritySettings() {
         </CardPanel>
       </Card>
 
-      {/* Account Security Info */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <ShieldIcon className="h-5 w-5" />
             Account Security
           </CardTitle>
           <CardDescription>Your account security information</CardDescription>
@@ -114,7 +108,7 @@ export function SecuritySettings() {
             </div>
             <div className="flex justify-between">
               <span className="text-sm font-medium">Active Sessions:</span>
-              <span className="text-sm text-muted-foreground">2 devices</span>
+              <span className="text-sm text-muted-foreground">1 devices</span>
             </div>
           </div>
 

@@ -1588,7 +1588,10 @@
         "trackOrder": "Fuatilia Agizo"
       },
       "tax": "Kodi",
-      "title": "Malipo"
+      "title": "Malipo",
+      "shipping": "Uwasilishaji",
+      "free": "Bure",
+      "total": "Jumla"
     },
     "orders": {
       "track": {

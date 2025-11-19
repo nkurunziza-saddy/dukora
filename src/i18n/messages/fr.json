@@ -1588,7 +1588,10 @@
         "trackOrder": "Suivre la commande"
       },
       "tax": "Taxe",
-      "title": "Paiement"
+      "title": "Paiement",
+      "shipping": "Livraison",
+      "free": "Gratuit",
+      "total": "Total"
     },
     "orders": {
       "track": {

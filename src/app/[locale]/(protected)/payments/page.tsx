@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 import CreateCustomerPaymentForm from "@/components/forms/create-customer-payment-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -37,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default async function PaymentsPage() {
+async function PaymentsContent() {
   const t = await getTranslations("payments");
 
   // Get real data from server actions
@@ -98,7 +99,7 @@ export default async function PaymentsPage() {
     .reduce((sum, p) => sum + p.amount, 0);
 
   const pendingPayments = allPayments.filter(
-    (p) => p.status === "pending",
+    (p) => p.status === "pending"
   ).length;
 
   return (
@@ -309,5 +310,13 @@ export default async function PaymentsPage() {
         </Card>
       </div>
     </div>
+  );
+}
+
+export default async function PaymentsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PaymentsContent />
+    </Suspense>
   );
 }

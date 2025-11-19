@@ -1,3 +1,4 @@
+"use cache: private";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { SITE_HOME_URL } from "@/lib/config/site";

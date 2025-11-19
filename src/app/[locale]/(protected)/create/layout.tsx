@@ -1,13 +1,12 @@
 import { ArrowLeftIcon } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
+import SidebarContainer from "@/components/providers/sidebar-container";
+import { GuardSkeleton } from "@/components/skeletons";
 import { Button } from "@/components/ui/button";
 
-export default async function CreateLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+async function SessionGuard({ children }: { children: React.ReactNode }) {
   const t = await getTranslations("common");
 
   return (
@@ -24,5 +23,19 @@ export default async function CreateLayout({
 
       <div>{children}</div>
     </div>
+  );
+}
+
+export default function CreateLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <Suspense fallback={<GuardSkeleton />}>
+      <SessionGuard>
+        <SidebarContainer>{children}</SidebarContainer>
+      </SessionGuard>
+    </Suspense>
   );
 }

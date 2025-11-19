@@ -14,6 +14,13 @@ import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import UserProfileForm from "@/components/forms/user-profile-form";
 import { UserSettingsForm } from "@/components/forms/user-settings-form";
+import { ConnectStripe } from "@/components/settings/connect-stripe";
+import { EditBusinessDetails } from "@/components/settings/edit-business-details";
+import { EditBusinessSettings } from "@/components/settings/edit-business-settings";
+import { EditCategories } from "@/components/settings/edit-categories";
+import { EditWarehouses } from "@/components/settings/edit-warehouses";
+import { NotificationsSettings } from "@/components/settings/notifications-settings";
+import { SecuritySettings } from "@/components/settings/security-settings";
 import { SettingsSkeleton } from "@/components/skeletons";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -29,13 +36,6 @@ import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { getCurrentSession } from "@/server/actions/auth-actions";
 import { getBusinessById } from "@/server/actions/business-actions";
 import { getUserById } from "@/server/actions/user-actions";
-import { ConnectStripe } from "./_components/connect-stripe";
-import { EditBusinessDetails } from "./_components/edit-business-details";
-import { EditBusinessSettings } from "./_components/edit-business-settings";
-import { EditCategories } from "./_components/edit-categories";
-import { EditWarehouses } from "./_components/edit-warehouses";
-import { NotificationsSettings } from "./_components/notifications-settings";
-import { SecuritySettings } from "./_components/security-settings";
 
 export async function generateMetadata(): Promise<Metadata> {
   return constructI18nMetadata({
@@ -43,9 +43,8 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-type TStripeFn = ReturnType<typeof getTranslations> extends Promise<infer R>
-  ? R
-  : never;
+type TStripeFn =
+  ReturnType<typeof getTranslations> extends Promise<infer R> ? R : never;
 
 export default function SettingsPage() {
   return (

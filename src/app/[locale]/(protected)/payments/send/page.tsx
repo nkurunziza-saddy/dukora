@@ -1,8 +1,9 @@
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 import InitiatePaymentForm from "@/components/forms/initiate-payment-form";
 import { Separator } from "@/components/ui/separator";
 
-export default async function SendPaymentPage() {
+async function SendPaymentContent() {
   const t = await getTranslations("payments");
 
   return (
@@ -16,5 +17,12 @@ export default async function SendPaymentPage() {
       <Separator />
       <InitiatePaymentForm />
     </div>
+  );
+}
+export default function SendPaymentPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SendPaymentContent />
+    </Suspense>
   );
 }

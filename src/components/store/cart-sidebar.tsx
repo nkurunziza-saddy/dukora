@@ -28,7 +28,7 @@ export function CartSidebar() {
   console.log("Cart State:", state);
   return (
     <div className="fixed inset-0 z-50">
-      <div className="absolute right-0 top-15 h-full w-full max-w-md bg-background shadow-xl">
+      <div className="absolute right-0 top-15 h-full w-full max-w-md bg-background shadow-xl data-starting-style:animate-in data-ending-style:animate-out transition ease-in-out data-ending-style:duration-300 data-starting-style:duration-500">
         <div className="flex min-h-[calc(100vh-4rem)] bg-popover h-full flex-col">
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center space-x-2">

@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default async function NotificationsPage() {
+async function NotificationsContent() {
   const t = await getTranslations("notifications");
 
   // Get real data from server actions
@@ -61,7 +62,7 @@ export default async function NotificationsPage() {
   const notifications = notificationsData?.notifications || [];
   const unreadCount = unreadCountData || 0;
   const highPriorityCount = notifications.filter(
-    (n) => n.priority === "high" && !n.read,
+    (n) => n.priority === "high" && !n.read
   ).length;
 
   const getNotificationIcon = (type: string) => {
@@ -96,7 +97,7 @@ export default async function NotificationsPage() {
     const date = new Date(createdAt);
     const now = new Date();
     const diffInMinutes = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60),
+      (now.getTime() - date.getTime()) / (1000 * 60)
     );
 
     if (diffInMinutes < 1) return "Just now";
@@ -147,10 +148,10 @@ export default async function NotificationsPage() {
             <CardTitle className="text-sm font-medium">
               {t("highPriority")}
             </CardTitle>
-            <BellIcon className="h-4 w-4 text-red-500" />
+            <BellIcon className="h-4 w-4 text-destructive-foreground/90" />
           </CardHeader>
           <CardPanel>
-            <div className="text-2xl font-bold text-red-600">
+            <div className="text-2xl font-bold text-destructive-foreground">
               {highPriorityCount}
             </div>
             <p className="text-xs text-muted-foreground">
@@ -296,5 +297,13 @@ export default async function NotificationsPage() {
         </CardPanel>
       </Card>
     </div>
+  );
+}
+
+export default async function NotificationsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <NotificationsContent />
+    </Suspense>
   );
 }

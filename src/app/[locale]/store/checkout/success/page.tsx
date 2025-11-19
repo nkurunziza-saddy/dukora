@@ -3,25 +3,87 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card";
-import type {
-  ExtendedCustomerOrderItem,
-  SelectCustomerOrder,
-} from "@/lib/schema/schema-types";
+import { Skeleton } from "@/components/ui/skeleton";
+import type { SelectCustomerOrder } from "@/lib/schema/schema-types";
 import { getCustomerOrderByOrderNumber } from "@/server/actions/customer-order-actions";
 
-interface CheckoutSuccessPageProps {
-  searchParams: {
-    order?: string;
-  };
-  t: (key: string) => string;
+function CheckoutSuccessLoading() {
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="mx-auto max-w-2xl">
+        <Card>
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+              <Skeleton className="h-8 w-8 rounded-full" />
+            </div>
+            <Skeleton className="h-8 w-1/2 mx-auto mb-2" />
+            <Skeleton className="h-4 w-3/4 mx-auto" />
+          </CardHeader>
+          <CardPanel className="space-y-6">
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Skeleton className="h-5 w-1/4 mb-1" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
+                <div>
+                  <Skeleton className="h-5 w-1/4 mb-1" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
+              </div>
+              <div>
+                <Skeleton className="h-5 w-1/4 mb-1" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
+              <div>
+                <Skeleton className="h-6 w-1/4 mb-1" />
+                <Skeleton className="h-5 w-1/2" />
+              </div>
+            </div>
+
+            <div>
+              <Skeleton className="h-5 w-1/4 mb-3" />
+              <div className="space-y-2">
+                <Skeleton className="h-16 w-full" />
+                <Skeleton className="h-16 w-full" />
+              </div>
+            </div>
+
+            <div className="rounded-md bg-muted p-4">
+              <Skeleton className="h-5 w-1/4 mb-2" />
+              <ul className="space-y-1 text-sm text-muted-foreground">
+                <li>
+                  <Skeleton className="h-4 w-full" />
+                </li>
+                <li>
+                  <Skeleton className="h-4 w-full" />
+                </li>
+                <li>
+                  <Skeleton className="h-4 w-full" />
+                </li>
+              </ul>
+            </div>
+
+            <div className="flex flex-col space-y-2 sm:flex-row sm:space-x-2 sm:space-y-0">
+              <Skeleton className="h-10 flex-1" />
+              <Skeleton className="h-10 flex-1" />
+            </div>
+          </CardPanel>
+        </Card>
+      </div>
+    </div>
+  );
 }
 
 async function CheckoutSuccessContent({
   searchParams,
-  t,
-}: CheckoutSuccessPageProps) {
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const t = await getTranslations("store.checkout.success");
   const orderResult = await getCustomerOrderByOrderNumber(
     searchParams.order as string
   );
@@ -178,11 +240,9 @@ export default async function CheckoutSuccessPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const t = await getTranslations("store.checkout.success");
-
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <CheckoutSuccessContent searchParams={await searchParams} t={t} />
+    <Suspense fallback={<CheckoutSuccessLoading />}>
+      <CheckoutSuccessContent searchParams={await searchParams} />
     </Suspense>
   );
 }
