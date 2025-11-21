@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import {
   auditLogsTable,
   productSuppliersTable,
+  productsTable,
   transactionsTable,
   warehouseItemsTable,
 } from "@/lib/schema";
@@ -15,6 +16,8 @@ import type {
   SelectWarehouseItem,
 } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
+
+import * as notificationRepo from "@/server/repos/notification-repo";
 import { create as createWarehouseItem } from "@/server/repos/warehouse-item-repo";
 
 export async function create(transaction: InsertTransaction) {
@@ -60,6 +63,47 @@ export async function create(transaction: InsertTransaction) {
       };
 
       await tx.insert(auditLogsTable).values(auditData);
+
+      // Notification Logic
+      const product = await tx.query.productsTable.findFirst({
+        where: eq(productsTable.id, transaction.productId),
+      });
+
+      if (product) {
+        if (transaction.type === "SALE") {
+          const amount = transaction.quantity * Number(product.price);
+          await notificationRepo.create({
+            businessId: transaction.businessId,
+            type: "order",
+            priority: "medium",
+            title: "New Sale Recorded",
+            message: `A new sale of ${transaction.quantity} ${product.name} was recorded.`,
+            data: {
+              transactionId: newTransaction.id,
+              productId: transaction.productId,
+              productName: product.name,
+              quantity: transaction.quantity,
+              amount: amount,
+            },
+          });
+        } else if (transaction.type === "PURCHASE") {
+          const amount = transaction.quantity * Number(product.costPrice);
+          await notificationRepo.create({
+            businessId: transaction.businessId,
+            type: "inventory",
+            priority: "low",
+            title: "New Purchase Recorded",
+            message: `A new purchase of ${transaction.quantity} ${product.name} was recorded.`,
+            data: {
+              transactionId: newTransaction.id,
+              productId: transaction.productId,
+              productName: product.name,
+              quantity: transaction.quantity,
+              amount: amount,
+            },
+          });
+        }
+      }
 
       return newTransaction;
     });
@@ -137,10 +181,51 @@ export async function create_with_warehouse_item(
       };
       await tx.insert(productSuppliersTable).values(productSupplierData);
 
-      return newTransaction;
+      // Notification Logic
+      const product = await tx.query.productsTable.findFirst({
+        where: eq(productsTable.id, transaction.productId),
+      });
+
+      if (product) {
+        if (transaction.type === "SALE") {
+          const amount = transaction.quantity * Number(product.price);
+          await notificationRepo.create({
+            businessId: transaction.businessId,
+            type: "order",
+            priority: "medium",
+            title: "New Sale Recorded",
+            message: `A new sale of ${transaction.quantity} ${product.name} was recorded.`,
+            data: {
+              transactionId: newTransaction.id,
+              productId: transaction.productId,
+              productName: product.name,
+              quantity: transaction.quantity,
+              amount: amount,
+            },
+          });
+        } else if (transaction.type === "PURCHASE") {
+          const amount = transaction.quantity * Number(product.costPrice);
+          await notificationRepo.create({
+            businessId: transaction.businessId,
+            type: "inventory",
+            priority: "low",
+            title: "New Purchase Recorded",
+            message: `A new purchase of ${transaction.quantity} ${product.name} was recorded.`,
+            data: {
+              transactionId: newTransaction.id,
+              productId: transaction.productId,
+              productName: product.name,
+              quantity: transaction.quantity,
+              amount: amount,
+            },
+          });
+        }
+      }
+
+      return { data: newTransaction, error: null };
     });
 
-    return { data: result, error: null };
+    return result;
   } catch (error) {
     console.error("Failed to create transaction:", error);
     return { data: null, error: ErrorCode.FAILED_REQUEST };

@@ -1,12 +1,6 @@
-import {
-  BellIcon,
-  CheckIcon,
-  FilterIcon,
-  MailIcon,
-  SmartphoneIcon,
-  XIcon,
-} from "lucide-react";
+import { BellIcon } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import StatCard from "@/components/shared/stat-card";
@@ -30,9 +24,11 @@ import { Separator } from "@/components/ui/separator";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { formatCurrency, formatNumber } from "@/lib/utils";
 import {
+  getNotificationStats,
   getNotifications,
-  getUnreadCount,
 } from "@/server/actions/notification-actions";
+import { NotificationActions } from "./notification-actions";
+import { NotificationToolbar } from "./notification-toolbar";
 
 export async function generateMetadata(): Promise<Metadata> {
   return constructI18nMetadata({
@@ -40,19 +36,25 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-async function NotificationsContent() {
+async function NotificationsContent({
+  searchParams,
+}: {
+  searchParams: { page?: string; pageSize?: string };
+}) {
   const t = await getTranslations("notifications");
+
+  const page = Number(searchParams.page) || 1;
+  const pageSize = Number(searchParams.pageSize) || 10;
 
   const { data: notificationsData, error: notificationsError } =
     await getNotifications({
-      page: 1,
-      pageSize: 10,
+      page,
+      pageSize,
     });
 
-  const { data: unreadCountData, error: unreadCountError } =
-    await getUnreadCount({});
+  const { data: statsData, error: statsError } = await getNotificationStats({});
 
-  if (notificationsError || unreadCountError) {
+  if (notificationsError || statsError) {
     return (
       <div className="space-y-6">
         <div>
@@ -68,36 +70,22 @@ async function NotificationsContent() {
   }
 
   const notifications = notificationsData?.notifications || [];
-  const unreadCount = unreadCountData || 0;
-  const highPriorityCount = notifications.filter(
-    (n) => n.priority === "high" && !n.read,
-  ).length;
-
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case "payment":
-        return <MailIcon className="h-5 w-5" />;
-      case "inventory":
-        return <BellIcon className="h-5 w-5" />;
-      case "order":
-        return <BellIcon className="h-5 w-5" />;
-      case "system":
-        return <SmartphoneIcon className="h-5 w-5" />;
-      default:
-        return <BellIcon className="h-5 w-5" />;
-    }
-  };
+  const totalCount = notificationsData?.totalCount || 0;
+  const totalPages = notificationsData?.totalPages || 0;
+  const unreadCount = statsData?.unread || 0;
+  const highPriorityCount = statsData?.highPriority || 0;
+  const totalNotifications = statsData?.total || 0;
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "high":
-        return "bg-destructive text-destructive-foreground";
+        return "bg-destructive/10 text-destructive-foreground";
       case "medium":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-warning/10 text-warning-foreground";
       case "low":
-        return "bg-blue-100 text-blue-800";
+        return "bg-info/10 text-info-foreground";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -105,7 +93,7 @@ async function NotificationsContent() {
     const date = new Date(createdAt);
     const now = new Date();
     const diffInMinutes = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60),
+      (now.getTime() - date.getTime()) / (1000 * 60)
     );
 
     if (diffInMinutes < 1) return "Just now";
@@ -131,7 +119,7 @@ async function NotificationsContent() {
     {
       title: t("total"),
       subText: t("allNotifications"),
-      value: formatCurrency(notifications.length),
+      value: formatNumber(totalNotifications),
       icon: BellIcon,
     },
   ];
@@ -142,16 +130,6 @@ async function NotificationsContent() {
         <div className="head">
           <h1 className="">{t("title")}</h1>
           <p className="">{t("description")}</p>
-        </div>
-        <div className="flex gap-2">
-          <Button size="sm" variant="outline">
-            <FilterIcon className="" />
-            {t("filter")}
-          </Button>
-          <Button size="sm" variant="outline">
-            <CheckIcon className="" />
-            {t("markAllRead")}
-          </Button>
         </div>
       </div>
 
@@ -166,6 +144,8 @@ async function NotificationsContent() {
           />
         ))}
       </div>
+
+      <NotificationToolbar />
 
       <Card>
         <CardHeader>
@@ -186,76 +166,220 @@ async function NotificationsContent() {
             <div className="space-y-4">
               {notifications.map((notification) => (
                 <div
-                  className={`flex items-start gap-4 p-4 border rounded-lg ${
+                  className={`flex items-start gap-4 p-4 border rounded-lg transition-colors ${
                     !notification.read
-                      ? "bg-blue-50 border-blue-200"
-                      : "bg-white"
+                      ? "bg-primary/5 border-primary/10"
+                      : "bg-card border-border"
                   }`}
                   key={notification.id}
                 >
-                  <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      !notification.read
-                        ? "bg-blue-100 text-blue-600"
-                        : "bg-gray-100 text-gray-600"
-                    }`}
-                  >
-                    {getNotificationIcon(notification.type)}
-                  </div>
-
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h3
-                          className={`font-medium ${
-                            !notification.read
-                              ? "text-blue-900"
-                              : "text-gray-900"
-                          }`}
-                        >
-                          {notification.title}
-                        </h3>
+                        <div className="flex items-center gap-2">
+                          {!notification.read && (
+                            <div className="w-2 h-2 bg-primary/80 rounded-full"></div>
+                          )}
+                          <h3
+                            className={`font-medium ${
+                              !notification.read
+                                ? "text-foreground"
+                                : "text-muted-foreground"
+                            }`}
+                          >
+                            {notification.title}
+                          </h3>
+                        </div>
                         <p
                           className={`text-sm ${
                             !notification.read
-                              ? "text-blue-700"
-                              : "text-gray-600"
+                              ? "text-foreground/80"
+                              : "text-muted-foreground"
                           }`}
                         >
                           {notification.message}
                         </p>
-                        <p className="text-xs text-muted-foreground mt-1">
+                        {!!notification.data && (
+                          <div className="mt-2 text-xs text-muted-foreground bg-muted/40 p-2 rounded border border-border">
+                            {notification.type === "order" && (
+                              <div className="flex flex-col gap-1">
+                                {(
+                                  notification.data as unknown as {
+                                    orderNumber?: string;
+                                  }
+                                ).orderNumber && (
+                                  <div className="flex gap-4">
+                                    <span>
+                                      Order #:{" "}
+                                      {
+                                        (
+                                          notification.data as unknown as {
+                                            orderNumber: string;
+                                          }
+                                        ).orderNumber
+                                      }
+                                    </span>
+                                    <span>
+                                      Amount:{" "}
+                                      {formatCurrency(
+                                        (
+                                          notification.data as unknown as {
+                                            amount: number;
+                                          }
+                                        ).amount
+                                      )}
+                                    </span>
+                                  </div>
+                                )}
+                                {(
+                                  notification.data as unknown as {
+                                    productName?: string;
+                                  }
+                                ).productName && (
+                                  <div className="flex gap-4">
+                                    <span>
+                                      Product:{" "}
+                                      {
+                                        (
+                                          notification.data as unknown as {
+                                            productName: string;
+                                          }
+                                        ).productName
+                                      }
+                                    </span>
+                                    <span>
+                                      Qty:{" "}
+                                      {
+                                        (
+                                          notification.data as unknown as {
+                                            quantity: number;
+                                          }
+                                        ).quantity
+                                      }
+                                    </span>
+                                    <span>
+                                      Amount:{" "}
+                                      {formatCurrency(
+                                        (
+                                          notification.data as unknown as {
+                                            amount: number;
+                                          }
+                                        ).amount
+                                      )}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                            {notification.type === "payment" && (
+                              <div className="flex gap-4">
+                                <span>
+                                  Amount:{" "}
+                                  {formatCurrency(
+                                    (
+                                      notification.data as unknown as {
+                                        amount: number;
+                                      }
+                                    ).amount
+                                  )}
+                                </span>
+                                <span>
+                                  Currency:{" "}
+                                  {(
+                                    notification.data as unknown as {
+                                      currency: string;
+                                    }
+                                  ).currency?.toUpperCase()}
+                                </span>
+                              </div>
+                            )}
+                            {notification.type === "inventory" && (
+                              <div className="flex gap-4">
+                                <span>
+                                  Product:{" "}
+                                  {
+                                    (
+                                      notification.data as unknown as {
+                                        productName: string;
+                                      }
+                                    ).productName
+                                  }
+                                </span>
+                                <span>
+                                  Qty:{" "}
+                                  {
+                                    (
+                                      notification.data as unknown as {
+                                        quantity: number;
+                                      }
+                                    ).quantity
+                                  }
+                                </span>
+                                <span>
+                                  Amount:{" "}
+                                  {formatCurrency(
+                                    (
+                                      notification.data as unknown as {
+                                        amount: number;
+                                      }
+                                    ).amount
+                                  )}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        <p className="text-xs text-muted-foreground mt-2">
                           {formatTimestamp(notification.createdAt)}
                         </p>
-                      </div>
-
-                      <div className="flex items-center gap-2 ml-4">
-                        <Badge
-                          className={getPriorityColor(notification.priority)}
-                          variant="secondary"
-                        >
-                          {t(`priorities.${notification.priority}`)}
-                        </Badge>
-
-                        {!notification.read && (
-                          <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                        )}
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex gap-1">
-                    {!notification.read && (
-                      <Button size="sm" variant="ghost">
-                        <CheckIcon className="h-4 w-4" />
-                      </Button>
-                    )}
-                    <Button size="sm" variant="ghost">
-                      <XIcon className="h-4 w-4" />
-                    </Button>
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      className={getPriorityColor(notification.priority)}
+                      variant="secondary"
+                    >
+                      {t(`priorities.${notification.priority}`)}
+                    </Badge>
+                    <NotificationActions
+                      isRead={notification.read}
+                      notificationId={notification.id}
+                    />
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between pt-4 border-t">
+              <p className="text-sm text-muted-foreground">
+                Page {page} of {totalPages} ({totalCount} total notifications)
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  disabled={page <= 1}
+                  render={
+                    <Link href={`?page=${page - 1}&pageSize=${pageSize}`} />
+                  }
+                  size="sm"
+                  variant="outline"
+                >
+                  Previous
+                </Button>
+                <Button
+                  disabled={page >= totalPages}
+                  render={
+                    <Link href={`?page=${page + 1}&pageSize=${pageSize}`} />
+                  }
+                  size="sm"
+                  variant="outline"
+                >
+                  Next
+                </Button>
+              </div>
             </div>
           )}
         </CardPanel>
@@ -264,10 +388,14 @@ async function NotificationsContent() {
   );
 }
 
-export default async function NotificationsPage() {
+export default async function NotificationsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; pageSize?: string }>;
+}) {
   return (
     <Suspense fallback={<ListSkeleton />}>
-      <NotificationsContent />
+      <NotificationsContent searchParams={await searchParams} />
     </Suspense>
   );
 }

@@ -1,5 +1,5 @@
-import { Button as ButtonPrimitive } from "@base-ui-components/react/button";
-import type { useRender } from "@base-ui-components/react/use-render";
+import { mergeProps } from "@base-ui-components/react/merge-props";
+import { useRender } from "@base-ui-components/react/use-render";
 import { cva, type VariantProps } from "class-variance-authority";
 import type * as React from "react";
 import { cn } from "@/lib/utils";
@@ -56,7 +56,11 @@ function Button({ className, variant, size, render, ...props }: ButtonProps) {
     type: typeValue,
   };
 
-  return <ButtonPrimitive {...defaultProps} {...props} />;
+  return useRender({
+    defaultTagName: "button",
+    props: mergeProps<"button">(defaultProps, props),
+    render,
+  });
 }
 
 export { Button, buttonVariants };

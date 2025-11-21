@@ -19,6 +19,7 @@ const main = async () => {
   }
 
   console.log("Clearing existing transactional and catalog data...");
+  await db.delete(schema.notificationsTable);
   await db.delete(schema.auditLogsTable);
   await db.delete(schema.profitReportsTable);
   await db.delete(schema.metricsTable);
@@ -470,6 +471,118 @@ const main = async () => {
     if (auditLogs.length > 0)
       await db.insert(schema.auditLogsTable).values(auditLogs);
     console.log(`  ${auditLogs.length} audit logs seeded.`);
+
+    console.log("  Seeding notifications...");
+    const notifications = [];
+    
+    const recentTransactions = await db.query.transactionsTable.findMany({
+      where: (table, { eq }) => eq(table.businessId, business.id),
+      limit: 10,
+      orderBy: (table, { desc }) => [desc(table.createdAt)],
+    });
+
+    const recentSaleOrders = await db.query.saleOrdersTable.findMany({
+      where: (table, { eq }) => eq(table.businessId, business.id),
+      limit: 5,
+      orderBy: (table, { desc }) => [desc(table.createdAt)],
+    });
+
+    for (const transaction of recentTransactions.filter(t => t.type === "SALE").slice(0, 5)) {
+      const product = products.find(p => p.id === transaction.productId);
+      if (product) {
+        const notificationDate = new Date(transaction.createdAt.getTime() + 1000);
+        notifications.push({
+          businessId: business.id,
+          type: "order",
+          priority: "medium",
+          title: "New Sale Recorded",
+          message: `A new sale of ${Math.abs(transaction.quantity)} ${product.name} was recorded.`,
+          data: {
+            transactionId: transaction.id,
+            productId: product.id,
+            productName: product.name,
+            quantity: Math.abs(transaction.quantity),
+            amount: parseFloat(product.price || "0"),
+          },
+          isRead: faker.datatype.boolean({ probability: 0.3 }),
+          createdAt: notificationDate,
+          updatedAt: notificationDate,
+        });
+      }
+    }
+
+    for (const transaction of recentTransactions.filter(t => t.type === "PURCHASE").slice(0, 3)) {
+      const product = products.find(p => p.id === transaction.productId);
+      if (product) {
+        const notificationDate = new Date(transaction.createdAt.getTime() + 1000);
+        notifications.push({
+          businessId: business.id,
+          type: "inventory",
+          priority: "low",
+          title: "New Purchase Recorded",
+          message: `A new purchase of ${transaction.quantity} ${product.name} was recorded.`,
+          data: {
+            transactionId: transaction.id,
+            productId: product.id,
+            productName: product.name,
+            quantity: transaction.quantity,
+            amount: parseFloat(product.price || "0"),
+          },
+          isRead: faker.datatype.boolean({ probability: 0.5 }),
+          createdAt: notificationDate,
+          updatedAt: notificationDate,
+        });
+      }
+    }
+
+    for (const order of recentSaleOrders.slice(0, 4)) {
+      const notificationDate = new Date(order.createdAt.getTime() + 500);
+      notifications.push({
+        businessId: business.id,
+        type: "order",
+        priority: "high",
+        title: "New Order Received",
+        message: `New order #${order.orderNumber} has been placed.`,
+        data: {
+          orderId: order.id,
+          orderNumber: order.orderNumber,
+          amount: parseFloat(order.totalAmount),
+        },
+        isRead: faker.datatype.boolean({ probability: 0.2 }),
+        createdAt: notificationDate,
+        updatedAt: notificationDate,
+      });
+    }
+
+    const numPaymentNotifications = faker.number.int({ min: 2, max: 4 });
+    for (let i = 0; i < numPaymentNotifications; i++) {
+      const notificationDate = faker.date.between({
+        from: subMonths(today, 1),
+        to: today,
+      });
+      const amount = faker.number.float({ min: 100, max: 5000, fractionDigits: 2 });
+      notifications.push({
+        businessId: business.id,
+        type: "payment",
+        priority: "medium",
+        title: "Payment Received",
+        message: `You have received a payment of ${amount.toFixed(2)} USD`,
+        data: {
+          paymentId: faker.string.uuid(),
+          amount: amount,
+          currency: "usd",
+          payerBusinessId: faker.string.uuid(),
+        },
+        isRead: faker.datatype.boolean({ probability: 0.4 }),
+        createdAt: notificationDate,
+        updatedAt: notificationDate,
+      });
+    }
+
+    if (notifications.length > 0) {
+      await db.insert(schema.notificationsTable).values(notifications);
+    }
+    console.log(`  ${notifications.length} notifications seeded.`);
   }
 
   console.log("Database seeded successfully!");

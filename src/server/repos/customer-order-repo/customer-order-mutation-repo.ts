@@ -5,6 +5,8 @@ import { db } from "@/lib/db";
 import { customerOrderItemsTable, customerOrdersTable } from "@/lib/schema";
 import { ErrorCode } from "@/server/constants/errors";
 
+import * as notificationRepo from "@/server/repos/notification-repo";
+
 export const create_customer_order = async (orderData: {
   orderNumber: string;
   businessId: string;
@@ -72,6 +74,20 @@ export const create_customer_order = async (orderData: {
           })),
         );
       }
+
+      // Notify business of new order
+      await notificationRepo.create({
+        businessId: orderData.businessId,
+        type: "order",
+        priority: "high",
+        title: "New Order Received",
+        message: `New order #${orderData.orderNumber} received from ${orderData.customerName}`,
+        data: {
+          orderId: newOrder.id,
+          orderNumber: orderData.orderNumber,
+          amount: Number(orderData.totalAmount),
+        },
+      });
 
       return newOrder;
     });

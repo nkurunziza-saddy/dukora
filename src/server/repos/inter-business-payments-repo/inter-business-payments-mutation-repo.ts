@@ -9,6 +9,8 @@ import type {
 } from "@/lib/schema/schema-types";
 import { ErrorCode } from "@/server/constants/errors";
 
+import * as notificationRepo from "@/server/repos/notification-repo";
+
 export async function create(
   payment: InsertInterBusinessPayment,
   userId: string,
@@ -33,6 +35,21 @@ export async function create(
     };
 
     await db.insert(auditLogsTable).values(auditData);
+
+    // Notify receiver business
+    await notificationRepo.create({
+      businessId: payment.receiverBusinessId,
+      type: "payment",
+      priority: "medium",
+      title: "Payment Received",
+      message: `You have received a payment of ${payment.amount} ${payment.currency.toUpperCase()}`,
+      data: {
+        paymentId: newPayment.id,
+        amount: Number(payment.amount),
+        currency: payment.currency,
+        payerBusinessId: payment.payerBusinessId,
+      },
+    });
 
     return { data: newPayment, error: null };
   } catch (error) {

@@ -8,6 +8,8 @@ import type {
 import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
+
+
 import * as transactionRepo from "../repos/transaction-repo";
 
 export const getTransactions = createProtectedAction(
@@ -118,6 +120,9 @@ export const createTransaction = createProtectedAction(
     if (resError) {
       return { data: null, error: resError };
     }
+
+
+
     revalidateTag(`transactions-${user.businessId}`, "max");
     revalidateTag("transactions", "max");
     return { data: resData, error: null };
@@ -150,6 +155,9 @@ export const createTransactionAndWarehouseItem = createProtectedAction(
     if (resError) {
       return { data: null, error: resError };
     }
+
+
+
     revalidateTag(`transactions-${user.businessId}`, "max");
     revalidateTag("transactions", "max");
     revalidateTag(`warehouse-item-${user.businessId}`, "max");

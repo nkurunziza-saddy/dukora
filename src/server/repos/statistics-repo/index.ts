@@ -1,3 +1,4 @@
+export * from "./notification-stat-repo";
 export * from "./product-stat-repo";
 export * from "./stock-stat-repo";
 export * from "./transactions-stat-repo";
