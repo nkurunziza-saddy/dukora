@@ -2,7 +2,6 @@
 
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card";
 import type { CartItem } from "@/lib/types";
 import { Separator } from "../ui/separator";
 
