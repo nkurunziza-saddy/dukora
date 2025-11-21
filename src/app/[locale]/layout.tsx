@@ -4,13 +4,13 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import ClientBody from "@/components/providers/client-body";
+import { QueryProvider } from "@/components/providers/query-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { routing } from "@/i18n/routing";
 import { fontMono, fontSans } from "@/lib/config/fonts";
 import { getI18nSiteMetadata } from "@/lib/config/i18n-metadata";
 import { MY_HANDLE, SITE_KEYWORDS } from "@/lib/config/site";
-import { QueryProvider } from "@/lib/providers/query-provider";
 import "@/styles/globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {

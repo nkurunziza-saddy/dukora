@@ -153,7 +153,7 @@ export function calculateAllMetrics(
       : 0;
 
   // Cash flow indicators
-  const workingCapital = validClosingStock; // Simplified, would need accounts receivable/payable for full calculation which arent't implemented yet, //TODO; Apply it later
+  const workingCapital = validClosingStock; // TODO: Simplified, would need accounts receivable/payable for full calculation which arent't implemented yet, Apply it later
   const inventoryValue = validClosingStock;
   const inventoryGrowth =
     validOpeningStock > 0

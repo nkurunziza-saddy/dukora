@@ -83,7 +83,7 @@ export async function get_monthly_metrics(businessId: string, date: Date) {
 
     const metricsObject = result.reduce(
       (acc, metric) => {
-        acc[metric.name] = Number(metric.value);
+        acc[metric.name] = parseFloat(metric.value);
         return acc;
       },
       {} as Record<string, number>,
@@ -119,7 +119,7 @@ export async function get_metrics_history(
       (acc, metric) => {
         const period = metric.period.toISOString().slice(0, 7);
         if (!acc[period]) acc[period] = {};
-        acc[period][metric.name] = Number(metric.value);
+        acc[period][metric.name] = parseFloat(metric.value);
         return acc;
       },
       {} as Record<string, Record<string, number>>,
@@ -148,7 +148,7 @@ export async function get_latest_metrics(
       (acc, metricName) => {
         const metric = result.find((m) => m.name === metricName);
         if (metric) {
-          acc[metricName] = Number(metric.value);
+          acc[metricName] = parseFloat(metric.value);
         }
         return acc;
       },
