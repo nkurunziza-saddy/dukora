@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function SalesTracking(
-  props: PageProps<"/[locale]/sales">
+  props: PageProps<"/[locale]/sales">,
 ) {
   const query = await props.searchParams;
   const page = Number(query.page) || 1;
@@ -48,7 +48,7 @@ export default async function SalesTracking(
       subText: t("saleFromYesterday"),
       value: formatCurrency(
         statData.data?.current?.totalExpenses ?? 0,
-        currency
+        currency,
       ),
       icon: DollarSignIcon,
     },

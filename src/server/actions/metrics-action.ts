@@ -37,7 +37,7 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
   const currentMonthBoundary = getCurrentMonthBoundary();
   if (isAfter(dateFrom, currentMonthBoundary)) {
     console.warn(
-      `Attempted to calculate metrics for future/current month: ${dateFrom.toISOString()}`
+      `Attempted to calculate metrics for future/current month: ${dateFrom.toISOString()}`,
     );
     return { data: null, error: ErrorCode.BAD_REQUEST };
   }
@@ -46,7 +46,7 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
 
   try {
     const business = await getBusinessByIdMinimized(
-      currentUser.businessId ?? ""
+      currentUser.businessId ?? "",
     );
     if (business.error) {
       console.error("Failed to fetch business:", business.error);
@@ -60,7 +60,7 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
 
     if (isBefore(dateFrom, startOfMonth(business.data.createdAt))) {
       console.warn(
-        `Attempted to calculate metrics before business creation: ${dateFrom.toISOString()}`
+        `Attempted to calculate metrics before business creation: ${dateFrom.toISOString()}`,
       );
       return {
         data: business.data.createdAt,
@@ -71,7 +71,7 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
     const transactions = await transactionRepo.get_by_time_interval(
       currentUser.businessId ?? "",
       dateFrom,
-      dateTo
+      dateTo,
     );
 
     if (transactions.error) {
@@ -82,7 +82,7 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
     const transactionsFormatted = (transactions.data ?? [])
       .filter(
         (item: { transactions: SelectTransaction; products: SelectProduct }) =>
-          item.products
+          item.products,
       )
       .map(
         (item: {
@@ -91,7 +91,7 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
         }) => ({
           ...item.transactions,
           product: item.products,
-        })
+        }),
       );
 
     const prevMonth = subMonths(dateFrom, 1);
@@ -99,7 +99,7 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
       currentUser.businessId ?? "",
       "closingStock",
       "monthly",
-      prevMonth
+      prevMonth,
     );
 
     if (
@@ -108,28 +108,28 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
     ) {
       console.warn(
         "Failed to fetch opening stock metric:",
-        openingStockMetric.error
+        openingStockMetric.error,
       );
     }
 
     const openingStockValue = Math.max(
       0,
-      parseFloat(openingStockMetric.data?.value ?? "0")
+      parseFloat(openingStockMetric.data?.value ?? "0"),
     );
 
     const warehouseItemsReq = await getWarehouseItemsByBusiness(
-      currentUser.businessId ?? ""
+      currentUser.businessId ?? "",
     );
     if (warehouseItemsReq.error) {
       console.error(
         "Failed to fetch warehouse items:",
-        warehouseItemsReq.error
+        warehouseItemsReq.error,
       );
       return { data: null, error: warehouseItemsReq.error };
     }
 
     const closingStockValue = calculateClosingStock(
-      warehouseItemsReq.data ?? []
+      warehouseItemsReq.data ?? [],
     );
 
     const expenses = await getExpensesByTimeInterval({
@@ -142,21 +142,21 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
     }
 
     const settingsResult = await get_business_settings(
-      currentUser.businessId ?? ""
+      currentUser.businessId ?? "",
     );
     let taxRate = 0;
     let pricesIncludeTax = false;
 
     if (settingsResult.data) {
       const taxRateSetting = settingsResult.data.find(
-        (s) => s.key === "defaultVatRate"
+        (s) => s.key === "defaultVatRate",
       );
       if (taxRateSetting) {
         taxRate = Number(taxRateSetting.value) || 0;
       }
 
       const pricesIncludeTaxSetting = settingsResult.data.find(
-        (s) => s.key === "pricesIncludeTax"
+        (s) => s.key === "pricesIncludeTax",
       );
       if (pricesIncludeTaxSetting) {
         pricesIncludeTax = Boolean(pricesIncludeTaxSetting.value);
@@ -169,13 +169,13 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
       openingStockValue,
       closingStockValue,
       taxRate,
-      pricesIncludeTax
+      pricesIncludeTax,
     );
 
     const syncResult = await syncMetricsToDatabase(
       currentUser.businessId ?? "",
       dateFrom,
-      calculatedMetrics
+      calculatedMetrics,
     );
 
     if (syncResult.error) {
@@ -197,7 +197,7 @@ export async function getMonthlyMetrics(date: Date) {
   try {
     const metrics = await metricsRepo.get_monthly_metrics(
       currentUser.businessId ?? "",
-      date
+      date,
     );
     return metrics;
   } catch (error) {
@@ -215,13 +215,13 @@ export async function scheduleMonthlyMetricsSync() {
 
     for (const business of businesses.data || []) {
       const result = await calculateAndSyncMonthlyMetrics(
-        startOfMonth(new Date())
+        startOfMonth(new Date()),
       );
 
       if (result.error) {
         console.error(
           `Failed to sync metrics for business ${business.id}:`,
-          result.error
+          result.error,
         );
         errorCount++;
       } else {

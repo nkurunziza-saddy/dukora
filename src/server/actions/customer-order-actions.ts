@@ -29,7 +29,7 @@ export const getCustomerOrders = createProtectedAction(
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 const createCustomerOrderSchema = z.object({
@@ -56,7 +56,7 @@ const createCustomerOrderSchema = z.object({
       quantity: z.number().min(1),
       unitPrice: z.string(),
       discount: z.string().optional(),
-    })
+    }),
   ),
   guestCheckout: z.boolean(),
   userId: z.string().optional(),
@@ -84,14 +84,14 @@ export const createCustomerOrder = createProtectedAction(
 
       if (settingsResult.data) {
         const taxRateSetting = settingsResult.data.find(
-          (s) => s.key === "defaultVatRate"
+          (s) => s.key === "defaultVatRate",
         );
         if (taxRateSetting) {
           taxRate = Number(taxRateSetting.value) || 0;
         }
 
         const pricesIncludeTaxSetting = settingsResult.data.find(
-          (s) => s.key === "pricesIncludeTax"
+          (s) => s.key === "pricesIncludeTax",
         );
         if (pricesIncludeTaxSetting) {
           pricesIncludeTax = Boolean(pricesIncludeTaxSetting.value);
@@ -102,7 +102,7 @@ export const createCustomerOrder = createProtectedAction(
         input.items,
         taxRate,
         0, // TODO: calculate shipping rate
-        pricesIncludeTax
+        pricesIncludeTax,
       );
 
       if (calculations.error) {
@@ -147,7 +147,7 @@ export const createCustomerOrder = createProtectedAction(
       await update_customer_order_payment(
         orderResult.data.id,
         paymentIntent.id,
-        paymentIntent.status
+        paymentIntent.status,
       );
 
       return {
@@ -162,7 +162,7 @@ export const createCustomerOrder = createProtectedAction(
       console.error("Failed to create customer order:", error);
       return { data: null, error: ErrorCode.FAILED_REQUEST };
     }
-  }
+  },
 );
 
 export const confirmCustomerOrder = async (paymentIntentId: string) => {
@@ -181,7 +181,7 @@ export const confirmCustomerOrder = async (paymentIntentId: string) => {
     const updateResult = await update_customer_order_status(
       orderResult.data.id,
       "CONFIRMED",
-      "succeeded"
+      "succeeded",
     );
 
     if (updateResult.error) {
@@ -273,7 +273,7 @@ export const getCustomerOrdersByBusiness = createProtectedAction(
       pageSize: number;
       search?: string;
       status?: string;
-    }
+    },
   ) => {
     if (!user.businessId) {
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
@@ -285,7 +285,7 @@ export const getCustomerOrdersByBusiness = createProtectedAction(
         page,
         pageSize,
         search,
-        status
+        status,
       );
 
       return result;
@@ -293,7 +293,7 @@ export const getCustomerOrdersByBusiness = createProtectedAction(
       console.error("Failed to get customer orders by business:", error);
       return { data: null, error: ErrorCode.FAILED_REQUEST };
     }
-  }
+  },
 );
 
 export const updateOrderStatus = createProtectedAction(
@@ -306,7 +306,7 @@ export const updateOrderStatus = createProtectedAction(
     }: {
       orderId: string;
       status: string;
-    }
+    },
   ) => {
     if (!user.businessId) {
       return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
@@ -329,5 +329,5 @@ export const updateOrderStatus = createProtectedAction(
       console.error("Failed to update order status:", error);
       return { data: null, error: ErrorCode.FAILED_REQUEST };
     }
-  }
+  },
 );

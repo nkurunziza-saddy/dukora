@@ -32,7 +32,7 @@ function assert(
   condition: boolean,
   testName: string,
   expected?: unknown,
-  actual?: unknown
+  actual?: unknown,
 ) {
   if (condition) {
     console.log(`${colors.green}✓${colors.reset} ${testName}`);
@@ -41,10 +41,10 @@ function assert(
     console.log(`${colors.red}✗${colors.reset} ${testName}`);
     if (expected !== undefined && actual !== undefined) {
       console.log(
-        `  Expected: ${colors.yellow}${JSON.stringify(expected)}${colors.reset}`
+        `  Expected: ${colors.yellow}${JSON.stringify(expected)}${colors.reset}`,
       );
       console.log(
-        `  Actual:   ${colors.red}${JSON.stringify(actual)}${colors.reset}`
+        `  Actual:   ${colors.red}${JSON.stringify(actual)}${colors.reset}`,
       );
     }
     testsFailed++;
@@ -68,7 +68,7 @@ function testGetMonthData() {
     result0.date.getMonth() === lastMonth.getMonth(),
     "should return last month for monthsAgo=0",
     lastMonth.getMonth(),
-    result0.date.getMonth()
+    result0.date.getMonth(),
   );
 
   // Test 2: Get month data for 1 month ago
@@ -78,7 +78,7 @@ function testGetMonthData() {
     result1.date.getMonth() === twoMonthsAgo.getMonth(),
     "should return 2 months ago for monthsAgo=1",
     twoMonthsAgo.getMonth(),
-    result1.date.getMonth()
+    result1.date.getMonth(),
   );
 
   // Test 3: Should always exclude current month
@@ -87,7 +87,7 @@ function testGetMonthData() {
     result0.date.getTime() < currentMonth.getTime(),
     "should always exclude current month",
     "< current month",
-    "returned date"
+    "returned date",
   );
 
   // Test 4: Handle large monthsAgo values
@@ -98,7 +98,7 @@ function testGetMonthData() {
       result12.date.getFullYear() === thirteenMonthsAgo.getFullYear(),
     "should handle large monthsAgo values (12 months)",
     `${thirteenMonthsAgo.getFullYear()}-${thirteenMonthsAgo.getMonth()}`,
-    `${result12.date.getFullYear()}-${result12.date.getMonth()}`
+    `${result12.date.getFullYear()}-${result12.date.getMonth()}`,
   );
 
   // Test 5: Ensure minimum of 1 month adjustment
@@ -107,7 +107,7 @@ function testGetMonthData() {
     resultNegative.date.getTime() < currentMonth.getTime(),
     "should ensure minimum 1 month adjustment even with negative input",
     "< current month",
-    "returned date"
+    "returned date",
   );
 }
 
@@ -124,7 +124,7 @@ function testGetCurrentMonthBoundary() {
     result.getTime() === expectedBoundary.getTime(),
     "should return last month as boundary",
     expectedBoundary.toISOString(),
-    result.toISOString()
+    result.toISOString(),
   );
 
   // Test 2: Should always be before current month
@@ -133,7 +133,7 @@ function testGetCurrentMonthBoundary() {
     result.getTime() < currentMonth.getTime(),
     "should always be before current month",
     "< current month",
-    result.toISOString()
+    result.toISOString(),
   );
 }
 
@@ -144,7 +144,7 @@ async function testGetAvailableMonthsForAnalytics() {
   testSection("getAvailableMonthsForAnalytics");
 
   console.log(
-    `${colors.yellow}  Note: Skipping database-dependent tests (requires auth context)${colors.reset}`
+    `${colors.yellow}  Note: Skipping database-dependent tests (requires auth context)${colors.reset}`,
   );
 
   // These tests require database access and authentication context
@@ -153,7 +153,7 @@ async function testGetAvailableMonthsForAnalytics() {
     true,
     "getAvailableMonthsForAnalytics requires database/auth - skipped",
     "skipped",
-    "skipped"
+    "skipped",
   );
 }
 
@@ -169,7 +169,7 @@ function testParseMonth() {
     result.getMonth() === 5 && result.getDate() === 1,
     "should parse month 6 as June (month index 5)",
     "month=5, date=1",
-    `month=${result.getMonth()}, date=${result.getDate()}`
+    `month=${result.getMonth()}, date=${result.getDate()}`,
   );
 
   // Test 2: Handle edge case - January
@@ -178,7 +178,7 @@ function testParseMonth() {
     result1.getMonth() === 0,
     "should parse month 1 as January (month index 0)",
     0,
-    result1.getMonth()
+    result1.getMonth(),
   );
 
   // Test 3: Handle edge case - December
@@ -187,7 +187,7 @@ function testParseMonth() {
     result12.getMonth() === 11,
     "should parse month 12 as December (month index 11)",
     11,
-    result12.getMonth()
+    result12.getMonth(),
   );
 }
 
@@ -203,7 +203,7 @@ function testParseMonthYearShort() {
     result.getMonth() === 5 && result.getFullYear() === 2024,
     "should parse '6/24' as June 2024",
     "month=5, year=2024",
-    `month=${result.getMonth()}, year=${result.getFullYear()}`
+    `month=${result.getMonth()}, year=${result.getFullYear()}`,
   );
 
   // Test 2: Throw error for invalid format
@@ -221,7 +221,7 @@ function testParseMonthYearShort() {
     result1.getMonth() === 0,
     "should parse '1/24' as January",
     0,
-    result1.getMonth()
+    result1.getMonth(),
   );
 
   const result12 = parseMonthYearShort("12/23");
@@ -229,7 +229,7 @@ function testParseMonthYearShort() {
     result12.getFullYear() === 2023,
     "should parse '12/23' as year 2023",
     2023,
-    result12.getFullYear()
+    result12.getFullYear(),
   );
 }
 
@@ -245,7 +245,7 @@ function testGetPreviousMonth() {
     result === "2024-07",
     "should return previous month for 2024-08",
     "2024-07",
-    result
+    result,
   );
 
   // Test 2: Handle year boundary
@@ -254,7 +254,7 @@ function testGetPreviousMonth() {
     resultBoundary === "2023-12",
     "should handle year boundary (2024-01 -> 2023-12)",
     "2023-12",
-    resultBoundary
+    resultBoundary,
   );
 
   // Test 3: Handle different month
@@ -263,7 +263,7 @@ function testGetPreviousMonth() {
     result12 === "2024-11",
     "should return previous month for 2024-12",
     "2024-11",
-    result12
+    result12,
   );
 }
 
@@ -287,7 +287,7 @@ function testIntegration() {
     allPastMonths,
     "getMonthData should never return current month (tested 10 iterations)",
     true,
-    allPastMonths
+    allPastMonths,
   );
 
   // Test 2: Ensure getCurrentMonthBoundary aligns with getMonthData logic
@@ -297,7 +297,7 @@ function testIntegration() {
     monthData.date.getTime() === boundary.getTime(),
     "getCurrentMonthBoundary should align with getMonthData(0)",
     boundary.toISOString(),
-    monthData.date.toISOString()
+    monthData.date.toISOString(),
   );
 }
 
@@ -306,13 +306,13 @@ function testIntegration() {
 // ============================================================================
 async function runAllTests() {
   console.log(
-    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`,
   );
   console.log(
-    `${colors.blue}║  Time Date Formatters Test Suite                          ║${colors.reset}`
+    `${colors.blue}║  Time Date Formatters Test Suite                          ║${colors.reset}`,
   );
   console.log(
-    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`,
   );
 
   testGetMonthData();
@@ -325,7 +325,7 @@ async function runAllTests() {
 
   // Summary
   console.log(
-    `\n${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`
+    `\n${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`,
   );
   console.log(`${colors.cyan}Test Summary:${colors.reset}`);
   console.log(`  ${colors.green}Passed: ${testsPassed}${colors.reset}`);
@@ -345,7 +345,7 @@ async function runAllTests() {
 runAllTests().catch((error) => {
   console.error(
     `${colors.red}Test suite failed with error:${colors.reset}`,
-    error
+    error,
   );
   process.exit(1);
 });

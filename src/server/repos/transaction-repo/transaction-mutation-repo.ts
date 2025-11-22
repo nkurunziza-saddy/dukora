@@ -30,7 +30,7 @@ type NotificationPayload = {
 
 export async function create(
   transaction: InsertTransaction,
-  notificationPayload?: NotificationPayload
+  notificationPayload?: NotificationPayload,
 ) {
   if (
     !transaction.productId ||
@@ -51,7 +51,7 @@ export async function create(
 
       const stockChange = calculateStockChange(
         transaction.type,
-        transaction.quantity
+        transaction.quantity,
       );
 
       const [updatedWarehouseItem] = await tx
@@ -99,7 +99,7 @@ export async function create(
 
 export async function create_with_warehouse_item(
   transaction: Omit<InsertTransaction, "warehouseItemId">,
-  notificationPayload?: NotificationPayload
+  notificationPayload?: NotificationPayload,
 ) {
   if (
     !transaction.productId ||
@@ -122,7 +122,7 @@ export async function create_with_warehouse_item(
         await tx.query.warehouseItemsTable.findFirst({
           where: and(
             eq(warehouseItemsTable.productId, transaction.productId),
-            eq(warehouseItemsTable.warehouseId, transaction.warehouseId)
+            eq(warehouseItemsTable.warehouseId, transaction.warehouseId),
           ),
         });
       let warehouseItem: SelectWarehouseItem | undefined;
@@ -140,7 +140,7 @@ export async function create_with_warehouse_item(
         const newWarehouseItem = await createWarehouseItem(
           transaction.businessId,
           transaction.createdBy,
-          warehouseItemData
+          warehouseItemData,
         );
         if (newWarehouseItem.error) {
           return { data: null, error: newWarehouseItem.error };

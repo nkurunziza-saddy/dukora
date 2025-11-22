@@ -17,5 +17,5 @@ export const deleteAccount = createProtectedAction(
     revalidateTag("user-session", "max");
 
     return { data: result.data, error: null };
-  }
+  },
 );

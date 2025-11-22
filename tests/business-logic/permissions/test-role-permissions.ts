@@ -34,7 +34,7 @@ function assert(
   condition: boolean,
   testName: string,
   expected?: unknown,
-  actual?: unknown
+  actual?: unknown,
 ) {
   if (condition) {
     console.log(`${colors.green}✓${colors.reset} ${testName}`);
@@ -43,10 +43,10 @@ function assert(
     console.log(`${colors.red}✗${colors.reset} ${testName}`);
     if (expected !== undefined && actual !== undefined) {
       console.log(
-        `  Expected: ${colors.yellow}${JSON.stringify(expected)}${colors.reset}`
+        `  Expected: ${colors.yellow}${JSON.stringify(expected)}${colors.reset}`,
       );
       console.log(
-        `  Actual:   ${colors.red}${JSON.stringify(actual)}${colors.reset}`
+        `  Actual:   ${colors.red}${JSON.stringify(actual)}${colors.reset}`,
       );
     }
     testsFailed++;
@@ -69,7 +69,7 @@ function testGetPermissionsForRole() {
     ownerPerms.length > 0,
     "OWNER should have permissions",
     true,
-    ownerPerms.length > 0
+    ownerPerms.length > 0,
   );
 
   // Test 2: Admin has permissions
@@ -78,7 +78,7 @@ function testGetPermissionsForRole() {
     adminPerms.length > 0,
     "ADMIN should have permissions",
     true,
-    adminPerms.length > 0
+    adminPerms.length > 0,
   );
 
   // Test 3: Member has permissions
@@ -87,7 +87,7 @@ function testGetPermissionsForRole() {
     memberPerms.length > 0,
     "MEMBER should have permissions",
     true,
-    memberPerms.length > 0
+    memberPerms.length > 0,
   );
 
   // Test 4: View only has permissions
@@ -96,25 +96,25 @@ function testGetPermissionsForRole() {
     viewOnlyPerms.length > 0,
     "VIEW_ONLY should have permissions",
     true,
-    viewOnlyPerms.length > 0
+    viewOnlyPerms.length > 0,
   );
 
   // Test 5: Owner has more permissions than Admin
   assert(
     ownerPerms.length > adminPerms.length,
-    "OWNER should have more permissions than ADMIN"
+    "OWNER should have more permissions than ADMIN",
   );
 
   // Test 6: Admin has more permissions than Member
   assert(
     adminPerms.length > memberPerms.length,
-    "ADMIN should have more permissions than MEMBER"
+    "ADMIN should have more permissions than MEMBER",
   );
 
   // Test 7: Member has more permissions than View Only
   assert(
     memberPerms.length > viewOnlyPerms.length,
-    "MEMBER should have more permissions than VIEW_ONLY"
+    "MEMBER should have more permissions than VIEW_ONLY",
   );
 
   // Test 8: Returns array for all roles
@@ -130,62 +130,62 @@ function testRoleHasPermission() {
   // Test 1: Owner has product view
   assert(
     roleHasPermission(UserRole.OWNER, Permission.PRODUCT_VIEW) === true,
-    "OWNER should have PRODUCT_VIEW"
+    "OWNER should have PRODUCT_VIEW",
   );
 
   // Test 2: Admin has product view
   assert(
     roleHasPermission(UserRole.ADMIN, Permission.PRODUCT_VIEW) === true,
-    "ADMIN should have PRODUCT_VIEW"
+    "ADMIN should have PRODUCT_VIEW",
   );
 
   // Test 3: Member has product view
   assert(
     roleHasPermission(UserRole.MEMBER, Permission.PRODUCT_VIEW) === true,
-    "MEMBER should have PRODUCT_VIEW"
+    "MEMBER should have PRODUCT_VIEW",
   );
 
   // Test 4: View only has product view
   assert(
     roleHasPermission(UserRole.VIEW_ONLY, Permission.PRODUCT_VIEW) === true,
-    "VIEW_ONLY should have PRODUCT_VIEW"
+    "VIEW_ONLY should have PRODUCT_VIEW",
   );
 
   // Test 5: Member doesn't have product create
   assert(
     roleHasPermission(UserRole.MEMBER, Permission.PRODUCT_CREATE) === false,
-    "MEMBER should NOT have PRODUCT_CREATE"
+    "MEMBER should NOT have PRODUCT_CREATE",
   );
 
   // Test 6: View only doesn't have product create
   assert(
     roleHasPermission(UserRole.VIEW_ONLY, Permission.PRODUCT_CREATE) === false,
-    "VIEW_ONLY should NOT have PRODUCT_CREATE"
+    "VIEW_ONLY should NOT have PRODUCT_CREATE",
   );
 
   // Test 7: Admin has product create
   assert(
     roleHasPermission(UserRole.ADMIN, Permission.PRODUCT_CREATE) === true,
-    "ADMIN should have PRODUCT_CREATE"
+    "ADMIN should have PRODUCT_CREATE",
   );
 
   // Test 8: Owner has user delete
   assert(
     roleHasPermission(UserRole.OWNER, Permission.USER_DELETE) === true,
-    "OWNER should have USER_DELETE"
+    "OWNER should have USER_DELETE",
   );
 
   // Test 9: Admin doesn't have user delete
   assert(
     roleHasPermission(UserRole.ADMIN, Permission.USER_DELETE) === false,
-    "ADMIN should NOT have USER_DELETE"
+    "ADMIN should NOT have USER_DELETE",
   );
 
   // Test 10: View only doesn't have inventory update
   assert(
     roleHasPermission(UserRole.VIEW_ONLY, Permission.INVENTORY_UPDATE) ===
       false,
-    "VIEW_ONLY should NOT have INVENTORY_UPDATE"
+    "VIEW_ONLY should NOT have INVENTORY_UPDATE",
   );
 }
 
@@ -203,25 +203,25 @@ function testRoleHasAllPermissions() {
   ];
   assert(
     roleHasAllPermissions(UserRole.OWNER, viewPerms) === true,
-    "OWNER should have all view permissions"
+    "OWNER should have all view permissions",
   );
 
   // Test 2: Admin has all view permissions
   assert(
     roleHasAllPermissions(UserRole.ADMIN, viewPerms) === true,
-    "ADMIN should have all view permissions"
+    "ADMIN should have all view permissions",
   );
 
   // Test 3: Member has all view permissions
   assert(
     roleHasAllPermissions(UserRole.MEMBER, viewPerms) === true,
-    "MEMBER should have all view permissions"
+    "MEMBER should have all view permissions",
   );
 
   // Test 4: View only has all view permissions
   assert(
     roleHasAllPermissions(UserRole.VIEW_ONLY, viewPerms) === true,
-    "VIEW_ONLY should have all view permissions"
+    "VIEW_ONLY should have all view permissions",
   );
 
   // Test 5: Member doesn't have all create permissions
@@ -232,19 +232,19 @@ function testRoleHasAllPermissions() {
   ];
   assert(
     roleHasAllPermissions(UserRole.MEMBER, createPerms) === false,
-    "MEMBER should NOT have all create permissions"
+    "MEMBER should NOT have all create permissions",
   );
 
   // Test 6: Admin has all these create permissions
   assert(
     roleHasAllPermissions(UserRole.ADMIN, createPerms) === true,
-    "ADMIN should have these create permissions"
+    "ADMIN should have these create permissions",
   );
 
   // Test 7: Empty array returns true
   assert(
     roleHasAllPermissions(UserRole.MEMBER, []) === true,
-    "should return true for empty permission array"
+    "should return true for empty permission array",
   );
 
   // Test 8: Mixed permissions - some yes, some no
@@ -254,7 +254,7 @@ function testRoleHasAllPermissions() {
   ];
   assert(
     roleHasAllPermissions(UserRole.MEMBER, mixedPerms) === false,
-    "MEMBER should NOT have all mixed permissions"
+    "MEMBER should NOT have all mixed permissions",
   );
 }
 
@@ -268,39 +268,39 @@ function testRoleHasAnyPermission() {
   const somePerms = [Permission.PRODUCT_VIEW, Permission.USER_DELETE];
   assert(
     roleHasAnyPermission(UserRole.OWNER, somePerms) === true,
-    "OWNER should have any of the permissions"
+    "OWNER should have any of the permissions",
   );
 
   // Test 2: Member has at least one
   assert(
     roleHasAnyPermission(UserRole.MEMBER, somePerms) === true,
-    "MEMBER should have at least one permission (PRODUCT_VIEW)"
+    "MEMBER should have at least one permission (PRODUCT_VIEW)",
   );
 
   // Test 3: View only has at least one
   assert(
     roleHasAnyPermission(UserRole.VIEW_ONLY, somePerms) === true,
-    "VIEW_ONLY should have at least one permission (PRODUCT_VIEW)"
+    "VIEW_ONLY should have at least one permission (PRODUCT_VIEW)",
   );
 
   // Test 4: Member doesn't have any admin permissions
   const adminPerms = [Permission.USER_DELETE, Permission.BUSINESS_DELETE];
   assert(
     roleHasAnyPermission(UserRole.MEMBER, adminPerms) === false,
-    "MEMBER should NOT have any admin permissions"
+    "MEMBER should NOT have any admin permissions",
   );
 
   // Test 5: Empty array returns false
   assert(
     roleHasAnyPermission(UserRole.MEMBER, []) === false,
-    "should return false for empty permission array"
+    "should return false for empty permission array",
   );
 
   // Test 6: All permissions member doesn't have
   const noPerms = [Permission.PRODUCT_CREATE, Permission.USER_CREATE];
   assert(
     roleHasAnyPermission(UserRole.MEMBER, noPerms) === false,
-    "MEMBER should NOT have any of these permissions"
+    "MEMBER should NOT have any of these permissions",
   );
 }
 
@@ -318,21 +318,21 @@ function testGetPermissionCount() {
   const adminCount = getPermissionCount(UserRole.ADMIN);
   assert(
     adminCount > 0 && adminCount < ownerCount,
-    "ADMIN should have fewer permissions than OWNER"
+    "ADMIN should have fewer permissions than OWNER",
   );
 
   // Test 3: Member has fewer than admin
   const memberCount = getPermissionCount(UserRole.MEMBER);
   assert(
     memberCount > 0 && memberCount < adminCount,
-    "MEMBER should have fewer permissions than ADMIN"
+    "MEMBER should have fewer permissions than ADMIN",
   );
 
   // Test 4: View only has fewest
   const viewOnlyCount = getPermissionCount(UserRole.VIEW_ONLY);
   assert(
     viewOnlyCount > 0 && viewOnlyCount < memberCount,
-    "VIEW_ONLY should have fewer permissions than MEMBER"
+    "VIEW_ONLY should have fewer permissions than MEMBER",
   );
 
   // Test 5: Hierarchy is correct
@@ -340,7 +340,7 @@ function testGetPermissionCount() {
     ownerCount > adminCount &&
       adminCount > memberCount &&
       memberCount > viewOnlyCount,
-    "permission count hierarchy should be maintained"
+    "permission count hierarchy should be maintained",
   );
 }
 
@@ -365,7 +365,7 @@ function testIsValidRole() {
   // Test 5: Invalid role
   assert(
     isValidRole("SUPER_ADMIN") === false,
-    "SUPER_ADMIN should NOT be a valid role"
+    "SUPER_ADMIN should NOT be a valid role",
   );
 
   // Test 6: Empty string
@@ -374,7 +374,7 @@ function testIsValidRole() {
   // Test 7: Lowercase
   assert(
     isValidRole("owner") === false,
-    "lowercase 'owner' should NOT be a valid role"
+    "lowercase 'owner' should NOT be a valid role",
   );
 }
 
@@ -388,26 +388,26 @@ function testIntegration() {
   const adminPerms = getPermissionsForRole(UserRole.ADMIN);
   assert(
     roleHasAllPermissions(UserRole.OWNER, adminPerms) === true,
-    "OWNER should have all permissions that ADMIN has"
+    "OWNER should have all permissions that ADMIN has",
   );
 
   // Test 2: Admin should have all permissions that Member has
   const memberPerms = getPermissionsForRole(UserRole.MEMBER);
   assert(
     roleHasAllPermissions(UserRole.ADMIN, memberPerms) === true,
-    "ADMIN should have all permissions that MEMBER has"
+    "ADMIN should have all permissions that MEMBER has",
   );
 
   // Test 3: View only permissions are subset of member (mostly, with some exceptions)
   const viewOnlyPerms = getPermissionsForRole(UserRole.VIEW_ONLY);
   const memberHasMostViewOnlyPerms = viewOnlyPerms
     .filter(
-      (p) => p !== Permission.INVENTORY_REPORTS // VIEW_ONLY has this, MEMBER may not
+      (p) => p !== Permission.INVENTORY_REPORTS, // VIEW_ONLY has this, MEMBER may not
     )
     .every((p) => memberPerms.includes(p));
   assert(
     memberHasMostViewOnlyPerms === true,
-    "MEMBER should have most VIEW_ONLY permissions (except special cases)"
+    "MEMBER should have most VIEW_ONLY permissions (except special cases)",
   );
 
   // Test 4: No duplicate permissions in any role
@@ -422,7 +422,7 @@ function testIntegration() {
     const uniquePerms = [...new Set(perms)];
     assert(
       perms.length === uniquePerms.length,
-      `${role} should have no duplicate permissions`
+      `${role} should have no duplicate permissions`,
     );
   }
 }
@@ -432,13 +432,13 @@ function testIntegration() {
 // ============================================================================
 async function runAllTests() {
   console.log(
-    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`,
   );
   console.log(
-    `${colors.blue}║  Permission Test Suite                                     ║${colors.reset}`
+    `${colors.blue}║  Permission Test Suite                                     ║${colors.reset}`,
   );
   console.log(
-    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`,
   );
 
   testGetPermissionsForRole();
@@ -451,7 +451,7 @@ async function runAllTests() {
 
   // Summary
   console.log(
-    `\n${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`
+    `\n${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`,
   );
   console.log(`${colors.cyan}Test Summary:${colors.reset}`);
   console.log(`  ${colors.green}Passed: ${testsPassed}${colors.reset}`);
@@ -471,7 +471,7 @@ async function runAllTests() {
 runAllTests().catch((error) => {
   console.error(
     `${colors.red}Test suite failed with error:${colors.reset}`,
-    error
+    error,
   );
   process.exit(1);
 });

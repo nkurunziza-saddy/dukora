@@ -58,7 +58,7 @@ console.log("=== Transaction Notification Logic Verification ===");
 // Test Exclusive
 const exclusiveResult = testNotificationLogic(
   settingsExclusive,
-  "Exclusive Tax (18%)"
+  "Exclusive Tax (18%)",
 );
 if (exclusiveResult.finalAmount === 236 && exclusiveResult.taxAmount === 36) {
   console.log("  ✓ Exclusive calculation correct");
@@ -69,7 +69,7 @@ if (exclusiveResult.finalAmount === 236 && exclusiveResult.taxAmount === 36) {
 // Test Inclusive
 const inclusiveResult = testNotificationLogic(
   settingsInclusive,
-  "Inclusive Tax (18%)"
+  "Inclusive Tax (18%)",
 );
 // 200 inclusive at 18% -> Tax = 200 - (200/1.18) = 30.51
 if (

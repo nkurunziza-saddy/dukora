@@ -12,7 +12,7 @@ export const useCurrency = () => {
     (value: number | string | null | undefined) => {
       return formatCurrencyUtil(value, currency);
     },
-    [currency]
+    [currency],
   );
 
   return {

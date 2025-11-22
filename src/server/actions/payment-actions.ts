@@ -7,7 +7,6 @@ import { createProtectedAction } from "@/server/helpers/action-factory";
 import { get_by_id as get_business_by_id } from "@/server/repos/business-repo";
 import * as interBusinessPaymentsRepo from "@/server/repos/inter-business-payments-repo";
 
-
 export const initiateInterBusinessPayment = createProtectedAction(
   Permission.INTER_BUSINESS_PAYMENT_INITIATE,
   async (
@@ -70,8 +69,6 @@ export const initiateInterBusinessPayment = createProtectedAction(
       if (paymentRecord.error) {
         return { data: null, error: paymentRecord.error };
       }
-
-
 
       return { data: paymentIntent, error: null };
     } catch (error) {

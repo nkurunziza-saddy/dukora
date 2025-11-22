@@ -474,7 +474,7 @@ const main = async () => {
 
     console.log("  Seeding notifications...");
     const notifications = [];
-    
+
     const recentTransactions = await db.query.transactionsTable.findMany({
       where: (table, { eq }) => eq(table.businessId, business.id),
       limit: 10,
@@ -487,10 +487,14 @@ const main = async () => {
       orderBy: (table, { desc }) => [desc(table.createdAt)],
     });
 
-    for (const transaction of recentTransactions.filter(t => t.type === "SALE").slice(0, 5)) {
-      const product = products.find(p => p.id === transaction.productId);
+    for (const transaction of recentTransactions
+      .filter((t) => t.type === "SALE")
+      .slice(0, 5)) {
+      const product = products.find((p) => p.id === transaction.productId);
       if (product) {
-        const notificationDate = new Date(transaction.createdAt.getTime() + 1000);
+        const notificationDate = new Date(
+          transaction.createdAt.getTime() + 1000,
+        );
         notifications.push({
           businessId: business.id,
           type: "order",
@@ -511,10 +515,14 @@ const main = async () => {
       }
     }
 
-    for (const transaction of recentTransactions.filter(t => t.type === "PURCHASE").slice(0, 3)) {
-      const product = products.find(p => p.id === transaction.productId);
+    for (const transaction of recentTransactions
+      .filter((t) => t.type === "PURCHASE")
+      .slice(0, 3)) {
+      const product = products.find((p) => p.id === transaction.productId);
       if (product) {
-        const notificationDate = new Date(transaction.createdAt.getTime() + 1000);
+        const notificationDate = new Date(
+          transaction.createdAt.getTime() + 1000,
+        );
         notifications.push({
           businessId: business.id,
           type: "inventory",
@@ -560,7 +568,11 @@ const main = async () => {
         from: subMonths(today, 1),
         to: today,
       });
-      const amount = faker.number.float({ min: 100, max: 5000, fractionDigits: 2 });
+      const amount = faker.number.float({
+        min: 100,
+        max: 5000,
+        fractionDigits: 2,
+      });
       notifications.push({
         businessId: business.id,
         type: "payment",

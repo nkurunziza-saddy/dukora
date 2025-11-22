@@ -63,7 +63,7 @@ console.log("=== UI Tax Calculation Logic Verification ===");
 // Test Exclusive
 const exclusiveResult = calculateUiTotals(
   settingsExclusive,
-  "Exclusive Tax (18%)"
+  "Exclusive Tax (18%)",
 );
 if (exclusiveResult.total === 236 && exclusiveResult.tax === 36) {
   console.log("  ✓ Exclusive UI calculation correct");
@@ -74,7 +74,7 @@ if (exclusiveResult.total === 236 && exclusiveResult.tax === 36) {
 // Test Inclusive
 const inclusiveResult = calculateUiTotals(
   settingsInclusive,
-  "Inclusive Tax (18%)"
+  "Inclusive Tax (18%)",
 );
 // 200 inclusive at 18% -> Tax = 200 - (200/1.18) = 30.51
 if (

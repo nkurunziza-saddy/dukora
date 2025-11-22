@@ -18,7 +18,7 @@ export const changePassword = createProtectedAction(
       currentPassword: string;
       newPassword: string;
       revokeOtherSessions?: boolean;
-    }
+    },
   ) => {
     if (!currentPassword?.trim() || !newPassword?.trim()) {
       return { data: null, error: ErrorCode.MISSING_INPUT };
@@ -31,7 +31,7 @@ export const changePassword = createProtectedAction(
     const result = await authRepo.change_password(
       currentPassword,
       newPassword,
-      revokeOtherSessions
+      revokeOtherSessions,
     );
 
     if (result.error) {
@@ -42,7 +42,7 @@ export const changePassword = createProtectedAction(
     revalidateTag("user-session", "max");
 
     return { data: { success: true }, error: null };
-  }
+  },
 );
 
 export const setPassword = createProtectedAction(
@@ -66,5 +66,5 @@ export const setPassword = createProtectedAction(
     revalidateTag("user-session", "max");
 
     return { data: { success: true }, error: null };
-  }
+  },
 );

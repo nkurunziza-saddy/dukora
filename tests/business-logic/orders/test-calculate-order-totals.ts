@@ -34,7 +34,7 @@ function assert(
   condition: boolean,
   testName: string,
   expected?: unknown,
-  actual?: unknown
+  actual?: unknown,
 ) {
   if (condition) {
     console.log(`${colors.green}✓${colors.reset} ${testName}`);
@@ -43,10 +43,10 @@ function assert(
     console.log(`${colors.red}✗${colors.reset} ${testName}`);
     if (expected !== undefined && actual !== undefined) {
       console.log(
-        `  Expected: ${colors.yellow}${JSON.stringify(expected)}${colors.reset}`
+        `  Expected: ${colors.yellow}${JSON.stringify(expected)}${colors.reset}`,
       );
       console.log(
-        `  Actual:   ${colors.red}${JSON.stringify(actual)}${colors.reset}`
+        `  Actual:   ${colors.red}${JSON.stringify(actual)}${colors.reset}`,
       );
     }
     testsFailed++;
@@ -73,7 +73,7 @@ function testCalculateOrderSubtotal() {
     result1.value === 35 && result1.error === null,
     "should calculate subtotal correctly (2*10 + 3*5 = 35)",
     35,
-    result1.value
+    result1.value,
   );
 
   // Test 2: Single item
@@ -85,7 +85,7 @@ function testCalculateOrderSubtotal() {
     result2.value === 102.5 && result2.error === null,
     "should calculate single item (5 * 20.50 = 102.5)",
     102.5,
-    result2.value
+    result2.value,
   );
 
   // Test 3: Empty array
@@ -94,14 +94,14 @@ function testCalculateOrderSubtotal() {
     result3.value === 0 && result3.error === ErrorCode.MISSING_INPUT,
     "should return error for empty array",
     ErrorCode.MISSING_INPUT,
-    result3.error
+    result3.error,
   );
 
   // Test 4: Invalid input (not array)
   const result4 = calculateOrderSubtotal(null as any);
   assert(
     result4.error === ErrorCode.MISSING_INPUT,
-    "should return error for null input"
+    "should return error for null input",
   );
 
   // Test 5: Decimal prices
@@ -113,7 +113,7 @@ function testCalculateOrderSubtotal() {
     Math.abs(result5.value - 38.97) < 0.01,
     "should handle decimal prices correctly",
     38.97,
-    result5.value
+    result5.value,
   );
 
   // Test 6: Zero price
@@ -125,7 +125,7 @@ function testCalculateOrderSubtotal() {
     result6.value === 0 && result6.error === null,
     "should handle zero price",
     0,
-    result6.value
+    result6.value,
   );
 
   // Test 7: Invalid price string
@@ -137,7 +137,7 @@ function testCalculateOrderSubtotal() {
     result7.value === 0,
     "should default to 0 for invalid price",
     0,
-    result7.value
+    result7.value,
   );
 
   // Test 8: Mixed valid and invalid items
@@ -150,7 +150,7 @@ function testCalculateOrderSubtotal() {
     result8.value === 20,
     "should skip items with zero quantity",
     20,
-    result8.value
+    result8.value,
   );
 }
 
@@ -170,7 +170,7 @@ function testCalculateOrderDiscounts() {
     result1.value === 3.5 && result1.error === null,
     "should calculate discounts correctly (2*1 + 3*0.5 = 3.5)",
     3.5,
-    result1.value
+    result1.value,
   );
 
   // Test 2: No discounts
@@ -183,7 +183,7 @@ function testCalculateOrderDiscounts() {
     result2.value === 0 && result2.error === null,
     "should return 0 when no discounts provided",
     0,
-    result2.value
+    result2.value,
   );
 
   // Test 3: Empty array
@@ -192,14 +192,14 @@ function testCalculateOrderDiscounts() {
     result3.value === 0 && result3.error === null,
     "should return 0 for empty array (not an error)",
     0,
-    result3.value
+    result3.value,
   );
 
   // Test 4: Null input
   const result4 = calculateOrderDiscounts(null as any);
   assert(
     result4.value === 0 && result4.error === null,
-    "should return 0 for null input"
+    "should return 0 for null input",
   );
 
   // Test 5: Mixed discounts
@@ -213,7 +213,7 @@ function testCalculateOrderDiscounts() {
     result5.value === 9,
     "should handle mixed discounts (2*2 + 0 + 1*5 = 9)",
     9,
-    result5.value
+    result5.value,
   );
 
   // Test 6: Invalid discount string
@@ -225,7 +225,7 @@ function testCalculateOrderDiscounts() {
     result6.value === 0,
     "should default to 0 for invalid discount",
     0,
-    result6.value
+    result6.value,
   );
 }
 
@@ -241,7 +241,7 @@ function testCalculateOrderTax() {
     result1.value === 10 && result1.error === null,
     "should calculate 10% tax on 100 = 10",
     10,
-    result1.value
+    result1.value,
   );
 
   // Test 2: 8.5% tax
@@ -250,7 +250,7 @@ function testCalculateOrderTax() {
     result2.value === 4.25 && result2.error === null,
     "should calculate 8.5% tax on 50 = 4.25",
     4.25,
-    result2.value
+    result2.value,
   );
 
   // Test 3: 0% tax
@@ -259,28 +259,28 @@ function testCalculateOrderTax() {
     result3.value === 0 && result3.error === null,
     "should handle 0% tax",
     0,
-    result3.value
+    result3.value,
   );
 
   // Test 4: Negative subtotal (invalid)
   const result4 = calculateOrderTax(-100, 10);
   assert(
     result4.error === ErrorCode.MISSING_INPUT,
-    "should return error for negative subtotal"
+    "should return error for negative subtotal",
   );
 
   // Test 5: Invalid tax rate (negative)
   const result5 = calculateOrderTax(100, -10);
   assert(
     result5.error === ErrorCode.MISSING_INPUT,
-    "should return error for negative tax rate"
+    "should return error for negative tax rate",
   );
 
   // Test 6: Invalid tax rate (> 100%)
   const result6 = calculateOrderTax(100, 150);
   assert(
     result6.error === ErrorCode.MISSING_INPUT,
-    "should return error for tax rate > 100%"
+    "should return error for tax rate > 100%",
   );
 }
 
@@ -299,7 +299,7 @@ function testCalculateOrderShipping() {
     result1.value === 15 && result1.error === null,
     "should return fixed shipping rate",
     15,
-    result1.value
+    result1.value,
   );
 
   // Test 2: Zero shipping
@@ -308,7 +308,7 @@ function testCalculateOrderShipping() {
     result2.value === 0 && result2.error === null,
     "should handle zero shipping",
     0,
-    result2.value
+    result2.value,
   );
 
   // Test 3: Default shipping (no rate provided)
@@ -317,14 +317,14 @@ function testCalculateOrderShipping() {
     result3.value === 0 && result3.error === null,
     "should default to 0 when no rate provided",
     0,
-    result3.value
+    result3.value,
   );
 
   // Test 4: Negative shipping rate (invalid)
   const result4 = calculateOrderShipping(items1, -10);
   assert(
     result4.error === ErrorCode.MISSING_INPUT,
-    "should return error for negative shipping rate"
+    "should return error for negative shipping rate",
   );
 }
 
@@ -340,7 +340,7 @@ function testCalculateOrderTotal() {
     result1.value === 110 && result1.error === null,
     "should calculate total (100 - 10 + 5 + 15 = 110)",
     110,
-    result1.value
+    result1.value,
   );
 
   // Test 2: No discounts, tax, or shipping
@@ -349,14 +349,14 @@ function testCalculateOrderTotal() {
     result2.value === 100 && result2.error === null,
     "should return subtotal when no other amounts",
     100,
-    result2.value
+    result2.value,
   );
 
   // Test 3: Discount exceeds subtotal
   const result3 = calculateOrderTotal(50, 100, 0, 0);
   assert(
     result3.error === ErrorCode.BAD_REQUEST,
-    "should return error when discount > subtotal"
+    "should return error when discount > subtotal",
   );
 
   // Test 4: With defaults (only subtotal and discounts)
@@ -365,7 +365,7 @@ function testCalculateOrderTotal() {
     result4.value === 90 && result4.error === null,
     "should use default values for tax and shipping",
     90,
-    result4.value
+    result4.value,
   );
 
   // Test 5: Negative values converted to positive
@@ -374,14 +374,14 @@ function testCalculateOrderTotal() {
     result5.value === 95 && result5.error === null,
     "should handle all components (100 - 20 + 5 + 10 = 95)",
     95,
-    result5.value
+    result5.value,
   );
 
   // Test 6: Invalid input types
   const result6 = calculateOrderTotal("100" as any, 10);
   assert(
     result6.error === ErrorCode.MISSING_INPUT,
-    "should return error for invalid input types"
+    "should return error for invalid input types",
   );
 }
 
@@ -412,7 +412,7 @@ function testCalculateAllOrderAmounts() {
       tax: result1.tax,
       shipping: result1.shipping,
       total: result1.total,
-    }
+    },
   );
 
   // Test 2: With defaults (no tax/shipping)
@@ -426,14 +426,14 @@ function testCalculateAllOrderAmounts() {
       result2.error === null,
     "should use defaults for tax and shipping",
     31.5,
-    result2.total
+    result2.total,
   );
 
   // Test 3: Invalid items
   const result3 = calculateAllOrderAmounts([]);
   assert(
     result3.error === ErrorCode.MISSING_INPUT,
-    "should return error for empty items"
+    "should return error for empty items",
   );
 
   // Test 4: Tax Inclusive
@@ -451,7 +451,7 @@ function testCalculateAllOrderAmounts() {
       result4.error === null,
     "should calculate inclusive tax correctly",
     { subtotal: 118, tax: 18, total: 128 },
-    { subtotal: result4.subtotal, tax: result4.tax, total: result4.total }
+    { subtotal: result4.subtotal, tax: result4.tax, total: result4.total },
   );
 }
 
@@ -460,13 +460,13 @@ function testCalculateAllOrderAmounts() {
 // ============================================================================
 async function runAllTests() {
   console.log(
-    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`,
   );
   console.log(
-    `${colors.blue}║  Order Calculation Test Suite                             ║${colors.reset}`
+    `${colors.blue}║  Order Calculation Test Suite                             ║${colors.reset}`,
   );
   console.log(
-    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`,
   );
 
   testCalculateOrderSubtotal();
@@ -478,7 +478,7 @@ async function runAllTests() {
 
   // Summary
   console.log(
-    `\n${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`
+    `\n${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`,
   );
   console.log(`${colors.cyan}Test Summary:${colors.reset}`);
   console.log(`  ${colors.green}Passed: ${testsPassed}${colors.reset}`);
@@ -498,7 +498,7 @@ async function runAllTests() {
 runAllTests().catch((error) => {
   console.error(
     `${colors.red}Test suite failed with error:${colors.reset}`,
-    error
+    error,
   );
   process.exit(1);
 });

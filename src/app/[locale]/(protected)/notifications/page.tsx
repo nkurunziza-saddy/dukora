@@ -98,7 +98,7 @@ async function NotificationsContent({
     const date = new Date(createdAt);
     const now = new Date();
     const diffInMinutes = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60)
+      (now.getTime() - date.getTime()) / (1000 * 60),
     );
 
     if (diffInMinutes < 1) return "Just now";
@@ -232,7 +232,7 @@ async function NotificationsContent({
                                             amount: number;
                                           }
                                         ).amount,
-                                        currency
+                                        currency,
                                       )}
                                     </span>
                                   </div>
@@ -271,7 +271,7 @@ async function NotificationsContent({
                                             amount: number;
                                           }
                                         ).amount,
-                                        currency
+                                        currency,
                                       )}
                                     </span>
                                   </div>
@@ -288,7 +288,7 @@ async function NotificationsContent({
                                         amount: number;
                                       }
                                     ).amount,
-                                    currency
+                                    currency,
                                   )}
                                 </span>
                                 <span>
@@ -331,7 +331,7 @@ async function NotificationsContent({
                                         amount: number;
                                       }
                                     ).amount,
-                                    currency
+                                    currency,
                                   )}
                                 </span>
                               </div>

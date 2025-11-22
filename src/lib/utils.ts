@@ -24,7 +24,7 @@ export function getMonthName(monthNumber: number) {
 
 export const formatCurrency = (
   value: number | string | null | undefined,
-  currency: string = "USD"
+  currency: string = "USD",
 ) => {
   if (!value) {
     return new Intl.NumberFormat("en-US", {

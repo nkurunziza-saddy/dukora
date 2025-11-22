@@ -59,7 +59,7 @@ export function validateOrderItems(items: OrderItem[]): ValidationResult {
 export function validateCustomerInfo(
   email: string,
   name: string,
-  phone?: string
+  phone?: string,
 ): ValidationResult {
   if (!email || !email.trim()) {
     return { valid: false, error: ErrorCode.MISSING_INPUT };

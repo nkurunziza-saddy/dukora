@@ -21,7 +21,7 @@ function assert(
   condition: boolean,
   testName: string,
   expected?: unknown,
-  actual?: unknown
+  actual?: unknown,
 ) {
   if (condition) {
     console.log(`${colors.green}✓${colors.reset} ${testName}`);
@@ -30,10 +30,10 @@ function assert(
     console.log(`${colors.red}✗${colors.reset} ${testName}`);
     if (expected !== undefined && actual !== undefined) {
       console.log(
-        `  Expected: ${colors.yellow}${JSON.stringify(expected)}${colors.reset}`
+        `  Expected: ${colors.yellow}${JSON.stringify(expected)}${colors.reset}`,
       );
       console.log(
-        `  Actual:   ${colors.red}${JSON.stringify(actual)}${colors.reset}`
+        `  Actual:   ${colors.red}${JSON.stringify(actual)}${colors.reset}`,
       );
     }
     testsFailed++;
@@ -46,13 +46,13 @@ function testSection(name: string) {
 
 async function runAllTests() {
   console.log(
-    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`,
   );
   console.log(
-    `${colors.blue}║  Tax Calculation Test Suite                               ║${colors.reset}`
+    `${colors.blue}║  Tax Calculation Test Suite                               ║${colors.reset}`,
   );
   console.log(
-    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`,
   );
 
   testSection("calculateTaxAmount");
@@ -62,19 +62,19 @@ async function runAllTests() {
     calculateTaxAmount(100, 18, false) === 18,
     "Should calculate 18% exclusive tax on 100 correctly",
     18,
-    calculateTaxAmount(100, 18, false)
+    calculateTaxAmount(100, 18, false),
   );
   assert(
     calculateTaxAmount(100, 10, false) === 10,
-    "Should calculate 10% exclusive tax on 100 correctly"
+    "Should calculate 10% exclusive tax on 100 correctly",
   );
   assert(
     calculateTaxAmount(50, 20, false) === 10,
-    "Should calculate 20% exclusive tax on 50 correctly"
+    "Should calculate 20% exclusive tax on 50 correctly",
   );
   assert(
     calculateTaxAmount(100, 0, false) === 0,
-    "Should return 0 tax for 0% rate"
+    "Should return 0 tax for 0% rate",
   );
 
   // Inclusive Tax Tests
@@ -83,12 +83,12 @@ async function runAllTests() {
     calculateTaxAmount(118, 18, true) === 18,
     "Should calculate 18% inclusive tax on 118 correctly",
     18,
-    calculateTaxAmount(118, 18, true)
+    calculateTaxAmount(118, 18, true),
   );
   // 110 inclusive at 10% -> Net 100, Tax 10
   assert(
     calculateTaxAmount(110, 10, true) === 10,
-    "Should calculate 10% inclusive tax on 110 correctly"
+    "Should calculate 10% inclusive tax on 110 correctly",
   );
 
   // Rounding Tests
@@ -97,7 +97,7 @@ async function runAllTests() {
     calculateTaxAmount(100, 18, true) === 15.25,
     "Should handle rounding for inclusive tax correctly",
     15.25,
-    calculateTaxAmount(100, 18, true)
+    calculateTaxAmount(100, 18, true),
   );
 
   testSection("calculateNetPrice");
@@ -105,24 +105,24 @@ async function runAllTests() {
   // Exclusive Tax (Net = Price)
   assert(
     calculateNetPrice(100, 18, false) === 100,
-    "Should return original price as net for exclusive tax"
+    "Should return original price as net for exclusive tax",
   );
 
   // Inclusive Tax (Net = Price / (1 + rate))
   assert(
     calculateNetPrice(118, 18, true) === 100,
-    "Should calculate net price from 118 inclusive at 18%"
+    "Should calculate net price from 118 inclusive at 18%",
   );
   assert(
     calculateNetPrice(110, 10, true) === 100,
-    "Should calculate net price from 110 inclusive at 10%"
+    "Should calculate net price from 110 inclusive at 10%",
   );
 
   // Rounding
   // 100 inclusive at 18% -> 100 / 1.18 = 84.745... -> 84.75
   assert(
     calculateNetPrice(100, 18, true) === 84.75,
-    "Should handle rounding for net price calculation"
+    "Should handle rounding for net price calculation",
   );
 
   testSection("calculateTotalWithTax");
@@ -130,18 +130,18 @@ async function runAllTests() {
   // Exclusive Tax (Total = Price + Tax)
   assert(
     calculateTotalWithTax(100, 18, false) === 118,
-    "Should add tax to price for exclusive tax"
+    "Should add tax to price for exclusive tax",
   );
 
   // Inclusive Tax (Total = Price)
   assert(
     calculateTotalWithTax(118, 18, true) === 118,
-    "Should return original price as total for inclusive tax"
+    "Should return original price as total for inclusive tax",
   );
 
   // Summary
   console.log(
-    `\n${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`
+    `\n${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`,
   );
   console.log(`${colors.cyan}Test Summary:${colors.reset}`);
   console.log(`  ${colors.green}Passed: ${testsPassed}${colors.reset}`);
@@ -160,7 +160,7 @@ async function runAllTests() {
 runAllTests().catch((error) => {
   console.error(
     `${colors.red}Test suite failed with error:${colors.reset}`,
-    error
+    error,
   );
   process.exit(1);
 });

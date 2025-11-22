@@ -14,7 +14,7 @@ function roundToTwoDecimals(num: number): number {
 export function calculateTaxAmount(
   price: number,
   taxRate: number,
-  pricesIncludeTax: boolean = false
+  pricesIncludeTax: boolean = false,
 ): number {
   if (price < 0 || taxRate < 0) return 0;
   if (taxRate === 0) return 0;
@@ -45,7 +45,7 @@ export function calculateTaxAmount(
 export function calculateNetPrice(
   price: number,
   taxRate: number,
-  pricesIncludeTax: boolean = false
+  pricesIncludeTax: boolean = false,
 ): number {
   if (price < 0 || taxRate < 0) return 0;
   if (taxRate === 0) return roundToTwoDecimals(price);
@@ -73,7 +73,7 @@ export function calculateNetPrice(
 export function calculateTotalWithTax(
   price: number,
   taxRate: number,
-  pricesIncludeTax: boolean = false
+  pricesIncludeTax: boolean = false,
 ): number {
   if (price < 0 || taxRate < 0) return 0;
   if (taxRate === 0) return roundToTwoDecimals(price);
