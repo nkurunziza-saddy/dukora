@@ -23,6 +23,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { formatCurrency, formatNumber } from "@/lib/utils";
+import { getBusinessSettings } from "@/server/actions/business-settings-actions";
 import {
   getNotificationStats,
   getNotifications,
@@ -53,6 +54,10 @@ async function NotificationsContent({
     });
 
   const { data: statsData, error: statsError } = await getNotificationStats({});
+  const settings = await getBusinessSettings({});
+  const currency =
+    (settings.data?.find((s) => s.key === "currency")?.value as string) ||
+    "USD";
 
   if (notificationsError || statsError) {
     return (
@@ -226,7 +231,8 @@ async function NotificationsContent({
                                           notification.data as unknown as {
                                             amount: number;
                                           }
-                                        ).amount
+                                        ).amount,
+                                        currency
                                       )}
                                     </span>
                                   </div>
@@ -264,7 +270,8 @@ async function NotificationsContent({
                                           notification.data as unknown as {
                                             amount: number;
                                           }
-                                        ).amount
+                                        ).amount,
+                                        currency
                                       )}
                                     </span>
                                   </div>
@@ -280,7 +287,8 @@ async function NotificationsContent({
                                       notification.data as unknown as {
                                         amount: number;
                                       }
-                                    ).amount
+                                    ).amount,
+                                    currency
                                   )}
                                 </span>
                                 <span>
@@ -322,7 +330,8 @@ async function NotificationsContent({
                                       notification.data as unknown as {
                                         amount: number;
                                       }
-                                    ).amount
+                                    ).amount,
+                                    currency
                                   )}
                                 </span>
                               </div>

@@ -18,7 +18,12 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useProductDetails, useProducts } from "@/lib/hooks/use-queries";
+import { useCurrency } from "@/lib/hooks/use-currency";
+import {
+  useBusinessSettings,
+  useProductDetails,
+  useProducts,
+} from "@/lib/hooks/use-queries";
 import type {
   InsertTransaction,
   SelectTransaction,
@@ -121,15 +126,47 @@ export default function SaleTransactionForm({
   const selectedWarehouseItem = useMemo(
     () =>
       productDetailsData?.warehouseItems.find(
-        (item) => item.id === warehouseItemId,
+        (item) => item.id === warehouseItemId
       ),
-    [productDetailsData?.warehouseItems, warehouseItemId],
+    [productDetailsData?.warehouseItems, warehouseItemId]
   );
 
   const hasInsufficientStock = useMemo(
     () => selectedWarehouseItem && quantity > selectedWarehouseItem.quantity,
-    [selectedWarehouseItem, quantity],
+    [selectedWarehouseItem, quantity]
   );
+
+  const { data: settings } = useBusinessSettings();
+  const { formatCurrency } = useCurrency();
+  const taxRate =
+    Number(settings?.find((s) => s.key === "defaultVatRate")?.value) || 0;
+  const pricesIncludeTax =
+    settings?.find((s) => s.key === "pricesIncludeTax")?.value === "true";
+
+  const calculations = useMemo(() => {
+    const product = productsData?.find((p) => p.id === productId);
+    if (!product) return { subtotal: 0, tax: 0, total: 0 };
+
+    const price = Number(product.price);
+    const rawTotal = price * quantity;
+
+    if (pricesIncludeTax) {
+      // Tax = Total - (Total / (1 + Rate))
+      const taxAmount = rawTotal - rawTotal / (1 + taxRate / 100);
+      return {
+        subtotal: rawTotal - taxAmount,
+        tax: taxAmount,
+        total: rawTotal,
+      };
+    } else {
+      const taxAmount = rawTotal * (taxRate / 100);
+      return {
+        subtotal: rawTotal,
+        tax: taxAmount,
+        total: rawTotal + taxAmount,
+      };
+    }
+  }, [productId, quantity, productsData, taxRate, pricesIncludeTax]);
 
   if (productsError) {
     return (
@@ -202,7 +239,7 @@ export default function SaleTransactionForm({
                                 "h-4 w-4",
                                 product.id === field.state.value
                                   ? "opacity-100"
-                                  : "opacity-0",
+                                  : "opacity-0"
                               )}
                             />
                           </div>
@@ -245,7 +282,7 @@ export default function SaleTransactionForm({
                           const warehouseId =
                             typeof item === "string"
                               ? productDetailsData?.warehouseItems.find(
-                                  (w) => w.id === item,
+                                  (w) => w.id === item
                                 )?.warehouseId
                               : (item as any).warehouseId;
                           if (warehouseId) {
@@ -281,7 +318,7 @@ export default function SaleTransactionForm({
                                   "h-4 w-4",
                                   item.id === field.state.value
                                     ? "opacity-100"
-                                    : "opacity-0",
+                                    : "opacity-0"
                                 )}
                               />
                             </div>
@@ -328,7 +365,7 @@ export default function SaleTransactionForm({
                       "text-sm font-medium",
                       hasInsufficientStock
                         ? "text-destructive"
-                        : "text-muted-foreground",
+                        : "text-muted-foreground"
                     )}
                   >
                     {tInventory("onHand")}: {selectedWarehouseItem.quantity}
@@ -390,38 +427,59 @@ export default function SaleTransactionForm({
       </FieldGroup>
 
       <div className="flex justify-end pt-6 border-t">
-        <div className="flex gap-3">
-          <Button
-            disabled={form.state.isSubmitting}
-            onClick={() => {
-              form.reset();
-            }}
-            type="button"
-            variant="outline"
-          >
-            {t("resetForm")}
-          </Button>
-          <Button
-            className="min-w-[140px]"
-            disabled={
-              form.state.isSubmitting ||
-              !form.state.isValid ||
-              hasInsufficientStock
-            }
-            type="submit"
-          >
-            {form.state.isSubmitting ? (
-              <>
-                <Loader2Icon className="size-3.5 animate-spin" />
-                {saleTransaction ? t("updating") : t("recording")}
-              </>
-            ) : (
-              <>
-                {saleTransaction ? t("update") : t("record")}{" "}
-                {tInventory("title").split(" ")[0]}
-              </>
-            )}
-          </Button>
+        <div className="flex flex-col items-end gap-2 w-full">
+          {productId && quantity > 0 && productsData && (
+            <div className="w-full bg-muted/50 p-4 rounded-lg mb-4 space-y-2">
+              <div className="flex justify-between text-sm">
+                <span>{t("subtotal")}</span>
+                <span>{formatCurrency(calculations.subtotal)}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span>
+                  {t("tax")} ({taxRate}%)
+                </span>
+                <span>{formatCurrency(calculations.tax)}</span>
+              </div>
+              <Separator className="my-2" />
+              <div className="flex justify-between font-medium">
+                <span>{t("total")}</span>
+                <span>{formatCurrency(calculations.total)}</span>
+              </div>
+            </div>
+          )}
+          <div className="flex gap-3 justify-end w-full">
+            <Button
+              disabled={form.state.isSubmitting}
+              onClick={() => {
+                form.reset();
+              }}
+              type="button"
+              variant="outline"
+            >
+              {t("resetForm")}
+            </Button>
+            <Button
+              className="min-w-[140px]"
+              disabled={
+                form.state.isSubmitting ||
+                !form.state.isValid ||
+                hasInsufficientStock
+              }
+              type="submit"
+            >
+              {form.state.isSubmitting ? (
+                <>
+                  <Loader2Icon className="size-3.5 animate-spin" />
+                  {saleTransaction ? t("updating") : t("recording")}
+                </>
+              ) : (
+                <>
+                  {saleTransaction ? t("update") : t("record")}{" "}
+                  {tInventory("title").split(" ")[0]}
+                </>
+              )}
+            </Button>
+          </div>
         </div>
       </div>
     </form>

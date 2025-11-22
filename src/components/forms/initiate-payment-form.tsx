@@ -185,8 +185,8 @@ export default function InitiatePaymentForm() {
             <Field>
               <FieldLabel>{tPayments("currency")}</FieldLabel>
               <Select
-                defaultValue={field.state.value}
-                onValueChange={field.handleChange}
+                onValueChange={field.handleChange ?? ""}
+                value={field.state.value ?? ""}
               >
                 <SelectTrigger>
                   <SelectValue />

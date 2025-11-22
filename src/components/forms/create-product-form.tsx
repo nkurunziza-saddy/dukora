@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useCategories } from "@/lib/hooks/use-queries";
+import { useBusinessSettings, useCategories } from "@/lib/hooks/use-queries";
 import type { SelectProduct } from "@/lib/schema/schema-types";
 import { createProduct, updateProduct } from "@/server/actions/product-actions";
 import { TriggerDialog } from "../shared/reusable-form-dialog";
@@ -35,6 +35,10 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
     error: categoriesError,
     isLoading: isCategoriesLoading,
   } = useCategories();
+
+  const { data: settings } = useBusinessSettings();
+  const pricesIncludeTax =
+    settings?.find((s) => s.key === "pricesIncludeTax")?.value === "true";
 
   const t = useTranslations("forms");
   const tCommon = useTranslations("common");
@@ -119,7 +123,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
             : `${t("productName")} ${tCommon("add")} ${tCommon("confirm")}`,
           {
             description: format(new Date(), "MMM dd, yyyy"),
-          },
+          }
         );
       } else {
         toast.error(tCommon("error"), {
@@ -212,8 +216,8 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
             <Field>
               <FieldLabel>{t("categoryId")}</FieldLabel>
               <Select
-                defaultValue={field.state.value || undefined}
-                onValueChange={field.handleChange}
+                onValueChange={(val) => field.handleChange(val ?? "")}
+                value={field.state.value ?? ""}
               >
                 <SelectTrigger className="w-full sm:w-1/2">
                   <SelectValue />
@@ -246,7 +250,10 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
           <form.Field
             children={(field) => (
               <Field>
-                <FieldLabel>{t("price")} *</FieldLabel>
+                <FieldLabel>
+                  {t("price")}{" "}
+                  {pricesIncludeTax ? tCommon("inclTax") : tCommon("exclTax")} *
+                </FieldLabel>
                 <Input
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -264,7 +271,10 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
           <form.Field
             children={(field) => (
               <Field>
-                <FieldLabel>{t("costPrice")} *</FieldLabel>
+                <FieldLabel>
+                  {t("costPrice")}{" "}
+                  {pricesIncludeTax ? tCommon("inclTax") : tCommon("exclTax")} *
+                </FieldLabel>
                 <Input
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -325,9 +335,9 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               <Field>
                 <FieldLabel>{t("unit")}</FieldLabel>
                 <Select
-                  defaultValue={field.state.value}
                   items={units}
-                  onValueChange={field.handleChange}
+                  onValueChange={(val) => field.handleChange(val ?? "")}
+                  value={field.state.value ?? ""}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue />
@@ -388,7 +398,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               </>
             ) : (
               `${product ? tCommon("edit") : tCommon("add")} ${t(
-                "productName",
+                "productName"
               )}`
             )}
           </Button>
@@ -399,12 +409,12 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
 }
 
 export const CreateProductDialog = () => {
-  // TODO: No translation for dialog title/trigger/description
+  const t = useTranslations("forms");
   return (
     <TriggerDialog
-      description="Fill in the details of the new product you want to add."
-      title="Create New Product"
-      triggerText="Create Product"
+      description={t("createProductDescription")}
+      title={t("createProductTitle")}
+      triggerText={t("createProduct")}
     >
       <ProductForm />
     </TriggerDialog>

@@ -28,7 +28,7 @@ function sumTransactionsAtCost(transactions: TransactionPayload[]): number {
 }
 
 function sumTransactionsAtSalePrice(
-  transactions: TransactionPayload[],
+  transactions: TransactionPayload[]
 ): number {
   if (!Array.isArray(transactions)) return 0;
 
@@ -64,11 +64,18 @@ function sumExpenses(expenses: SelectExpense[]): number {
   }, 0);
 }
 
+import {
+  calculateNetPrice,
+  calculateTaxAmount,
+} from "../business-logic/taxes/calculate-tax";
+
 export function calculateAllMetrics(
   transactions: TransactionPayload[],
   expenses: SelectExpense[],
   openingStock: number,
   closingStock: number,
+  taxRate: number = 0,
+  pricesIncludeTax: boolean = false
 ) {
   if (!Array.isArray(transactions)) {
     console.error("Invalid transactions array provided");
@@ -86,24 +93,53 @@ export function calculateAllMetrics(
   // Filter transactions by type
   const salesTransactions = transactions.filter((t) => t?.type === "SALE");
   const purchaseTransactions = transactions.filter(
-    (t) => t?.type === "PURCHASE",
+    (t) => t?.type === "PURCHASE"
   );
   const salesReturnTransactions = transactions.filter(
-    (t) => t?.type === "RETURN_SALE",
+    (t) => t?.type === "RETURN_SALE"
   );
   const purchaseReturnTransactions = transactions.filter(
-    (t) => t?.type === "RETURN_PURCHASE",
+    (t) => t?.type === "RETURN_PURCHASE"
   );
 
   // Revenue calculations
   const grossRevenue = sumTransactionsAtSalePrice(salesTransactions);
   const salesReturnsValue = sumTransactionsAtSalePrice(salesReturnTransactions);
-  const netRevenue = Math.max(0, grossRevenue - salesReturnsValue);
+
+  // Calculate Net Revenue (excluding tax)
+  // If prices are inclusive, we need to extract tax from the gross revenue
+  // If prices are exclusive, gross revenue IS net revenue (tax is added on top in invoices, but transaction records usually store the base price or the total?
+  // Assumption: Transaction 'price' is the unit price stored in product.
+  // If 'pricesIncludeTax' is true, that unit price includes tax.
+  // If 'pricesIncludeTax' is false, that unit price is before tax.
+
+  let netRevenue = 0;
+  let taxCollected = 0;
+
+  if (pricesIncludeTax) {
+    // Inclusive: Gross has tax. Net = Gross - Tax
+    const netSales = calculateNetPrice(grossRevenue, taxRate, true);
+    const netReturns = calculateNetPrice(salesReturnsValue, taxRate, true);
+    netRevenue = Math.max(0, netSales - netReturns);
+
+    const taxOnSales = calculateTaxAmount(grossRevenue, taxRate, true);
+    const taxOnReturns = calculateTaxAmount(salesReturnsValue, taxRate, true);
+    taxCollected = Math.max(0, taxOnSales - taxOnReturns);
+  } else {
+    // Exclusive: Gross is Net. Tax is extra.
+    // However, metrics usually track "Revenue" as the income to the business.
+    // So Net Revenue is just (Sales - Returns) * Price.
+    // Tax collected would be calculated on top of this.
+    netRevenue = Math.max(0, grossRevenue - salesReturnsValue);
+
+    // Calculate what the tax WOULD be (for reporting purposes)
+    taxCollected = calculateTaxAmount(netRevenue, taxRate, false);
+  }
 
   // Purchase calculations
   const grossPurchases = sumTransactionsAtCost(purchaseTransactions);
   const purchaseReturnsValue = sumTransactionsAtCost(
-    purchaseReturnTransactions,
+    purchaseReturnTransactions
   );
   const netPurchases = Math.max(0, grossPurchases - purchaseReturnsValue);
 
@@ -161,7 +197,7 @@ export function calculateAllMetrics(
           (
             ((validClosingStock - validOpeningStock) / validOpeningStock) *
             100
-          ).toFixed(2),
+          ).toFixed(2)
         )
       : 0;
 
@@ -184,9 +220,9 @@ export function calculateAllMetrics(
           (
             salesTransactions.reduce(
               (sum, t) => sum + (Math.abs(Number(t.quantity)) || 0),
-              0,
+              0
             ) / transactionCount
-          ).toFixed(2),
+          ).toFixed(2)
         )
       : 0;
 
@@ -194,6 +230,7 @@ export function calculateAllMetrics(
     // Core Revenue Metrics
     grossRevenue: Number(grossRevenue.toFixed(2)),
     netRevenue: Number(netRevenue.toFixed(2)),
+    taxCollected: Number(taxCollected.toFixed(2)),
     returns: Number(salesReturnsValue.toFixed(2)),
     returnRate,
 
@@ -250,18 +287,18 @@ export function calculateAllMetrics(
 }
 
 export function calculateClosingStock(
-  warehouseItems: ExtendedWarehouseItemPayload[],
+  warehouseItems: ExtendedWarehouseItemPayload[]
 ): number {
   return warehouseItems.reduce(
     (sum, w) => sum + w.quantity * parseFloat(w.product.costPrice),
-    0,
+    0
   );
 }
 
 export function calculateCOGS(
   openingStock: number,
   purchases: number,
-  closingStock: number,
+  closingStock: number
 ): number {
   const validOpeningStock = Math.max(0, Number(openingStock) || 0);
   const validPurchases = Math.max(0, Number(purchases) || 0);

@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/table";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { cn, formatCurrency, formatKeys, formatNumber } from "@/lib/utils";
+import { getBusinessSettings } from "@/server/actions/business-settings-actions";
 import { getLogsOverview } from "@/server/actions/logs-actions";
 import { getOverviewProducts } from "@/server/actions/product-actions";
 import { getLowStockAlertProducts } from "@/server/actions/product-items-actions";
@@ -47,18 +48,36 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function InventoryDashboard() {
-  const [totalSKUs, totalWarehouses, lowStockCount, inventoryValue] =
-    await Promise.all([
-      getTotalSKUCount({}),
-      getTotalWarehousesCount({}),
-      getLowStockProductsCount({}),
-      getCurrentInventoryValue({}),
-    ]);
+  const [
+    totalSKUs,
+    totalWarehouses,
+    lowStockCount,
+    inventoryValue,
+    settings,
+    inventoryItemsRes,
+    schedulesRes,
+    logsDataRes,
+    lowStockItemsRes,
+  ] = await Promise.all([
+    getTotalSKUCount({}),
+    getTotalWarehousesCount({}),
+    getLowStockProductsCount({}),
+    getCurrentInventoryValue({}),
+    getBusinessSettings({}),
+    getOverviewProducts(6),
+    getSchedulesOverview(6),
+    getLogsOverview(6),
+    getLowStockAlertProducts({}),
+  ]);
 
-  const inventoryItems = (await getOverviewProducts(6)).data;
-  const schedules = (await getSchedulesOverview(6)).data;
-  const logsData = (await getLogsOverview(6)).data;
-  const lowStockItems = (await getLowStockAlertProducts({})).data;
+  const currency =
+    (settings.data?.find((s) => s.key === "currency")?.value as string) ||
+    "USD";
+
+  const inventoryItems = inventoryItemsRes.data;
+  const schedules = schedulesRes.data;
+  const logsData = logsDataRes.data;
+  const lowStockItems = lowStockItemsRes.data;
   const t = await getTranslations("inventory");
   const t_com = await getTranslations("common");
   const inventoryStats = [
@@ -86,7 +105,7 @@ export default async function InventoryDashboard() {
     {
       title: t("totalValue"),
       subText: t("currentStockValue"),
-      value: formatCurrency(inventoryValue.data ?? 0),
+      value: formatCurrency(inventoryValue.data ?? 0, currency),
       icon: TrendingUpIcon,
     },
   ];
@@ -187,7 +206,7 @@ export default async function InventoryDashboard() {
                           {item.products.reorderPoint}
                         </TableCell>
                         <TableCell className="text-right">
-                          {formatCurrency(item.products.price)}
+                          {formatCurrency(item.products.price, currency)}
                         </TableCell>
                         <TableCell className="text-right">
                           {item.warehouse_items.quantity <
@@ -241,7 +260,7 @@ export default async function InventoryDashboard() {
                               aria-hidden="true"
                               className={cn(
                                 "inline-block size-2.5 rounded-md mr-2 align-middle opacity-60",
-                                colorClass,
+                                colorClass
                               )}
                             />
                             {schedule.title}
@@ -306,7 +325,7 @@ export default async function InventoryDashboard() {
                         .split("-")
                         .join(" ");
                       const formattedModelName = formatKeys(
-                        log.audit_logs.model,
+                        log.audit_logs.model
                       );
 
                       return (
@@ -325,7 +344,7 @@ export default async function InventoryDashboard() {
                           <TableCell>
                             {log.audit_logs.performedAt
                               ? new Date(
-                                  log.audit_logs.performedAt,
+                                  log.audit_logs.performedAt
                                 ).toLocaleString()
                               : "-"}
                           </TableCell>

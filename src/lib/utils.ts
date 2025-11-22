@@ -22,14 +22,22 @@ export function getMonthName(monthNumber: number) {
   return format(date, "MMMM");
 }
 
-export const formatCurrency = (value: number | string | null | undefined) => {
-  if (!value) return "$0.00";
+export const formatCurrency = (
+  value: number | string | null | undefined,
+  currency: string = "USD"
+) => {
+  if (!value) {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency,
+    }).format(0);
+  }
 
   const numberValue = typeof value === "string" ? parseFloat(value) : value;
 
   return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "USD",
+    currency,
   }).format(numberValue);
 };
 

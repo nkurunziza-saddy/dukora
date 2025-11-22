@@ -5,6 +5,8 @@ import { getTranslations } from "next-intl/server";
 import ColumnWrapper from "@/components/providers/column-wrapper";
 import StatCard from "@/components/shared/stat-card";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
+import { formatCurrency, formatNumber } from "@/lib/utils";
+import { getBusinessSettings } from "@/server/actions/business-settings-actions";
 import { getTodayTransactions } from "@/server/actions/statistics-actions";
 import { getTransactionsByTimeIntervalPaginated } from "@/server/actions/transaction-actions";
 import { TransactionColumn } from "@/utils/columns/transaction-column";
@@ -16,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function SalesTracking(
-  props: PageProps<"/[locale]/sales">,
+  props: PageProps<"/[locale]/sales">
 ) {
   const query = await props.searchParams;
   const page = Number(query.page) || 1;
@@ -29,30 +31,37 @@ export default async function SalesTracking(
     page,
     pageSize,
   });
+  const settings = await getBusinessSettings({});
+  const currency =
+    (settings.data?.find((s) => s.key === "currency")?.value as string) ||
+    "USD";
 
   const salesStatsData = [
     {
       title: t("todaysSales"),
       subText: t("saleFromYesterday"),
-      value: statData.data?.current?.totalSales ?? 0,
+      value: formatCurrency(statData.data?.current?.totalSales ?? 0, currency),
       icon: ShoppingCartIcon,
     },
     {
       title: t("todayExpenses"),
       subText: t("saleFromYesterday"),
-      value: statData.data?.current?.totalExpenses ?? 0,
+      value: formatCurrency(
+        statData.data?.current?.totalExpenses ?? 0,
+        currency
+      ),
       icon: DollarSignIcon,
     },
     {
       title: t("todaysProfit"),
       subText: t("profitFromYesterday"),
-      value: statData.data?.current?.netProfit ?? 0,
+      value: formatCurrency(statData.data?.current?.netProfit ?? 0, currency),
       icon: DollarSignIcon,
     },
     {
       title: t("transactionCount"),
       subText: t("transactionFromYesterday"),
-      value: statData.data?.current?.transactionCount ?? 0,
+      value: formatNumber(statData.data?.current?.transactionCount ?? 0),
       icon: TrendingUpIcon,
     },
   ];

@@ -5,11 +5,17 @@ import type {
   InsertTransaction,
   TransactionType,
 } from "@/lib/schema/schema-types";
-import { ErrorCode } from "@/server/constants/errors";
+import { calculateTaxAmount } from "@/server/business-logic/taxes/calculate-tax";
+import {
+  validateTransactionData,
+  validateTransactionDataWithoutWarehouse,
+  validateTransactionId,
+  validateTransactionType,
+} from "@/server/business-logic/transactions";
 import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-
-
+import * as businessSettingsRepo from "../repos/business-settings-repo";
+import * as productRepo from "../repos/product-repo";
 import * as transactionRepo from "../repos/transaction-repo";
 
 export const getTransactions = createProtectedAction(
@@ -20,7 +26,7 @@ export const getTransactions = createProtectedAction(
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  },
+  }
 );
 
 export const getTransactionsPaginated = createProtectedAction(
@@ -29,13 +35,13 @@ export const getTransactionsPaginated = createProtectedAction(
     const transactions = await transactionRepo.get_all_paginated(
       user.businessId ?? "",
       page,
-      pageSize,
+      pageSize
     );
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  },
+  }
 );
 
 export const getTransactionsByTimeInterval = createProtectedAction(
@@ -44,13 +50,13 @@ export const getTransactionsByTimeInterval = createProtectedAction(
     const transactions = await transactionRepo.get_time_interval_with_with(
       user.businessId ?? "",
       startDate,
-      endDate,
+      endDate
     );
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  },
+  }
 );
 
 export const getTransactionsByTimeIntervalPaginated = createProtectedAction(
@@ -62,7 +68,7 @@ export const getTransactionsByTimeIntervalPaginated = createProtectedAction(
       endDate,
       page,
       pageSize,
-    }: { startDate: Date; endDate: Date; page: number; pageSize: number },
+    }: { startDate: Date; endDate: Date; page: number; pageSize: number }
   ) => {
     const transactions =
       await transactionRepo.get_time_interval_with_with_paginated(
@@ -70,63 +76,138 @@ export const getTransactionsByTimeIntervalPaginated = createProtectedAction(
         startDate,
         endDate,
         page,
-        pageSize,
+        pageSize
       );
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  },
+  }
 );
 
 export const getTransactionById = createProtectedAction(
   Permission.FINANCIAL_VIEW,
   async (user, transactionId: string) => {
-    if (!transactionId?.trim()) {
-      return { data: null, error: ErrorCode.MISSING_INPUT };
+    const validation = validateTransactionId(transactionId);
+    if (!validation.valid) {
+      return { data: null, error: validation.error };
     }
+
     const transaction = await transactionRepo.get_by_id(
       transactionId,
-      user.businessId ?? "",
+      user.businessId ?? ""
     );
     if (transaction.error) {
       return { data: null, error: transaction.error };
     }
     return { data: transaction.data, error: null };
-  },
+  }
 );
 
 export const createTransaction = createProtectedAction(
   Permission.TRANSACTION_PURCHASE_CREATE,
   async (
     user,
-    transactionData: Omit<InsertTransaction, "businessId" | "id" | "createdBy">,
+    transactionData: Omit<InsertTransaction, "businessId" | "id" | "createdBy">
   ) => {
-    if (
-      !transactionData.productId?.trim() ||
-      !transactionData.warehouseItemId?.trim() ||
-      !transactionData.type ||
-      typeof transactionData.quantity !== "number"
-    ) {
-      return { data: null, error: ErrorCode.MISSING_INPUT };
+    const validation = validateTransactionData(transactionData);
+    if (!validation.valid) {
+      return { data: null, error: validation.error };
     }
+
     const transaction: InsertTransaction = {
       ...transactionData,
       businessId: user.businessId ?? "",
       createdBy: user.id,
     };
-    const { data: resData, error: resError } =
-      await transactionRepo.create(transaction);
+
+    const productRes = await productRepo.get_by_id(
+      transaction.productId,
+      user.businessId ?? ""
+    );
+    const settingsRes = await businessSettingsRepo.get_all(
+      user.businessId ?? ""
+    );
+
+    let notificationPayload: any;
+
+    if (productRes.data && settingsRes.data) {
+      const product = productRes.data;
+      const settings = settingsRes.data;
+
+      let taxRate = 0;
+      let pricesIncludeTax = false;
+
+      const taxRateSetting = settings.find((s) => s.key === "defaultVatRate");
+      if (taxRateSetting) {
+        taxRate = Number(taxRateSetting.value) || 0;
+      }
+
+      const pricesIncludeTaxSetting = settings.find(
+        (s) => s.key === "pricesIncludeTax"
+      );
+      if (pricesIncludeTaxSetting) {
+        pricesIncludeTax = Boolean(pricesIncludeTaxSetting.value);
+      }
+
+      if (transaction.type === "SALE") {
+        const rawAmount = transaction.quantity * Number(product.price);
+        let finalAmount = rawAmount;
+        let taxAmount = 0;
+
+        if (pricesIncludeTax) {
+          taxAmount = calculateTaxAmount(rawAmount, taxRate, true);
+          finalAmount = rawAmount;
+        } else {
+          taxAmount = calculateTaxAmount(rawAmount, taxRate, false);
+          finalAmount = rawAmount + taxAmount;
+        }
+
+        const taxText =
+          taxAmount > 0 ? ` (incl. ${taxAmount.toFixed(2)} Tax)` : "";
+
+        notificationPayload = {
+          type: "order",
+          priority: "medium",
+          title: "New Sale Recorded",
+          message: `A new sale of ${transaction.quantity} ${product.name} was recorded. Total: ${finalAmount.toFixed(2)}${taxText}`,
+          data: {
+            productId: transaction.productId,
+            productName: product.name,
+            quantity: transaction.quantity,
+            amount: finalAmount,
+            tax: taxAmount,
+          },
+        };
+      } else if (transaction.type === "PURCHASE") {
+        const amount = transaction.quantity * Number(product.costPrice);
+        notificationPayload = {
+          type: "inventory",
+          priority: "low",
+          title: "New Purchase Recorded",
+          message: `A new purchase of ${transaction.quantity} ${product.name} was recorded.`,
+          data: {
+            productId: transaction.productId,
+            productName: product.name,
+            quantity: transaction.quantity,
+            amount: amount,
+          },
+        };
+      }
+    }
+
+    const { data: resData, error: resError } = await transactionRepo.create(
+      transaction,
+      notificationPayload
+    );
     if (resError) {
       return { data: null, error: resError };
     }
 
-
-
     revalidateTag(`transactions-${user.businessId}`, "max");
     revalidateTag("transactions", "max");
     return { data: resData, error: null };
-  },
+  }
 );
 
 export const createTransactionAndWarehouseItem = createProtectedAction(
@@ -136,49 +217,126 @@ export const createTransactionAndWarehouseItem = createProtectedAction(
     transactionData: Omit<
       InsertTransaction,
       "businessId" | "id" | "createdBy" | "warehouseItemId"
-    >,
+    >
   ) => {
-    if (
-      !transactionData.productId?.trim() ||
-      !transactionData.type ||
-      typeof transactionData.quantity !== "number"
-    ) {
-      return { data: null, error: ErrorCode.MISSING_INPUT };
+    const validation = validateTransactionDataWithoutWarehouse(transactionData);
+    if (!validation.valid) {
+      return { data: null, error: validation.error };
     }
+
     const transaction = {
       ...transactionData,
       businessId: user.businessId ?? "",
       createdBy: user.id,
     };
+
+    const productRes = await productRepo.get_by_id(
+      transaction.productId,
+      user.businessId ?? ""
+    );
+    const settingsRes = await businessSettingsRepo.get_all(
+      user.businessId ?? ""
+    );
+
+    let notificationPayload: any;
+
+    if (productRes.data && settingsRes.data) {
+      const product = productRes.data;
+      const settings = settingsRes.data;
+
+      let taxRate = 0;
+      let pricesIncludeTax = false;
+
+      const taxRateSetting = settings.find((s) => s.key === "defaultVatRate");
+      if (taxRateSetting) {
+        taxRate = Number(taxRateSetting.value) || 0;
+      }
+
+      const pricesIncludeTaxSetting = settings.find(
+        (s) => s.key === "pricesIncludeTax"
+      );
+      if (pricesIncludeTaxSetting) {
+        pricesIncludeTax = Boolean(pricesIncludeTaxSetting.value);
+      }
+
+      if (transaction.type === "SALE") {
+        const rawAmount = transaction.quantity * Number(product.price);
+        let finalAmount = rawAmount;
+        let taxAmount = 0;
+
+        if (pricesIncludeTax) {
+          taxAmount = calculateTaxAmount(rawAmount, taxRate, true);
+          finalAmount = rawAmount;
+        } else {
+          taxAmount = calculateTaxAmount(rawAmount, taxRate, false);
+          finalAmount = rawAmount + taxAmount;
+        }
+
+        const taxText =
+          taxAmount > 0 ? ` (incl. ${taxAmount.toFixed(2)} Tax)` : "";
+
+        notificationPayload = {
+          type: "order",
+          priority: "medium",
+          title: "New Sale Recorded",
+          message: `A new sale of ${transaction.quantity} ${product.name} was recorded. Total: ${finalAmount.toFixed(2)}${taxText}`,
+          data: {
+            productId: transaction.productId,
+            productName: product.name,
+            quantity: transaction.quantity,
+            amount: finalAmount,
+            tax: taxAmount,
+          },
+        };
+      } else if (transaction.type === "PURCHASE") {
+        const amount = transaction.quantity * Number(product.costPrice);
+        notificationPayload = {
+          type: "inventory",
+          priority: "low",
+          title: "New Purchase Recorded",
+          message: `A new purchase of ${transaction.quantity} ${product.name} was recorded.`,
+          data: {
+            productId: transaction.productId,
+            productName: product.name,
+            quantity: transaction.quantity,
+            amount: amount,
+          },
+        };
+      }
+    }
+
     const { data: resData, error: resError } =
-      await transactionRepo.create_with_warehouse_item(transaction);
+      await transactionRepo.create_with_warehouse_item(
+        transaction,
+        notificationPayload
+      );
     if (resError) {
       return { data: null, error: resError };
     }
-
-
 
     revalidateTag(`transactions-${user.businessId}`, "max");
     revalidateTag("transactions", "max");
     revalidateTag(`warehouse-item-${user.businessId}`, "max");
     revalidateTag("warehouse-items", "max");
     return { data: resData, error: null };
-  },
+  }
 );
 
 export const getTransactionsByType = createProtectedAction(
   Permission.FINANCIAL_VIEW,
   async (user, type: TransactionType) => {
-    if (!type) {
-      return { data: null, error: ErrorCode.MISSING_INPUT };
+    const validation = validateTransactionType(type);
+    if (!validation.valid) {
+      return { data: null, error: validation.error };
     }
+
     const transactions = await transactionRepo.get_by_type(
       user.businessId ?? "",
-      type,
+      type
     );
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  },
+  }
 );

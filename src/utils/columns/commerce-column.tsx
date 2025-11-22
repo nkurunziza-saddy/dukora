@@ -6,11 +6,13 @@ import { CircleIcon, TimerIcon } from "lucide-react";
 import CommerceRowActions from "@/components/table/commerce/commerce-row-actions";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
+import { useCurrency } from "@/lib/hooks/use-currency";
 import { ProductStatus, type SelectProduct } from "@/lib/schema/schema-types";
 
 export function CommerceColumn(
-  t: (key: string) => string,
+  t: (key: string) => string
 ): ColumnDef<SelectProduct>[] {
+  const { formatCurrency } = useCurrency();
   return [
     {
       accessorKey: "status",
@@ -19,7 +21,7 @@ export function CommerceColumn(
       ),
       cell: ({ row }) => {
         const status = productStatuses.find(
-          (s) => s.value === row.original.status.toLowerCase(),
+          (s) => s.value === row.original.status.toLowerCase()
         );
         if (!status) {
           return (
@@ -61,14 +63,14 @@ export function CommerceColumn(
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t("price")} />
       ),
-      cell: ({ row }) => row.original.price,
+      cell: ({ row }) => formatCurrency(row.original.price),
     },
     {
       accessorKey: "costPrice",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t("costPrice")} />
       ),
-      cell: ({ row }) => row.original.costPrice,
+      cell: ({ row }) => formatCurrency(row.original.costPrice),
     },
     {
       accessorKey: "unit",

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getBusinesses } from "@/server/actions/business-actions";
+import { getBusinessSettings } from "@/server/actions/business-settings-actions";
 import { getCategories } from "@/server/actions/category-actions";
 import { getProductById, getProducts } from "@/server/actions/product-actions";
 import {
@@ -112,6 +113,16 @@ export const useUserSessions = (isOpen: boolean | undefined = false) => {
     enabled: isOpen,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
+  });
+  return { ...res, data: res.data?.data };
+};
+
+export const useBusinessSettings = () => {
+  const res = useQuery({
+    queryKey: ["business-settings"],
+    queryFn: () => getBusinessSettings({}),
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
   return { ...res, data: res.data?.data };
 };

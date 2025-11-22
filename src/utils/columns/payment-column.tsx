@@ -2,11 +2,13 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
+import { useCurrency } from "@/lib/hooks/use-currency";
 import type { SelectInterBusinessPayment } from "@/lib/schema/schema-types";
 
 export function PaymentColumn(
-  t: (key: string) => string,
+  t: (key: string) => string
 ): ColumnDef<SelectInterBusinessPayment>[] {
+  const { formatCurrency } = useCurrency();
   return [
     {
       accessorKey: "id",
@@ -30,7 +32,7 @@ export function PaymentColumn(
       accessorKey: "amount",
       header: t("amount"),
       cell: ({ row }) => {
-        return `${row.original.amount} ${row.original.currency}`;
+        return formatCurrency(row.original.amount);
       },
     },
     {

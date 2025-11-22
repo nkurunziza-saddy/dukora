@@ -3,10 +3,12 @@
 import { z } from "zod";
 import { stripe } from "@/lib/stripe";
 import { generateRandomCode } from "@/lib/utils/generate-random-code";
+import { calculateAllOrderAmounts } from "@/server/business-logic/orders";
 import { ErrorCode } from "@/server/constants/errors";
 import { Permission } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import { get_by_id as get_business_by_id } from "@/server/repos/business-repo";
+import { get_all as get_business_settings } from "@/server/repos/business-settings-repo/business-settings-query-repo";
 import {
   create_customer_order,
   get_all_paginated,
@@ -18,7 +20,6 @@ import {
   update_customer_order_payment,
   update_customer_order_status,
 } from "@/server/repos/customer-order-repo";
-
 
 export const getCustomerOrders = createProtectedAction(
   Permission.USER_VIEW,
@@ -77,15 +78,36 @@ export const createCustomerOrder = createProtectedAction(
     try {
       const orderNumber = `ORD-${generateRandomCode()}-${Math.random().toString(36).substr(2, 9)}`;
 
-      const subtotal = input.items.reduce(
-        (sum, item) => sum + parseFloat(item.unitPrice) * item.quantity,
-        0
+      const settingsResult = await get_business_settings(user.businessId);
+      let taxRate = 0;
+      let pricesIncludeTax = false;
+
+      if (settingsResult.data) {
+        const taxRateSetting = settingsResult.data.find(
+          (s) => s.key === "defaultVatRate"
+        );
+        if (taxRateSetting) {
+          taxRate = Number(taxRateSetting.value) || 0;
+        }
+
+        const pricesIncludeTaxSetting = settingsResult.data.find(
+          (s) => s.key === "pricesIncludeTax"
+        );
+        if (pricesIncludeTaxSetting) {
+          pricesIncludeTax = Boolean(pricesIncludeTaxSetting.value);
+        }
+      }
+
+      const calculations = calculateAllOrderAmounts(
+        input.items,
+        taxRate,
+        0, // TODO: calculate shipping rate
+        pricesIncludeTax
       );
-      const discountAmount = input.items.reduce(
-        (sum, item) => sum + parseFloat(item.discount || "0") * item.quantity,
-        0
-      );
-      const totalAmount = subtotal - discountAmount;
+
+      if (calculations.error) {
+        return { data: null, error: calculations.error };
+      }
 
       const orderResult = await create_customer_order({
         orderNumber,
@@ -95,10 +117,10 @@ export const createCustomerOrder = createProtectedAction(
         customerPhone: input.customerPhone,
         shippingAddress: input.shippingAddress,
         billingAddress: input.billingAddress,
-        totalAmount: totalAmount.toString(),
-        discountAmount: discountAmount.toString(),
-        taxAmount: "0", // TODO: Calculate tax
-        shippingAmount: "0", // TODO: Calculate shipping
+        totalAmount: calculations.total.toString(),
+        discountAmount: calculations.discounts.toString(),
+        taxAmount: calculations.tax.toString(),
+        shippingAmount: calculations.shipping.toString(),
         guestCheckout: input.guestCheckout,
         userId: input.userId,
         notes: input.notes,
@@ -110,7 +132,7 @@ export const createCustomerOrder = createProtectedAction(
       }
 
       const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(totalAmount * 100), // Convert to cents
+        amount: Math.round(calculations.total * 100),
         currency: "usd", // TODO: Make configurable
         metadata: {
           orderId: orderResult.data.id,
@@ -127,8 +149,6 @@ export const createCustomerOrder = createProtectedAction(
         paymentIntent.id,
         paymentIntent.status
       );
-
-
 
       return {
         data: {
@@ -293,7 +313,6 @@ export const updateOrderStatus = createProtectedAction(
     }
 
     try {
-      // Verify order belongs to user's business
       const orderResult = await get_by_id(orderId);
       if (orderResult.error || !orderResult.data) {
         return { data: null, error: ErrorCode.NOT_FOUND };

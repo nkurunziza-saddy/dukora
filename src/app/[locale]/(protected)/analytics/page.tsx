@@ -19,6 +19,7 @@ import {
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { formatCurrency, formatKeys, formatNumber } from "@/lib/utils";
 import { getCurrentSession } from "@/server/actions/auth-actions";
+import { getBusinessSettings } from "@/server/actions/business-settings-actions";
 import { calculateAndSyncMonthlyMetrics } from "@/server/actions/metrics-action";
 import { ErrorCode } from "@/server/constants/errors";
 import {
@@ -85,6 +86,10 @@ const Analytics = async ({
   const analysisDate = date > currentBoundary ? currentBoundary : date;
 
   const metrics = await calculateAndSyncMonthlyMetrics(analysisDate);
+  const settings = await getBusinessSettings({});
+  const currency =
+    (settings.data?.find((s) => s.key === "currency")?.value as string) ||
+    "USD";
   const t = await getTranslations("analytics");
 
   if (metrics.error) {
@@ -115,16 +120,15 @@ const Analytics = async ({
   const revenueMetrics = [
     {
       title: t("totalRevenue"),
-      value: formatCurrency(data?.grossRevenue || 0),
-      trend: (data?.grossRevenue && data.grossRevenue > 0 ? "up" : "neutral") as
-        | "up"
-        | "down"
-        | "neutral",
+      value: formatCurrency(data?.grossRevenue || 0, currency),
+      trend: (data?.grossRevenue && data.grossRevenue > 0
+        ? "up"
+        : "neutral") as "up" | "down" | "neutral",
       description: t("totalRevenueDesc"),
     },
     {
       title: t("netRevenue"),
-      value: formatCurrency(data?.netRevenue || 0),
+      value: formatCurrency(data?.netRevenue || 0, currency),
       trend: (data?.netRevenue && data.netRevenue > 0 ? "up" : "neutral") as
         | "up"
         | "down"
@@ -133,7 +137,7 @@ const Analytics = async ({
     },
     {
       title: t("grossProfit"),
-      value: formatCurrency(data?.grossProfit || 0),
+      value: formatCurrency(data?.grossProfit || 0, currency),
       trend: (data?.grossProfit && data.grossProfit > 0
         ? "up"
         : data?.grossProfit && data.grossProfit < 0
@@ -143,7 +147,7 @@ const Analytics = async ({
     },
     {
       title: t("netIncome"),
-      value: formatCurrency(data?.netIncome || 0),
+      value: formatCurrency(data?.netIncome || 0, currency),
       trend: (data?.netIncome && data.netIncome > 0
         ? "up"
         : data?.netIncome && data.netIncome < 0
@@ -156,7 +160,7 @@ const Analytics = async ({
   const operatingMetrics = [
     {
       title: t("operatingIncome"),
-      value: formatCurrency(data?.operatingIncome || 0),
+      value: formatCurrency(data?.operatingIncome || 0, currency),
       trend: (data?.operatingIncome && data.operatingIncome > 0
         ? "up"
         : data?.operatingIncome && data.operatingIncome < 0
@@ -166,7 +170,7 @@ const Analytics = async ({
     },
     {
       title: t("operatingExpenses"),
-      value: formatCurrency(data?.operatingExpenses || 0),
+      value: formatCurrency(data?.operatingExpenses || 0, currency),
       trend: "neutral" as "up" | "down" | "neutral",
       description: t("operatingExpensesDesc"),
     },
@@ -190,7 +194,7 @@ const Analytics = async ({
     },
     {
       label: t("averageOrderValue"),
-      value: formatCurrency(data?.averageOrderValue || 0),
+      value: formatCurrency(data?.averageOrderValue || 0, currency),
       category: t("salesCategory"),
     },
     {
@@ -200,7 +204,7 @@ const Analytics = async ({
     },
     {
       label: t("returns"),
-      value: formatCurrency(data?.returns || 0),
+      value: formatCurrency(data?.returns || 0, currency),
       category: t("salesCategory"),
     },
     {
@@ -213,22 +217,22 @@ const Analytics = async ({
   const inventoryMetrics = [
     {
       label: t("openingStock"),
-      value: formatCurrency(data?.openingStock || 0),
+      value: formatCurrency(data?.openingStock || 0, currency),
       category: t("inventoryCategory"),
     },
     {
       label: t("closingStock"),
-      value: formatCurrency(data?.closingStock || 0),
+      value: formatCurrency(data?.closingStock || 0, currency),
       category: t("inventoryCategory"),
     },
     {
       label: t("purchases"),
-      value: formatCurrency(data?.purchases || 0),
+      value: formatCurrency(data?.purchases || 0, currency),
       category: t("inventoryCategory"),
     },
     {
       label: t("costOfGoodsSold"),
-      value: formatCurrency(data?.costOfGoodsSold || 0),
+      value: formatCurrency(data?.costOfGoodsSold || 0, currency),
       category: t("inventoryCategory"),
     },
     {
@@ -415,7 +419,7 @@ const Analytics = async ({
 };
 
 export default async function AnalyticsPage(
-  props: PageProps<"/[locale]/analytics">,
+  props: PageProps<"/[locale]/analytics">
 ) {
   const searchParams = await props.searchParams;
   return (

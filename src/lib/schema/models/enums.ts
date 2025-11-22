@@ -18,6 +18,9 @@ export const TRANSACTION_TYPE = [
   "DAMAGE",
   "RETURN_SALE",
   "RETURN_PURCHASE",
+  "TRANSFER_IN",
+  "TRANSFER_OUT",
+  "STOCK_ADJUSTMENT",
 ] as const;
 
 export const METRIC_NAMES = {

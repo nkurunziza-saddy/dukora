@@ -53,9 +53,9 @@ export function ThemeSwitcher() {
         value={theme}
       >
         {themeItems.map((item) => (
-          <label className="cursor-pointer" key={`${id}-${item.value}`}>
+          <>
             <RadioGroupItem
-              className="peer sr-only after:absolute after:inset-0"
+              className="peer sr-only after:absolute after:inset-0 cursor-pointer"
               id={`${id}-${item.value}`}
               value={item.value}
             />
@@ -79,7 +79,7 @@ export function ThemeSwitcher() {
               />
               <span className="text-xs font-medium">{item.label}</span>
             </span>
-          </label>
+          </>
         ))}
       </RadioGroup>
     </FieldSet>

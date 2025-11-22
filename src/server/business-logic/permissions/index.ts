@@ -6,4 +6,4 @@ export {
   roleHasAllPermissions,
   roleHasAnyPermission,
   roleHasPermission,
-} from "../business-logic/permissions";
+} from "./role-permissions";
