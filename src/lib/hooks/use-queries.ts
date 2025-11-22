@@ -2,6 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { getBusinesses } from "@/server/actions/business-actions";
 import { getCategories } from "@/server/actions/category-actions";
 import { getProductById, getProducts } from "@/server/actions/product-actions";
+import {
+  getSecurityInfo,
+  getUserSessions,
+} from "@/server/actions/security-actions";
 import { getSuppliers } from "@/server/actions/supplier-actions";
 import { getUserById } from "@/server/actions/user-actions";
 import { getWarehouses } from "@/server/actions/warehouse-actions";
@@ -87,6 +91,27 @@ export const useCategories = () => {
     queryFn: () => getCategories({}),
     staleTime: 10 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
+  });
+  return { ...res, data: res.data?.data };
+};
+
+export const useSecurityInfo = () => {
+  const res = useQuery({
+    queryKey: ["security-info"],
+    queryFn: () => getSecurityInfo({}),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+  });
+  return { ...res, data: res.data?.data };
+};
+
+export const useUserSessions = (isOpen: boolean | undefined = false) => {
+  const res = useQuery({
+    queryKey: ["user-sessions"],
+    queryFn: () => getUserSessions({}),
+    enabled: isOpen,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
   return { ...res, data: res.data?.data };
 };
