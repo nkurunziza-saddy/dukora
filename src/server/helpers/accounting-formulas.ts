@@ -28,7 +28,7 @@ function sumTransactionsAtCost(transactions: TransactionPayload[]): number {
 }
 
 function sumTransactionsAtSalePrice(
-  transactions: TransactionPayload[],
+  transactions: TransactionPayload[]
 ): number {
   if (!Array.isArray(transactions)) return 0;
 
@@ -68,6 +68,7 @@ import {
   calculateNetPrice,
   calculateTaxAmount,
 } from "../business-logic/taxes/calculate-tax";
+import { roundCurrency, safeDivision } from "./math-helpers";
 
 export function calculateAllMetrics(
   transactions: TransactionPayload[],
@@ -75,7 +76,7 @@ export function calculateAllMetrics(
   openingStock: number,
   closingStock: number,
   taxRate: number = 0,
-  pricesIncludeTax: boolean = false,
+  pricesIncludeTax: boolean = false
 ) {
   if (!Array.isArray(transactions)) {
     console.error("Invalid transactions array provided");
@@ -93,25 +94,18 @@ export function calculateAllMetrics(
   // Filter transactions by type
   const salesTransactions = transactions.filter((t) => t?.type === "SALE");
   const purchaseTransactions = transactions.filter(
-    (t) => t?.type === "PURCHASE",
+    (t) => t?.type === "PURCHASE"
   );
   const salesReturnTransactions = transactions.filter(
-    (t) => t?.type === "RETURN_SALE",
+    (t) => t?.type === "RETURN_SALE"
   );
   const purchaseReturnTransactions = transactions.filter(
-    (t) => t?.type === "RETURN_PURCHASE",
+    (t) => t?.type === "RETURN_PURCHASE"
   );
 
   // Revenue calculations
   const grossRevenue = sumTransactionsAtSalePrice(salesTransactions);
   const salesReturnsValue = sumTransactionsAtSalePrice(salesReturnTransactions);
-
-  // Calculate Net Revenue (excluding tax)
-  // If prices are inclusive, we need to extract tax from the gross revenue
-  // If prices are exclusive, gross revenue IS net revenue (tax is added on top in invoices, but transaction records usually store the base price or the total?
-  // Assumption: Transaction 'price' is the unit price stored in product.
-  // If 'pricesIncludeTax' is true, that unit price includes tax.
-  // If 'pricesIncludeTax' is false, that unit price is before tax.
 
   let netRevenue = 0;
   let taxCollected = 0;
@@ -139,7 +133,7 @@ export function calculateAllMetrics(
   // Purchase calculations
   const grossPurchases = sumTransactionsAtCost(purchaseTransactions);
   const purchaseReturnsValue = sumTransactionsAtCost(
-    purchaseReturnTransactions,
+    purchaseReturnTransactions
   );
   const netPurchases = Math.max(0, grossPurchases - purchaseReturnsValue);
 
@@ -154,84 +148,67 @@ export function calculateAllMetrics(
 
   // Margin calculations with safety checks
   const grossMargin =
-    netRevenue > 0 ? Number(((grossProfit / netRevenue) * 100).toFixed(2)) : 0;
+    netRevenue > 0 ? safeDivision(grossProfit, netRevenue) * 100 : 0;
   const netMargin =
-    netRevenue > 0 ? Number(((netIncome / netRevenue) * 100).toFixed(2)) : 0;
+    netRevenue > 0 ? safeDivision(netIncome, netRevenue) * 100 : 0;
   const operatingMargin =
-    netRevenue > 0
-      ? Number(((operatingIncome / netRevenue) * 100).toFixed(2))
-      : 0;
+    netRevenue > 0 ? safeDivision(operatingIncome, netRevenue) * 100 : 0;
 
   // Inventory calculations
   const averageInventory = (validOpeningStock + validClosingStock) / 2;
   const inventoryTurnover =
-    averageInventory > 0
-      ? Number((costOfGoodsSold / averageInventory).toFixed(2))
-      : 0;
+    averageInventory > 0 ? safeDivision(costOfGoodsSold, averageInventory) : 0;
   const daysOnHand =
-    inventoryTurnover > 0 ? Number((365 / inventoryTurnover).toFixed(0)) : 0;
+    inventoryTurnover > 0 ? Math.round(365 / inventoryTurnover) : 0;
 
   // Sales performance
   const transactionCount = salesTransactions.length;
   const averageOrderValue =
-    transactionCount > 0
-      ? Number((grossRevenue / transactionCount).toFixed(2))
-      : 0;
+    transactionCount > 0 ? safeDivision(grossRevenue, transactionCount) : 0;
 
   // Advanced KPIs
   const returnRate =
-    grossRevenue > 0
-      ? Number(((salesReturnsValue / grossRevenue) * 100).toFixed(2))
-      : 0;
+    grossRevenue > 0 ? safeDivision(salesReturnsValue, grossRevenue) * 100 : 0;
   const purchaseReturnRate =
     grossPurchases > 0
-      ? Number(((purchaseReturnsValue / grossPurchases) * 100).toFixed(2))
+      ? safeDivision(purchaseReturnsValue, grossPurchases) * 100
       : 0;
 
   // Cash flow indicators
-  const workingCapital = validClosingStock; // TODO: Simplified, would need accounts receivable/payable for full calculation which arent't implemented yet, Apply it later
+  const workingCapital = validClosingStock; // TODO: Simplified, would need accounts receivable/payable for full calculation which aren't implemented yet, Apply it later
   const inventoryValue = validClosingStock;
   const inventoryGrowth =
     validOpeningStock > 0
-      ? Number(
-          (
-            ((validClosingStock - validOpeningStock) / validOpeningStock) *
-            100
-          ).toFixed(2),
-        )
+      ? safeDivision(validClosingStock - validOpeningStock, validOpeningStock) *
+        100
       : 0;
 
   // Efficiency ratios
   const assetTurnover =
-    averageInventory > 0
-      ? Number((netRevenue / averageInventory).toFixed(2))
-      : 0;
+    averageInventory > 0 ? safeDivision(netRevenue, averageInventory) : 0;
   const expenseRatio =
-    netRevenue > 0
-      ? Number(((operatingExpenses / netRevenue) * 100).toFixed(2))
-      : 0;
+    netRevenue > 0 ? safeDivision(operatingExpenses, netRevenue) * 100 : 0;
 
   // Product performance
   const uniqueProductsSold = new Set(salesTransactions.map((t) => t.productId))
     .size;
   const averageQuantityPerTransaction =
     transactionCount > 0
-      ? Number(
-          (
-            salesTransactions.reduce(
-              (sum, t) => sum + (Math.abs(Number(t.quantity)) || 0),
-              0,
-            ) / transactionCount
-          ).toFixed(2),
+      ? safeDivision(
+          salesTransactions.reduce(
+            (sum, t) => sum + (Math.abs(Number(t.quantity)) || 0),
+            0
+          ),
+          transactionCount
         )
       : 0;
 
   return {
     // Core Revenue Metrics
-    grossRevenue: Number(grossRevenue.toFixed(2)),
-    netRevenue: Number(netRevenue.toFixed(2)),
-    taxCollected: Number(taxCollected.toFixed(2)),
-    returns: Number(salesReturnsValue.toFixed(2)),
+    grossRevenue: roundCurrency(grossRevenue),
+    netRevenue: roundCurrency(netRevenue),
+    taxCollected: roundCurrency(taxCollected),
+    returns: roundCurrency(salesReturnsValue),
     returnRate,
 
     // Sales Performance
@@ -243,23 +220,23 @@ export function calculateAllMetrics(
     // Inventory Metrics
     openingStock: validOpeningStock,
     closingStock: validClosingStock,
-    purchases: Number(netPurchases.toFixed(2)),
-    purchaseReturns: Number(purchaseReturnsValue.toFixed(2)),
+    purchases: roundCurrency(netPurchases),
+    purchaseReturns: roundCurrency(purchaseReturnsValue),
     purchaseReturnRate,
-    costOfGoodsSold: Number(costOfGoodsSold.toFixed(2)),
-    averageInventory: Number(averageInventory.toFixed(2)),
+    costOfGoodsSold: roundCurrency(costOfGoodsSold),
+    averageInventory: roundCurrency(averageInventory),
     inventoryTurnover,
     daysOnHand,
     inventoryValue,
     inventoryGrowth,
 
     // Profitability Metrics
-    grossProfit: Number(grossProfit.toFixed(2)),
-    operatingIncome: Number(operatingIncome.toFixed(2)),
-    netIncome: Number(netIncome.toFixed(2)),
+    grossProfit: roundCurrency(grossProfit),
+    operatingIncome: roundCurrency(operatingIncome),
+    netIncome: roundCurrency(netIncome),
 
     // Expense Metrics
-    operatingExpenses: Number(operatingExpenses.toFixed(2)),
+    operatingExpenses: roundCurrency(operatingExpenses),
     expenseRatio,
 
     // Margin Analysis
@@ -269,7 +246,7 @@ export function calculateAllMetrics(
 
     // Efficiency Ratios
     assetTurnover,
-    workingCapital: Number(workingCapital.toFixed(2)),
+    workingCapital: roundCurrency(workingCapital),
 
     // Data Quality Indicators
     dataQuality: {
@@ -287,26 +264,20 @@ export function calculateAllMetrics(
 }
 
 export function calculateClosingStock(
-  warehouseItems: ExtendedWarehouseItemPayload[],
+  warehouseItems: ExtendedWarehouseItemPayload[]
 ): number {
   return warehouseItems.reduce(
     (sum, w) => sum + w.quantity * parseFloat(w.product.costPrice),
-    0,
+    0
   );
 }
 
-export function calculateCOGS(
-  openingStock: number,
-  purchases: number,
-  closingStock: number,
-): number {
-  const validOpeningStock = Math.max(0, Number(openingStock) || 0);
-  const validPurchases = Math.max(0, Number(purchases) || 0);
-  const validClosingStock = Math.max(0, Number(closingStock) || 0);
-
-  const cogs = validOpeningStock + validPurchases - validClosingStock;
-  return Math.max(0, cogs);
-}
+/**
+ * NOTE: COGS is calculated using transaction-based approach in calculateAllMetrics()
+ * This provides more accurate per-transaction cost tracking vs period-based formula.
+ * The traditional formula (Opening Stock + Purchases - Closing Stock) is not used here
+ * as it can give different results than summing actual transaction costs.
+ */
 
 function getEmptyMetrics() {
   return {

@@ -9,10 +9,13 @@ export type OrderItem = {
 
 export type OrderCalculationResult = {
   subtotal: number;
+  netSubtotal: number;
+  grossSubtotal: number;
   discounts: number;
   tax: number;
   shipping: number;
   total: number;
+  pricesIncludeTax: boolean;
 };
 
 export type CalculationResult = {
@@ -82,7 +85,7 @@ export function calculateOrderDiscounts(items: OrderItem[]): CalculationResult {
   }
 }
 
-import { calculateTaxAmount } from "../taxes/calculate-tax";
+import { calculateNetPrice, calculateTaxAmount } from "../taxes/calculate-tax";
 
 export function calculateOrderTax(
   subtotal: number,
@@ -161,17 +164,25 @@ export function calculateAllOrderAmounts(
   taxRate = 0,
   shippingRate = 0,
   pricesIncludeTax = false
-): OrderCalculationResult & { error: ERROR_CODE | null } {
+): OrderCalculationResult & {
+  error: ERROR_CODE | null;
+  netSubtotal: number;
+  grossSubtotal: number;
+  pricesIncludeTax: boolean;
+} {
   const subtotalResult = calculateOrderSubtotal(items);
   const discountsResult = calculateOrderDiscounts(items);
 
   if (subtotalResult.error) {
     return {
       subtotal: 0,
+      netSubtotal: 0,
+      grossSubtotal: 0,
       discounts: 0,
       tax: 0,
       shipping: 0,
       total: 0,
+      pricesIncludeTax,
       error: subtotalResult.error,
     };
   }
@@ -183,29 +194,16 @@ export function calculateAllOrderAmounts(
   );
   const shippingResult = calculateOrderShipping(items, shippingRate);
 
-  // For inclusive tax, the total is just subtotal - discounts + shipping (tax is already inside subtotal)
-  // BUT, calculateOrderTotal adds tax to subtotal.
-  // If prices are inclusive, we need to be careful.
-  // Usually "Total" means "Amount to Pay".
-  // If inclusive: Subtotal (inc tax) - Discount + Shipping = Total to Pay.
-  // If exclusive: Subtotal (ex tax) - Discount + Tax + Shipping = Total to Pay.
+  let netSubtotal: number;
+  let grossSubtotal: number;
 
-  // Let's adjust how we call calculateOrderTotal based on inclusive/exclusive.
-  // Actually, calculateOrderTotal logic is: subtotal - discounts + tax + shipping.
-  // If inclusive, 'tax' parameter passed to calculateOrderTotal should be 0 because it's already in subtotal?
-  // OR we should adjust subtotal to be net before passing to calculateOrderTotal?
-
-  // Standard approach:
-  // Inclusive:
-  // Subtotal = 118 (inc 18 tax)
-  // Tax = 18
-  // Total = 118.
-  // If we pass subtotal=118, tax=18 to calculateOrderTotal, it does 118+18 = 136. WRONG.
-
-  // So if inclusive, we should probably pass tax=0 to calculateOrderTotal OR pass net subtotal.
-  // Let's keep subtotal as the raw sum of item prices.
-  // If inclusive, we pass tax=0 to calculateOrderTotal so it doesn't add it again.
-  // Wait, but we want the 'tax' field in the result to show the tax amount.
+  if (pricesIncludeTax) {
+    grossSubtotal = subtotalResult.value;
+    netSubtotal = calculateNetPrice(subtotalResult.value, taxRate, true);
+  } else {
+    netSubtotal = subtotalResult.value;
+    grossSubtotal = subtotalResult.value + taxResult.value;
+  }
 
   const taxToAdd = pricesIncludeTax ? 0 : taxResult.value;
 
@@ -218,10 +216,13 @@ export function calculateAllOrderAmounts(
 
   return {
     subtotal: subtotalResult.value,
+    netSubtotal,
+    grossSubtotal,
     discounts: discountsResult.value,
     tax: taxResult.value,
     shipping: shippingResult.value,
     total: totalResult.value,
+    pricesIncludeTax,
     error: totalResult.error,
   };
 }

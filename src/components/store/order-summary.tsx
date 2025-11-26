@@ -2,8 +2,10 @@
 
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
+import { useOrderCalculations } from "@/lib/hooks/use-order-calculations";
 import type { CartItem } from "@/lib/types";
 import { Separator } from "../ui/separator";
+import { Skeleton } from "../ui/skeleton";
 
 interface OrderSummaryProps {
   cartProducts: Array<CartItem & { quantity: number }>;
@@ -12,15 +14,17 @@ interface OrderSummaryProps {
 export function OrderSummary({ cartProducts }: OrderSummaryProps) {
   const t = useTranslations("store.checkout");
 
-  const subtotal = cartProducts.reduce(
-    (sum, product) => sum + (Number(product.price) || 0) * product.quantity,
-    0,
-  );
-
-  const discount = 0; // TODO: Calculate discounts
-  const tax = 0; // TODO: Calculate tax
-  const shipping = 0; // TODO: Calculate shipping
-  const total = subtotal - discount + tax + shipping;
+  const {
+    netSubtotal,
+    grossSubtotal,
+    tax,
+    discounts,
+    shipping,
+    total,
+    pricesIncludeTax,
+    isLoading,
+    isError,
+  } = useOrderCalculations({ cartProducts });
 
   return (
     <div className="sticky top-18 px-4 border-t border-r border-b py-4">
@@ -54,35 +58,77 @@ export function OrderSummary({ cartProducts }: OrderSummaryProps) {
 
         <Separator className={"border-t border-dashed my-4"} />
 
-        <div className=" space-y-2">
-          <div className="flex justify-between text-sm">
-            <span>{t("subtotal")}</span>
-            <span>${subtotal.toFixed(2)}</span>
-          </div>
+        <div className="space-y-2">
+          {pricesIncludeTax ? (
+            <>
+              <div className="flex justify-between text-sm">
+                <span>{t("subtotal")}</span>
+                {isLoading ? (
+                  <Skeleton className="h-4 w-16" />
+                ) : (
+                  <span>${grossSubtotal.toFixed(2)}</span>
+                )}
+              </div>
+              <div className="flex justify-between text-xs text-muted-foreground pl-4">
+                <span>{t("taxIncluded")}</span>
+                {isLoading ? (
+                  <Skeleton className="h-3 w-12" />
+                ) : (
+                  <span>${tax.toFixed(2)}</span>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex justify-between text-sm">
+                <span>{t("subtotal")}</span>
+                {isLoading ? (
+                  <Skeleton className="h-4 w-16" />
+                ) : (
+                  <span>${netSubtotal.toFixed(2)}</span>
+                )}
+              </div>
+              <div className="flex justify-between text-sm">
+                <span>{t("tax")}</span>
+                {isLoading ? (
+                  <Skeleton className="h-4 w-12" />
+                ) : (
+                  <span>${tax.toFixed(2)}</span>
+                )}
+              </div>
+            </>
+          )}
 
-          {discount > 0 && (
+          {discounts > 0 && (
             <div className="flex justify-between text-sm text-success-foreground">
               <span>{t("discount")}</span>
-              <span>-${discount.toFixed(2)}</span>
+              <span>-${discounts.toFixed(2)}</span>
             </div>
           )}
 
           <div className="flex justify-between text-sm">
-            <span>{t("tax")}</span>
-            <span>${tax.toFixed(2)}</span>
-          </div>
-
-          <div className="flex justify-between text-sm">
             <span>{t("shipping")}</span>
-            <span>{shipping === 0 ? t("free") : `$${shipping}`}</span>
+            <span>
+              {shipping === 0 ? t("free") : `$${shipping.toFixed(2)}`}
+            </span>
           </div>
 
           <Separator className={"border-t border-dashed my-4"} />
 
-          <div className=" flex justify-between text-sm font-medium">
+          <div className="flex justify-between text-sm font-medium">
             <span>{t("total")}</span>
-            <span>${total.toFixed(2)}</span>
+            {isLoading ? (
+              <Skeleton className="h-5 w-20" />
+            ) : (
+              <span>${total.toFixed(2)}</span>
+            )}
           </div>
+
+          {isError && (
+            <div className="text-xs text-destructive">
+              {t("calculationError")}
+            </div>
+          )}
         </div>
 
         <div className="text-xs text-muted-foreground bg-muted p-3 rounded-md">

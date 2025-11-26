@@ -5,7 +5,7 @@ import type { InsertBusinessSetting } from "@/lib/schema/schema-types";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as businessSettingsRepo from "../repos/business-settings-repo";
+import * as businessSettingsRepo from "@/server/repos/business/business-settings-repo";
 
 export const getBusinessSettings = createProtectedAction(
   PERMISSION.BUSINESS_SETTINGS_VIEW,
