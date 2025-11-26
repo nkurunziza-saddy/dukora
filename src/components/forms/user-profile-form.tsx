@@ -15,7 +15,7 @@ import {
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
-import type { getUserById } from "@/server/actions/user-actions";
+import type { getUserById } from "@/server/actions/users/users-actions";
 
 export default function UserProfileForm({
   user,

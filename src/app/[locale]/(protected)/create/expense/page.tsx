@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import ExpenseTransactionForm from "@/components/forms/expense-transaction-form";
-import { GuardSkeleton } from "@/components/skeletons";
-import FormHeaderSkeleton from "@/components/skeletons/form-header-skeleton";
+import { FormHeaderSkeleton, GuardSkeleton } from "@/components/skeletons";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 
 export async function generateMetadata(): Promise<Metadata> {

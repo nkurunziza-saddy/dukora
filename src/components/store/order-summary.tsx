@@ -14,7 +14,7 @@ export function OrderSummary({ cartProducts }: OrderSummaryProps) {
 
   const subtotal = cartProducts.reduce(
     (sum, product) => sum + (Number(product.price) || 0) * product.quantity,
-    0
+    0,
   );
 
   const discount = 0; // TODO: Calculate discounts

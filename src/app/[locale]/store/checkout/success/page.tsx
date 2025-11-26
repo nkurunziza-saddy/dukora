@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { SelectCustomerOrder } from "@/lib/schema/schema-types";
-import { getCustomerOrderByOrderNumber } from "@/server/actions/customer-order-actions";
+import { getCustomerOrderByOrderNumber } from "@/server/actions/shopper/orders-actions";
 
 function CheckoutSuccessLoading() {
   return (
@@ -85,7 +85,7 @@ async function CheckoutSuccessContent({
 }) {
   const t = await getTranslations("store.checkout.success");
   const orderResult = await getCustomerOrderByOrderNumber(
-    searchParams.order as string,
+    searchParams.order as string
   );
   if (!searchParams.order) {
     redirect("/store");
@@ -175,7 +175,6 @@ async function CheckoutSuccessContent({
               </div>
             </div>
 
-            {/* Order Items */}
             <div>
               <h3 className="mb-3 font-medium">{t("orderItems")}</h3>
               <div className="space-y-2">
@@ -198,7 +197,6 @@ async function CheckoutSuccessContent({
               </div>
             </div>
 
-            {/* Next Steps */}
             <div className="rounded-md bg-muted p-4">
               <h3 className="mb-2 font-medium">{t("nextSteps")}</h3>
               <ul className="space-y-1 text-sm text-muted-foreground">

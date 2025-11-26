@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
 import { db } from "@/lib/db";
-import { getUserById } from "@/server/actions/user-actions";
+import { getUserById } from "@/server/actions/users/users-actions";
 import UserAuditLogs from "./_components/user-audit-logs";
 import UserExpenses from "./_components/user-expenses";
 import UserSchedules from "./_components/user-schedules";

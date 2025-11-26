@@ -1,16 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import { getBusinesses } from "@/server/actions/business-actions";
-import { getBusinessSettings } from "@/server/actions/business-settings-actions";
-import { getCategories } from "@/server/actions/category-actions";
-import { getProductById, getProducts } from "@/server/actions/product-actions";
+import { getBusinesses } from "@/server/actions/business/business-actions";
+import { getBusinessSettings } from "@/server/actions/business/settings-actions";
+import { getCategories } from "@/server/actions/business/categories-actions";
+import { getProductById, getProducts } from "@/server/actions/inventory/products-actions";
 import {
   getSecurityInfo,
   getUserSessions,
 } from "@/server/actions/security-actions";
 import { getSuppliers } from "@/server/actions/supplier-actions";
-import { getUserById } from "@/server/actions/user-actions";
-import { getWarehouses } from "@/server/actions/warehouse-actions";
-import { getWarehouseItems } from "@/server/actions/warehouse-item-actions";
+import { getUserById } from "@/server/actions/users/users-actions";
+import { getWarehouses } from "@/server/actions/warehouse/warehouses-actions";
+import { getWarehouseItems } from "@/server/actions/inventory/warehouse-items-actions";
 
 export const useProducts = () => {
   const res = useQuery({

@@ -2,8 +2,8 @@
 
 import type { OnboardingFormData } from "@/app/[locale]/(onboarding)/onboarding/_components/onboarding-utils";
 import { createManyInvitations } from "@/server/actions/invitation-actions";
-import { ErrorCode } from "../constants/errors";
-import { Permission } from "../constants/permissions";
+import { ERROR_CODE } from "../constants/errors";
+import { PERMISSION } from "../constants/permissions";
 import { getUserIfHasPermission } from "./auth/permission-middleware";
 import { createBusiness } from "./business-actions";
 import { upsertManyBusinessSettings } from "./business-settings-actions";
@@ -11,8 +11,8 @@ import { upsertManyCategories } from "./category-actions";
 import { createManyWarehouses } from "./warehouse-actions";
 
 export async function businessInitialization(data: OnboardingFormData) {
-  const currentUser = await getUserIfHasPermission(Permission.PRODUCT_VIEW);
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
+  const currentUser = await getUserIfHasPermission(PERMISSION.PRODUCT_VIEW);
+  if (!currentUser) return { data: null, error: ERROR_CODE.UNAUTHORIZED };
 
   try {
     const {
@@ -32,7 +32,7 @@ export async function businessInitialization(data: OnboardingFormData) {
       (item) => ({
         key: item[0],
         value: item[1],
-      }),
+      })
     );
 
     const business = await createBusiness(businessData);
@@ -83,6 +83,6 @@ export async function businessInitialization(data: OnboardingFormData) {
     };
   } catch (error) {
     console.error("Error getting products:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
+    return { data: null, error: ERROR_CODE.FAILED_REQUEST };
   }
 }

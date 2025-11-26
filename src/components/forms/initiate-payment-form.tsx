@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useBusinesses } from "@/lib/hooks/use-queries";
-import { initiateInterBusinessPayment } from "@/server/actions/payment-actions";
+import { initiateInterBusinessPayment } from "@/server/actions/shopper/payments-actions";
 import {
   Autocomplete,
   AutocompleteEmpty,

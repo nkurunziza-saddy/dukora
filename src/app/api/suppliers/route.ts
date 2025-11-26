@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import * as supplierService from "@/server/actions/supplier-actions";
-import { ErrorCode } from "@/server/constants/errors";
+import { ERROR_CODE } from "@/server/constants/errors";
 
 export async function GET() {
   try {
@@ -11,7 +11,7 @@ export async function GET() {
     return NextResponse.json(suppliers.data);
   } catch (error) {
     console.error(error);
-    return NextResponse.json(ErrorCode.DATABASE_ERROR, { status: 500 });
+    return NextResponse.json(ERROR_CODE.DATABASE_ERROR, { status: 500 });
   }
 }
 
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newSupplier);
   } catch (error) {
     console.error(error);
-    return NextResponse.json(ErrorCode.DATABASE_ERROR, { status: 500 });
+    return NextResponse.json(ERROR_CODE.DATABASE_ERROR, { status: 500 });
   }
 }
 
@@ -42,7 +42,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json(updatedSupplier);
   } catch (error) {
     console.error(error);
-    return NextResponse.json(ErrorCode.DATABASE_ERROR, { status: 500 });
+    return NextResponse.json(ERROR_CODE.DATABASE_ERROR, { status: 500 });
   }
 }
 
@@ -56,6 +56,6 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json(r.data);
   } catch (error) {
     console.error("Error deleting supplier:", error);
-    return NextResponse.json(ErrorCode.DATABASE_ERROR, { status: 500 });
+    return NextResponse.json(ERROR_CODE.DATABASE_ERROR, { status: 500 });
   }
 }

@@ -2,59 +2,59 @@
 
 import { revalidateTag } from "next/cache";
 import type { InsertSupplier } from "@/lib/schema/schema-types";
-import { ErrorCode } from "@/server/constants/errors";
-import { Permission } from "@/server/constants/permissions";
+import { ERROR_CODE } from "@/server/constants/errors";
+import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as supplierRepo from "../repos/supplier-repo";
 
 export const getSuppliers = createProtectedAction(
-  Permission.SUPPLIER_VIEW,
+  PERMISSION.SUPPLIER_VIEW,
   async (user) => {
     const suppliers = await supplierRepo.get_all(user.businessId ?? "");
     if (suppliers.error) {
       return { data: null, error: suppliers.error };
     }
     return { data: suppliers.data, error: null };
-  },
+  }
 );
 
 export const getSuppliersPaginated = createProtectedAction(
-  Permission.SUPPLIER_VIEW,
+  PERMISSION.SUPPLIER_VIEW,
   async (user, { page, pageSize }: { page: number; pageSize: number }) => {
     const suppliers = await supplierRepo.get_all_paginated(
       user.businessId ?? "",
       page,
-      pageSize,
+      pageSize
     );
     if (suppliers.error) {
       return { data: null, error: suppliers.error };
     }
     return { data: suppliers.data, error: null };
-  },
+  }
 );
 
 export const getSupplierById = createProtectedAction(
-  Permission.SUPPLIER_VIEW,
+  PERMISSION.SUPPLIER_VIEW,
   async (user, supplierId: string) => {
     if (!supplierId?.trim()) {
-      return { data: null, error: ErrorCode.MISSING_INPUT };
+      return { data: null, error: ERROR_CODE.MISSING_INPUT };
     }
     const supplier = await supplierRepo.get_by_id(
       supplierId,
-      user.businessId ?? "",
+      user.businessId ?? ""
     );
     if (supplier.error) {
       return { data: null, error: supplier.error };
     }
     return { data: supplier.data, error: null };
-  },
+  }
 );
 
 export const createSupplier = createProtectedAction(
-  Permission.SUPPLIER_CREATE,
+  PERMISSION.SUPPLIER_CREATE,
   async (user, supplierData: Omit<InsertSupplier, "businessId" | "id">) => {
     if (!supplierData.name?.trim()) {
-      return { data: null, error: ErrorCode.MISSING_INPUT };
+      return { data: null, error: ERROR_CODE.MISSING_INPUT };
     }
     const supplier: InsertSupplier = {
       ...supplierData,
@@ -63,7 +63,7 @@ export const createSupplier = createProtectedAction(
     const res = await supplierRepo.create(
       user.businessId ?? "",
       user.id,
-      supplier,
+      supplier
     );
     if (res.error) {
       return { data: null, error: res.error };
@@ -71,11 +71,11 @@ export const createSupplier = createProtectedAction(
     revalidateTag(`suppliers-${user.businessId}`, "max");
     revalidateTag("suppliers", "max");
     return { data: res.data, error: null };
-  },
+  }
 );
 
 export const updateSupplier = createProtectedAction(
-  Permission.SUPPLIER_UPDATE,
+  PERMISSION.SUPPLIER_UPDATE,
   async (
     user,
     {
@@ -84,16 +84,16 @@ export const updateSupplier = createProtectedAction(
     }: {
       supplierId: string;
       updates: Partial<Omit<InsertSupplier, "id" | "businessId">>;
-    },
+    }
   ) => {
     if (!supplierId?.trim()) {
-      return { data: null, error: ErrorCode.MISSING_INPUT };
+      return { data: null, error: ERROR_CODE.MISSING_INPUT };
     }
     const updatedSupplier = await supplierRepo.update(
       supplierId,
       user.businessId ?? "",
       user.id,
-      updates,
+      updates
     );
     if (updatedSupplier.error) {
       return { data: null, error: updatedSupplier.error };
@@ -101,19 +101,19 @@ export const updateSupplier = createProtectedAction(
     revalidateTag(`suppliers-${user.businessId}`, "max");
     revalidateTag(`supplier-${supplierId}`, "max");
     return { data: updatedSupplier.data, error: null };
-  },
+  }
 );
 
 export const deleteSupplier = createProtectedAction(
-  Permission.SUPPLIER_DELETE,
+  PERMISSION.SUPPLIER_DELETE,
   async (user, supplierId: string) => {
     if (!supplierId?.trim()) {
-      return { data: null, error: ErrorCode.MISSING_INPUT };
+      return { data: null, error: ERROR_CODE.MISSING_INPUT };
     }
     const res = await supplierRepo.remove(
       supplierId,
       user.businessId ?? "",
-      user.id,
+      user.id
     );
     if (res.error) {
       return { data: null, error: res.error };
@@ -121,14 +121,14 @@ export const deleteSupplier = createProtectedAction(
     revalidateTag(`suppliers-${user.businessId}`, "max");
     revalidateTag(`supplier-${supplierId}`, "max");
     return { data: { success: true }, error: null };
-  },
+  }
 );
 
 export const createManySuppliers = createProtectedAction(
-  Permission.SUPPLIER_CREATE,
+  PERMISSION.SUPPLIER_CREATE,
   async (user, suppliersData: Omit<InsertSupplier, "businessId" | "id">[]) => {
     if (!suppliersData?.length) {
-      return { data: null, error: ErrorCode.MISSING_INPUT };
+      return { data: null, error: ERROR_CODE.MISSING_INPUT };
     }
     const suppliers: InsertSupplier[] = suppliersData.map((supplier) => ({
       ...supplier,
@@ -141,5 +141,5 @@ export const createManySuppliers = createProtectedAction(
     revalidateTag(`suppliers-${user.businessId}`, "max");
     revalidateTag("suppliers", "max");
     return { data: createdSuppliers.data, error: null };
-  },
+  }
 );

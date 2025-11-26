@@ -19,9 +19,9 @@ import {
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { formatCurrency, formatKeys, formatNumber } from "@/lib/utils";
 import { getCurrentSession } from "@/server/actions/auth-actions";
-import { getBusinessSettings } from "@/server/actions/business-settings-actions";
+import { getBusinessSettings } from "@/server/actions/business/settings-actions";
 import { calculateAndSyncMonthlyMetrics } from "@/server/actions/metrics-action";
-import { ErrorCode } from "@/server/constants/errors";
+import { ERROR_CODE } from "@/server/constants/errors";
 import {
   getCurrentMonthBoundary,
   getMonthData,
@@ -93,7 +93,7 @@ const Analytics = async ({
   const t = await getTranslations("analytics");
 
   if (metrics.error) {
-    if (metrics.error === ErrorCode.BEFORE_BUSINESS_CREATION) {
+    if (metrics.error === ERROR_CODE.BEFORE_BUSINESS_CREATION) {
       const createdAtDate = metrics.data as Date;
       return (
         <AnalyticsEmptyState businessCreatedAt={new Date(createdAtDate)} />
@@ -121,10 +121,9 @@ const Analytics = async ({
     {
       title: t("totalRevenue"),
       value: formatCurrency(data?.grossRevenue || 0, currency),
-      trend: (data?.grossRevenue && data.grossRevenue > 0 ? "up" : "neutral") as
-        | "up"
-        | "down"
-        | "neutral",
+      trend: (data?.grossRevenue && data.grossRevenue > 0
+        ? "up"
+        : "neutral") as "up" | "down" | "neutral",
       description: t("totalRevenueDesc"),
     },
     {
@@ -420,7 +419,7 @@ const Analytics = async ({
 };
 
 export default async function AnalyticsPage(
-  props: PageProps<"/[locale]/analytics">,
+  props: PageProps<"/[locale]/analytics">
 ) {
   const searchParams = await props.searchParams;
   return (

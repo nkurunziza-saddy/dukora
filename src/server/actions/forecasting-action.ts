@@ -1,5 +1,5 @@
-import { ErrorCode } from "@/server/constants/errors";
-import { Permission } from "@/server/constants/permissions";
+import { ERROR_CODE } from "@/server/constants/errors";
+import { PERMISSION } from "@/server/constants/permissions";
 import { getUserIfHasPermission } from "./auth/permission-middleware";
 
 function linearRegression(data: { x: number; y: number }[]) {
@@ -33,10 +33,10 @@ export interface ForecastPoint {
 export async function getForecastedMetrics(
   historicalData: Record<string, Record<string, number>>,
   metricName: string,
-  forecastPeriods = 3,
+  forecastPeriods = 3
 ) {
-  const currentUser = await getUserIfHasPermission(Permission.FINANCIAL_VIEW);
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
+  const currentUser = await getUserIfHasPermission(PERMISSION.FINANCIAL_VIEW);
+  if (!currentUser) return { data: null, error: ERROR_CODE.UNAUTHORIZED };
 
   try {
     const formattedData: ForecastPoint[] = Object.entries(historicalData).map(
@@ -45,7 +45,7 @@ export async function getForecastedMetrics(
           x: index,
           y: metrics[metricName] || 0,
           name: new Date(period).toLocaleString("default", { month: "short" }),
-        }) as ForecastPoint,
+        }) as ForecastPoint
     );
 
     if (formattedData.length < 2) {
@@ -84,6 +84,6 @@ export async function getForecastedMetrics(
     return { data: result, error: null };
   } catch (error) {
     console.error("Failed to calculate forecast:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
+    return { data: null, error: ERROR_CODE.FAILED_REQUEST };
   }
 }

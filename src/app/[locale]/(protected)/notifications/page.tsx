@@ -23,7 +23,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { formatCurrency, formatNumber } from "@/lib/utils";
-import { getBusinessSettings } from "@/server/actions/business-settings-actions";
+import { getBusinessSettings } from "@/server/actions/business/settings-actions";
 import {
   getNotificationStats,
   getNotifications,

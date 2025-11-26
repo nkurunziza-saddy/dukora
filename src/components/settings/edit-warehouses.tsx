@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { SelectWarehouse } from "@/lib/schema/schema-types";
-import { createManyWarehouses } from "@/server/actions/warehouse-actions";
+import { createManyWarehouses } from "@/server/actions/warehouse/warehouses-actions";
 import { LIMITS, warehousesSchema } from "./settings-utils";
 
 export function EditWarehouses({

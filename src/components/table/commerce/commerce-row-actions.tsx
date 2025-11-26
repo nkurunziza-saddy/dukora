@@ -20,6 +20,7 @@ import {
   MenuTrigger,
 } from "@/components/ui/menu";
 import type { SelectProduct } from "@/lib/schema/schema-types";
+import { deleteProduct } from "@/server/actions/inventory/products-actions";
 
 export interface CommerceRowActionsProps {
   product: SelectProduct;
@@ -35,12 +36,15 @@ const CommerceRowActions: FC<CommerceRowActionsProps> = ({ product }) => {
   const handleDeleteConfirm = async () => {
     setIsLoading(true);
     try {
-      const resp = await fetch("/api/products", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: product.id }),
-      });
-      const r = await resp.json();
+      const resp = await deleteProduct(product.id);
+
+      const r = resp.data;
+      if (!r) {
+        setIsLoading(false);
+        return toast.error(t("product.deleteError"), {
+          description: `${t}`,
+        });
+      }
       if (r.success) {
         setIsDeleteDialogOpen(false);
         toast.success(t("product.deleteSuccess"), {

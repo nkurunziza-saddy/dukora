@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
-import * as warehouseService from "@/server/actions/warehouse-actions";
-import { ErrorCode } from "@/server/constants/errors";
+import * as warehouseService from "@/server/actions/warehouse/warehouses-actions";
+import { ERROR_CODE } from "@/server/constants/errors";
 
 export async function GET() {
   try {
@@ -11,7 +11,7 @@ export async function GET() {
     return NextResponse.json(warehouses.data);
   } catch (error) {
     console.error(error);
-    return NextResponse.json(ErrorCode.DATABASE_ERROR, { status: 500 });
+    return NextResponse.json(ERROR_CODE.DATABASE_ERROR, { status: 500 });
   }
 }
 
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newWarehouse);
   } catch (error) {
     console.error(error);
-    return NextResponse.json(ErrorCode.DATABASE_ERROR, { status: 500 });
+    return NextResponse.json(ERROR_CODE.DATABASE_ERROR, { status: 500 });
   }
 }
 
@@ -42,7 +42,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json(updatedWarehouse);
   } catch (error) {
     console.error(error);
-    return NextResponse.json(ErrorCode.DATABASE_ERROR, { status: 500 });
+    return NextResponse.json(ERROR_CODE.DATABASE_ERROR, { status: 500 });
   }
 }
 
@@ -56,6 +56,6 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json(r);
   } catch (error) {
     console.error("Error deleting warehouse:", error);
-    return NextResponse.json(ErrorCode.DATABASE_ERROR, { status: 500 });
+    return NextResponse.json(ERROR_CODE.DATABASE_ERROR, { status: 500 });
   }
 }

@@ -31,7 +31,7 @@ import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import {
   getCustomerPayments,
   getInterBusinessPayments,
-} from "@/server/actions/payment-actions";
+} from "@/server/actions/shopper/payments-actions";
 
 export async function generateMetadata(): Promise<Metadata> {
   return constructI18nMetadata({

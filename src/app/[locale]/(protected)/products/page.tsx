@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import ColumnWrapper from "@/components/providers/column-wrapper";
 import { TableSkeleton } from "@/components/skeletons";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
-import { getProductsPaginated } from "@/server/actions/product-actions";
+import { getProductsPaginated } from "@/server/actions/inventory/products-actions";
 import { ProductColumn } from "@/utils/columns/product-column";
 
 export async function generateMetadata(): Promise<Metadata> {

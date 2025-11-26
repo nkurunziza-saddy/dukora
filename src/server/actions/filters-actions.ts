@@ -1,7 +1,7 @@
 import type { TransactionType } from "@/lib/schema/schema-types";
 import { getUserIfHasPermission } from "@/server/actions/auth/permission-middleware";
-import { ErrorCode } from "@/server/constants/errors";
-import { Permission } from "@/server/constants/permissions";
+import { ERROR_CODE } from "@/server/constants/errors";
+import { PERMISSION } from "@/server/constants/permissions";
 import { get_filtered_transactions } from "@/server/repos/statistics-repo/transactions-stat-repo";
 
 export async function getTransactionsByFilters(
@@ -11,11 +11,11 @@ export async function getTransactionsByFilters(
   sortOrder: "asc" | "desc" = "desc",
   typeFilter?: TransactionType,
   dateFrom?: string,
-  dateTo?: string,
+  dateTo?: string
 ) {
   try {
-    const currentUser = await getUserIfHasPermission(Permission.FINANCIAL_VIEW);
-    if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
+    const currentUser = await getUserIfHasPermission(PERMISSION.FINANCIAL_VIEW);
+    if (!currentUser) return { data: null, error: ERROR_CODE.UNAUTHORIZED };
 
     const dateFromObj = dateFrom ? new Date(dateFrom) : undefined;
     const dateToObj = dateTo ? new Date(dateTo) : undefined;
@@ -28,17 +28,17 @@ export async function getTransactionsByFilters(
       sortOrder,
       typeFilter,
       dateFromObj,
-      dateToObj,
+      dateToObj
     );
 
     if (data.error) {
-      return { data: null, error: ErrorCode.UNAUTHORIZED };
+      return { data: null, error: ERROR_CODE.UNAUTHORIZED };
     }
 
     return { data: data.data, error: null };
   } catch (error) {
-    if (error instanceof Error && error.message === ErrorCode.UNAUTHORIZED) {
-      return { data: null, error: ErrorCode.UNAUTHORIZED };
+    if (error instanceof Error && error.message === ERROR_CODE.UNAUTHORIZED) {
+      return { data: null, error: ERROR_CODE.UNAUTHORIZED };
     }
     return {
       data: null,

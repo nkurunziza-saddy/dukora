@@ -44,6 +44,9 @@ export type SelectCustomerOrder =
   typeof schema.customerOrdersTable.$inferSelect;
 export type SelectCustomerOrderItem =
   typeof schema.customerOrderItemsTable.$inferSelect;
+export type SelectStoreProduct = typeof schema.storeProductsTable.$inferSelect;
+export type SelectStoreSetting = typeof schema.storeSettingsTable.$inferSelect;
+export type SelectStoreMetric = typeof schema.storeMetricsTable.$inferSelect;
 
 export type InsertBusiness = typeof schema.businessesTable.$inferInsert;
 export type InsertBusinessSetting =
@@ -85,6 +88,13 @@ export type InsertProductPriceHistory =
   typeof schema.productPriceHistoryTable.$inferInsert;
 export type InsertInterBusinessPayment =
   typeof schema.interBusinessPaymentsTable.$inferInsert;
+export type InsertStoreProduct = typeof schema.storeProductsTable.$inferInsert;
+export type InsertStoreSetting = typeof schema.storeSettingsTable.$inferInsert;
+export type InsertStoreMetric = typeof schema.storeMetricsTable.$inferInsert;
+export type InsertCustomerOrder =
+  typeof schema.customerOrdersTable.$inferInsert;
+export type InsertCustomerOrderItem =
+  typeof schema.customerOrderItemsTable.$inferInsert;
 
 export const UserRole = schema.USER_ROLES.reduce(
   (acc, role) => {
@@ -94,7 +104,7 @@ export const UserRole = schema.USER_ROLES.reduce(
   {} as Record<
     (typeof schema.USER_ROLES)[number],
     (typeof schema.USER_ROLES)[number]
-  >,
+  >
 );
 export type UserRole = (typeof UserRole)[keyof typeof UserRole];
 
@@ -106,7 +116,7 @@ export const ProductStatus = schema.PRODUCT_STATUS.reduce(
   {} as Record<
     (typeof schema.PRODUCT_STATUS)[number],
     (typeof schema.PRODUCT_STATUS)[number]
-  >,
+  >
 );
 export type ProductStatus = (typeof ProductStatus)[keyof typeof ProductStatus];
 
@@ -118,7 +128,7 @@ export const OrderStatus = schema.ORDER_STATUS.reduce(
   {} as Record<
     (typeof schema.ORDER_STATUS)[number],
     (typeof schema.ORDER_STATUS)[number]
-  >,
+  >
 );
 export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus];
 
@@ -130,7 +140,7 @@ export const TransactionType = schema.TRANSACTION_TYPE.reduce(
   {} as Record<
     (typeof schema.TRANSACTION_TYPE)[number],
     (typeof schema.TRANSACTION_TYPE)[number]
-  >,
+  >
 );
 export type TransactionType =
   (typeof TransactionType)[keyof typeof TransactionType];

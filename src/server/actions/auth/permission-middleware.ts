@@ -1,10 +1,10 @@
 import { getCurrentSession } from "@/server/actions/auth-actions";
-import type { Permission } from "@/server/constants/permissions";
+import type { PERMISSION } from "@/server/constants/permissions";
 import { roleHasPermission } from "@/server/helpers/role-permissions";
 
 export async function getUserIfHasPermission(
-  permission: Permission,
-  bypass?: string,
+  permission: PERMISSION,
+  bypass?: string
 ) {
   const session = await getCurrentSession();
   if (!session) return null;

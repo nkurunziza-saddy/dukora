@@ -52,7 +52,7 @@ export function CartSidebar() {
                   </EmptyDescription>
                 </EmptyHeader>
                 <EmptyContent>
-                  <Button render={<Link href="/store" />} size={"sm"}>
+                  <Button onClick={toggleCart} size={"sm"}>
                     {t("continueShopping")}
                   </Button>
                 </EmptyContent>
@@ -126,8 +126,7 @@ export function CartSidebar() {
               <div className="space-y-2">
                 <Button
                   className="w-full"
-                  onClick={toggleCart}
-                  render={<Link href="/store/checkout" />}
+                  render={<Link href={`/store/checkout`} />}
                 >
                   {t("proceedToCheckout")}
                 </Button>
@@ -135,7 +134,6 @@ export function CartSidebar() {
                   <Button
                     className="flex-1"
                     onClick={toggleCart}
-                    render={<Link href="/store/products" />}
                     variant="outline"
                   >
                     {t("continueShopping")}

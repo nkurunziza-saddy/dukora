@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
-import * as userService from "@/server/actions/user-actions";
-import { ErrorCode } from "@/server/constants/errors";
+import * as userService from "@/server/actions/users/users-actions";
+import { ERROR_CODE } from "@/server/constants/errors";
 
 export async function GET() {
   try {
@@ -11,7 +11,7 @@ export async function GET() {
     return NextResponse.json(users.data);
   } catch (error) {
     console.error(error);
-    return NextResponse.json(ErrorCode.DATABASE_ERROR, { status: 500 });
+    return NextResponse.json(ERROR_CODE.DATABASE_ERROR, { status: 500 });
   }
 }
 
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newUser);
   } catch (error) {
     console.error(error);
-    return NextResponse.json(ErrorCode.DATABASE_ERROR, { status: 500 });
+    return NextResponse.json(ERROR_CODE.DATABASE_ERROR, { status: 500 });
   }
 }
 
@@ -42,7 +42,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json(updatedUser);
   } catch (error) {
     console.error(error);
-    return NextResponse.json(ErrorCode.DATABASE_ERROR, { status: 500 });
+    return NextResponse.json(ERROR_CODE.DATABASE_ERROR, { status: 500 });
   }
 }
 
@@ -56,6 +56,6 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json(r.data);
   } catch (error) {
     console.error("Error deleting user:", error);
-    return NextResponse.json(ErrorCode.DATABASE_ERROR, { status: 500 });
+    return NextResponse.json(ERROR_CODE.DATABASE_ERROR, { status: 500 });
   }
 }

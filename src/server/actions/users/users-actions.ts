@@ -1,0 +1,185 @@
+"use server";
+
+import { eq } from "drizzle-orm";
+import { revalidateTag } from "next/cache";
+import { auth } from "@/lib/auth";
+import { db } from "@/lib/db";
+import { usersTable } from "@/lib/schema";
+import type { InsertUser, UserRole } from "@/lib/schema/schema-types";
+import { ERROR_CODE } from "@/server/constants/errors";
+import { PERMISSION } from "@/server/constants/permissions";
+import { createProtectedAction } from "@/server/helpers/action-factory";
+import * as userRepo from "../repos/user-repo";
+
+export const getUsers = createProtectedAction(
+  PERMISSION.USER_VIEW,
+  async (user) => {
+    const users = await userRepo.get_all(user.businessId ?? "");
+    if (users.error) {
+      return { data: null, error: users.error };
+    }
+    return { data: users.data, error: null };
+  }
+);
+
+export const getUsersPaginated = createProtectedAction(
+  PERMISSION.USER_VIEW,
+  async (user, { page, pageSize }: { page: number; pageSize: number }) => {
+    const users = await userRepo.get_all_paginated(
+      user.businessId ?? "",
+      page,
+      pageSize
+    );
+    if (users.error) {
+      return { data: null, error: users.error };
+    }
+    return { data: users.data, error: null };
+  }
+);
+
+export const getUserById = createProtectedAction(
+  PERMISSION.USER_VIEW,
+  async (user, userId: string) => {
+    if (!userId?.trim()) {
+      return { data: null, error: ERROR_CODE.MISSING_INPUT };
+    }
+    const result = await userRepo.get_by_id(userId, user.businessId ?? "");
+    if (result.error) {
+      return { data: null, error: result.error };
+    }
+    return { data: result.data, error: null };
+  }
+);
+
+export const createUser = createProtectedAction(
+  PERMISSION.USER_CREATE,
+  async (user, userData: Omit<InsertUser, "id" | "businessId">) => {
+    if (!userData.email?.trim() || !userData.name?.trim()) {
+      return { data: null, error: ERROR_CODE.MISSING_INPUT };
+    }
+    const newUser = await userRepo.create({
+      ...userData,
+      businessId: user.businessId ?? "",
+    });
+    if (newUser.error) {
+      return { data: null, error: newUser.error };
+    }
+    revalidateTag(`users-${user.businessId}`, "max");
+    revalidateTag("users", "max");
+    return { data: newUser.data, error: null };
+  }
+);
+
+export const updateUser = createProtectedAction(
+  PERMISSION.USER_UPDATE,
+  async (
+    user,
+    { userId, userData }: { userId: string; userData: Partial<InsertUser> }
+  ) => {
+    if (!userId?.trim()) {
+      return { data: null, error: ERROR_CODE.MISSING_INPUT };
+    }
+    const updatedUser = await userRepo.update(
+      userId,
+      userData,
+      user.businessId ?? ""
+    );
+    if (updatedUser.error) {
+      return { data: null, error: updatedUser.error };
+    }
+    revalidateTag(`users-${user.businessId}`, "max");
+    revalidateTag(`user-${userId}`, "max");
+    return { data: updatedUser.data, error: null };
+  }
+);
+
+export const deleteUser = createProtectedAction(
+  PERMISSION.USER_DELETE,
+  async (user, userId: string) => {
+    if (!userId?.trim()) {
+      return { data: null, error: ERROR_CODE.MISSING_INPUT };
+    }
+    if (userId === user.id) {
+      return { data: null, error: ERROR_CODE.CANNOT_DELETE_SELF };
+    }
+    const deletedUser = await userRepo.remove(userId, user.businessId ?? "");
+    if (deletedUser.error) {
+      return { data: null, error: deletedUser.error };
+    }
+    revalidateTag(`users-${user.businessId}`, "max");
+    revalidateTag(`user-${userId}`, "max");
+    return { data: { success: true }, error: null };
+  }
+);
+
+export const toggleUserStatus = createProtectedAction(
+  PERMISSION.USER_UPDATE,
+  async (user, userId: string) => {
+    if (!userId?.trim()) {
+      return { data: null, error: ERROR_CODE.MISSING_INPUT };
+    }
+    if (userId === user.id) {
+      return { data: null, error: ERROR_CODE.CANNOT_DEACTIVATE_SELF };
+    }
+    const updatedUser = await userRepo.toggle_active(
+      userId,
+      user.businessId as string
+    );
+    if (updatedUser.error) {
+      return { data: null, error: updatedUser.error };
+    }
+    revalidateTag(`users-${user.businessId}`, "max");
+    revalidateTag(`user-${userId}`, "max");
+    return { data: updatedUser.data, error: null };
+  }
+);
+
+export const assignRole = createProtectedAction(
+  PERMISSION.USER_ASSIGN_ROLES,
+  async (user, { userId, role }: { userId: string; role: UserRole }) => {
+    if (!userId?.trim() || !role?.trim()) {
+      return { data: null, error: ERROR_CODE.MISSING_INPUT };
+    }
+    const updatedUser = await userRepo.update(
+      userId,
+      { role },
+      user.businessId ?? ""
+    );
+    if (updatedUser.error) {
+      return { data: null, error: updatedUser.error };
+    }
+    revalidateTag(`users-${user.businessId}`, "max");
+    revalidateTag(`user-${userId}`, "max");
+    return { data: updatedUser.data, error: null };
+  }
+);
+
+export const changeUserPassword = createProtectedAction(
+  PERMISSION.USER_CREATE,
+  async (user, { password }: { password: string }) => {
+    const existingUser = await db.query.usersTable.findFirst({
+      where: eq(usersTable.id, user.id),
+    });
+
+    if (!existingUser) {
+      return { data: null, error: ERROR_CODE.USER_NOT_FOUND };
+    }
+    if (!existingUser.password) {
+      return { data: null, error: ERROR_CODE.BAD_REQUEST };
+    }
+    const updateResult = await auth.api.changePassword({
+      body: {
+        newPassword: password,
+        currentPassword: existingUser.password ?? "",
+        revokeOtherSessions: true,
+      },
+    });
+
+    if (!updateResult.user) {
+      return { data: null, error: ERROR_CODE.FAILED_REQUEST };
+    }
+    revalidateTag(`users-${user.businessId}`, "max");
+    revalidateTag(`user-${updateResult.user.id}`, "max");
+    return { data: updateResult, error: null };
+  }
+);

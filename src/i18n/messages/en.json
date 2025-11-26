@@ -1295,7 +1295,7 @@
     "inviteUserTitle": "Invite a New User",
     "pending": "Pending Invitations",
     "permissionsDescription": "Manage user roles and permissions.",
-    "permissionsPermission": "Permission",
+    "permissionsPermission": "PERMISSION",
     "role": "Role",
     "scheduleCategory": "Category",
     "scheduleEndDate": "End date",

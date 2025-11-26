@@ -6,7 +6,7 @@ import ColumnWrapper from "@/components/providers/column-wrapper";
 import StatCard from "@/components/shared/stat-card";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { formatCurrency, formatNumber } from "@/lib/utils";
-import { getBusinessSettings } from "@/server/actions/business-settings-actions";
+import { getBusinessSettings } from "@/server/actions/business/settings-actions";
 import { getTodayTransactions } from "@/server/actions/statistics-actions";
 import { getTransactionsByTimeIntervalPaginated } from "@/server/actions/transaction-actions";
 import { TransactionColumn } from "@/utils/columns/transaction-column";

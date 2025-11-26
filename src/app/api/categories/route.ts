@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import * as categoryService from "@/server/actions/category-actions";
+import * as categoryService from "@/server/actions/business/categories-actions";
 
 export async function GET() {
   try {

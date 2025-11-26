@@ -1,5 +1,5 @@
 import { addDays, startOfToday, subDays } from "date-fns";
-import { Permission } from "@/server/constants/permissions";
+import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import { get_total_products } from "@/server/repos/statistics-repo/product-stat-repo";
 import {
@@ -10,51 +10,51 @@ import * as transactionRepo from "@/server/repos/statistics-repo/transactions-st
 import { get_total_warehouses } from "@/server/repos/statistics-repo/warehouse-stat-repo";
 
 export const getTotalSKUCount = createProtectedAction(
-  Permission.FINANCIAL_VIEW,
+  PERMISSION.FINANCIAL_VIEW,
   async (user) => {
     const count = await get_total_products(user.businessId ?? "");
     if (count.error) {
       return { data: null, error: count.error };
     }
     return { data: count.data, error: null };
-  },
+  }
 );
 
 export const getTotalWarehousesCount = createProtectedAction(
-  Permission.FINANCIAL_VIEW,
+  PERMISSION.FINANCIAL_VIEW,
   async (user) => {
     const count = await get_total_warehouses(user.businessId ?? "");
     if (count.error) {
       return { data: null, error: count.error };
     }
     return { data: count.data, error: null };
-  },
+  }
 );
 
 export const getLowStockProductsCount = createProtectedAction(
-  Permission.FINANCIAL_VIEW,
+  PERMISSION.FINANCIAL_VIEW,
   async (user) => {
     const count = await get_products_with_stock_alert(user.businessId ?? "");
     if (count.error) {
       return { data: null, error: count.error };
     }
     return { data: count.data.length, error: null };
-  },
+  }
 );
 
 export const getCurrentInventoryValue = createProtectedAction(
-  Permission.FINANCIAL_VIEW,
+  PERMISSION.FINANCIAL_VIEW,
   async (user) => {
     const count = await get_inventory_value(user.businessId ?? "");
     if (count.error) {
       return { data: null, error: count.error };
     }
     return { data: count.data, error: null };
-  },
+  }
 );
 
 export const getTodayTransactions = createProtectedAction(
-  Permission.FINANCIAL_VIEW,
+  PERMISSION.FINANCIAL_VIEW,
   async (user) => {
     const today = startOfToday();
     const tomorrow = addDays(today, 1);
@@ -63,17 +63,17 @@ export const getTodayTransactions = createProtectedAction(
       transactionRepo.get_transaction_metrics_for_interval(
         user.businessId ?? "",
         today,
-        tomorrow,
+        tomorrow
       ),
       transactionRepo.get_transaction_metrics_for_interval(
         user.businessId ?? "",
         yesterday,
-        today,
+        today
       ),
     ]);
     return {
       data: { current: resToday.data, prev: resYesterday.data },
       error: null,
     };
-  },
+  }
 );

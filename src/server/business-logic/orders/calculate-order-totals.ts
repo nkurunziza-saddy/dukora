@@ -1,4 +1,4 @@
-import { ErrorCode } from "@/server/constants/errors";
+import { ERROR_CODE } from "@/server/constants/errors";
 
 export type OrderItem = {
   productId: string;
@@ -17,7 +17,7 @@ export type OrderCalculationResult = {
 
 export type CalculationResult = {
   value: number;
-  error: ErrorCode | null;
+  error: ERROR_CODE | null;
 };
 
 function parseNumeric(value: string | undefined, defaultValue = 0): number {
@@ -28,11 +28,11 @@ function parseNumeric(value: string | undefined, defaultValue = 0): number {
 
 export function calculateOrderSubtotal(items: OrderItem[]): CalculationResult {
   if (!Array.isArray(items)) {
-    return { value: 0, error: ErrorCode.MISSING_INPUT };
+    return { value: 0, error: ERROR_CODE.MISSING_INPUT };
   }
 
   if (items.length === 0) {
-    return { value: 0, error: ErrorCode.MISSING_INPUT };
+    return { value: 0, error: ERROR_CODE.MISSING_INPUT };
   }
 
   try {
@@ -50,7 +50,7 @@ export function calculateOrderSubtotal(items: OrderItem[]): CalculationResult {
     return { value: subtotal, error: null };
   } catch (error) {
     console.error("Error calculating subtotal:", error);
-    return { value: 0, error: ErrorCode.FAILED_REQUEST };
+    return { value: 0, error: ERROR_CODE.FAILED_REQUEST };
   }
 }
 
@@ -78,7 +78,7 @@ export function calculateOrderDiscounts(items: OrderItem[]): CalculationResult {
     return { value: discounts, error: null };
   } catch (error) {
     console.error("Error calculating discounts:", error);
-    return { value: 0, error: ErrorCode.FAILED_REQUEST };
+    return { value: 0, error: ERROR_CODE.FAILED_REQUEST };
   }
 }
 
@@ -87,14 +87,14 @@ import { calculateTaxAmount } from "../taxes/calculate-tax";
 export function calculateOrderTax(
   subtotal: number,
   taxRate: number,
-  pricesIncludeTax: boolean = false,
+  pricesIncludeTax: boolean = false
 ): CalculationResult {
   if (typeof subtotal !== "number" || subtotal < 0) {
-    return { value: 0, error: ErrorCode.MISSING_INPUT };
+    return { value: 0, error: ERROR_CODE.MISSING_INPUT };
   }
 
   if (typeof taxRate !== "number" || taxRate < 0 || taxRate > 100) {
-    return { value: 0, error: ErrorCode.MISSING_INPUT };
+    return { value: 0, error: ERROR_CODE.MISSING_INPUT };
   }
 
   try {
@@ -102,20 +102,20 @@ export function calculateOrderTax(
     return { value: tax, error: null };
   } catch (error) {
     console.error("Error calculating tax:", error);
-    return { value: 0, error: ErrorCode.FAILED_REQUEST };
+    return { value: 0, error: ERROR_CODE.FAILED_REQUEST };
   }
 }
 
 export function calculateOrderShipping(
   items: OrderItem[],
-  shippingRate = 0,
+  shippingRate = 0
 ): CalculationResult {
   if (!Array.isArray(items)) {
-    return { value: 0, error: ErrorCode.MISSING_INPUT };
+    return { value: 0, error: ERROR_CODE.MISSING_INPUT };
   }
 
   if (typeof shippingRate !== "number" || shippingRate < 0) {
-    return { value: 0, error: ErrorCode.MISSING_INPUT };
+    return { value: 0, error: ERROR_CODE.MISSING_INPUT };
   }
 
   // Future: Can calculate based on item count, weight, etc.
@@ -127,7 +127,7 @@ export function calculateOrderTotal(
   subtotal: number,
   discounts: number,
   tax = 0,
-  shipping = 0,
+  shipping = 0
 ): CalculationResult {
   if (
     typeof subtotal !== "number" ||
@@ -135,7 +135,7 @@ export function calculateOrderTotal(
     typeof tax !== "number" ||
     typeof shipping !== "number"
   ) {
-    return { value: 0, error: ErrorCode.MISSING_INPUT };
+    return { value: 0, error: ERROR_CODE.MISSING_INPUT };
   }
 
   const validSubtotal = Math.max(0, subtotal);
@@ -144,7 +144,7 @@ export function calculateOrderTotal(
   const validShipping = Math.max(0, shipping);
 
   if (validDiscounts > validSubtotal) {
-    return { value: 0, error: ErrorCode.BAD_REQUEST };
+    return { value: 0, error: ERROR_CODE.BAD_REQUEST };
   }
 
   try {
@@ -152,7 +152,7 @@ export function calculateOrderTotal(
     return { value: Math.max(0, total), error: null };
   } catch (error) {
     console.error("Error calculating total:", error);
-    return { value: 0, error: ErrorCode.FAILED_REQUEST };
+    return { value: 0, error: ERROR_CODE.FAILED_REQUEST };
   }
 }
 
@@ -160,8 +160,8 @@ export function calculateAllOrderAmounts(
   items: OrderItem[],
   taxRate = 0,
   shippingRate = 0,
-  pricesIncludeTax = false,
-): OrderCalculationResult & { error: ErrorCode | null } {
+  pricesIncludeTax = false
+): OrderCalculationResult & { error: ERROR_CODE | null } {
   const subtotalResult = calculateOrderSubtotal(items);
   const discountsResult = calculateOrderDiscounts(items);
 
@@ -179,7 +179,7 @@ export function calculateAllOrderAmounts(
   const taxResult = calculateOrderTax(
     subtotalResult.value,
     taxRate,
-    pricesIncludeTax,
+    pricesIncludeTax
   );
   const shippingResult = calculateOrderShipping(items, shippingRate);
 
@@ -213,7 +213,7 @@ export function calculateAllOrderAmounts(
     subtotalResult.value,
     discountsResult.value,
     taxToAdd,
-    shippingResult.value,
+    shippingResult.value
   );
 
   return {

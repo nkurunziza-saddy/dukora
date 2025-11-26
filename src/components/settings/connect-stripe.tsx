@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import {
   createStripeAccountLink,
   createStripeConnectedAccount,
-} from "@/server/actions/stripe-connect-actions";
+} from "@/server/actions/payments/stripe-connect-actions";
 import { stripeConnectSchema } from "./settings-utils";
 
 export function ConnectStripe({

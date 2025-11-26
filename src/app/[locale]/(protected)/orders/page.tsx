@@ -9,7 +9,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
-import { getPurchaseOrdersPaginated } from "@/server/actions/purchase-order-actions";
+import { getPurchaseOrdersPaginated } from "@/server/actions/purchase-orders/purchase-orders-actions";
 import { OrderColumn } from "@/utils/columns/order-column";
 
 export async function generateMetadata(): Promise<Metadata> {

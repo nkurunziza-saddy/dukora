@@ -12,9 +12,9 @@ import type {
   SelectTransaction,
 } from "@/lib/schema/schema-types";
 import { getUserIfHasPermission } from "@/server/actions/auth/permission-middleware";
-import { getWarehouseItemsByBusiness } from "@/server/actions/warehouse-item-actions";
-import { ErrorCode } from "@/server/constants/errors";
-import { Permission } from "@/server/constants/permissions";
+import { getWarehouseItemsByBusiness } from "@/server/actions/inventory/warehouse-items-actions";
+import { ERROR_CODE } from "@/server/constants/errors";
+import { PERMISSION } from "@/server/constants/permissions";
 import { calculateClosingStock } from "@/server/helpers/accounting-formulas";
 import { getCurrentMonthBoundary } from "@/server/helpers/time-date-formatters";
 import * as metricsRepo from "@/server/repos/metrics-repo";
@@ -27,51 +27,51 @@ import { getBusinessByIdMinimized } from "./business-actions";
 import { getExpensesByTimeInterval } from "./expense-actions";
 
 export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
-  const currentUser = await getUserIfHasPermission(Permission.FINANCIAL_VIEW);
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
+  const currentUser = await getUserIfHasPermission(PERMISSION.FINANCIAL_VIEW);
+  if (!currentUser) return { data: null, error: ERROR_CODE.UNAUTHORIZED };
   if (!dateFrom || Number.isNaN(dateFrom.getTime())) {
     console.error("Invalid date provided for metrics calculation");
-    return { data: null, error: ErrorCode.BAD_REQUEST };
+    return { data: null, error: ERROR_CODE.BAD_REQUEST };
   }
 
   const currentMonthBoundary = getCurrentMonthBoundary();
   if (isAfter(dateFrom, currentMonthBoundary)) {
     console.warn(
-      `Attempted to calculate metrics for future/current month: ${dateFrom.toISOString()}`,
+      `Attempted to calculate metrics for future/current month: ${dateFrom.toISOString()}`
     );
-    return { data: null, error: ErrorCode.BAD_REQUEST };
+    return { data: null, error: ERROR_CODE.BAD_REQUEST };
   }
 
   const dateTo = endOfMonth(dateFrom);
 
   try {
     const business = await getBusinessByIdMinimized(
-      currentUser.businessId ?? "",
+      currentUser.businessId ?? ""
     );
     if (business.error) {
       console.error("Failed to fetch business:", business.error);
-      return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
+      return { data: null, error: ERROR_CODE.BUSINESS_NOT_FOUND };
     }
 
     if (!business.data?.createdAt) {
       console.error("Business creation date not found");
-      return { data: null, error: ErrorCode.BUSINESS_NOT_FOUND };
+      return { data: null, error: ERROR_CODE.BUSINESS_NOT_FOUND };
     }
 
     if (isBefore(dateFrom, startOfMonth(business.data.createdAt))) {
       console.warn(
-        `Attempted to calculate metrics before business creation: ${dateFrom.toISOString()}`,
+        `Attempted to calculate metrics before business creation: ${dateFrom.toISOString()}`
       );
       return {
         data: business.data.createdAt,
-        error: ErrorCode.BEFORE_BUSINESS_CREATION,
+        error: ERROR_CODE.BEFORE_BUSINESS_CREATION,
       };
     }
 
     const transactions = await transactionRepo.get_by_time_interval(
       currentUser.businessId ?? "",
       dateFrom,
-      dateTo,
+      dateTo
     );
 
     if (transactions.error) {
@@ -82,7 +82,7 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
     const transactionsFormatted = (transactions.data ?? [])
       .filter(
         (item: { transactions: SelectTransaction; products: SelectProduct }) =>
-          item.products,
+          item.products
       )
       .map(
         (item: {
@@ -91,7 +91,7 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
         }) => ({
           ...item.transactions,
           product: item.products,
-        }),
+        })
       );
 
     const prevMonth = subMonths(dateFrom, 1);
@@ -99,37 +99,37 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
       currentUser.businessId ?? "",
       "closingStock",
       "monthly",
-      prevMonth,
+      prevMonth
     );
 
     if (
       openingStockMetric.error &&
-      openingStockMetric.error !== ErrorCode.NOT_FOUND
+      openingStockMetric.error !== ERROR_CODE.NOT_FOUND
     ) {
       console.warn(
         "Failed to fetch opening stock metric:",
-        openingStockMetric.error,
+        openingStockMetric.error
       );
     }
 
     const openingStockValue = Math.max(
       0,
-      parseFloat(openingStockMetric.data?.value ?? "0"),
+      parseFloat(openingStockMetric.data?.value ?? "0")
     );
 
     const warehouseItemsReq = await getWarehouseItemsByBusiness(
-      currentUser.businessId ?? "",
+      currentUser.businessId ?? ""
     );
     if (warehouseItemsReq.error) {
       console.error(
         "Failed to fetch warehouse items:",
-        warehouseItemsReq.error,
+        warehouseItemsReq.error
       );
       return { data: null, error: warehouseItemsReq.error };
     }
 
     const closingStockValue = calculateClosingStock(
-      warehouseItemsReq.data ?? [],
+      warehouseItemsReq.data ?? []
     );
 
     const expenses = await getExpensesByTimeInterval({
@@ -142,21 +142,21 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
     }
 
     const settingsResult = await get_business_settings(
-      currentUser.businessId ?? "",
+      currentUser.businessId ?? ""
     );
     let taxRate = 0;
     let pricesIncludeTax = false;
 
     if (settingsResult.data) {
       const taxRateSetting = settingsResult.data.find(
-        (s) => s.key === "defaultVatRate",
+        (s) => s.key === "defaultVatRate"
       );
       if (taxRateSetting) {
         taxRate = Number(taxRateSetting.value) || 0;
       }
 
       const pricesIncludeTaxSetting = settingsResult.data.find(
-        (s) => s.key === "pricesIncludeTax",
+        (s) => s.key === "pricesIncludeTax"
       );
       if (pricesIncludeTaxSetting) {
         pricesIncludeTax = Boolean(pricesIncludeTaxSetting.value);
@@ -169,13 +169,13 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
       openingStockValue,
       closingStockValue,
       taxRate,
-      pricesIncludeTax,
+      pricesIncludeTax
     );
 
     const syncResult = await syncMetricsToDatabase(
       currentUser.businessId ?? "",
       dateFrom,
-      calculatedMetrics,
+      calculatedMetrics
     );
 
     if (syncResult.error) {
@@ -186,23 +186,23 @@ export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {
     return { data: calculatedMetrics, error: null };
   } catch (error) {
     console.error("Failed to calculate and sync metrics:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
+    return { data: null, error: ERROR_CODE.FAILED_REQUEST };
   }
 }
 
 export async function getMonthlyMetrics(date: Date) {
-  const currentUser = await getUserIfHasPermission(Permission.FINANCIAL_VIEW);
-  if (!currentUser) return { data: null, error: ErrorCode.UNAUTHORIZED };
+  const currentUser = await getUserIfHasPermission(PERMISSION.FINANCIAL_VIEW);
+  if (!currentUser) return { data: null, error: ERROR_CODE.UNAUTHORIZED };
 
   try {
     const metrics = await metricsRepo.get_monthly_metrics(
       currentUser.businessId ?? "",
-      date,
+      date
     );
     return metrics;
   } catch (error) {
     console.error("Failed to get monthly metrics:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
+    return { data: null, error: ERROR_CODE.FAILED_REQUEST };
   }
 }
 
@@ -215,13 +215,13 @@ export async function scheduleMonthlyMetricsSync() {
 
     for (const business of businesses.data || []) {
       const result = await calculateAndSyncMonthlyMetrics(
-        startOfMonth(new Date()),
+        startOfMonth(new Date())
       );
 
       if (result.error) {
         console.error(
           `Failed to sync metrics for business ${business.id}:`,
-          result.error,
+          result.error
         );
         errorCount++;
       } else {
@@ -232,6 +232,6 @@ export async function scheduleMonthlyMetricsSync() {
     return { data: { errorCount, successCount }, error: null };
   } catch (error) {
     console.error("Failed to schedule metrics sync:", error);
-    return { data: null, error: ErrorCode.FAILED_REQUEST };
+    return { data: null, error: ERROR_CODE.FAILED_REQUEST };
   }
 }

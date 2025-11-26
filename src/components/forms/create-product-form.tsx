@@ -25,7 +25,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useBusinessSettings, useCategories } from "@/lib/hooks/use-queries";
 import type { SelectProduct } from "@/lib/schema/schema-types";
-import { createProduct, updateProduct } from "@/server/actions/product-actions";
+import { createProduct, updateProduct } from "@/server/actions/inventory/products-actions";
 import { TriggerDialog } from "../shared/reusable-form-dialog";
 import { Separator } from "../ui/separator";
 
@@ -123,7 +123,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
             : `${t("productName")} ${tCommon("add")} ${tCommon("confirm")}`,
           {
             description: format(new Date(), "MMM dd, yyyy"),
-          }
+          },
         );
       } else {
         toast.error(tCommon("error"), {
@@ -398,7 +398,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               </>
             ) : (
               `${product ? tCommon("edit") : tCommon("add")} ${t(
-                "productName"
+                "productName",
               )}`
             )}
           </Button>

@@ -2,15 +2,19 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
 import { Empty, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
-import { getProductsForStore } from "@/server/actions/product-actions";
+import { getProductsForStore } from "@/server/actions/inventory/products-actions";
 import ProductCard from "./product-card";
 
-export async function FeaturedProducts() {
+export async function FeaturedProducts({ businessId }: { businessId: string }) {
   const t = await getTranslations("store");
 
   const { data: productsData, error } = await getProductsForStore({
-    page: 1,
-    pageSize: 9,
+    businessId,
+    filters: {
+      page: 1,
+      pageSize: 9,
+    },
+    featured: true,
   });
 
   if (error) {
@@ -38,7 +42,7 @@ export async function FeaturedProducts() {
           </h2>
           <Button
             render={(buttonProps) => (
-              <Link href="/store/products" {...buttonProps}>
+              <Link href={`/store/${businessId}/products`} {...buttonProps}>
                 {t("viewAll")}
               </Link>
             )}

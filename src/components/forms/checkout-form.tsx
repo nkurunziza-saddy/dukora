@@ -6,7 +6,6 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
 import { useForm } from "@tanstack/react-form";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -18,16 +17,13 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { CartItem } from "@/lib/types";
-import { createCustomerOrder } from "@/server/actions/customer-order-actions";
+import { createCustomerOrder } from "@/server/actions/shopper/orders-actions";
+import getStripe from "@/utils/get-stripe";
 import { Separator } from "../ui/separator";
-
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
-);
 
 const checkoutSchema = z.object({
   customerName: z.string().min(1, "Name is required"),
-  customerEmail: z.string().email("Invalid email address"),
+  customerEmail: z.email("Invalid email address"),
   customerPhone: z.string(),
   shippingAddress: z.object({
     street: z.string().min(1, "Street address is required"),
@@ -37,11 +33,11 @@ const checkoutSchema = z.object({
     country: z.string().min(1, "Country is required"),
   }),
   billingAddress: z.object({
-    street: z.string().min(1, "Street address is required"),
-    city: z.string().min(1, "City is required"),
-    state: z.string().min(1, "State is required"),
-    postalCode: z.string().min(1, "Postal code is required"),
-    country: z.string().min(1, "Country is required"),
+    street: z.string(),
+    city: z.string(),
+    state: z.string(),
+    postalCode: z.string(),
+    country: z.string(),
   }),
   sameAsShipping: z.boolean(),
   notes: z.string(),
@@ -63,7 +59,7 @@ function CheckoutFormContent({ cartProducts }: CheckoutFormProps) {
   const handleSubmit = async ({ value }: { value: CheckoutFormData }) => {
     if (!stripe || !elements) return;
 
-    setIsProcessing(true);
+    // setIsProcessing(true);
 
     try {
       const orderData = {
@@ -85,11 +81,12 @@ function CheckoutFormContent({ cartProducts }: CheckoutFormProps) {
       };
 
       const result = await createCustomerOrder(orderData);
+      console.log(result);
       if (result.error || !result.data) {
         toast.error("Failed to create order. Please try again.");
         return;
       }
-
+      console.log(orderData);
       setClientSecret(result.data.clientSecret);
 
       const { error } = await stripe.confirmPayment({
@@ -137,8 +134,6 @@ function CheckoutFormContent({ cartProducts }: CheckoutFormProps) {
     },
     onSubmit: handleSubmit,
   });
-
-  const sameAsShipping = form.state.values.sameAsShipping;
 
   if (clientSecret) {
     return (
@@ -437,148 +432,170 @@ function CheckoutFormContent({ cartProducts }: CheckoutFormProps) {
             name="sameAsShipping"
           />
 
-          {!sameAsShipping && (
-            <>
-              <form.Field
-                children={(field) => {
-                  const isInvalid =
-                    field.state.meta.isTouched && !field.state.meta.isValid;
-                  return (
-                    <Field data-invalid={isInvalid}>
-                      <FieldLabel htmlFor={field.name}>
-                        {t("streetAddress")}
-                      </FieldLabel>
-                      <Input
-                        aria-invalid={isInvalid}
-                        id={field.name}
-                        name={field.name}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        placeholder={t("enterStreetAddress")}
-                        value={field.state.value}
+          <form.Subscribe
+            selector={(state) => state.values.sameAsShipping}
+            children={(sameAsShipping) => (
+              <>
+                {!sameAsShipping && (
+                  <>
+                    <form.Field
+                      children={(field) => {
+                        const isInvalid =
+                          field.state.meta.isTouched &&
+                          !field.state.meta.isValid;
+                        return (
+                          <Field data-invalid={isInvalid}>
+                            <FieldLabel htmlFor={field.name}>
+                              {t("streetAddress")}
+                            </FieldLabel>
+                            <Input
+                              aria-invalid={isInvalid}
+                              id={field.name}
+                              name={field.name}
+                              onBlur={field.handleBlur}
+                              onChange={(e) =>
+                                field.handleChange(e.target.value)
+                              }
+                              placeholder={t("enterStreetAddress")}
+                              value={field.state.value}
+                            />
+                            {isInvalid && (
+                              <FieldError errors={field.state.meta.errors} />
+                            )}
+                          </Field>
+                        );
+                      }}
+                      name="billingAddress.street"
+                    />
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <form.Field
+                        children={(field) => {
+                          const isInvalid =
+                            field.state.meta.isTouched &&
+                            !field.state.meta.isValid;
+                          return (
+                            <Field data-invalid={isInvalid}>
+                              <FieldLabel htmlFor={field.name}>
+                                {t("city")}
+                              </FieldLabel>
+                              <Input
+                                aria-invalid={isInvalid}
+                                id={field.name}
+                                name={field.name}
+                                onBlur={field.handleBlur}
+                                onChange={(e) =>
+                                  field.handleChange(e.target.value)
+                                }
+                                placeholder={t("enterCity")}
+                                value={field.state.value}
+                              />
+                              {isInvalid && (
+                                <FieldError errors={field.state.meta.errors} />
+                              )}
+                            </Field>
+                          );
+                        }}
+                        name="billingAddress.city"
                       />
-                      {isInvalid && (
-                        <FieldError errors={field.state.meta.errors} />
-                      )}
-                    </Field>
-                  );
-                }}
-                name="billingAddress.street"
-              />
 
-              <div className="grid grid-cols-2 gap-4">
-                <form.Field
-                  children={(field) => {
-                    const isInvalid =
-                      field.state.meta.isTouched && !field.state.meta.isValid;
-                    return (
-                      <Field data-invalid={isInvalid}>
-                        <FieldLabel htmlFor={field.name}>
-                          {t("city")}
-                        </FieldLabel>
-                        <Input
-                          aria-invalid={isInvalid}
-                          id={field.name}
-                          name={field.name}
-                          onBlur={field.handleBlur}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                          placeholder={t("enterCity")}
-                          value={field.state.value}
-                        />
-                        {isInvalid && (
-                          <FieldError errors={field.state.meta.errors} />
-                        )}
-                      </Field>
-                    );
-                  }}
-                  name="billingAddress.city"
-                />
+                      <form.Field
+                        children={(field) => {
+                          const isInvalid =
+                            field.state.meta.isTouched &&
+                            !field.state.meta.isValid;
+                          return (
+                            <Field data-invalid={isInvalid}>
+                              <FieldLabel htmlFor={field.name}>
+                                {t("state")}
+                              </FieldLabel>
+                              <Input
+                                aria-invalid={isInvalid}
+                                id={field.name}
+                                name={field.name}
+                                onBlur={field.handleBlur}
+                                onChange={(e) =>
+                                  field.handleChange(e.target.value)
+                                }
+                                placeholder={t("enterState")}
+                                value={field.state.value}
+                              />
+                              {isInvalid && (
+                                <FieldError errors={field.state.meta.errors} />
+                              )}
+                            </Field>
+                          );
+                        }}
+                        name="billingAddress.state"
+                      />
+                    </div>
 
-                <form.Field
-                  children={(field) => {
-                    const isInvalid =
-                      field.state.meta.isTouched && !field.state.meta.isValid;
-                    return (
-                      <Field data-invalid={isInvalid}>
-                        <FieldLabel htmlFor={field.name}>
-                          {t("state")}
-                        </FieldLabel>
-                        <Input
-                          aria-invalid={isInvalid}
-                          id={field.name}
-                          name={field.name}
-                          onBlur={field.handleBlur}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                          placeholder={t("enterState")}
-                          value={field.state.value}
-                        />
-                        {isInvalid && (
-                          <FieldError errors={field.state.meta.errors} />
-                        )}
-                      </Field>
-                    );
-                  }}
-                  name="billingAddress.state"
-                />
-              </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <form.Field
+                        children={(field) => {
+                          const isInvalid =
+                            field.state.meta.isTouched &&
+                            !field.state.meta.isValid;
+                          return (
+                            <Field data-invalid={isInvalid}>
+                              <FieldLabel htmlFor={field.name}>
+                                {t("postalCode")}
+                              </FieldLabel>
+                              <Input
+                                aria-invalid={isInvalid}
+                                id={field.name}
+                                name={field.name}
+                                onBlur={field.handleBlur}
+                                onChange={(e) =>
+                                  field.handleChange(e.target.value)
+                                }
+                                placeholder={t("enterPostalCode")}
+                                value={field.state.value}
+                              />
+                              {isInvalid && (
+                                <FieldError errors={field.state.meta.errors} />
+                              )}
+                            </Field>
+                          );
+                        }}
+                        name="billingAddress.postalCode"
+                      />
 
-              <div className="grid grid-cols-2 gap-4">
-                <form.Field
-                  children={(field) => {
-                    const isInvalid =
-                      field.state.meta.isTouched && !field.state.meta.isValid;
-                    return (
-                      <Field data-invalid={isInvalid}>
-                        <FieldLabel htmlFor={field.name}>
-                          {t("postalCode")}
-                        </FieldLabel>
-                        <Input
-                          aria-invalid={isInvalid}
-                          id={field.name}
-                          name={field.name}
-                          onBlur={field.handleBlur}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                          placeholder={t("enterPostalCode")}
-                          value={field.state.value}
-                        />
-                        {isInvalid && (
-                          <FieldError errors={field.state.meta.errors} />
-                        )}
-                      </Field>
-                    );
-                  }}
-                  name="billingAddress.postalCode"
-                />
-
-                <form.Field
-                  children={(field) => {
-                    const isInvalid =
-                      field.state.meta.isTouched && !field.state.meta.isValid;
-                    return (
-                      <Field data-invalid={isInvalid}>
-                        <FieldLabel htmlFor={field.name}>
-                          {t("country")}
-                        </FieldLabel>
-                        <Input
-                          aria-invalid={isInvalid}
-                          id={field.name}
-                          name={field.name}
-                          onBlur={field.handleBlur}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                          placeholder={t("enterCountry")}
-                          value={field.state.value}
-                        />
-                        {isInvalid && (
-                          <FieldError errors={field.state.meta.errors} />
-                        )}
-                      </Field>
-                    );
-                  }}
-                  name="billingAddress.country"
-                />
-              </div>
-            </>
-          )}
+                      <form.Field
+                        children={(field) => {
+                          const isInvalid =
+                            field.state.meta.isTouched &&
+                            !field.state.meta.isValid;
+                          return (
+                            <Field data-invalid={isInvalid}>
+                              <FieldLabel htmlFor={field.name}>
+                                {t("country")}
+                              </FieldLabel>
+                              <Input
+                                aria-invalid={isInvalid}
+                                id={field.name}
+                                name={field.name}
+                                onBlur={field.handleBlur}
+                                onChange={(e) =>
+                                  field.handleChange(e.target.value)
+                                }
+                                placeholder={t("enterCountry")}
+                                value={field.state.value}
+                              />
+                              {isInvalid && (
+                                <FieldError errors={field.state.meta.errors} />
+                              )}
+                            </Field>
+                          );
+                        }}
+                        name="billingAddress.country"
+                      />
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+          />
         </div>
       </section>
 
@@ -631,7 +648,7 @@ function CheckoutFormContent({ cartProducts }: CheckoutFormProps) {
 
 export function CheckoutForm({ cartProducts }: CheckoutFormProps) {
   return (
-    <Elements stripe={stripePromise}>
+    <Elements stripe={getStripe()}>
       <CheckoutFormContent cartProducts={cartProducts} />
     </Elements>
   );

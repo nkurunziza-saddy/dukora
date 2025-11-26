@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
 import { db } from "@/lib/db";
-import { getProductById } from "@/server/actions/product-actions";
+import { getProductById } from "@/server/actions/inventory/products-actions";
 import ProductStockLevels from "./_components/product-stock-levels";
 import ProductSummaryCard from "./_components/product-summary-card";
 import ProductSuppliers from "./_components/product-suppliers";

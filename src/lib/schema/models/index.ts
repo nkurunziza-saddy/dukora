@@ -13,6 +13,7 @@ export * from "./product-suppliers";
 export * from "./products";
 export * from "./profit-reports";
 export * from "./schedules";
+export * from "./store";
 export * from "./suppliers";
 export * from "./transactions";
 export * from "./users";

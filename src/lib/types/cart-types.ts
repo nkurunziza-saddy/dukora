@@ -13,6 +13,7 @@ export type CartItem = {
   availableStock: number;
   categoryValue: string | null;
   categoryDescription: string | null;
+  warehouseItemId?: string;
 };
 
 export type StoreProduct = CartItem & {

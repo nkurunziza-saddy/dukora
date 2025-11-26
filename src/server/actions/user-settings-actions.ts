@@ -2,30 +2,30 @@
 
 import { revalidateTag } from "next/cache";
 import type { InsertUserSetting } from "@/lib/schema/schema-types";
-import { ErrorCode } from "@/server/constants/errors";
-import { Permission } from "@/server/constants/permissions";
+import { ERROR_CODE } from "@/server/constants/errors";
+import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as userSettingsRepo from "../repos/user-settings-repo";
 
 export const getUserSettings = createProtectedAction(
-  Permission.USER_VIEW,
+  PERMISSION.USER_VIEW,
   async (user) => {
     const settings = await userSettingsRepo.get_all(user.id);
     if (settings.error) {
       return { data: null, error: settings.error };
     }
     return { data: settings.data, error: null };
-  },
+  }
 );
 
 export const upsertUserSettings = createProtectedAction(
-  Permission.USER_UPDATE,
+  PERMISSION.USER_UPDATE,
   async (
     user,
-    settingsData: Partial<Omit<InsertUserSetting, "id" | "userId">>[],
+    settingsData: Partial<Omit<InsertUserSetting, "id" | "userId">>[]
   ) => {
     if (!settingsData?.length) {
-      return { data: null, error: ErrorCode.MISSING_INPUT };
+      return { data: null, error: ERROR_CODE.MISSING_INPUT };
     }
 
     const promises = settingsData.map((setting) => {
@@ -39,7 +39,7 @@ export const upsertUserSettings = createProtectedAction(
       return userSettingsRepo.upsert(
         user.id,
         user.businessId ?? "",
-        newSetting,
+        newSetting
       );
     });
 
@@ -47,10 +47,10 @@ export const upsertUserSettings = createProtectedAction(
 
     const errors = results.filter((res) => res.error);
     if (errors.length > 0) {
-      return { data: null, error: ErrorCode.FAILED_REQUEST, errors };
+      return { data: null, error: ERROR_CODE.FAILED_REQUEST, errors };
     }
     revalidateTag(`user-settings-${user.businessId}`, "max");
     revalidateTag(`user-settings`, "max");
     return { data: { success: true }, error: null };
-  },
+  }
 );

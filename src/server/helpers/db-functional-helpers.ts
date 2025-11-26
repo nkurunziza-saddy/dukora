@@ -1,15 +1,15 @@
-import { ErrorCode } from "@/server/constants/errors";
+import { ERROR_CODE } from "@/server/constants/errors";
 import type { calculateAllMetrics } from "@/server/helpers/accounting-formulas";
 import * as metricsRepo from "@/server/repos/metrics-repo";
 
 export async function syncMetricsToDatabase(
   businessId: string,
   date: Date,
-  metrics: ReturnType<typeof calculateAllMetrics>,
+  metrics: ReturnType<typeof calculateAllMetrics>
 ) {
   if (!businessId || !date || !metrics) {
     console.error("Invalid parameters provided for metrics sync");
-    return { data: null, error: ErrorCode.BAD_REQUEST };
+    return { data: null, error: ERROR_CODE.BAD_REQUEST };
   }
 
   try {
@@ -17,7 +17,7 @@ export async function syncMetricsToDatabase(
     const errors = [];
 
     const metricsToSync = Object.entries(metrics).filter(
-      ([key]) => key !== "dataQuality",
+      ([key]) => key !== "dataQuality"
     );
 
     for (const [metricName, value] of metricsToSync) {
@@ -71,13 +71,13 @@ export async function syncMetricsToDatabase(
             failed: errors.length,
           },
         },
-        error: errors.length > 0 ? ErrorCode.PARTIAL_SUCCESS : null,
+        error: errors.length > 0 ? ERROR_CODE.PARTIAL_SUCCESS : null,
       };
     }
 
-    return { data: null, error: ErrorCode.DATABASE_ERROR };
+    return { data: null, error: ERROR_CODE.DATABASE_ERROR };
   } catch (error) {
     console.error("Failed to sync metrics to database:", error);
-    return { data: null, error: ErrorCode.DATABASE_ERROR };
+    return { data: null, error: ERROR_CODE.DATABASE_ERROR };
   }
 }

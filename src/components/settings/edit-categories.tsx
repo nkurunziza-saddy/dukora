@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { SelectCategory } from "@/lib/schema/schema-types";
-import { upsertManyCategories } from "@/server/actions/category-actions";
+import { upsertManyCategories } from "@/server/actions/business/categories-actions";
 import { defaultCategories } from "@/utils/constants";
 import { categoriesSchema, LIMITS } from "./settings-utils";
 

@@ -1,12 +1,19 @@
-import { DollarSign, Package, ShoppingCart, Users } from "lucide-react";
+import { DollarSign, Package, Store, TrendingUp } from "lucide-react";
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import ColumnWrapper from "@/components/providers/column-wrapper";
+import CopyStoreLink from "@/components/commerce/admin/copy-store-link";
+import { InventoryProductsTable } from "@/components/commerce/admin/inventory-products-table";
+import { StoreProductsTable } from "@/components/commerce/admin/store-products-table";
 import StatCard from "@/components/shared/stat-card";
 import { TableSkeleton } from "@/components/skeletons";
+import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
-import { getProductsPaginated } from "@/server/actions/product-actions";
-import { CommerceColumn } from "@/utils/columns/commerce-column";
+import { getCurrentSession } from "@/server/actions/auth-actions";
+import { getTodaysMetrics } from "@/server/actions/store/analytics-actions";
+import {
+  getAdminStoreProducts,
+  getAvailableInventoryProducts,
+} from "@/server/actions/store/products-actions";
 
 export async function generateMetadata(): Promise<Metadata> {
   return constructI18nMetadata({
@@ -14,40 +21,48 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-const stats = [
-  {
-    icon: DollarSign,
-    title: "Total Revenue",
-    value: "$45,231.89",
-    change: "+20.1% from last month",
-  },
-  {
-    icon: Users,
-    title: "Subscriptions",
-    value: "+2350",
-    change: "+180.1% from last month",
-  },
-  {
-    icon: ShoppingCart,
-    title: "Sales",
-    value: "+12,234",
-    change: "+19% from last month",
-  },
-  {
-    icon: Package,
-    title: "Active Products",
-    value: "+573",
-    change: "+201 since last hour",
-  },
-];
+async function StoreStats() {
+  const metricsResult = await getTodaysMetrics({});
+  const metrics = metricsResult.data || {
+    views: 0,
+    addedToCart: 0,
+    orders: 0,
+    revenue: "0",
+  };
 
-export function Stats() {
+  const stats = [
+    {
+      icon: DollarSign,
+      title: "Today's Revenue",
+      value: `$${Number(metrics.revenue).toFixed(2)}`,
+      change: `${metrics.orders} orders`,
+    },
+    {
+      icon: Store,
+      title: "Store Views",
+      value: metrics.views.toString(),
+      change: "Today",
+    },
+    {
+      icon: Package,
+      title: "Cart Additions",
+      value: metrics.addedToCart.toString(),
+      change: "Products added to cart",
+    },
+    {
+      icon: TrendingUp,
+      title: "Orders",
+      value: metrics.orders.toString(),
+      change: "Today",
+    },
+  ];
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {stats.map((stat) => (
         <StatCard
           icon={stat.icon}
-          key={`${stat.title}-`}
+          key={stat.title}
           subText={stat.change}
           title={stat.title}
           value={stat.value}
@@ -57,48 +72,80 @@ export function Stats() {
   );
 }
 
-async function CommerceTable({
-  page,
-  pageSize,
-}: {
-  page: number;
-  pageSize: number;
-}) {
-  const products = await getProductsPaginated({ page, pageSize });
+async function PublishedProductsTab() {
+  const result = await getAdminStoreProducts({
+    page: 1,
+    pageSize: 50,
+    filters: { isPublished: true },
+  });
 
-  if (!products.data) {
-    return (
-      <div className="text-center py-12 text-muted-foreground">
-        No products found
-      </div>
-    );
+  if (!result.data) {
+    return <div className="text-center py-12">Failed to load products</div>;
   }
 
-  return (
-    <ColumnWrapper
-      column={CommerceColumn}
-      data={products.data.products}
-      page={page}
-      pageSize={pageSize}
-      tag="commerce"
-      totalCount={products.data.totalCount}
-    />
-  );
+  return <StoreProductsTable products={result.data.storeProducts} />;
 }
 
-export default async function CommercePage(
-  props: PageProps<"/[locale]/commerce">,
-) {
-  const query = await props.searchParams;
-  const page = Number(query.page) || 1;
-  const pageSize = Number(query.pageSize) || 10;
+async function InventoryProductsTab() {
+  const result = await getAvailableInventoryProducts({
+    page: 1,
+    pageSize: 50,
+  });
 
+  if (!result.data) {
+    return <div className="text-center py-12">Failed to load products</div>;
+  }
+
+  return <InventoryProductsTable products={result.data.products} />;
+}
+
+export default async function StoreProductsPage() {
+  const getBusinessId = async () => {
+    const session = await getCurrentSession();
+    return session?.user?.businessId ?? "";
+  };
   return (
     <div className="space-y-6">
-      <Stats />
-      <Suspense fallback={<TableSkeleton />}>
-        <CommerceTable page={page} pageSize={pageSize} />
+      <div className="flex justify-between items-center">
+        <div className="head">
+          <h1 className="">Online Store</h1>
+          <p className="">Manage your online store products and performance</p>
+        </div>
+        <div>
+          <CopyStoreLink businessId={await getBusinessId()} />
+        </div>
+      </div>
+
+      <Suspense
+        fallback={
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {[...Array(4)].map((_, i) => (
+              <div className="h-32 bg-muted animate-pulse rounded-lg" key={i} />
+            ))}
+          </div>
+        }
+      >
+        <StoreStats />
       </Suspense>
+
+      <Tabs className="space-y-4" defaultValue="published">
+        <TabsList>
+          <TabsTab value="published">Published Products</TabsTab>
+          <TabsTab value="inventory">Inventory</TabsTab>
+        </TabsList>
+
+        <TabsPanel className="space-y-4" value="published">
+          <Suspense fallback={<TableSkeleton />}>
+            <PublishedProductsTab />
+          </Suspense>
+        </TabsPanel>
+
+        <TabsPanel className="space-y-4" value="inventory">
+          <Suspense fallback={<TableSkeleton />}>
+            <InventoryProductsTab />
+          </Suspense>
+        </TabsPanel>
+      </Tabs>
     </div>
   );
 }

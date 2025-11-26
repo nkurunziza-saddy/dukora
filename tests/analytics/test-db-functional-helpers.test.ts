@@ -6,7 +6,7 @@
  * This script tests DB functional helpers using actual code (no vitest)
  */
 
-import { ErrorCode } from "@/server/constants/errors";
+import { ERROR_CODE } from "@/server/constants/errors";
 import { syncMetricsToDatabase } from "@/server/helpers/db-functional-helpers";
 
 // Color codes for terminal output
@@ -26,7 +26,7 @@ function assert(
   condition: boolean,
   testName: string,
   expected?: any,
-  actual?: any,
+  actual?: any
 ) {
   if (condition) {
     console.log(`${colors.green}✓${colors.reset} ${testName}`);
@@ -35,10 +35,10 @@ function assert(
     console.log(`${colors.red}✗${colors.reset} ${testName}`);
     if (expected !== undefined && actual !== undefined) {
       console.log(
-        `  Expected: ${colors.yellow}${JSON.stringify(expected)}${colors.reset}`,
+        `  Expected: ${colors.yellow}${JSON.stringify(expected)}${colors.reset}`
       );
       console.log(
-        `  Actual:   ${colors.red}${JSON.stringify(actual)}${colors.reset}`,
+        `  Actual:   ${colors.red}${JSON.stringify(actual)}${colors.reset}`
       );
     }
     testsFailed++;
@@ -81,10 +81,10 @@ async function testSyncMetricsToDatabase() {
     // @ts-expect-error - Testing invalid input
     const result1 = await syncMetricsToDatabase(null, mockDate, mockMetrics);
     assert(
-      result1.error === ErrorCode.BAD_REQUEST,
+      result1.error === ERROR_CODE.BAD_REQUEST,
       "should return BAD_REQUEST for null businessId",
-      ErrorCode.BAD_REQUEST,
-      result1.error,
+      ERROR_CODE.BAD_REQUEST,
+      result1.error
     );
   } catch (error) {
     assert(false, "should handle null businessId gracefully");
@@ -96,13 +96,13 @@ async function testSyncMetricsToDatabase() {
     const result2 = await syncMetricsToDatabase(
       mockBusinessId,
       null,
-      mockMetrics,
+      mockMetrics
     );
     assert(
-      result2.error === ErrorCode.BAD_REQUEST,
+      result2.error === ERROR_CODE.BAD_REQUEST,
       "should return BAD_REQUEST for null date",
-      ErrorCode.BAD_REQUEST,
-      result2.error,
+      ERROR_CODE.BAD_REQUEST,
+      result2.error
     );
   } catch (error) {
     assert(false, "should handle null date gracefully");
@@ -113,10 +113,10 @@ async function testSyncMetricsToDatabase() {
     // @ts-expect-error - Testing invalid input
     const result3 = await syncMetricsToDatabase(mockBusinessId, mockDate, null);
     assert(
-      result3.error === ErrorCode.BAD_REQUEST,
+      result3.error === ERROR_CODE.BAD_REQUEST,
       "should return BAD_REQUEST for null metrics",
-      ErrorCode.BAD_REQUEST,
-      result3.error,
+      ERROR_CODE.BAD_REQUEST,
+      result3.error
     );
   } catch (error) {
     assert(false, "should handle null metrics gracefully");
@@ -127,32 +127,32 @@ async function testSyncMetricsToDatabase() {
     const result = await syncMetricsToDatabase(
       mockBusinessId,
       mockDate,
-      mockMetrics,
+      mockMetrics
     );
 
     // Should either succeed or have a specific error
     const isValidResult =
       result.error === null ||
-      result.error === ErrorCode.DATABASE_ERROR ||
-      result.error === ErrorCode.PARTIAL_SUCCESS;
+      result.error === ERROR_CODE.DATABASE_ERROR ||
+      result.error === ERROR_CODE.PARTIAL_SUCCESS;
 
     assert(
       isValidResult,
       "should handle valid metrics sync (may succeed or fail with valid error)",
       "null or valid error code",
-      result.error,
+      result.error
     );
 
     // If successful, check that dataQuality was excluded
     if (result.data && result.data.successful) {
       const hasDataQuality = result.data.successful.some(
-        (m) => m === "dataQuality",
+        (m) => m === "dataQuality"
       );
       assert(
         !hasDataQuality,
         "should exclude dataQuality from synced metrics",
         false,
-        hasDataQuality,
+        hasDataQuality
       );
     }
   } catch (error) {
@@ -173,21 +173,21 @@ async function testSyncMetricsToDatabase() {
     const result = await syncMetricsToDatabase(
       mockBusinessId,
       mockDate,
-      metricsWithInvalidValues,
+      metricsWithInvalidValues
     );
 
     // Should handle gracefully
     const isValidResult =
       result.error === null ||
-      result.error === ErrorCode.DATABASE_ERROR ||
-      result.error === ErrorCode.PARTIAL_SUCCESS ||
-      result.error === ErrorCode.BAD_REQUEST;
+      result.error === ERROR_CODE.DATABASE_ERROR ||
+      result.error === ERROR_CODE.PARTIAL_SUCCESS ||
+      result.error === ERROR_CODE.BAD_REQUEST;
 
     assert(
       isValidResult,
       "should handle invalid metric values gracefully",
       "valid error code or null",
-      result.error,
+      result.error
     );
   } catch (error) {
     assert(true, "handled invalid values (expected in test environment)");
@@ -205,19 +205,19 @@ async function testSyncMetricsToDatabase() {
     const result = await syncMetricsToDatabase(
       mockBusinessId,
       mockDate,
-      metricsWithDifferentTypes,
+      metricsWithDifferentTypes
     );
 
     const isValidResult =
       result.error === null ||
-      result.error === ErrorCode.DATABASE_ERROR ||
-      result.error === ErrorCode.PARTIAL_SUCCESS;
+      result.error === ERROR_CODE.DATABASE_ERROR ||
+      result.error === ERROR_CODE.PARTIAL_SUCCESS;
 
     assert(
       isValidResult,
       "should handle different value types by converting to strings",
       "valid result",
-      result.error,
+      result.error
     );
   } catch (error) {
     assert(true, "handled different types (expected in test environment)");
@@ -229,20 +229,20 @@ async function testSyncMetricsToDatabase() {
 // ============================================================================
 async function runAllTests() {
   console.log(
-    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`,
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
   );
   console.log(
-    `${colors.blue}║  DB Functional Helpers Test Suite                         ║${colors.reset}`,
+    `${colors.blue}║  DB Functional Helpers Test Suite                         ║${colors.reset}`
   );
   console.log(
-    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`,
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
   );
 
   await testSyncMetricsToDatabase();
 
   // Summary
   console.log(
-    `\n${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`,
+    `\n${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`
   );
   console.log(`${colors.cyan}Test Summary:${colors.reset}`);
   console.log(`  ${colors.green}Passed: ${testsPassed}${colors.reset}`);
@@ -262,7 +262,7 @@ async function runAllTests() {
 runAllTests().catch((error) => {
   console.error(
     `${colors.red}Test suite failed with error:${colors.reset}`,
-    error,
+    error
   );
   process.exit(1);
 });

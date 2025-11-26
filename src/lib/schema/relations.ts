@@ -20,6 +20,9 @@ import {
   purchaseOrdersTable,
   saleOrdersTable,
   schedulesTable,
+  storeMetricsTable,
+  storeProductsTable,
+  storeSettingsTable,
   suppliersTable,
   transactionsTable,
   userSettingsTable,
@@ -368,5 +371,50 @@ export const suppliersTableRelations = relations(
       references: [businessesTable.id],
     }),
     productSuppliers: many(productSuppliersTable),
+  }),
+);
+
+// Store Products Relations
+export const storeProductsTableRelations = relations(
+  storeProductsTable,
+  ({ one }) => ({
+    business: one(businessesTable, {
+      fields: [storeProductsTable.businessId],
+      references: [businessesTable.id],
+    }),
+    product: one(productsTable, {
+      fields: [storeProductsTable.productId],
+      references: [productsTable.id],
+    }),
+  }),
+);
+
+// Store Settings Relations
+export const storeSettingsTableRelations = relations(
+  storeSettingsTable,
+  ({ one }) => ({
+    business: one(businessesTable, {
+      fields: [storeSettingsTable.businessId],
+      references: [businessesTable.id],
+    }),
+    defaultWarehouse: one(warehousesTable, {
+      fields: [storeSettingsTable.defaultWarehouseId],
+      references: [warehousesTable.id],
+    }),
+  }),
+);
+
+// Store Metrics Relations
+export const storeMetricsTableRelations = relations(
+  storeMetricsTable,
+  ({ one }) => ({
+    business: one(businessesTable, {
+      fields: [storeMetricsTable.businessId],
+      references: [businessesTable.id],
+    }),
+    storeProduct: one(storeProductsTable, {
+      fields: [storeMetricsTable.storeProductId],
+      references: [storeProductsTable.id],
+    }),
   }),
 );

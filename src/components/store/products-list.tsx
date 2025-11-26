@@ -1,31 +1,34 @@
 import { getTranslations } from "next-intl/server";
-import ProductCard from "@/components/store/product-card";
-import { Button } from "@/components/ui/button";
-import { Empty, EmptyDescription, EmptyTitle } from "@/components/ui/empty";
-import { getProductsForStore } from "@/server/actions/product-actions";
+import { getProductsForStore } from "@/server/actions/inventory/products-actions";
+import { ProductsListClient } from "./products-list-client";
 
 interface ProductsListProps {
   searchParams: { [key: string]: string | string[] | undefined };
+  businessId: string;
 }
 
 export default async function ProductsList({
   searchParams,
+  businessId,
 }: ProductsListProps) {
   const t = await getTranslations("store");
 
-  const page = Number((await searchParams).page) || 1;
-  const search = (await searchParams).search as string;
-  const category = (await searchParams).category as string;
-  const sortBy = ((await searchParams).sortBy as string) || "name";
-  const sortOrder = ((await searchParams).sortOrder as string) || "asc";
+  const page = Number(searchParams.page) || 1;
+  const search = searchParams.search as string;
+  const category = searchParams.category as string;
+  const sortBy = (searchParams.sortBy as string) || "name";
+  const sortOrder = (searchParams.sortOrder as string) || "asc";
 
   const { data: productsData, error } = await getProductsForStore({
-    page,
-    pageSize: 12,
-    search,
-    category,
-    sortBy: sortBy as "name" | "price" | "createdAt",
-    sortOrder: sortOrder as "asc" | "desc",
+    businessId,
+    filters: {
+      page,
+      pageSize: 12,
+      search,
+      category,
+      sortBy: sortBy as "name" | "price" | "createdAt",
+      sortOrder: sortOrder as "asc" | "desc",
+    },
   });
 
   if (error) {
@@ -40,46 +43,11 @@ export default async function ProductsList({
   const totalPages = productsData?.totalPages || 1;
 
   return (
-    <>
-      {products.length === 0 ? (
-        <Empty>
-          <EmptyTitle>{t("noProductsFound")}</EmptyTitle>
-          <EmptyDescription>{t("tryDifferentFilters")}</EmptyDescription>
-        </Empty>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border/2">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      )}
-
-      {totalPages > 1 && (
-        <div className="mt-12 flex justify-center">
-          <div className="flex items-center space-x-2">
-            <Button disabled={page === 1} variant="outline">
-              {t("previous")}
-            </Button>
-            <div className="flex items-center space-x-1">
-              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                const pageNum = i + 1;
-                return (
-                  <Button
-                    key={pageNum}
-                    size="sm"
-                    variant={page === pageNum ? "default" : "outline"}
-                  >
-                    {pageNum}
-                  </Button>
-                );
-              })}
-            </div>
-            <Button disabled={page === totalPages} variant="outline">
-              {t("next")}
-            </Button>
-          </div>
-        </div>
-      )}
-    </>
+    <ProductsListClient
+      currentPage={page}
+      products={products}
+      searchParams={searchParams}
+      totalPages={totalPages}
+    />
   );
 }

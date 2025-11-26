@@ -1,13 +1,13 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
-import { ErrorCode } from "@/server/constants/errors";
-import { Permission } from "@/server/constants/permissions";
+import { ERROR_CODE } from "@/server/constants/errors";
+import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import * as authRepo from "@/server/repos/auth-repo";
 
 export const changePassword = createProtectedAction(
-  Permission.USER_UPDATE,
+  PERMISSION.USER_UPDATE,
   async (
     user,
     {
@@ -18,20 +18,20 @@ export const changePassword = createProtectedAction(
       currentPassword: string;
       newPassword: string;
       revokeOtherSessions?: boolean;
-    },
+    }
   ) => {
     if (!currentPassword?.trim() || !newPassword?.trim()) {
-      return { data: null, error: ErrorCode.MISSING_INPUT };
+      return { data: null, error: ERROR_CODE.MISSING_INPUT };
     }
 
     if (newPassword.length < 8) {
-      return { data: null, error: ErrorCode.INVALID_INPUT };
+      return { data: null, error: ERROR_CODE.INVALID_INPUT };
     }
 
     const result = await authRepo.change_password(
       currentPassword,
       newPassword,
-      revokeOtherSessions,
+      revokeOtherSessions
     );
 
     if (result.error) {
@@ -42,18 +42,18 @@ export const changePassword = createProtectedAction(
     revalidateTag("user-session", "max");
 
     return { data: { success: true }, error: null };
-  },
+  }
 );
 
 export const setPassword = createProtectedAction(
-  Permission.USER_UPDATE,
+  PERMISSION.USER_UPDATE,
   async (user, newPassword: string) => {
     if (!newPassword?.trim()) {
-      return { data: null, error: ErrorCode.MISSING_INPUT };
+      return { data: null, error: ERROR_CODE.MISSING_INPUT };
     }
 
     if (newPassword.length < 8) {
-      return { data: null, error: ErrorCode.INVALID_INPUT };
+      return { data: null, error: ERROR_CODE.INVALID_INPUT };
     }
 
     const result = await authRepo.set_password(newPassword);
@@ -66,5 +66,5 @@ export const setPassword = createProtectedAction(
     revalidateTag("user-session", "max");
 
     return { data: { success: true }, error: null };
-  },
+  }
 );

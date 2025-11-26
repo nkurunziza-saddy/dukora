@@ -25,8 +25,8 @@ import {
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { getInvitationsPaginated } from "@/server/actions/invitation-actions";
-import { getUsersPaginated } from "@/server/actions/user-actions";
-import { Permission } from "@/server/constants/permissions";
+import { getUsersPaginated } from "@/server/actions/users/users-actions";
+import { PERMISSION } from "@/server/constants/permissions";
 import { RolePermissions } from "@/server/helpers/role-permissions";
 import { InvitationColumn } from "@/utils/columns/invitation-column";
 import { UserColumn } from "@/utils/columns/user-column";
@@ -170,7 +170,7 @@ export default async function Users(props: PageProps<"/[locale]/users">) {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {Object.values(Permission).map((perm) => (
+                  {Object.values(PERMISSION).map((perm) => (
                     <TableRow key={perm}>
                       <TableCell className="px-4 py-2 border font-mono">
                         {perm}

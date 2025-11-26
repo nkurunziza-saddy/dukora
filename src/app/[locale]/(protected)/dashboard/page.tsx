@@ -28,10 +28,10 @@ import {
 } from "@/components/ui/table";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { cn, formatCurrency, formatKeys, formatNumber } from "@/lib/utils";
-import { getBusinessSettings } from "@/server/actions/business-settings-actions";
+import { getBusinessSettings } from "@/server/actions/business/settings-actions";
 import { getLogsOverview } from "@/server/actions/logs-actions";
-import { getOverviewProducts } from "@/server/actions/product-actions";
-import { getLowStockAlertProducts } from "@/server/actions/product-items-actions";
+import { getOverviewProducts } from "@/server/actions/inventory/products-actions";
+import { getLowStockAlertProducts } from "@/server/actions/inventory/stock-actions";
 import { getSchedulesOverview } from "@/server/actions/schedule-actions";
 import {
   getCurrentInventoryValue,

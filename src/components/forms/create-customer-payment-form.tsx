@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createCustomerPaymentLink } from "@/server/actions/payment-actions";
+import { createCustomerPaymentLink } from "@/server/actions/shopper/payments-actions";
 
 const paymentLinkSchema = z.object({
   amount: z.number().positive("Amount must be a positive number"),

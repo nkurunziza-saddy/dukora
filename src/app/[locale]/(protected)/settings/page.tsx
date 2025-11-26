@@ -24,8 +24,8 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { getCurrentSession } from "@/server/actions/auth-actions";
-import { getBusinessById } from "@/server/actions/business-actions";
-import { getUserById } from "@/server/actions/user-actions";
+import { getBusinessById } from "@/server/actions/business/business-actions";
+import { getUserById } from "@/server/actions/users/users-actions";
 
 export async function generateMetadata(): Promise<Metadata> {
   return constructI18nMetadata({

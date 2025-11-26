@@ -1,8 +1,8 @@
 import { UserRole } from "@/lib/schema/schema-types";
-import { Permission, PermissionGroups } from "@/server/constants/permissions";
+import { PERMISSION, PermissionGroups } from "@/server/constants/permissions";
 
 export const RolePermissions = {
-  [UserRole.OWNER]: [...Object.values(Permission)],
+  [UserRole.OWNER]: [...Object.values(PERMISSION)],
 
   [UserRole.ADMIN]: [
     ...PermissionGroups.PRODUCTS,
@@ -10,74 +10,74 @@ export const RolePermissions = {
     ...PermissionGroups.ORDERS,
     ...PermissionGroups.CATEGORIES,
     ...PermissionGroups.INVITATIONS,
-    Permission.USER_VIEW,
-    Permission.USER_CREATE,
-    Permission.USER_UPDATE,
-    Permission.WAREHOUSE_VIEW,
-    Permission.WAREHOUSE_CREATE,
-    Permission.WAREHOUSE_UPDATE,
-    Permission.SUPPLIER_VIEW,
-    Permission.SUPPLIER_CREATE,
-    Permission.SUPPLIER_UPDATE,
-    Permission.CUSTOMER_VIEW,
-    Permission.CUSTOMER_CREATE,
-    Permission.CUSTOMER_UPDATE,
-    Permission.FINANCIAL_VIEW,
-    Permission.FINANCIAL_REPORTS,
-    Permission.AUDIT_VIEW,
+    PERMISSION.USER_VIEW,
+    PERMISSION.USER_CREATE,
+    PERMISSION.USER_UPDATE,
+    PERMISSION.WAREHOUSE_VIEW,
+    PERMISSION.WAREHOUSE_CREATE,
+    PERMISSION.WAREHOUSE_UPDATE,
+    PERMISSION.SUPPLIER_VIEW,
+    PERMISSION.SUPPLIER_CREATE,
+    PERMISSION.SUPPLIER_UPDATE,
+    PERMISSION.CUSTOMER_VIEW,
+    PERMISSION.CUSTOMER_CREATE,
+    PERMISSION.CUSTOMER_UPDATE,
+    PERMISSION.FINANCIAL_VIEW,
+    PERMISSION.FINANCIAL_REPORTS,
+    PERMISSION.AUDIT_VIEW,
   ],
 
   [UserRole.MEMBER]: [
-    Permission.PRODUCT_VIEW,
-    Permission.PRODUCT_UPDATE,
-    Permission.INVENTORY_VIEW,
-    Permission.INVENTORY_UPDATE,
-    Permission.INVENTORY_ADJUST,
-    Permission.INVENTORY_TRANSFER,
-    Permission.ORDER_VIEW,
-    Permission.ORDER_FULFILL,
-    Permission.WAREHOUSE_VIEW,
-    Permission.CATEGORY_VIEW,
-    Permission.SUPPLIER_VIEW,
-    Permission.CUSTOMER_VIEW,
+    PERMISSION.PRODUCT_VIEW,
+    PERMISSION.PRODUCT_UPDATE,
+    PERMISSION.INVENTORY_VIEW,
+    PERMISSION.INVENTORY_UPDATE,
+    PERMISSION.INVENTORY_ADJUST,
+    PERMISSION.INVENTORY_TRANSFER,
+    PERMISSION.ORDER_VIEW,
+    PERMISSION.ORDER_FULFILL,
+    PERMISSION.WAREHOUSE_VIEW,
+    PERMISSION.CATEGORY_VIEW,
+    PERMISSION.SUPPLIER_VIEW,
+    PERMISSION.CUSTOMER_VIEW,
   ],
 
   [UserRole.VIEW_ONLY]: [
-    Permission.PRODUCT_VIEW,
-    Permission.INVENTORY_VIEW,
-    Permission.ORDER_VIEW,
-    Permission.WAREHOUSE_VIEW,
-    Permission.CATEGORY_VIEW,
-    Permission.SUPPLIER_VIEW,
-    Permission.CUSTOMER_VIEW,
-    Permission.INVENTORY_REPORTS,
+    PERMISSION.PRODUCT_VIEW,
+    PERMISSION.INVENTORY_VIEW,
+    PERMISSION.ORDER_VIEW,
+    PERMISSION.WAREHOUSE_VIEW,
+    PERMISSION.CATEGORY_VIEW,
+    PERMISSION.SUPPLIER_VIEW,
+    PERMISSION.CUSTOMER_VIEW,
+    PERMISSION.INVENTORY_REPORTS,
   ],
-} as Record<UserRole, Permission[]>;
+} as Record<UserRole, PERMISSION[]>;
 
-export function getPermissionsForRole(role: UserRole): Permission[] {
+export function getPermissionsForRole(role: UserRole): PERMISSION[] {
   return RolePermissions[role] || [];
 }
 
 export function roleHasPermission(
   role: UserRole,
-  permission: Permission,
+  permission: PERMISSION
 ): boolean {
   return RolePermissions[role]?.includes(permission) || false;
 }
 
 export function roleHasAllPermissions(
   role: UserRole,
-  permissions: Permission[],
+  permissions: PERMISSION[]
 ): boolean {
   const rolePermissions = RolePermissions[role] || [];
   return permissions.every((permission) =>
-    rolePermissions.includes(permission),
+    rolePermissions.includes(permission)
   );
 }
 
 export function roleHasAnyPermission(
   role: UserRole,
-  permissions: Permission[],
+  permissions: PERMISSION[]
 ): boolean {
   const rolePermissions = RolePermissions[role] || [];
   return permissions.some((permission) => rolePermissions.includes(permission));
