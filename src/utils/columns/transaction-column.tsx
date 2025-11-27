@@ -18,7 +18,7 @@ import {
 import { AbbreviatedText, MobileResponsive } from "@/utils/mobile-responsive";
 
 export function TransactionColumn(
-  t: (key: string) => string,
+  t: (key: string) => string
 ): ColumnDef<CompressedTransactionPayload>[] {
   return [
     {
@@ -42,7 +42,7 @@ export function TransactionColumn(
       ),
       cell: ({ row }) => {
         const status = transactionStatuses.find(
-          (s) => s.value === row.original.type.toLowerCase(),
+          (s) => s.value === row.original.type.toLowerCase()
         );
 
         if (!status) {
@@ -53,7 +53,6 @@ export function TransactionColumn(
           );
         }
 
-        // Mobile: Show only icon, Desktop: Show icon + label
         return (
           <MobileResponsive
             desktop={

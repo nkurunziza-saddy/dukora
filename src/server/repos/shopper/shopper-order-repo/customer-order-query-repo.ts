@@ -237,6 +237,7 @@ export const get_user_orders = async ({
         orderNumber: customerOrdersTable.orderNumber,
         status: customerOrdersTable.status,
         totalAmount: customerOrdersTable.totalAmount,
+        currency: customerOrdersTable.currency,
         createdAt: customerOrdersTable.createdAt,
         fulfillmentStatus: customerOrdersTable.fulfillmentStatus,
         trackingNumber: customerOrdersTable.trackingNumber,

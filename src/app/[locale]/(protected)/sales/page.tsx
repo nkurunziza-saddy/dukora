@@ -5,7 +5,8 @@ import { getTranslations } from "next-intl/server";
 import ColumnWrapper from "@/components/providers/column-wrapper";
 import StatCard from "@/components/shared/stat-card";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
-import { formatCurrency, formatNumber } from "@/lib/utils";
+import { formatNumber } from "@/lib/utils";
+import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 import { getBusinessSettings } from "@/server/actions/business/settings-actions";
 import { getTodayTransactions } from "@/server/actions/statistics-actions";
 import { getTransactionsByTimeIntervalPaginated } from "@/server/actions/transaction-actions";
@@ -18,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function SalesTracking(
-  props: PageProps<"/[locale]/sales">,
+  props: PageProps<"/[locale]/sales">
 ) {
   const query = await props.searchParams;
   const page = Number(query.page) || 1;
@@ -40,22 +41,28 @@ export default async function SalesTracking(
     {
       title: t("todaysSales"),
       subText: t("saleFromYesterday"),
-      value: formatCurrency(statData.data?.current?.totalSales ?? 0, currency),
+      value: formatCurrencyWithCode(
+        statData.data?.current?.totalSales ?? 0,
+        currency
+      ),
       icon: ShoppingCartIcon,
     },
     {
       title: t("todayExpenses"),
       subText: t("saleFromYesterday"),
-      value: formatCurrency(
+      value: formatCurrencyWithCode(
         statData.data?.current?.totalExpenses ?? 0,
-        currency,
+        currency
       ),
       icon: DollarSignIcon,
     },
     {
       title: t("todaysProfit"),
       subText: t("profitFromYesterday"),
-      value: formatCurrency(statData.data?.current?.netProfit ?? 0, currency),
+      value: formatCurrencyWithCode(
+        statData.data?.current?.netProfit ?? 0,
+        currency
+      ),
       icon: DollarSignIcon,
     },
     {

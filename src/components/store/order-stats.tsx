@@ -2,6 +2,7 @@
 
 import { PackageIcon, ShoppingCartIcon, WalletIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useCurrency } from "@/lib/hooks/use-currency";
 
 interface OrderStatsProps {
   totalOrders: number;
@@ -15,6 +16,7 @@ export function OrderStats({
   pendingOrders,
 }: OrderStatsProps) {
   const t = useTranslations("store.orders");
+  const { formatWithCode } = useCurrency();
 
   const stats = [
     {
@@ -24,7 +26,7 @@ export function OrderStats({
     },
     {
       label: t("totalSpent"),
-      value: `$${parseFloat(totalSpent).toFixed(2)}`,
+      value: formatWithCode(parseFloat(totalSpent)),
       icon: WalletIcon,
     },
     {

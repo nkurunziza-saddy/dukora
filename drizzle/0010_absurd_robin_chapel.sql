@@ -1,0 +1,2 @@
+ALTER TABLE "customer_orders" ADD COLUMN IF NOT EXISTS "currency" text DEFAULT 'RWF' NOT NULL;--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "customer_orders_currency" ON "customer_orders" USING btree ("currency");

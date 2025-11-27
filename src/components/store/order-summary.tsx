@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
+import { useCurrency } from "@/lib/hooks/use-currency";
 import { useOrderCalculations } from "@/lib/hooks/use-order-calculations";
 import type { CartItem } from "@/lib/types";
 import { Separator } from "../ui/separator";
@@ -13,6 +14,7 @@ interface OrderSummaryProps {
 
 export function OrderSummary({ cartProducts }: OrderSummaryProps) {
   const t = useTranslations("store.checkout");
+  const { formatWithCode } = useCurrency();
 
   const {
     netSubtotal,
@@ -50,7 +52,10 @@ export function OrderSummary({ cartProducts }: OrderSummaryProps) {
               </div>
 
               <div className="text-sm">
-                ${((Number(product.price) || 0) * product.quantity).toFixed(2)}
+                {formatWithCode(
+                  (Number(product.price) || 0) * product.quantity,
+                  product.currency
+                )}
               </div>
             </div>
           ))}
@@ -66,7 +71,7 @@ export function OrderSummary({ cartProducts }: OrderSummaryProps) {
                 {isLoading ? (
                   <Skeleton className="h-4 w-16" />
                 ) : (
-                  <span>${grossSubtotal.toFixed(2)}</span>
+                  <span>{formatWithCode(grossSubtotal)}</span>
                 )}
               </div>
               <div className="flex justify-between text-xs text-muted-foreground pl-4">
@@ -74,7 +79,7 @@ export function OrderSummary({ cartProducts }: OrderSummaryProps) {
                 {isLoading ? (
                   <Skeleton className="h-3 w-12" />
                 ) : (
-                  <span>${tax.toFixed(2)}</span>
+                  <span>{formatWithCode(tax)}</span>
                 )}
               </div>
             </>
@@ -85,7 +90,7 @@ export function OrderSummary({ cartProducts }: OrderSummaryProps) {
                 {isLoading ? (
                   <Skeleton className="h-4 w-16" />
                 ) : (
-                  <span>${netSubtotal.toFixed(2)}</span>
+                  <span>{formatWithCode(netSubtotal)}</span>
                 )}
               </div>
               <div className="flex justify-between text-sm">
@@ -93,7 +98,7 @@ export function OrderSummary({ cartProducts }: OrderSummaryProps) {
                 {isLoading ? (
                   <Skeleton className="h-4 w-12" />
                 ) : (
-                  <span>${tax.toFixed(2)}</span>
+                  <span>{formatWithCode(tax)}</span>
                 )}
               </div>
             </>
@@ -102,15 +107,13 @@ export function OrderSummary({ cartProducts }: OrderSummaryProps) {
           {discounts > 0 && (
             <div className="flex justify-between text-sm text-success-foreground">
               <span>{t("discount")}</span>
-              <span>-${discounts.toFixed(2)}</span>
+              <span>-{formatWithCode(discounts)}</span>
             </div>
           )}
 
           <div className="flex justify-between text-sm">
             <span>{t("shipping")}</span>
-            <span>
-              {shipping === 0 ? t("free") : `$${shipping.toFixed(2)}`}
-            </span>
+            <span>{shipping === 0 ? t("free") : formatWithCode(shipping)}</span>
           </div>
 
           <Separator className={"border-t border-dashed my-4"} />
@@ -120,7 +123,7 @@ export function OrderSummary({ cartProducts }: OrderSummaryProps) {
             {isLoading ? (
               <Skeleton className="h-5 w-20" />
             ) : (
-              <span>${total.toFixed(2)}</span>
+              <span>{formatWithCode(total)}</span>
             )}
           </div>
 

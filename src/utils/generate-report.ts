@@ -1,21 +1,24 @@
-export function generateCSVReport(metrics: Record<string, unknown>) {
+export function generateCSVReport(
+  metrics: Record<string, unknown>,
+  currency: string = "RWF"
+) {
   const csvData = [
     ["Metric", "Value"],
     [
       "Gross Revenue",
-      `$${(metrics.grossRevenue as number)?.toLocaleString() || "0"}`,
+      `${currency} ${(metrics.grossRevenue as number)?.toLocaleString() || "0"}`,
     ],
     [
       "Net Revenue",
-      `$${(metrics.netRevenue as number)?.toLocaleString() || "0"}`,
+      `${currency} ${(metrics.netRevenue as number)?.toLocaleString() || "0"}`,
     ],
     [
       "Opening Stock",
-      `$${(metrics.openingStock as number)?.toLocaleString() || "0"}`,
+      `${currency} ${(metrics.openingStock as number)?.toLocaleString() || "0"}`,
     ],
     [
       "Closing Stock",
-      `$${(metrics.closingStock as number)?.toLocaleString() || "0"}`,
+      `${currency} ${(metrics.closingStock as number)?.toLocaleString() || "0"}`,
     ],
     [
       "Inventory Turnover",
@@ -27,11 +30,11 @@ export function generateCSVReport(metrics: Record<string, unknown>) {
     ],
     [
       "Gross Profit",
-      `$${(metrics.grossProfit as number)?.toLocaleString() || "0"}`,
+      `${currency} ${(metrics.grossProfit as number)?.toLocaleString() || "0"}`,
     ],
     [
       "Net Income",
-      `$${(metrics.netIncome as number)?.toLocaleString() || "0"}`,
+      `${currency} ${(metrics.netIncome as number)?.toLocaleString() || "0"}`,
     ],
     ["Gross Margin", `${(metrics.grossMargin as number)?.toFixed(2) || "0"}%`],
     ["Net Margin", `${(metrics.netMargin as number)?.toFixed(2) || "0"}%`],

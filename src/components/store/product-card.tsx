@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { AddToCartButton } from "@/components/store/add-to-cart-button";
 import type { CartItem } from "@/lib/types";
+import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 
 interface ProductCardProps {
   product: CartItem;
@@ -39,7 +40,10 @@ const ProductCard = ({ product, view = "grid" }: ProductCardProps) => {
           </div>
           <div className="flex md:flex-col items-start md:items-end justify-between md:justify-start gap-3 md:min-w-[140px]">
             <span className="text-base text-secondary-foreground font-medium">
-              ${parseFloat(product.price || "0").toFixed(2)}
+              {formatCurrencyWithCode(
+                parseFloat(product.price || "0"),
+                product.currency || "RWF"
+              )}
             </span>
             <AddToCartButton product={product} size="sm" variant="outline" />
           </div>
@@ -68,7 +72,10 @@ const ProductCard = ({ product, view = "grid" }: ProductCardProps) => {
       <div className="mt-1">
         <div className="flex justify-between items-center">
           <span className="text-sm text-secondary-foreground font-medium">
-            ${parseFloat(product.price || "0").toFixed(2)}
+            {formatCurrencyWithCode(
+              parseFloat(product.price || "0"),
+              product.currency || "RWF"
+            )}
           </span>
           <span className="text-xs border py-0.5 px-1 text-muted-foreground">
             {product.categoryValue}

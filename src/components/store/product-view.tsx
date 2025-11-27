@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import type { StoreProduct } from "@/lib/types";
+import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 
 export function ProductView({ product }: { product: StoreProduct }) {
   const t = useTranslations("store");
@@ -65,12 +66,18 @@ export function ProductView({ product }: { product: StoreProduct }) {
             <div className="space-y-2">
               <div className="flex items-center space-x-3">
                 <span className="text-lg font-semibold">
-                  ${finalPrice.toFixed(2)}
+                  {formatCurrencyWithCode(
+                    finalPrice,
+                    product.currency || "RWF"
+                  )}
                 </span>
                 {isOnSale && (
                   <>
                     <span className="text-lg text-muted-foreground line-through">
-                      ${parseFloat(product.costPrice || "0").toFixed(2)}
+                      {formatCurrencyWithCode(
+                        parseFloat(product.costPrice || "0"),
+                        product.currency || "RWF"
+                      )}
                     </span>
                     <Badge className="text-sm" variant="error">
                       Sale
@@ -80,9 +87,10 @@ export function ProductView({ product }: { product: StoreProduct }) {
               </div>
               {isOnSale && (
                 <p className="text-sm text-success-foreground font-medium">
-                  {t("youSave")} $
-                  {(parseFloat(product.costPrice || "0") - finalPrice).toFixed(
-                    2
+                  {t("youSave")}{" "}
+                  {formatCurrencyWithCode(
+                    parseFloat(product.costPrice || "0") - finalPrice,
+                    product.currency || "RWF"
                   )}
                 </p>
               )}

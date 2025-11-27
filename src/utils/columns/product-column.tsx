@@ -7,9 +7,10 @@ import { DataTableColumnHeader } from "@/components/table/data-table-column-head
 import ProductRowActions from "@/components/table/products/product-row-actions";
 import { Badge } from "@/components/ui/badge";
 import { ProductStatus, type SelectProduct } from "@/lib/schema/schema-types";
+import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 
 export function ProductColumn(
-  t: (key: string) => string,
+  t: (key: string) => string
 ): ColumnDef<SelectProduct>[] {
   return [
     {
@@ -19,7 +20,7 @@ export function ProductColumn(
       ),
       cell: ({ row }) => {
         const status = productStatuses.find(
-          (s) => s.value === row.original.status.toLowerCase(),
+          (s) => s.value === row.original.status.toLowerCase()
         );
         if (!status) {
           return (
@@ -61,14 +62,16 @@ export function ProductColumn(
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t("price")} />
       ),
-      cell: ({ row }) => row.original.price,
+      cell: ({ row }) =>
+        formatCurrencyWithCode(row.original.price, row.original.currency),
     },
     {
       accessorKey: "costPrice",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t("costPrice")} />
       ),
-      cell: ({ row }) => row.original.costPrice,
+      cell: ({ row }) =>
+        formatCurrencyWithCode(row.original.costPrice, row.original.currency),
     },
     {
       accessorKey: "unit",

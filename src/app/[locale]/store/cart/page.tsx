@@ -3,6 +3,7 @@ import { MinusIcon, PlusIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -13,6 +14,8 @@ import {
 } from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
 import { useCart, useCartActions } from "@/contexts/cart-context";
+import { useCurrency } from "@/lib/hooks/use-currency";
+import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 
 const CartPage = () => {
   const t = useTranslations("store.checkout");
@@ -21,6 +24,7 @@ const CartPage = () => {
   const { updateQuantity, removeItem, clearCart } = useCartActions();
   const params = useParams();
   const businessId = params.businessId as string;
+  const { currency: businessCurrency } = useCurrency();
   const handleQuantityChange = (id: string, newQuantity: number) => {
     if (newQuantity <= 0) {
       removeItem(id);
@@ -132,12 +136,16 @@ const CartPage = () => {
 
                           <div className="text-right">
                             <p className="text-sm text-muted-foreground">
-                              ${parseFloat(item.price).toFixed(2)} each
+                              {formatCurrencyWithCode(
+                                parseFloat(item.price),
+                                item.currency || "RWF"
+                              )}{" "}
+                              each
                             </p>
                             <p className="font-medium">
-                              $
-                              {(parseFloat(item.price) * item.quantity).toFixed(
-                                2
+                              {formatCurrencyWithCode(
+                                parseFloat(item.price) * item.quantity,
+                                item.currency || "RWF"
                               )}
                             </p>
                           </div>
@@ -162,7 +170,10 @@ const CartPage = () => {
                         Subtotal ({state.totalItems} items)
                       </span>
                       <span className="font-medium">
-                        ${state.totalPrice.toFixed(2)}
+                        {formatCurrencyWithCode(
+                          state.totalPrice,
+                          businessCurrency || "RWF"
+                        )}
                       </span>
                     </div>
                   </div>

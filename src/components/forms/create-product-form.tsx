@@ -23,9 +23,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useCurrency } from "@/lib/hooks/use-currency";
 import { useBusinessSettings, useCategories } from "@/lib/hooks/use-queries";
 import type { SelectProduct } from "@/lib/schema/schema-types";
-import { createProduct, updateProduct } from "@/server/actions/inventory/products-actions";
+import {
+  createProduct,
+  updateProduct,
+} from "@/server/actions/inventory/products-actions";
 import { TriggerDialog } from "../shared/reusable-form-dialog";
 import { Separator } from "../ui/separator";
 
@@ -37,6 +41,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
   } = useCategories();
 
   const { data: settings } = useBusinessSettings();
+  const { currency: businessCurrency, currencies } = useCurrency();
   const pricesIncludeTax =
     settings?.find((s) => s.key === "pricesIncludeTax")?.value === "true";
 
@@ -56,6 +61,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
       const num = Number.parseFloat(val);
       return !Number.isNaN(num) && num >= 0;
     }, t("costPricePositive")),
+    currency: z.string().min(3, "Currency is required"),
     categoryId: z.string(),
     reorderPoint: z.string().refine((val) => {
       const num = Number.parseInt(val, 10);
@@ -91,6 +97,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
       barcode: product ? (product.barcode ?? "") : "",
       price: product ? product.price : "",
       costPrice: product ? product.costPrice : "",
+      currency: product ? product.currency : businessCurrency,
       categoryId: product ? (product.categoryId ?? "") : "",
       reorderPoint: product ? product.reorderPoint.toString() : "10",
       maxStock: product ? product.maxStock.toString() : "1000",
@@ -123,7 +130,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
             : `${t("productName")} ${tCommon("add")} ${tCommon("confirm")}`,
           {
             description: format(new Date(), "MMM dd, yyyy"),
-          },
+          }
         );
       } else {
         toast.error(tCommon("error"), {
@@ -289,6 +296,35 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
             name="costPrice"
           />
         </div>
+
+        <form.Field
+          children={(field) => (
+            <Field>
+              <FieldLabel>Currency</FieldLabel>
+              <Select
+                onValueChange={(val) => field.handleChange(val ?? "")}
+                value={field.state.value ?? ""}
+              >
+                <SelectTrigger className="w-full sm:w-1/2">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectPopup>
+                  {currencies.map((currency) => (
+                    <SelectItem key={currency.code} value={currency.code}>
+                      {currency.label}
+                    </SelectItem>
+                  ))}
+                </SelectPopup>
+              </Select>
+              <FieldDescription>
+                Currency for product pricing. Defaults to your business
+                currency.
+              </FieldDescription>
+              <FieldError errors={field.state.meta.errors} />
+            </Field>
+          )}
+          name="currency"
+        />
       </FieldGroup>
 
       <FieldGroup>
@@ -398,7 +434,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               </>
             ) : (
               `${product ? tCommon("edit") : tCommon("add")} ${t(
-                "productName",
+                "productName"
               )}`
             )}
           </Button>

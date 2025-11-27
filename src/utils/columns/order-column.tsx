@@ -19,9 +19,9 @@ import { ORDER_STATUS } from "@/lib/schema/models/enums";
 import type { SelectPurchaseOrder } from "@/lib/schema/schema-types";
 
 export function OrderColumn(
-  t: (key: string) => string,
+  t: (key: string) => string
 ): ColumnDef<SelectPurchaseOrder>[] {
-  const { formatCurrency } = useCurrency();
+  const { formatWithCode } = useCurrency();
   return [
     {
       accessorKey: "status",
@@ -30,7 +30,7 @@ export function OrderColumn(
       ),
       cell: ({ row }) => {
         const status = orderStatuses.find(
-          (s) => s.value === row.original.status,
+          (s) => s.value === row.original.status
         );
         if (!status) {
           return (
@@ -66,7 +66,7 @@ export function OrderColumn(
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t("totalAmount")} />
       ),
-      cell: ({ row }) => formatCurrency(row.original.totalAmount),
+      cell: ({ row }) => formatWithCode(row.original.totalAmount),
     },
     {
       accessorKey: "supplierId",

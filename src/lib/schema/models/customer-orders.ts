@@ -33,6 +33,7 @@ export const customerOrdersTable = pgTable(
     shippingAddress: json("shipping_address").notNull(),
     billingAddress: json("billing_address").notNull(),
     totalAmount: numeric("total_amount", { precision: 12, scale: 2 }).notNull(),
+    currency: text("currency").notNull().default("RWF"),
     discountAmount: numeric("discount_amount", { precision: 12, scale: 2 })
       .notNull()
       .default("0"),
@@ -88,6 +89,7 @@ export const customerOrdersTable = pgTable(
     ),
     index("customer_orders_fulfillment_status").on(table.fulfillmentStatus),
     index("customer_orders_is_store_order").on(table.isStoreOrder),
+    index("customer_orders_currency").on(table.currency),
   ]
 );
 

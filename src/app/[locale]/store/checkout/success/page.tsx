@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { SelectCustomerOrder } from "@/lib/schema/schema-types";
+import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 import { getCustomerOrderByOrderNumber } from "@/server/actions/shopper/orders-actions";
 
 function CheckoutSuccessLoading() {
@@ -169,8 +170,11 @@ async function CheckoutSuccessContent({
 
               <div>
                 <h3 className="font-medium">{t("totalAmount")}</h3>
-                <p className="text-lg font-semibold">
-                  ${parseFloat(order.totalAmount).toFixed(2)}
+                <p className="text-2xl font-bold">
+                  {formatCurrencyWithCode(
+                    parseFloat(order.totalAmount),
+                    order.currency || "RWF"
+                  )}
                 </p>
               </div>
             </div>
@@ -189,8 +193,11 @@ async function CheckoutSuccessContent({
                         {t("quantity")}: {item.quantity}
                       </p>
                     </div>
-                    <p className="font-medium">
-                      ${(parseFloat(item.unitPrice) * item.quantity).toFixed(2)}
+                    <p className="text-sm">
+                      {formatCurrencyWithCode(
+                        parseFloat(item.unitPrice) * item.quantity,
+                        order.currency || "RWF"
+                      )}
                     </p>
                   </div>
                 ))}

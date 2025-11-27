@@ -25,7 +25,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { SelectProduct } from "@/lib/types";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 import { PublishProductDialog } from "./publish-product-dialog";
 
 interface InventoryProductsTableProps {
@@ -115,7 +115,10 @@ export function InventoryProductsTable({
                   <TableCell>{product.categoryId || "Uncategorized"}</TableCell>
                   <TableCell>
                     <span className="font-medium">
-                      {formatCurrency(Number(product.price))}
+                      {formatCurrencyWithCode(
+                        Number(product.price),
+                        product.currency
+                      )}
                     </span>
                   </TableCell>
                   <TableCell>

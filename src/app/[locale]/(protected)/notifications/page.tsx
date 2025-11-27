@@ -22,7 +22,8 @@ import {
 } from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
-import { formatCurrency, formatNumber } from "@/lib/utils";
+import { formatNumber } from "@/lib/utils";
+import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 import { getBusinessSettings } from "@/server/actions/business/settings-actions";
 import {
   getNotificationStats,
@@ -98,7 +99,7 @@ async function NotificationsContent({
     const date = new Date(createdAt);
     const now = new Date();
     const diffInMinutes = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60),
+      (now.getTime() - date.getTime()) / (1000 * 60)
     );
 
     if (diffInMinutes < 1) return "Just now";
@@ -226,13 +227,13 @@ async function NotificationsContent({
                                     </span>
                                     <span>
                                       Amount:{" "}
-                                      {formatCurrency(
+                                      {formatCurrencyWithCode(
                                         (
                                           notification.data as unknown as {
                                             amount: number;
                                           }
                                         ).amount,
-                                        currency,
+                                        currency
                                       )}
                                     </span>
                                   </div>
@@ -265,13 +266,13 @@ async function NotificationsContent({
                                     </span>
                                     <span>
                                       Amount:{" "}
-                                      {formatCurrency(
+                                      {formatCurrencyWithCode(
                                         (
                                           notification.data as unknown as {
                                             amount: number;
                                           }
                                         ).amount,
-                                        currency,
+                                        currency
                                       )}
                                     </span>
                                   </div>
@@ -282,13 +283,13 @@ async function NotificationsContent({
                               <div className="flex gap-4">
                                 <span>
                                   Amount:{" "}
-                                  {formatCurrency(
+                                  {formatCurrencyWithCode(
                                     (
                                       notification.data as unknown as {
                                         amount: number;
                                       }
                                     ).amount,
-                                    currency,
+                                    currency
                                   )}
                                 </span>
                                 <span>
@@ -325,13 +326,13 @@ async function NotificationsContent({
                                 </span>
                                 <span>
                                   Amount:{" "}
-                                  {formatCurrency(
+                                  {formatCurrencyWithCode(
                                     (
                                       notification.data as unknown as {
                                         amount: number;
                                       }
                                     ).amount,
-                                    currency,
+                                    currency
                                   )}
                                 </span>
                               </div>

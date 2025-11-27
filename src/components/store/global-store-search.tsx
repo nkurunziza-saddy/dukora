@@ -6,7 +6,9 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverPopup, PopoverTrigger } from "@/components/ui/popover";
+import { useDebounce } from "@/lib/hooks/use-debounce";
 import { cn } from "@/lib/utils";
+import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 import { searchProductsGlobally } from "@/server/actions/inventory/products-actions";
 
 interface GlobalStoreSearchProps {
@@ -19,6 +21,7 @@ interface SearchResult {
   name: string;
   description: string | null;
   price: string;
+  currency: string;
   imageUrl: string | null;
   businessId: string;
   businessName: string;
@@ -35,6 +38,8 @@ export function GlobalStoreSearch({
   const [isOpen, setIsOpen] = useState(false);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const debouncedValue = useDebounce(value, 300);
 
   const searchProducts = useCallback(async (query: string) => {
     if (!query || query.trim().length === 0) {
@@ -62,12 +67,8 @@ export function GlobalStoreSearch({
   }, []);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      searchProducts(value);
-    }, 300);
-
-    return () => clearTimeout(timeoutId);
-  }, [value, searchProducts]);
+    searchProducts(debouncedValue);
+  }, [debouncedValue, searchProducts]);
 
   const handleResultClick = () => {
     setIsOpen(false);
@@ -122,9 +123,12 @@ export function GlobalStoreSearch({
                     </p>
                   )}
                 </div>
-                <div className="text-sm font-semibold text-foreground whitespace-nowrap">
-                  ${parseFloat(result.price || "0").toFixed(2)}
-                </div>
+                <p className="text-xs text-muted-foreground">
+                  {formatCurrencyWithCode(
+                    parseFloat(result.price || "0"),
+                    result.currency || "RWF"
+                  )}
+                </p>
               </Link>
             ))}
           </div>

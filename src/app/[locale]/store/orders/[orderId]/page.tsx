@@ -6,6 +6,7 @@ import { OrderStatusBadge } from "@/components/store/order-status-badge";
 import { OrderTimeline } from "@/components/store/order-timeline";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 import { getOrderWithItems } from "@/server/actions/shopper/orders-actions";
 
 export default async function OrderPage(
@@ -89,13 +90,16 @@ export default async function OrderPage(
                     </div>
                     <div className="text-right">
                       <p className="text-sm">
-                        {item.quantity} × $
-                        {parseFloat(item.unitPrice).toFixed(2)}
+                        {item.quantity} ×{" "}
+                        {formatCurrencyWithCode(
+                          parseFloat(item.unitPrice),
+                          order.currency || "RWF"
+                        )}
                       </p>
                       <p className="text-sm font-semibold">
-                        $
-                        {(item.quantity * parseFloat(item.unitPrice)).toFixed(
-                          2
+                        {formatCurrencyWithCode(
+                          item.quantity * parseFloat(item.unitPrice),
+                          order.currency || "RWF"
                         )}
                       </p>
                     </div>
@@ -114,13 +118,13 @@ export default async function OrderPage(
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{t("subtotal")}</span>
                   <span>
-                    $
-                    {(
+                    {formatCurrencyWithCode(
                       parseFloat(order.totalAmount) -
-                      parseFloat(order.taxAmount) -
-                      parseFloat(order.shippingAmount) +
-                      parseFloat(order.discountAmount)
-                    ).toFixed(2)}
+                        parseFloat(order.taxAmount) -
+                        parseFloat(order.shippingAmount) +
+                        parseFloat(order.discountAmount),
+                      order.currency || "RWF"
+                    )}
                   </span>
                 </div>
                 {parseFloat(order.discountAmount) > 0 && (
@@ -129,22 +133,41 @@ export default async function OrderPage(
                       {t("discount")}
                     </span>
                     <span className="text-success-foreground">
-                      -${parseFloat(order.discountAmount).toFixed(2)}
+                      -
+                      {formatCurrencyWithCode(
+                        parseFloat(order.discountAmount),
+                        order.currency || "RWF"
+                      )}
                     </span>
                   </div>
                 )}
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{t("shipping")}</span>
-                  <span>${parseFloat(order.shippingAmount).toFixed(2)}</span>
+                  <span>
+                    {formatCurrencyWithCode(
+                      parseFloat(order.shippingAmount),
+                      order.currency || "RWF"
+                    )}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">{t("tax")}</span>
-                  <span>${parseFloat(order.taxAmount).toFixed(2)}</span>
+                  <span>
+                    {formatCurrencyWithCode(
+                      parseFloat(order.taxAmount),
+                      order.currency || "RWF"
+                    )}
+                  </span>
                 </div>
                 <Separator className="my-2" />
                 <div className="flex justify-between text-base font-semibold">
                   <span>{t("total")}</span>
-                  <span>${parseFloat(order.totalAmount).toFixed(2)}</span>
+                  <span>
+                    {formatCurrencyWithCode(
+                      parseFloat(order.totalAmount),
+                      order.currency || "RWF"
+                    )}
+                  </span>
                 </div>
               </div>
             </div>

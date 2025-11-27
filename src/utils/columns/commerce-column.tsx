@@ -10,9 +10,9 @@ import { useCurrency } from "@/lib/hooks/use-currency";
 import { ProductStatus, type SelectProduct } from "@/lib/schema/schema-types";
 
 export function CommerceColumn(
-  t: (key: string) => string,
+  t: (key: string) => string
 ): ColumnDef<SelectProduct>[] {
-  const { formatCurrency } = useCurrency();
+  const { formatWithCode } = useCurrency();
   return [
     {
       accessorKey: "status",
@@ -21,7 +21,7 @@ export function CommerceColumn(
       ),
       cell: ({ row }) => {
         const status = productStatuses.find(
-          (s) => s.value === row.original.status.toLowerCase(),
+          (s) => s.value === row.original.status.toLowerCase()
         );
         if (!status) {
           return (
@@ -63,14 +63,16 @@ export function CommerceColumn(
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t("price")} />
       ),
-      cell: ({ row }) => formatCurrency(row.original.price),
+      cell: ({ row }) =>
+        formatWithCode(row.original.price, row.original.currency),
     },
     {
       accessorKey: "costPrice",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t("costPrice")} />
       ),
-      cell: ({ row }) => formatCurrency(row.original.costPrice),
+      cell: ({ row }) =>
+        formatWithCode(row.original.costPrice, row.original.currency),
     },
     {
       accessorKey: "unit",

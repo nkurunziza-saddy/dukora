@@ -112,7 +112,7 @@ export default function OnboardingFlow() {
     onSubmitInvalid({ formApi }) {
       const errorMap = formApi.state.errorMap.onChange!;
       const inputs = Array.from(
-        document.querySelectorAll("#onboarding-form input"),
+        document.querySelectorAll("#onboarding-form input")
       ) as HTMLInputElement[];
 
       let firstInput: HTMLInputElement | undefined;
@@ -251,7 +251,7 @@ export default function OnboardingFlow() {
                             onBlur={field.handleBlur}
                             onChange={(e) => field.handleChange(e.target.value)}
                             placeholder={tOnboarding(
-                              "businessName.placeholder",
+                              "businessName.placeholder"
                             )}
                             value={field.state.value}
                           />
@@ -320,7 +320,7 @@ export default function OnboardingFlow() {
                               {tOnboarding("currency.label")} *
                             </label>
                             <Select
-                              items={getCurrencies(t)}
+                              items={getCurrencies()}
                               onValueChange={(value) =>
                                 field.handleChange(value)
                               }
@@ -330,7 +330,7 @@ export default function OnboardingFlow() {
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectPopup>
-                                {getCurrencies(t).map((currency) => (
+                                {getCurrencies().map((currency) => (
                                   <SelectItem
                                     key={currency.value}
                                     value={currency.value}
@@ -368,12 +368,12 @@ export default function OnboardingFlow() {
                               onValueChange={(value) => {
                                 field.handleChange(value);
                                 const country = getCountries(t).find(
-                                  (c) => c.value === value,
+                                  (c) => c.value === value
                                 );
                                 if (country) {
                                   form.setFieldValue(
                                     "timezone",
-                                    country.timezone,
+                                    country.timezone
                                   );
                                 }
                               }}
@@ -520,7 +520,7 @@ export default function OnboardingFlow() {
                             onBlur={field.handleBlur}
                             onChange={(e) => field.handleChange(e.target.value)}
                             placeholder={tOnboarding(
-                              "defaultVatRate.placeholder",
+                              "defaultVatRate.placeholder"
                             )}
                             step="0.01"
                             type="number"
@@ -583,11 +583,11 @@ export default function OnboardingFlow() {
                                               onBlur={subField.handleBlur}
                                               onChange={(e) =>
                                                 subField.handleChange(
-                                                  e.target.value as any,
+                                                  e.target.value as any
                                                 )
                                               }
                                               placeholder={tOnboarding(
-                                                "teamMembers.emailPlaceholder",
+                                                "teamMembers.emailPlaceholder"
                                               )}
                                               type="email"
                                               value={subField.state.value}
@@ -623,7 +623,7 @@ export default function OnboardingFlow() {
                                           <Select
                                             onValueChange={(value) =>
                                               subField.handleChange(
-                                                value as any,
+                                                value as any
                                               )
                                             }
                                             value={subField.state.value}
@@ -675,7 +675,7 @@ export default function OnboardingFlow() {
                                   )}
                                 </div>
                               </div>
-                            ),
+                            )
                           )}
 
                           <Button
@@ -721,7 +721,7 @@ export default function OnboardingFlow() {
                       } else {
                         if (currentCategories.length >= CATEGORY_LIMIT) {
                           toast.error(
-                            `You can select up to ${CATEGORY_LIMIT} categories.`,
+                            `You can select up to ${CATEGORY_LIMIT} categories.`
                           );
                           return;
                         }
@@ -740,7 +740,7 @@ export default function OnboardingFlow() {
                         toast.error(
                           tOnboarding("errors.maxCategories", {
                             limit: CATEGORY_LIMIT,
-                          }),
+                          })
                         );
                         return;
                       }
@@ -758,7 +758,7 @@ export default function OnboardingFlow() {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {defaultCategories.map((category) => {
                               const isSelected = currentCategories.some(
-                                (c: any) => c === category,
+                                (c: any) => c === category
                               );
                               return (
                                 <button
@@ -796,7 +796,7 @@ export default function OnboardingFlow() {
                                 }
                               }}
                               placeholder={tOnboarding(
-                                "categories.placeholder",
+                                "categories.placeholder"
                               )}
                               value={newCategory}
                             />
@@ -852,7 +852,7 @@ export default function OnboardingFlow() {
                         (w: any, i: number) => ({
                           ...w,
                           isDefault: i === index,
-                        }),
+                        })
                       );
                       if (!newArr.some((w: any) => w.isDefault)) {
                         newArr[0].isDefault = true;
@@ -893,11 +893,11 @@ export default function OnboardingFlow() {
                                             onBlur={subField.handleBlur}
                                             onChange={(e) =>
                                               subField.handleChange(
-                                                e.target.value,
+                                                e.target.value
                                               )
                                             }
                                             placeholder={tOnboarding(
-                                              "warehouses.placeholder",
+                                              "warehouses.placeholder"
                                             )}
                                             value={subField.state.value}
                                           />

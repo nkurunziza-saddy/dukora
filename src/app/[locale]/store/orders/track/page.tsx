@@ -13,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 import {
   getOrderStats,
   getUserOrders,
@@ -105,7 +106,10 @@ async function TrackOrderContent({
                     <OrderStatusBadge status={order.status} />
                   </TableCell>
                   <TableCell className="text-right">
-                    ${parseFloat(order.totalAmount).toFixed(2)}
+                    {formatCurrencyWithCode(
+                      parseFloat(order.totalAmount),
+                      order.currency || "RWF"
+                    )}
                   </TableCell>
                   <TableCell className="text-right">
                     <Button

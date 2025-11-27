@@ -126,18 +126,18 @@ export default function SaleTransactionForm({
   const selectedWarehouseItem = useMemo(
     () =>
       productDetailsData?.warehouseItems.find(
-        (item) => item.id === warehouseItemId,
+        (item) => item.id === warehouseItemId
       ),
-    [productDetailsData?.warehouseItems, warehouseItemId],
+    [productDetailsData?.warehouseItems, warehouseItemId]
   );
 
   const hasInsufficientStock = useMemo(
     () => selectedWarehouseItem && quantity > selectedWarehouseItem.quantity,
-    [selectedWarehouseItem, quantity],
+    [selectedWarehouseItem, quantity]
   );
 
   const { data: settings } = useBusinessSettings();
-  const { formatCurrency } = useCurrency();
+  const { formatWithCode } = useCurrency();
   const taxRate =
     Number(settings?.find((s) => s.key === "defaultVatRate")?.value) || 0;
   const pricesIncludeTax =
@@ -239,7 +239,7 @@ export default function SaleTransactionForm({
                                 "h-4 w-4",
                                 product.id === field.state.value
                                   ? "opacity-100"
-                                  : "opacity-0",
+                                  : "opacity-0"
                               )}
                             />
                           </div>
@@ -282,7 +282,7 @@ export default function SaleTransactionForm({
                           const warehouseId =
                             typeof item === "string"
                               ? productDetailsData?.warehouseItems.find(
-                                  (w) => w.id === item,
+                                  (w) => w.id === item
                                 )?.warehouseId
                               : (item as any).warehouseId;
                           if (warehouseId) {
@@ -318,7 +318,7 @@ export default function SaleTransactionForm({
                                   "h-4 w-4",
                                   item.id === field.state.value
                                     ? "opacity-100"
-                                    : "opacity-0",
+                                    : "opacity-0"
                                 )}
                               />
                             </div>
@@ -365,7 +365,7 @@ export default function SaleTransactionForm({
                       "text-sm font-medium",
                       hasInsufficientStock
                         ? "text-destructive"
-                        : "text-muted-foreground",
+                        : "text-muted-foreground"
                     )}
                   >
                     {tInventory("onHand")}: {selectedWarehouseItem.quantity}
@@ -432,18 +432,18 @@ export default function SaleTransactionForm({
             <div className="w-full bg-muted/50 p-4 rounded-lg mb-4 space-y-2">
               <div className="flex justify-between text-sm">
                 <span>{t("subtotal")}</span>
-                <span>{formatCurrency(calculations.subtotal)}</span>
+                <span>{formatWithCode(calculations.subtotal)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span>
                   {t("tax")} ({taxRate}%)
                 </span>
-                <span>{formatCurrency(calculations.tax)}</span>
+                <span>{formatWithCode(calculations.tax)}</span>
               </div>
               <Separator className="my-2" />
               <div className="flex justify-between font-medium">
                 <span>{t("total")}</span>
-                <span>{formatCurrency(calculations.total)}</span>
+                <span>{formatWithCode(calculations.total)}</span>
               </div>
             </div>
           )}

@@ -25,7 +25,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 import {
   getStorePerformance,
   getTodaysMetrics,
@@ -172,7 +172,7 @@ async function TopProductsCard() {
                       <Badge variant="secondary">{product.totalOrders}</Badge>
                     </TableCell>
                     <TableCell className="text-right font-medium">
-                      {formatCurrency(Number(product.totalRevenue))}
+                      {formatCurrencyWithCode(Number(product.totalRevenue))}
                     </TableCell>
                   </TableRow>
                 );
@@ -264,7 +264,7 @@ async function PerformanceOverview() {
         </CardHeader>
         <CardPanel>
           <div className="text-2xl font-bold">
-            {formatCurrency(data.totals.totalRevenue)}
+            {formatCurrencyWithCode(data.totals.totalRevenue)}
           </div>
           <p className="text-xs text-muted-foreground">Last 30 days</p>
         </CardPanel>

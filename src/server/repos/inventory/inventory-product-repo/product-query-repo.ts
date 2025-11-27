@@ -449,6 +449,7 @@ export const search_products_globally = async (
         name: sql<string>`COALESCE(${storeProductsTable.storeTitle}, ${productsTable.name})`,
         description: sql<string>`COALESCE(${storeProductsTable.storeDescription}, ${productsTable.description})`,
         price: sql<string>`COALESCE(${storeProductsTable.storePrice}, ${productsTable.price})`,
+        currency: productsTable.currency,
         imageUrl: productsTable.imageUrl,
         businessId: storeProductsTable.businessId,
         businessName: sql<string>`businesses.name`,

@@ -5,6 +5,7 @@ export type CartItem = {
   sku: string;
   price: string;
   costPrice: string;
+  currency: string;
   imageUrl: string | null;
   status: "ACTIVE" | "INACTIVE" | "DISCONTINUED";
   createdAt: Date;

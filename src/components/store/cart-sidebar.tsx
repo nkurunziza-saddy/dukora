@@ -1,6 +1,6 @@
 "use client";
 
-import { MinusIcon, PlusIcon, TrashIcon, XIcon } from "lucide-react";
+import { MinusIcon, PlusIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -12,17 +12,14 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { useCart, useCartActions } from "@/contexts/cart-context";
-import {
-  Sheet,
-  SheetDescription,
-  SheetHeader,
-  SheetPopup,
-  SheetTitle,
-} from "../ui/sheet";
+import { useCurrency } from "@/lib/hooks/use-currency";
+import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
+import { Sheet, SheetHeader, SheetPopup, SheetTitle } from "../ui/sheet";
 
 export function CartSidebar() {
   const t = useTranslations("store.cart");
   const { state } = useCart();
+  const { currency: businessCurrency } = useCurrency();
   const { removeItem, updateQuantity, clearCart, toggleCart } =
     useCartActions();
 
@@ -67,7 +64,10 @@ export function CartSidebar() {
                       {item.name}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      ${item.price}
+                      {formatCurrencyWithCode(
+                        parseFloat(item.price || "0"),
+                        item.currency || "RWF"
+                      )}
                     </p>
 
                     <div className="mt-3 flex items-center space-x-2">
@@ -115,7 +115,10 @@ export function CartSidebar() {
             <div className="flex items-center justify-between font-medium">
               <span>{t("total")}</span>
               <span className="font-semibold">
-                ${state.totalPrice.toFixed(2)}
+                {formatCurrencyWithCode(
+                  state.totalPrice,
+                  businessCurrency || "RWF"
+                )}
               </span>
             </div>
 

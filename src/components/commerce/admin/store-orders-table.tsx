@@ -32,7 +32,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 
 interface StoreOrdersTableProps {
   orders: any[];
@@ -153,7 +153,7 @@ export function StoreOrdersTable({ orders }: StoreOrdersTableProps) {
                   </TableCell>
                   <TableCell>
                     <span className="font-medium">
-                      {formatCurrency(Number(order.totalAmount))}
+                      {formatCurrencyWithCode(Number(order.totalAmount))}
                     </span>
                   </TableCell>
                   <TableCell>

@@ -6,9 +6,9 @@ import { useCurrency } from "@/lib/hooks/use-currency";
 import type { SelectInterBusinessPayment } from "@/lib/schema/schema-types";
 
 export function PaymentColumn(
-  t: (key: string) => string,
+  t: (key: string) => string
 ): ColumnDef<SelectInterBusinessPayment>[] {
-  const { formatCurrency } = useCurrency();
+  const { formatWithCode } = useCurrency();
   return [
     {
       accessorKey: "id",
@@ -32,7 +32,7 @@ export function PaymentColumn(
       accessorKey: "amount",
       header: t("amount"),
       cell: ({ row }) => {
-        return formatCurrency(row.original.amount);
+        return formatWithCode(row.original.amount);
       },
     },
     {

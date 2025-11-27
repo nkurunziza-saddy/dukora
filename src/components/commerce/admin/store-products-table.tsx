@@ -30,7 +30,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { SelectProduct, SelectStoreProduct } from "@/lib/types";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 import { unpublishProduct } from "@/server/actions/store/products-actions";
 
 interface ExtendedProduct {
@@ -137,11 +137,11 @@ export function StoreProductsTable({ products }: StoreProductsTableProps) {
                       <TableCell>
                         <div className="flex flex-col">
                           <span className="font-medium">
-                            {formatCurrency(Number(price))}
+                            {formatCurrencyWithCode(Number(price))}
                           </span>
                           {storeProduct.compareAtPrice && (
                             <span className="text-xs text-muted-foreground line-through">
-                              {formatCurrency(
+                              {formatCurrencyWithCode(
                                 Number(storeProduct.compareAtPrice)
                               )}
                             </span>

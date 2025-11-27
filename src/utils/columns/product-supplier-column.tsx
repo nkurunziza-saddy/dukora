@@ -4,9 +4,10 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
 import type { SelectProductSupplier } from "@/lib/schema/schema-types";
+import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 
 export function ProductSupplierColumn(
-  t: (key: string) => string,
+  t: (key: string) => string
 ): ColumnDef<SelectProductSupplier>[] {
   return [
     {
@@ -35,7 +36,8 @@ export function ProductSupplierColumn(
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title={t("supplierPrice")} />
       ),
-      cell: ({ row }) => row.original.supplierPrice,
+      cell: ({ row }) =>
+        formatCurrencyWithCode(row.original.supplierPrice, "RWF"),
     },
     {
       accessorKey: "leadTimeDays",

@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import z from "zod";
 import { USER_ROLES } from "@/lib/schema/models/enums";
+import { CURRENCIES } from "@/lib/utils/currency-utils";
 
 export const CATEGORY_LIMIT = 10;
 export const INVITATIONS_LIMIT = 5;
@@ -26,7 +27,7 @@ export const onboardingSchema = z.object({
       z.object({
         email: z.string().email("Invalid email address"),
         role: z.enum([...USER_ROLES]),
-      }),
+      })
     )
     .max(INVITATIONS_LIMIT, `Maximum invitations is ${INVITATIONS_LIMIT}`),
   categories: z
@@ -37,7 +38,7 @@ export const onboardingSchema = z.object({
       z.object({
         name: z.string().min(1, "Warehouse name is required"),
         isDefault: z.boolean(),
-      }),
+      })
     )
     .min(1, "At least one warehouse is required")
     .max(WAREHOUSES_LIMIT, `Allowed warehouses up to ${WAREHOUSES_LIMIT}`),
@@ -86,12 +87,12 @@ export const getBusinessTypes = (t: (key: string) => string) => [
   { value: "service", label: t("businessTypeService") },
   { value: "other", label: t("businessTypeOther") },
 ];
-export const getCurrencies = (t: (key: string) => string) => [
-  { value: "RWF", label: t("currencyRWF") },
-  { value: "USD", label: t("currencyUSD") },
-  { value: "EUR", label: t("currencyEUR") },
-  { value: "GBP", label: t("currencyGBP") },
-];
+export const getCurrencies = () => {
+  return CURRENCIES.map((currency) => ({
+    value: currency.code,
+    label: currency.label,
+  }));
+};
 
 export const getCountries = (t: (key: string) => string) => [
   { value: "RW", label: t("countryRW"), timezone: "Africa/Kigali" },
