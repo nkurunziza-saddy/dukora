@@ -9,6 +9,7 @@ import { GlobalStoreSearch } from "@/components/store/global-store-search";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCart, useCartActions } from "@/contexts/cart-context";
+import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 
 const StoreHeader = () => {
@@ -21,7 +22,7 @@ const StoreHeader = () => {
   const businessId = params.businessId as string;
 
   const isBusinessPage = pathname?.includes(`/store/${businessId}`);
-
+  const session = authClient.useSession();
   return (
     <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl">
       <div className="border-b border-border/50">
@@ -32,7 +33,7 @@ const StoreHeader = () => {
                 className="text-sm font-semibold text-foreground"
                 href={`/${locale}/store`}
               >
-                {t("brand")}
+                {t("brand")} Store
               </Link>
             </div>
             <nav className="hidden md:flex items-center gap-4">
@@ -58,6 +59,17 @@ const StoreHeader = () => {
               >
                 {t("trackOrder")}
               </Link>
+              {session.data?.user.businessId ? (
+                <Link
+                  className={cn(
+                    "text-xs hover:text-foreground transition",
+                    "text-text-secondary"
+                  )}
+                  href={`/${locale}/commerce`}
+                >
+                  Manage
+                </Link>
+              ) : null}
             </nav>
 
             <div className="flex items-center gap-3">

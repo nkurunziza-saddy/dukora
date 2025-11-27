@@ -31,6 +31,7 @@ const buttonVariants = cva(
         xl: "min-h-10 px-[calc(--spacing(4)-1px)] py-[calc(--spacing(2)-1px)] text-base [&_svg:not([class*='size-'])]:size-4.5",
         icon: "size-8",
         "icon-sm": "size-7",
+        "icon-xs": "size-5",
         "icon-lg": "size-9",
       },
     },
@@ -38,7 +39,7 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  },
+  }
 );
 
 interface ButtonProps extends useRender.ComponentProps<"button"> {

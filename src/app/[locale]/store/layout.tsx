@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-// import { StoreFooter } from "@/components/store/store-footer";
+import { StoreFooter } from "@/components/store/store-footer";
 import StoreHeader from "@/components/store/store-header";
 import { CartProvider } from "@/contexts/cart-context";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
@@ -20,7 +20,7 @@ export default function StoreLayout({
       <div className="">
         <StoreHeader />
         {children}
-        {/* <StoreFooter /> */}
+        <StoreFooter />
       </div>
     </CartProvider>
   );

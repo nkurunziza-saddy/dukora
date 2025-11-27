@@ -11,7 +11,7 @@ export async function StoreFooter() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <span className="text-sm font-semibold text-foreground">
-                {t("brand")}
+                {t("brand")} Store
               </span>
             </div>
             <p className="text-xs max-w-48 text-text-secondary mb-6 leading-relaxed">
@@ -35,17 +35,9 @@ export async function StoreFooter() {
               <li>
                 <Link
                   className="text-xs text-text-secondary hover:text-foreground transition"
-                  href="/store/products"
+                  href="/store/track-order"
                 >
-                  {t("products")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="text-xs text-text-secondary hover:text-foreground transition"
-                  href="/store/categories"
-                >
-                  {t("categories")}
+                  Track Order
                 </Link>
               </li>
             </ul>

@@ -1,7 +1,7 @@
 import { DollarSign, Package, Store, TrendingUp } from "lucide-react";
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import CopyStoreLink from "@/components/commerce/admin/copy-store-link";
+import GotoStore from "@/components/commerce/admin/goto-store";
 import { InventoryProductsTable } from "@/components/commerce/admin/inventory-products-table";
 import { StoreProductsTable } from "@/components/commerce/admin/store-products-table";
 import StatCard from "@/components/shared/stat-card";
@@ -112,7 +112,7 @@ export default async function StoreProductsPage() {
           <p className="">Manage your online store products and performance</p>
         </div>
         <div>
-          <CopyStoreLink businessId={await getBusinessId()} />
+          <GotoStore businessId={await getBusinessId()} />
         </div>
       </div>
 

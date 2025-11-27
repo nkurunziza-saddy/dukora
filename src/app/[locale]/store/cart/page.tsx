@@ -1,7 +1,7 @@
 "use client";
 import { MinusIcon, PlusIcon, XIcon } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,11 +16,11 @@ import { useCart, useCartActions } from "@/contexts/cart-context";
 
 const CartPage = () => {
   const t = useTranslations("store.checkout");
+  const router = useRouter();
   const { state } = useCart();
   const { updateQuantity, removeItem, clearCart } = useCartActions();
   const params = useParams();
   const businessId = params.businessId as string;
-
   const handleQuantityChange = (id: string, newQuantity: number) => {
     if (newQuantity <= 0) {
       removeItem(id);
@@ -200,13 +200,13 @@ const CartPage = () => {
                   <div className="space-y-2">
                     <Button
                       className="w-full"
-                      render={<Link href={`store/${businessId}/checkout`} />}
+                      render={<Link href={`/store/checkout`} />}
                     >
                       Proceed to Checkout
                     </Button>
                     <Button
                       className="w-full"
-                      render={<Link href={`store/${businessId}/products`} />}
+                      onClick={() => router.back()}
                       variant="outline"
                     >
                       Continue Shopping
