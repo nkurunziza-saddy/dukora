@@ -28,10 +28,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
-import {
-  getCustomerPayments,
-  getInterBusinessPayments,
-} from "@/server/actions/shopper/payments-actions";
+import { getInterBusinessPayments } from "@/server/actions/payments/inter-business-actions";
+import { getCustomerPayments } from "@/server/actions/shopper/payments-actions";
 
 export async function generateMetadata(): Promise<Metadata> {
   return constructI18nMetadata({
@@ -101,7 +99,7 @@ async function PaymentsContent() {
     .reduce((sum, p) => sum + p.amount, 0);
 
   const pendingPayments = allPayments.filter(
-    (p) => p.status === "pending",
+    (p) => p.status === "pending"
   ).length;
 
   return (

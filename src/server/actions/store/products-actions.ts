@@ -5,7 +5,7 @@ import type { InsertStoreProduct } from "@/lib/types";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as storeProductRepo from "@/server/repos/store-product-repo";
+import * as storeProductRepo from "@/server/repos/store/store-product-repo";
 
 async function getCachedAdminProducts(
   businessId: string,

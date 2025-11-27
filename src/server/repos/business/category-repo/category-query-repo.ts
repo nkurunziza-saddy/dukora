@@ -2,7 +2,7 @@
 import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { categoriesTable } from "@/lib/schema";
-import { ERROR_CODE } from "../../constants/errors";
+import { ERROR_CODE } from "@/server/constants/errors";
 
 export const get_all = async (businessId: string) => {
   if (!businessId) {

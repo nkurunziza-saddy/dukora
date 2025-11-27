@@ -4,9 +4,9 @@ import { revalidateTag } from "next/cache";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as inventorySyncRepo from "../repos/inventory-sync-repo";
-import * as storeOrderRepo from "../repos/store-order-repo";
-import * as storeProductRepo from "../repos/store-product-repo";
+import * as inventorySyncRepo from "@/server/repos/inventory/inventory-sync-repo";
+import * as storeOrderRepo from "@/server/repos/store/store-order-repo";
+import * as storeProductRepo from "@/server/repos/store/store-product-repo";
 
 /**
  * Admin Actions - Protected

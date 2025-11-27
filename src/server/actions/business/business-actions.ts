@@ -5,7 +5,7 @@ import { getCurrentSession } from "@/server/actions/auth-actions";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as businessRepo from "../repos/business-repo";
+import * as businessRepo from "@/server/repos/business/business-repo";
 
 export const getBusinesses = createProtectedAction(
   PERMISSION.BUSINESS_VIEW,

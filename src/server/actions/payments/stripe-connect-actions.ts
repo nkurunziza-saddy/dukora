@@ -2,7 +2,7 @@
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as stripeConnectRepo from "@/server/repos/stripe-connect-repo";
+import * as stripeConnectRepo from "@/server/repos/payments/stripe-connect-repo";
 
 export const createStripeConnectedAccount = createProtectedAction(
   PERMISSION.BUSINESS_UPDATE,

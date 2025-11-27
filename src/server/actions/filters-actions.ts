@@ -2,7 +2,7 @@ import type { TransactionType } from "@/lib/schema/schema-types";
 import { getUserIfHasPermission } from "@/server/actions/auth/permission-middleware";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
-import { get_filtered_transactions } from "@/server/repos/statistics-repo/transactions-stat-repo";
+import { get_filtered_transactions as getFilteredTransactions } from "@/server/repos/shared/statistics-repo/transactions-stat-repo";
 
 export async function getTransactionsByFilters(
   limit = 10,
@@ -20,7 +20,7 @@ export async function getTransactionsByFilters(
     const dateFromObj = dateFrom ? new Date(dateFrom) : undefined;
     const dateToObj = dateTo ? new Date(dateTo) : undefined;
 
-    const data = await get_filtered_transactions(
+    const data = await getFilteredTransactions(
       currentUser.id,
       limit,
       offset,

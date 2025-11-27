@@ -9,7 +9,7 @@ import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 
-import * as warehouseRepo from "../repos/warehouse-repo";
+import * as warehouseRepo from "@/server/repos/warehouse/warehouse-repo";
 
 export const getWarehouses = createProtectedAction(
   PERMISSION.WAREHOUSE_VIEW,

@@ -5,7 +5,7 @@ import type { InsertAuditLog } from "@/lib/schema/schema-types";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as logsRepo from "../repos/logs-repo";
+import * as logsRepo from "@/server/repos/logs/logs-repo";
 
 export const getLogs = createProtectedAction(
   PERMISSION.LOG_VIEW,

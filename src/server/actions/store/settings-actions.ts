@@ -5,7 +5,7 @@ import type { InsertStoreSetting } from "@/lib/schema/schema-types";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as storeSettingsRepo from "../repos/store-settings-repo";
+import * as storeSettingsRepo from "@/server/repos/store/store-settings-repo";
 
 async function getCachedStoreSettings(businessId: string) {
   "use cache";

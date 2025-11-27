@@ -5,7 +5,7 @@ import type { InsertExpense } from "@/lib/schema/schema-types";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as expenseRepo from "../repos/expenses-repo";
+import * as expenseRepo from "@/server/repos/shared/expenses-repo";
 
 export const getExpenses = createProtectedAction(
   PERMISSION.FINANCIAL_VIEW,

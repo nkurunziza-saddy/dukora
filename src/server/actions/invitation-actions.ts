@@ -14,9 +14,8 @@ import {
   createProtectedAction,
   createPublicAction,
 } from "@/server/helpers/action-factory";
-import { get_by_id as get_business_by_id } from "../repos/business-repo";
-import * as invitationRepo from "../repos/invitations-repo";
-import { accept_invitation as acceptInvitationRepo } from "../repos/invitations-repo";
+import { get_by_id as get_business_by_id } from "@/server/repos/business/business-repo";
+import * as invitationRepo from "@/server/repos/shared/invitations-repo";
 
 export const getInvitations = createProtectedAction(
   PERMISSION.INVITATION_VIEW,
@@ -236,7 +235,7 @@ export const createManyInvitations = createProtectedAction(
 
 export const acceptInvitation = createPublicAction(
   async ({ code, action }: { code: string; action: "accept" | "decline" }) => {
-    const res = await acceptInvitationRepo(code, action);
+    const res = await invitationRepo.accept_invitation(code, action);
     if (!res) {
       redirect("/");
     }

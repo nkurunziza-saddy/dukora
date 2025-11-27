@@ -3,7 +3,7 @@
 import { revalidateTag } from "next/cache";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as authRepo from "@/server/repos/auth-repo";
+import * as authRepo from "@/server/repos/users/auth-repo";
 
 export const deleteAccount = createProtectedAction(
   PERMISSION.USER_DELETE,

@@ -9,25 +9,12 @@ import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
 import { get_by_id as get_business_by_id } from "@/server/repos/business/business-repo";
 import { get_all as get_business_settings } from "@/server/repos/business/business-settings-repo/business-settings-query-repo";
-import {
-  create_customer_order,
-  get_all_paginated,
-  get_by_id,
-  get_by_order_number,
-  get_by_stripe_payment_intent,
-  get_by_user_id,
-  get_items_by_order_id,
-  get_order_stats,
-  get_order_with_items,
-  get_user_orders,
-  update_customer_order_payment,
-  update_customer_order_status,
-} from "@/server/repos/shopper/shopper-order-repo";
+import * as shopperOrderRepo from "@/server/repos/shopper/shopper-order-repo";
 
 export const getCustomerOrders = createProtectedAction(
   PERMISSION.USER_VIEW,
   async (user) => {
-    const result = await get_by_user_id(user.id);
+    const result = await shopperOrderRepo.get_by_user_id(user.id);
     if (result.error) {
       return { data: null, error: result.error };
     }
@@ -36,7 +23,7 @@ export const getCustomerOrders = createProtectedAction(
 );
 
 const createCustomerOrderSchema = z.object({
-  customerEmail: z.string().email(),
+  customerEmail: z.email(),
   customerName: z.string().min(1),
   customerPhone: z.string().optional(),
   shippingAddress: z.object({
@@ -116,7 +103,7 @@ export const createCustomerOrder = createProtectedAction(
         return { data: null, error: calculations.error };
       }
 
-      const orderResult = await create_customer_order({
+      const orderResult = await shopperOrderRepo.create_customer_order({
         orderNumber,
         businessId: user.businessId,
         customerEmail: input.customerEmail,
@@ -151,7 +138,7 @@ export const createCustomerOrder = createProtectedAction(
         },
       });
 
-      await update_customer_order_payment(
+      await shopperOrderRepo.update_customer_order_payment(
         orderResult.data.id,
         paymentIntent.id,
         paymentIntent.status
@@ -179,13 +166,14 @@ export const confirmCustomerOrder = async (paymentIntentId: string) => {
 
   try {
     // Get order by payment intent
-    const orderResult = await get_by_stripe_payment_intent(paymentIntentId);
+    const orderResult =
+      await shopperOrderRepo.get_by_stripe_payment_intent(paymentIntentId);
     if (orderResult.error || !orderResult.data) {
       return { data: null, error: ERROR_CODE.NOT_FOUND };
     }
 
     // Update order status to confirmed
-    const updateResult = await update_customer_order_status(
+    const updateResult = await shopperOrderRepo.update_customer_order_status(
       orderResult.data.id,
       "CONFIRMED",
       "succeeded"
@@ -214,12 +202,12 @@ export const getCustomerOrderById = async (orderId: string) => {
   }
 
   try {
-    const orderResult = await get_by_id(orderId);
+    const orderResult = await shopperOrderRepo.get_by_id(orderId);
     if (orderResult.error) {
       return { data: null, error: orderResult.error };
     }
 
-    const itemsResult = await get_items_by_order_id(orderId);
+    const itemsResult = await shopperOrderRepo.get_items_by_order_id(orderId);
     if (itemsResult.error) {
       return { data: null, error: itemsResult.error };
     }
@@ -243,12 +231,14 @@ export const getCustomerOrderByOrderNumber = async (orderNumber: string) => {
   }
 
   try {
-    const orderResult = await get_by_order_number(orderNumber);
+    const orderResult = await shopperOrderRepo.get_by_order_number(orderNumber);
     if (orderResult.error) {
       return { data: null, error: orderResult.error };
     }
 
-    const itemsResult = await get_items_by_order_id(orderResult.data.id);
+    const itemsResult = await shopperOrderRepo.get_items_by_order_id(
+      orderResult.data.id
+    );
     if (itemsResult.error) {
       return { data: null, error: itemsResult.error };
     }
@@ -287,7 +277,7 @@ export const getCustomerOrdersByBusiness = createProtectedAction(
     }
 
     try {
-      const result = await get_all_paginated(
+      const result = await shopperOrderRepo.get_all_paginated(
         user.businessId,
         page,
         pageSize,
@@ -320,7 +310,7 @@ export const updateOrderStatus = createProtectedAction(
     }
 
     try {
-      const orderResult = await get_by_id(orderId);
+      const orderResult = await shopperOrderRepo.get_by_id(orderId);
       if (orderResult.error || !orderResult.data) {
         return { data: null, error: ERROR_CODE.NOT_FOUND };
       }
@@ -329,7 +319,10 @@ export const updateOrderStatus = createProtectedAction(
         return { data: null, error: ERROR_CODE.UNAUTHORIZED };
       }
 
-      const result = await update_customer_order_status(orderId, status);
+      const result = await shopperOrderRepo.update_customer_order_status(
+        orderId,
+        status
+      );
 
       return result;
     } catch (error) {
@@ -354,7 +347,7 @@ export const getUserOrders = createProtectedAction(
     } = {}
   ) => {
     try {
-      const result = await get_user_orders({
+      const result = await shopperOrderRepo.get_user_orders({
         userId: user.id,
         page,
         pageSize,
@@ -377,7 +370,10 @@ export const getOrderWithItems = createProtectedAction(
     }
 
     try {
-      const result = await get_order_with_items(orderId, user.id);
+      const result = await shopperOrderRepo.get_order_with_items(
+        orderId,
+        user.id
+      );
       return result;
     } catch (error) {
       console.error("Failed to get order with items:", error);
@@ -390,7 +386,7 @@ export const getOrderStats = createProtectedAction(
   PERMISSION.USER_VIEW,
   async (user) => {
     try {
-      const result = await get_order_stats(user.id);
+      const result = await shopperOrderRepo.get_order_stats(user.id);
       return result;
     } catch (error) {
       console.error("Failed to get order stats:", error);

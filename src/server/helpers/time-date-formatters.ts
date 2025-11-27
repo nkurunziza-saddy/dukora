@@ -1,5 +1,5 @@
 import { format, isValid, parse, set, startOfMonth, subMonths } from "date-fns";
-import { getBusinessByIdMinimized } from "../actions/business-actions";
+import { getBusinessByIdMinimized } from "../actions/business/business-actions";
 
 export function parseMonth(monthNum: number): Date {
   const year = new Date().getFullYear();
@@ -38,7 +38,7 @@ export function getCurrentMonthBoundary(): Date {
 }
 
 export async function getAvailableMonthsForAnalytics(
-  businessId: string | null | undefined,
+  businessId: string | null | undefined
 ): Promise<
   {
     value: number;

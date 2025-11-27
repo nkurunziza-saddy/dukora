@@ -9,7 +9,7 @@ import type { InsertUser, UserRole } from "@/lib/schema/schema-types";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as userRepo from "../repos/user-repo";
+import * as userRepo from "@/server/repos/users/user-repo";
 
 export const getUsers = createProtectedAction(
   PERMISSION.USER_VIEW,

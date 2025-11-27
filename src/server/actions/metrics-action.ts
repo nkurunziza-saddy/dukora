@@ -15,15 +15,17 @@ import { getUserIfHasPermission } from "@/server/actions/auth/permission-middlew
 import { getWarehouseItemsByBusiness } from "@/server/actions/inventory/warehouse-items-actions";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
-import { calculateClosingStock } from "@/server/helpers/accounting-formulas";
+import {
+  calculateAllMetrics,
+  calculateClosingStock,
+} from "@/server/helpers/accounting-formulas";
+import { syncMetricsToDatabase } from "@/server/helpers/db-functional-helpers";
 import { getCurrentMonthBoundary } from "@/server/helpers/time-date-formatters";
-import * as metricsRepo from "@/server/repos/metrics-repo";
-import * as transactionRepo from "@/server/repos/transaction-repo";
-import { calculateAllMetrics } from "../helpers/accounting-formulas";
-import { syncMetricsToDatabase } from "../helpers/db-functional-helpers";
-import { get_all as get_all_businesses } from "../repos/business-repo";
-import { get_all as get_business_settings } from "../repos/business-settings-repo/business-settings-query-repo";
-import { getBusinessByIdMinimized } from "./business-actions";
+import { get_all as get_all_businesses } from "@/server/repos/business/business-repo";
+import { get_all as get_business_settings } from "@/server/repos/business/business-settings-repo";
+import * as metricsRepo from "@/server/repos/shared/metrics-repo";
+import * as transactionRepo from "@/server/repos/shared/transaction-repo";
+import { getBusinessByIdMinimized } from "./business/business-actions";
 import { getExpensesByTimeInterval } from "./expense-actions";
 
 export async function calculateAndSyncMonthlyMetrics(dateFrom: Date) {

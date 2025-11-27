@@ -5,8 +5,8 @@ import type { InsertProduct } from "@/lib/schema/schema-types";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as productRepo from "../repos/product-repo";
-import type { StoreProductFilters } from "../repos/product-repo/product-query-repo";
+import type { StoreProductFilters } from "@/server/repos/inventory/inventory-product-repo";
+import * as productRepo from "@/server/repos/inventory/inventory-product-repo";
 
 export const getProducts = createProtectedAction(
   PERMISSION.PRODUCT_VIEW,

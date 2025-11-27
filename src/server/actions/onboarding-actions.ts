@@ -5,10 +5,10 @@ import { createManyInvitations } from "@/server/actions/invitation-actions";
 import { ERROR_CODE } from "../constants/errors";
 import { PERMISSION } from "../constants/permissions";
 import { getUserIfHasPermission } from "./auth/permission-middleware";
-import { createBusiness } from "./business-actions";
-import { upsertManyBusinessSettings } from "./business-settings-actions";
-import { upsertManyCategories } from "./category-actions";
-import { createManyWarehouses } from "./warehouse-actions";
+import { createBusiness } from "./business/business-actions";
+import { upsertManyCategories } from "./business/categories-actions";
+import { upsertManyBusinessSettings } from "./business/settings-actions";
+import { createManyWarehouses } from "./warehouse/warehouses-actions";
 
 export async function businessInitialization(data: OnboardingFormData) {
   const currentUser = await getUserIfHasPermission(PERMISSION.PRODUCT_VIEW);

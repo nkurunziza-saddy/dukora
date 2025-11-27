@@ -3,7 +3,7 @@
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as storeMetricsRepo from "../repos/store-metrics-repo";
+import * as storeMetricsRepo from "@/server/repos/store/store-metrics-repo";
 
 export const getStorePerformance = createProtectedAction(
   PERMISSION.PRODUCT_VIEW,
@@ -23,7 +23,7 @@ export const getStorePerformance = createProtectedAction(
 export const getProductPerformance = createProtectedAction(
   PERMISSION.PRODUCT_VIEW,
   async (
-    user,
+    _user,
     {
       storeProductId,
       startDate,

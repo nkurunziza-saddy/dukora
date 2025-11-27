@@ -4,8 +4,8 @@ import { revalidateTag } from "next/cache";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as notificationRepo from "@/server/repos/notification-repo";
-import * as statisticsRepo from "@/server/repos/statistics-repo";
+import * as notificationRepo from "@/server/repos/shared/notification-repo";
+import * as statisticsRepo from "@/server/repos/shared/statistics-repo";
 
 export const getNotifications = createProtectedAction(
   PERMISSION.NOTIFICATION_VIEW,

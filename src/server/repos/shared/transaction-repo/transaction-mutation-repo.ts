@@ -16,9 +16,8 @@ import type {
 } from "@/lib/schema/schema-types";
 import { calculateStockChange } from "@/server/business-logic/transactions";
 import { ERROR_CODE } from "@/server/constants/errors";
-
-import * as notificationRepo from "@/server/repos/notification-repo";
 import { create as createWarehouseItem } from "@/server/repos/inventory/warehouse-item-repo";
+import * as notificationRepo from "@/server/repos/shared/notification-repo";
 
 type NotificationPayload = {
   type: "order" | "inventory";

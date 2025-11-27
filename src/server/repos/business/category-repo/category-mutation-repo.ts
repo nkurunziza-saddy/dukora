@@ -3,7 +3,7 @@ import { and, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { auditLogsTable, categoriesTable } from "@/lib/schema";
 import type { InsertAuditLog, InsertCategory } from "@/lib/schema/schema-types";
-import { ERROR_CODE } from "../../constants/errors";
+import { ERROR_CODE } from "@/server/constants/errors";
 
 export async function create(category: InsertCategory, userId: string) {
   if (!category.value || !category.businessId) {

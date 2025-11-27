@@ -5,7 +5,7 @@ import type { InsertSchedule } from "@/lib/schema/schema-types";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as scheduleRepo from "../repos/schedules-repo";
+import * as scheduleRepo from "@/server/repos/shared/schedules-repo";
 
 export const getSchedules = createProtectedAction(
   PERMISSION.SCHEDULE_VIEW,

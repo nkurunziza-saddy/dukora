@@ -3,7 +3,7 @@
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as purchaseOrderRepo from "../repos/purchase-order-repo";
+import * as purchaseOrderRepo from "@/server/repos/purchase-orders/purchase-order-repo";
 
 export const getPurchaseOrdersPaginated = createProtectedAction(
   PERMISSION.PURCHASE_ORDER_VIEW,

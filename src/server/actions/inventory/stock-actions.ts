@@ -2,7 +2,7 @@
 
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as stockStatRepo from "@/server/repos/statistics-repo/stock-stat-repo";
+import * as stockStatRepo from "@/server/repos/shared/statistics-repo/stock-stat-repo";
 
 export const getLowStockAlertProducts = createProtectedAction(
   PERMISSION.PRODUCT_VIEW,

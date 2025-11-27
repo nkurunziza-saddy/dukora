@@ -1,13 +1,13 @@
 import { addDays, startOfToday, subDays } from "date-fns";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import { get_total_products } from "@/server/repos/statistics-repo/product-stat-repo";
 import {
   get_inventory_value,
   get_products_with_stock_alert,
-} from "@/server/repos/statistics-repo/stock-stat-repo";
-import * as transactionRepo from "@/server/repos/statistics-repo/transactions-stat-repo";
-import { get_total_warehouses } from "@/server/repos/statistics-repo/warehouse-stat-repo";
+  get_total_products,
+  get_total_warehouses,
+} from "@/server/repos/shared/statistics-repo";
+import * as transactionRepo from "@/server/repos/shared/statistics-repo/transactions-stat-repo";
 
 export const getTotalSKUCount = createProtectedAction(
   PERMISSION.FINANCIAL_VIEW,

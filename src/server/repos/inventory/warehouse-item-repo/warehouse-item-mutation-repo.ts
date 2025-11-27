@@ -6,7 +6,7 @@ import type {
   InsertAuditLog,
   InsertWarehouseItem,
 } from "@/lib/schema/schema-types";
-import { ERROR_CODE } from "../../constants/errors";
+import { ERROR_CODE } from "@/server/constants/errors";
 
 export async function create(
   businessId: string,

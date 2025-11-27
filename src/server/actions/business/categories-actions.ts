@@ -4,7 +4,7 @@ import type { InsertCategory } from "@/lib/schema/schema-types";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as categoryRepo from "../repos/category-repo";
+import * as categoryRepo from "@/server/repos/business/category-repo";
 
 export const getCategories = createProtectedAction(
   PERMISSION.CATEGORY_VIEW,

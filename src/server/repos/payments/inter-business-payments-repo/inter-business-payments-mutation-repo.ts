@@ -9,7 +9,7 @@ import type {
 } from "@/lib/schema/schema-types";
 import { ERROR_CODE } from "@/server/constants/errors";
 
-import * as notificationRepo from "@/server/repos/notification-repo";
+import * as notificationRepo from "@/server/repos/shared/notification-repo";
 
 export async function create(
   payment: InsertInterBusinessPayment,

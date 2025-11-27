@@ -5,7 +5,7 @@ import type { InsertSupplier } from "@/lib/schema/schema-types";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as supplierRepo from "../repos/supplier-repo";
+import * as supplierRepo from "@/server/repos/shared/supplier-repo";
 
 export const getSuppliers = createProtectedAction(
   PERMISSION.SUPPLIER_VIEW,

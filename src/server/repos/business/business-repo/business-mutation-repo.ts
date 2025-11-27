@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { auditLogsTable, businessesTable, usersTable } from "@/lib/schema";
 import type { InsertAuditLog, InsertBusiness } from "@/lib/schema/schema-types";
-import { ERROR_CODE } from "../../constants/errors";
+import { ERROR_CODE } from "@/server/constants/errors";
 
 export async function create(userId: string, business: InsertBusiness) {
   if (!business.name) {

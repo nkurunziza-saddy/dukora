@@ -1,6 +1,6 @@
 import { ERROR_CODE } from "@/server/constants/errors";
 import type { calculateAllMetrics } from "@/server/helpers/accounting-formulas";
-import * as metricsRepo from "@/server/repos/metrics-repo";
+import * as metricsRepo from "@/server/repos/shared/metrics-repo";
 
 export async function syncMetricsToDatabase(
   businessId: string,

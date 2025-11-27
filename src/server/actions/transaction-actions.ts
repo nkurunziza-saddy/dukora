@@ -14,9 +14,9 @@ import {
 } from "@/server/business-logic/transactions";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as businessSettingsRepo from "../repos/business-settings-repo";
-import * as productRepo from "../repos/product-repo";
-import * as transactionRepo from "../repos/transaction-repo";
+import * as businessSettingsRepo from "@/server/repos/business/business-settings-repo";
+import * as inventoryProductRepo from "@/server/repos/inventory/inventory-product-repo";
+import * as transactionRepo from "@/server/repos/shared/transaction-repo";
 
 export const getTransactions = createProtectedAction(
   PERMISSION.FINANCIAL_VIEW,
@@ -121,7 +121,7 @@ export const createTransaction = createProtectedAction(
       createdBy: user.id,
     };
 
-    const productRes = await productRepo.get_by_id(
+    const productRes = await inventoryProductRepo.get_by_id(
       transaction.productId,
       user.businessId ?? ""
     );
@@ -230,7 +230,7 @@ export const createTransactionAndWarehouseItem = createProtectedAction(
       createdBy: user.id,
     };
 
-    const productRes = await productRepo.get_by_id(
+    const productRes = await inventoryProductRepo.get_by_id(
       transaction.productId,
       user.businessId ?? ""
     );

@@ -6,7 +6,7 @@ import {
   warehouseItemsTable,
   warehousesTable,
 } from "@/lib/schema";
-import { ERROR_CODE } from "../../constants/errors";
+import { ERROR_CODE } from "@/server/constants/errors";
 
 export const get_all = async (warehouseId: string) => {
   try {

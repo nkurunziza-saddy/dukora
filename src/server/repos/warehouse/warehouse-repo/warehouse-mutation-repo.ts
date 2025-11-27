@@ -6,7 +6,7 @@ import type {
   InsertAuditLog,
   InsertWarehouse,
 } from "@/lib/schema/schema-types";
-import { ERROR_CODE } from "../../constants/errors";
+import { ERROR_CODE } from "@/server/constants/errors";
 
 export async function create(warehouse: InsertWarehouse, userId: string) {
   if (!warehouse.name || !warehouse.businessId) {

@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { customerOrderItemsTable, customerOrdersTable } from "@/lib/schema";
 import { ERROR_CODE } from "@/server/constants/errors";
 
-import * as notificationRepo from "@/server/repos/notification-repo";
+import * as notificationRepo from "@/server/repos/shared/notification-repo";
 
 export const create_customer_order = async (orderData: {
   orderNumber: string;

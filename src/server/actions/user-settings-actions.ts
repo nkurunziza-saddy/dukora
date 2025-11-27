@@ -5,7 +5,7 @@ import type { InsertUserSetting } from "@/lib/schema/schema-types";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
-import * as userSettingsRepo from "../repos/user-settings-repo";
+import * as userSettingsRepo from "@/server/repos/users/user-settings-repo";
 
 export const getUserSettings = createProtectedAction(
   PERMISSION.USER_VIEW,
