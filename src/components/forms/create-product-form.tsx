@@ -80,13 +80,13 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
   });
 
   const units = [
-    { value: "pcs", label: t("unitPieces") },
-    { value: "kg", label: t("unitKilograms") },
-    { value: "lbs", label: t("unitPounds") },
-    { value: "m", label: t("unitMeters") },
-    { value: "ft", label: t("unitFeet") },
-    { value: "l", label: t("unitLiters") },
-    { value: "gal", label: t("unitGallons") },
+    { value: "pcs", label: tCommon("units.pieces") },
+    { value: "kg", label: tCommon("units.kilograms") },
+    { value: "lbs", label: tCommon("units.pounds") },
+    { value: "m", label: tCommon("units.meters") },
+    { value: "ft", label: tCommon("units.feet") },
+    { value: "l", label: tCommon("units.liters") },
+    { value: "gal", label: tCommon("units.gallons") },
   ];
 
   const form = useForm({
@@ -300,7 +300,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
         <form.Field
           children={(field) => (
             <Field>
-              <FieldLabel>Currency</FieldLabel>
+              <FieldLabel>{tCommon("currency")}</FieldLabel>
               <Select
                 onValueChange={(val) => field.handleChange(val ?? "")}
                 value={field.state.value ?? ""}

@@ -6,6 +6,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import StatCard from "@/components/shared/stat-card";
 import { Badge } from "@/components/ui/badge";
@@ -39,6 +40,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 async function PerformanceStats() {
+  const t = await getTranslations("commerceAnalytics.stats");
   const result = await getTodaysMetrics({});
   const metrics = result.data || {
     views: 0,
@@ -65,27 +67,27 @@ async function PerformanceStats() {
   const stats = [
     {
       icon: Eye,
-      title: "Store Views",
+      title: t("storeViews"),
       value: metrics.views.toString(),
-      change: "Today",
+      change: t("today"),
     },
     {
       icon: ShoppingCart,
-      title: "Cart Adds",
+      title: t("cartAdds"),
       value: metrics.addedToCart.toString(),
-      change: `${cartConversion}% → purchase`,
+      change: `${cartConversion}% ${t("toPurchase")}`,
     },
     {
       icon: Package,
-      title: "Orders",
+      title: t("orders"),
       value: metrics.orders.toString(),
-      change: `${conversionRate}% conversion`,
+      change: `${conversionRate}% ${t("conversion")}`,
     },
     {
       icon: DollarSign,
-      title: "Revenue",
+      title: t("revenue"),
       value: `$${Number(metrics.revenue).toFixed(2)}`,
-      change: `$${avgOrderValue} avg order`,
+      change: `$${avgOrderValue} ${t("avgOrder")}`,
     },
   ];
 
@@ -105,6 +107,10 @@ async function PerformanceStats() {
 }
 
 async function TopProductsCard() {
+  const t = await getTranslations("commerceAnalytics.topProducts");
+  const tHeaders = await getTranslations(
+    "commerceAnalytics.topProducts.tableHeaders"
+  );
   const endDate = new Date();
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - 30);
@@ -121,23 +127,31 @@ async function TopProductsCard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Top Products (Last 30 Days)</CardTitle>
-        <CardDescription>Best performing products by revenue</CardDescription>
+        <CardTitle>{t("title")}</CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardPanel>
         {products.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
-            No sales data yet
+            {t("noData")}
           </div>
         ) : (
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Product</TableHead>
-                <TableHead className="text-right">Views</TableHead>
-                <TableHead className="text-right">Added to Cart</TableHead>
-                <TableHead className="text-right">Orders</TableHead>
-                <TableHead className="text-right">Revenue</TableHead>
+                <TableHead>{tHeaders("product")}</TableHead>
+                <TableHead className="text-right">
+                  {tHeaders("views")}
+                </TableHead>
+                <TableHead className="text-right">
+                  {tHeaders("addedToCart")}
+                </TableHead>
+                <TableHead className="text-right">
+                  {tHeaders("orders")}
+                </TableHead>
+                <TableHead className="text-right">
+                  {tHeaders("revenue")}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -158,7 +172,7 @@ async function TopProductsCard() {
                           {product.storeTitle}
                         </span>
                         <span className="text-xs text-muted-foreground">
-                          {conversionRate}% conversion
+                          {conversionRate}% {t("conversion")}
                         </span>
                       </div>
                     </TableCell>
@@ -186,6 +200,7 @@ async function TopProductsCard() {
 }
 
 async function PerformanceOverview() {
+  const tPerf = await getTranslations("commerceAnalytics.performance");
   const endDate = new Date();
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - 30);
@@ -194,10 +209,11 @@ async function PerformanceOverview() {
   const data = result.data;
 
   if (!data) {
+    const tErrors = await getTranslations("commerceAnalytics.errors");
     return (
       <Card>
         <CardPanel className="py-8 text-center text-muted-foreground">
-          Failed to load performance data
+          {tErrors("failedToLoadPerformanceData")}
         </CardPanel>
       </Card>
     );
@@ -207,18 +223,22 @@ async function PerformanceOverview() {
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Views</CardTitle>
+          <CardTitle className="text-sm font-medium">
+            {tPerf("totalViews")}
+          </CardTitle>
           <Eye className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardPanel>
           <div className="text-2xl font-bold">{data.totals.totalViews}</div>
-          <p className="text-xs text-muted-foreground">Last 30 days</p>
+          <p className="text-xs text-muted-foreground">{tPerf("last30Days")}</p>
         </CardPanel>
       </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Cart Additions</CardTitle>
+          <CardTitle className="text-sm font-medium">
+            {tPerf("cartAdditions")}
+          </CardTitle>
           <ShoppingCart className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardPanel>
@@ -227,57 +247,66 @@ async function PerformanceOverview() {
           </div>
           <p className="text-xs text-muted-foreground">
             {data.totals.totalViews > 0
-              ? `${((data.totals.totalAddedToCart / data.totals.totalViews) * 100).toFixed(1)}% of views`
-              : "No views yet"}
+              ? `${((data.totals.totalAddedToCart / data.totals.totalViews) * 100).toFixed(1)}% ${tPerf("ofViews")}`
+              : tPerf("noViewsYet")}
           </p>
         </CardPanel>
       </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
+          <CardTitle className="text-sm font-medium">
+            {tPerf("conversionRate")}
+          </CardTitle>
           <TrendingUp className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardPanel>
           <div className="text-2xl font-bold">{data.conversionRate}%</div>
           <p className="text-xs text-muted-foreground">
-            {data.totals.totalOrders} orders from {data.totals.totalViews} views
+            {data.totals.totalOrders} {tPerf("ordersFrom")}{" "}
+            {data.totals.totalViews} {tPerf("views")}
           </p>
         </CardPanel>
       </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+          <CardTitle className="text-sm font-medium">
+            {tPerf("totalOrders")}
+          </CardTitle>
           <Package className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardPanel>
           <div className="text-2xl font-bold">{data.totals.totalOrders}</div>
-          <p className="text-xs text-muted-foreground">Last 30 days</p>
+          <p className="text-xs text-muted-foreground">{tPerf("last30Days")}</p>
         </CardPanel>
       </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+          <CardTitle className="text-sm font-medium">
+            {tPerf("totalRevenue")}
+          </CardTitle>
           <DollarSign className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardPanel>
           <div className="text-2xl font-bold">
             {formatCurrencyWithCode(data.totals.totalRevenue)}
           </div>
-          <p className="text-xs text-muted-foreground">Last 30 days</p>
+          <p className="text-xs text-muted-foreground">{tPerf("last30Days")}</p>
         </CardPanel>
       </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Avg Order Value</CardTitle>
+          <CardTitle className="text-sm font-medium">
+            {tPerf("avgOrderValue")}
+          </CardTitle>
           <DollarSign className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardPanel>
           <div className="text-2xl font-bold">{data.avgOrderValue}</div>
-          <p className="text-xs text-muted-foreground">Per order</p>
+          <p className="text-xs text-muted-foreground">{tPerf("perOrder")}</p>
         </CardPanel>
       </Card>
     </div>
@@ -285,20 +314,23 @@ async function PerformanceOverview() {
 }
 
 export default async function StoreAnalyticsPage() {
+  const t = await getTranslations("commerceAnalytics");
+  const tSections = await getTranslations("commerceAnalytics.sections");
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
           <TrendingUp className="h-8 w-8" />
-          Store Analytics
+          {t("title")}
         </h1>
-        <p className="text-muted-foreground">
-          Monitor your store's performance and insights
-        </p>
+        <p className="text-muted-foreground">{t("description")}</p>
       </div>
 
       <div>
-        <h2 className="text-xl font-semibold mb-4">Today's Performance</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          {tSections("todaysPerformance")}
+        </h2>
         <Suspense
           fallback={
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -316,7 +348,9 @@ export default async function StoreAnalyticsPage() {
       </div>
 
       <div>
-        <h2 className="text-xl font-semibold mb-4">Last 30 Days Overview</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          {tSections("last30DaysOverview")}
+        </h2>
         <Suspense
           fallback={
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

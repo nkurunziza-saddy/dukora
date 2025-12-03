@@ -45,6 +45,7 @@ async function SessionGuard() {
   const session = await getCurrentSession();
   const tStripe = await getTranslations("stripe");
   const tForms = await getTranslations("forms");
+  const tSettings = await getTranslations("settings");
   const userId = session?.user?.id;
   const businessId = session?.user?.businessId;
 
@@ -54,7 +55,7 @@ async function SessionGuard() {
         <Alert className="max-w-xl" variant="error">
           <AlertCircleIcon className="h-4 w-4" />
           <AlertDescription>
-            Business or user not found. Please check your session.
+            {tSettings("errors.businessOrUserNotFound")}
           </AlertDescription>
         </Alert>
       </div>
@@ -75,7 +76,7 @@ async function SessionGuard() {
         <Alert className="max-w-xl" variant="error">
           <AlertCircleIcon className="h-4 w-4" />
           <AlertDescription>
-            Business data is not available. Please try refreshing the page.
+            {tSettings("errors.businessDataNotAvailable")}
           </AlertDescription>
         </Alert>
       </div>
@@ -87,6 +88,7 @@ async function SessionGuard() {
       business={business}
       tForms={tForms}
       tStripe={tStripe}
+      tSettings={tSettings}
       user={user}
     />
   );
@@ -97,45 +99,47 @@ function ProtectedSettings({
   user,
   tStripe,
   tForms,
+  tSettings,
 }: {
   business: Awaited<ReturnType<typeof getBusinessById>>["data"];
   user: Awaited<ReturnType<typeof getUserById>>["data"];
   tStripe: (key: string) => string;
   tForms: (key: string) => string;
+  tSettings: (key: string) => string;
 }) {
   const tabConfig = [
     {
-      section: "Business",
+      section: tSettings("sections.business"),
       tabs: [
         {
           value: "business-details",
-          label: "Business Details",
+          label: tSettings("tabs.businessDetails"),
         },
         {
           value: "business-settings",
-          label: "Business Settings",
+          label: tSettings("tabs.businessSettings"),
         },
-        { value: "categories", label: "Categories" },
-        { value: "warehouses", label: "Warehouses" },
+        { value: "categories", label: tSettings("tabs.categories") },
+        { value: "warehouses", label: tSettings("tabs.warehouses") },
         {
           value: "stripe",
-          label: "Payments",
+          label: tSettings("tabs.payments"),
           disabled: true,
         },
       ],
     },
     {
-      section: "Account",
+      section: tSettings("sections.account"),
       tabs: [
-        { value: "user-details", label: "Profile" },
-        { value: "user-settings", label: "Preferences" },
+        { value: "user-details", label: tSettings("tabs.profile") },
+        { value: "user-settings", label: tSettings("tabs.preferences") },
         {
           value: "notifications",
-          label: "Notifications",
+          label: tSettings("tabs.notifications"),
         },
         {
           value: "security",
-          label: "Security",
+          label: tSettings("tabs.security"),
         },
       ],
     },
@@ -145,9 +149,9 @@ function ProtectedSettings({
     <div className="min-h-screen">
       <div className="container mx-auto py-8 px-4 max-w-7xl">
         <div className="mb-2">
-          <h1 className="font-medium tracking-tight">Settings</h1>
+          <h1 className="font-medium tracking-tight">{tSettings("title")}</h1>
           <p className="text-sm text-muted-foreground max-w-48">
-            Manage your preferences
+            {tSettings("description")}
           </p>
         </div>
 
@@ -191,9 +195,9 @@ function ProtectedSettings({
             <TabsPanel className="m-0" value="business-details">
               <Card>
                 <CardHeader>
-                  <CardTitle>Business Details</CardTitle>
+                  <CardTitle>{tSettings("businessDetails.title")}</CardTitle>
                   <CardDescription>
-                    Update your business information and branding
+                    {tSettings("businessDetails.description")}
                   </CardDescription>
                 </CardHeader>
                 <CardPanel>
@@ -231,9 +235,9 @@ function ProtectedSettings({
             <TabsPanel className="m-0" value="categories">
               <Card>
                 <CardHeader>
-                  <CardTitle>Categories</CardTitle>
+                  <CardTitle>{tSettings("categories.title")}</CardTitle>
                   <CardDescription>
-                    Manage product and service categories
+                    {tSettings("categories.description")}
                   </CardDescription>
                 </CardHeader>
                 <CardPanel>
@@ -245,9 +249,9 @@ function ProtectedSettings({
             <TabsPanel className="m-0" value="warehouses">
               <Card>
                 <CardHeader>
-                  <CardTitle>Warehouses</CardTitle>
+                  <CardTitle>{tSettings("warehouses.title")}</CardTitle>
                   <CardDescription>
-                    Manage your warehouse locations and inventory
+                    {tSettings("warehouses.description")}
                   </CardDescription>
                 </CardHeader>
                 <CardPanel>
@@ -275,9 +279,9 @@ function ProtectedSettings({
             <TabsPanel className="m-0" value="user-details">
               <Card>
                 <CardHeader>
-                  <CardTitle>Profile Details</CardTitle>
+                  <CardTitle>{tSettings("profileDetails.title")}</CardTitle>
                   <CardDescription>
-                    Update your personal information and profile
+                    {tSettings("profileDetails.description")}
                   </CardDescription>
                 </CardHeader>
                 <CardPanel>
@@ -289,9 +293,9 @@ function ProtectedSettings({
             <TabsPanel className="m-0" value="user-settings">
               <Card>
                 <CardHeader>
-                  <CardTitle>User Settings</CardTitle>
+                  <CardTitle>{tSettings("userSettings.title")}</CardTitle>
                   <CardDescription>
-                    Configure your account preferences and notifications
+                    {tSettings("userSettings.description")}
                   </CardDescription>
                 </CardHeader>
                 <CardPanel>

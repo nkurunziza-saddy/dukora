@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
-import OnboardingForm from "./_components/onboarding-form";
-import { OnboardingErrorBoundary } from "./_components/onboarding-error-boundary";
+import { OnboardingErrorBoundary } from "@/components/onboarding/onboarding-error-boundary";
+import OnboardingForm from "@/components/forms/onboarding-form";
 
 export async function generateMetadata(): Promise<Metadata> {
   return constructI18nMetadata({

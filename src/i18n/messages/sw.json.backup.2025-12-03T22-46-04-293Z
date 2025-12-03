@@ -465,7 +465,7 @@
     "store": "Duka",
     "autoSync": "Usawazishaji Otomatiki",
     "overallSyncHealth": "Afya ya Jumla ya Usawazishaji",
-    "connectedStores": "Maduka yaliyounganishwa"
+    "connectedStores": "TRANSLATE_ME"
   },
   "product": {
     "copyId": "Nakili ID ya bidhaa",
@@ -637,8 +637,8 @@
       "pieces": "Vipande",
       "pounds": "Paundi"
     },
-    "currency": "Sarafu",
-    "pleaseWait": "Tafadhali subiri"
+    "currency": "TRANSLATE_ME",
+    "pleaseWait": "TRANSLATE_ME"
   },
   "schedule": {
     "today": "Leo",
@@ -800,15 +800,6 @@
       "salesAmountLabel": "Jumla ya Kiasi cha Mauzo (RWF)",
       "title": "Kikokotoo cha VAT (Kodi ya Ongezeko la Thamani)",
       "vatDueLabel": "VAT Inayodaiwa Kila Mwezi (RWF)"
-    },
-    "title": "Kikokotoo cha Fedha",
-    "description": "Kokotoa mikopo, riba, malengo ya akiba na kodi kwa usahihi",
-    "tabs": {
-      "simpleInterest": "Riba Rahisi",
-      "loanCalculator": "Kikokotoo cha Mkopo",
-      "compoundInterest": "Riba Iliyojumlishwa",
-      "savingsGoal": "Lengo la Akiba",
-      "taxCalculator": "Kikokotoo cha Kodi"
     }
   },
   "notifications": {
@@ -852,23 +843,23 @@
     "stockLevelUpdated": "Kiwango cha hisa kimesasishwa kwa {product}",
     "supplierPaymentDue": "Malipo yanayodaiwa kwa {supplier} katika siku 3",
     "systemMaintenance": "Matengenezo ya mfumo yamepangwa usiku wa leo saa 8",
-    "criticalAlerts": "Tahadhari Muhimu",
-    "criticalAlertsDescription": "Pokea arifa za matukio muhimu",
-    "emailNotificationsDescription": "Pokea masasisho kupitia barua pepe",
-    "lowStockAlerts": "Tahadhari za Hisa Chache",
-    "lowStockAlertsDescription": "Pata arifa wakati hisa inapungua",
-    "newOrders": "Maagizo Mapya",
-    "newOrdersDescription": "Pokea arifa za maagizo mapya",
-    "paymentConfirmations": "Uthibitisho wa Malipo",
-    "paymentConfirmationsDescription": "Pokea uthibitisho wa malipo",
-    "paymentUpdates": "Masasisho ya Malipo",
-    "paymentUpdatesDescription": "Pata arifa za mabadiliko ya hali ya malipo",
-    "pushNotificationsDescription": "Pokea arifa kwenye kifaa chako",
-    "reports": "Ripoti",
-    "reportsDescription": "Pokea ripoti za mara kwa mara kupitia barua pepe",
-    "saveSettings": "Hifadhi Mipangilio",
-    "smsNotifications": "Arifa za SMS",
-    "smsNotificationsDescription": "Pokea ujumbe wa SMS kwa matukio muhimu"
+    "criticalAlerts": "TRANSLATE_ME",
+    "criticalAlertsDescription": "TRANSLATE_ME",
+    "emailNotificationsDescription": "TRANSLATE_ME",
+    "lowStockAlerts": "TRANSLATE_ME",
+    "lowStockAlertsDescription": "TRANSLATE_ME",
+    "newOrders": "TRANSLATE_ME",
+    "newOrdersDescription": "TRANSLATE_ME",
+    "paymentConfirmations": "TRANSLATE_ME",
+    "paymentConfirmationsDescription": "TRANSLATE_ME",
+    "paymentUpdates": "TRANSLATE_ME",
+    "paymentUpdatesDescription": "TRANSLATE_ME",
+    "pushNotificationsDescription": "TRANSLATE_ME",
+    "reports": "TRANSLATE_ME",
+    "reportsDescription": "TRANSLATE_ME",
+    "saveSettings": "TRANSLATE_ME",
+    "smsNotifications": "TRANSLATE_ME",
+    "smsNotificationsDescription": "TRANSLATE_ME"
   },
   "navigation": {
     "dashboard": "Dashibodi",
@@ -1058,8 +1049,8 @@
           "description": "Vinjari bidhaa kwa jamii"
         },
         "checkout": {
-          "title": "Kikokotoo cha Fedha",
-          "description": "Kokotoa mikopo, riba, malengo ya akiba na kodi kwa usahihi"
+          "title": "TRANSLATE_ME",
+          "description": "TRANSLATE_ME"
         }
       },
       "orders": {
@@ -1162,47 +1153,7 @@
     "userProfileUpdateFailed": "Imeshindwa kusasisha wasifu wa mtumiaji",
     "userSettingsUpdateFailed": "Imeshindwa kusasisha mipangilio ya mtumiaji",
     "userSettingsUpdated": "Mipangilio ya mtumiaji imesasishwa",
-    "userUpdated": "Wasifu wa mtumiaji umesasishwa kikamilifu",
-    "description": "Kokotoa mikopo, riba, malengo ya akiba na kodi kwa usahihi",
-    "errors": {
-      "businessOrUserNotFound": "Biashara au mtumiaji hayupo. Tafadhali angalia kikao chako.",
-      "businessDataNotAvailable": "Data ya biashara haipatikani. Tafadhali onyesha upya ukurasa."
-    },
-    "sections": {
-      "business": "Biashara",
-      "account": "Akaunti"
-    },
-    "tabs": {
-      "businessDetails": "Maelezo ya Biashara",
-      "businessSettings": "Mipangilio ya Biashara",
-      "categories": "Aina",
-      "warehouses": "Ghala",
-      "payments": "Malipo",
-      "profile": "Wasifu",
-      "preferences": "Mapendeleo",
-      "notifications": "Arifa",
-      "security": "Usalama"
-    },
-    "businessDetails": {
-      "title": "Kikokotoo cha Fedha",
-      "description": "Kokotoa mikopo, riba, malengo ya akiba na kodi kwa usahihi"
-    },
-    "categories": {
-      "title": "Kikokotoo cha Fedha",
-      "description": "Kokotoa mikopo, riba, malengo ya akiba na kodi kwa usahihi"
-    },
-    "warehouses": {
-      "title": "Kikokotoo cha Fedha",
-      "description": "Kokotoa mikopo, riba, malengo ya akiba na kodi kwa usahihi"
-    },
-    "profileDetails": {
-      "title": "Kikokotoo cha Fedha",
-      "description": "Kokotoa mikopo, riba, malengo ya akiba na kodi kwa usahihi"
-    },
-    "userSettings": {
-      "title": "Kikokotoo cha Fedha",
-      "description": "Kokotoa mikopo, riba, malengo ya akiba na kodi kwa usahihi"
-    }
+    "userUpdated": "Wasifu wa mtumiaji umesasishwa kikamilifu"
   },
   "stripe": {
     "businessIdMissing": "Kitambulisho cha Biashara hakipo. Haiwezekani kuunganisha akaunti ya Stripe.",
@@ -1618,10 +1569,7 @@
       "total": "Jumla",
       "proceedToCheckout": "Endelea Kulipa",
       "clearCart": "Futa Kikapu",
-      "noImage": "Hakuna Picha",
-      "discount": "Punguzo",
-      "calculatedAtCheckout": "Itahesabiwa wakati wa malipo",
-      "goToStore": "Nenda Dukani"
+      "noImage": "Hakuna Picha"
     },
     "checkout": {
       "billingAddress": "Anwani ya Malipo",
@@ -1742,133 +1690,6 @@
     "createOrder": "Unda Agizo",
     "categoriesList": "Orodha ya Jamii",
     "createOrderDescription": "Unda agizo jipya la mteja kwa kuongeza bidhaa na maelezo ya mteja",
-    "toggleStatus": "Geuza hali"
-  },
-  "commerceAdmin": {
-    "title": "Kikokotoo cha Fedha",
-    "description": "Kokotoa mikopo, riba, malengo ya akiba na kodi kwa usahihi",
-    "stats": {
-      "todaysRevenue": "Mapato ya Leo",
-      "orders": "Maagizo",
-      "storeViews": "Mtazamo wa Duka",
-      "today": "Leo",
-      "cartAdditions": "Ongezeko la Kikapu",
-      "productsAddedToCart": "Bidhaa zilizoongezwa kwenye kikapu",
-      "ordersTitle": "Maagizo"
-    },
-    "tabs": {
-      "publishedProducts": "Bidhaa Zilizochapishwa",
-      "inventory": "Hesabu"
-    },
-    "errors": {
-      "failedToLoadProducts": "Imeshindwa kupakia bidhaa"
-    }
-  },
-  "Store": {
-    "Page": {
-      "popularStores": "Maduka Maarufu",
-      "frequentlyVisitedStores": "Maduka Yanayotembelewa Mara Kwa Mara",
-      "recentlyVisitedStores": "Maduka Yaliyotembelewa Hivi Karibuni",
-      "noStoresFound": "Hakuna duka lililopatikana"
-    },
-    "Orders": {
-      "Track": {
-        "noOrdersFound": "Hakuna Agizo Lililopatikana",
-        "continueShopping": "Endelea Kununua",
-        "tableHeaders": {
-          "orderNumber": "Nambari ya Agizo",
-          "date": "Tarehe",
-          "status": "Hali",
-          "total": "Jumla"
-        },
-        "errorLoadingStats": "Hitilafu kupakia takwimu",
-        "errorLoadingOrders": "Hitilafu kupakia maagizo",
-        "noOrdersYet": "Hujatoa agizo lolote bado"
-      }
-    }
-  },
-  "commerceAnalytics": {
-    "title": "Kikokotoo cha Fedha",
-    "description": "Kokotoa mikopo, riba, malengo ya akiba na kodi kwa usahihi",
-    "sections": {
-      "todaysPerformance": "Utendaji wa Leo",
-      "last30DaysOverview": "Muhtasari wa Siku 30 Zilizopita"
-    },
-    "stats": {
-      "storeViews": "Mtazamo wa Duka",
-      "today": "Leo",
-      "cartAdds": "Ongeza kwenye Kikapu",
-      "toPurchase": "→ kununua",
-      "orders": "Maagizo",
-      "conversion": "ubadilishaji",
-      "revenue": "Mapato",
-      "avgOrder": "agizo la wastani"
-    },
-    "topProducts": {
-      "title": "Kikokotoo cha Fedha",
-      "description": "Kokotoa mikopo, riba, malengo ya akiba na kodi kwa usahihi",
-      "noData": "Hakuna data ya mauzo bado",
-      "tableHeaders": {
-        "product": "Bidhaa",
-        "views": "maoni",
-        "addedToCart": "Imeongezwa kwenye Kikapu",
-        "orders": "Maagizo",
-        "revenue": "Mapato"
-      },
-      "conversion": "ubadilishaji"
-    },
-    "performance": {
-      "totalViews": "Jumla ya Maoni",
-      "last30Days": "Siku 30 zilizopita",
-      "cartAdditions": "Ongezeko la Kikapu",
-      "ofViews": "ya maoni",
-      "noViewsYet": "Hakuna maoni bado",
-      "conversionRate": "Kiwango cha Ubadilishaji",
-      "ordersFrom": "maagizo kutoka",
-      "views": "maoni",
-      "totalOrders": "Jumla ya Maagizo",
-      "totalRevenue": "Jumla ya Mapato",
-      "avgOrderValue": "Thamani ya Wastani ya Agizo",
-      "perOrder": "kwa agizo"
-    },
-    "errors": {
-      "failedToLoadPerformanceData": "Imeshindwa kupakia data ya utendaji"
-    }
-  },
-  "commerceOrders": {
-    "title": "Kikokotoo cha Fedha",
-    "description": "Kokotoa mikopo, riba, malengo ya akiba na kodi kwa usahihi",
-    "searchPlaceholder": "Tafuta kwa nambari ya agizo, mteja...",
-    "stats": {
-      "totalOrders": "Jumla ya Maagizo",
-      "pending": "zinazosubiri",
-      "totalRevenue": "Jumla ya Mapato",
-      "allTime": "Wakati wote",
-      "pendingFulfillment": "Inasubiri Kutimizwa",
-      "awaitingProcessing": "Inasubiri kuchakatwa",
-      "shipped": "Imesafirishwa",
-      "onTheWay": "Iko njiani"
-    },
-    "status": {
-      "all": "Zote",
-      "pending": "zinazosubiri",
-      "confirmed": "Imethibitishwa",
-      "processing": "Inachakatwa",
-      "shipped": "Imesafirishwa",
-      "delivered": "Imewasilishwa",
-      "cancelled": "Imefutwa"
-    },
-    "fulfillment": {
-      "all": "Zote",
-      "pending": "zinazosubiri",
-      "reserved": "Imehifadhiwa",
-      "picked": "Imechaguliwa",
-      "packed": "Imefungwa",
-      "shipped": "Imesafirishwa",
-      "delivered": "Imewasilishwa"
-    },
-    "errors": {
-      "failedToLoadOrders": "Imeshindwa kupakia maagizo"
-    }
+    "toggleStatus": "TRANSLATE_ME"
   }
 }

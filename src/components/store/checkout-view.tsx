@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useCart } from "@/contexts/cart-context";
 import { CheckoutForm } from "../forms/checkout-form";
 import { Button } from "../ui/button";
@@ -15,6 +16,7 @@ import {
 import { OrderSummary } from "./order-summary";
 
 export function CheckoutView() {
+  const tCart = useTranslations("store.cart");
   const { state } = useCart();
   const params = useParams();
   const businessId = params.businessId as string;
@@ -25,15 +27,17 @@ export function CheckoutView() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
           <Empty>
             <EmptyHeader>
-              <EmptyTitle>Your cart is empty</EmptyTitle>
-              <EmptyDescription>Add some products to checkout</EmptyDescription>
+              <EmptyTitle>{tCart("yourCartIsEmpty")}</EmptyTitle>
+              <EmptyDescription>
+                {tCart("addItemsToGetStarted")}
+              </EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
               <Button
                 render={<Link href={`/store/${businessId}/products`} />}
                 size="sm"
               >
-                Go to Store
+                {tCart("goToStore")}
               </Button>
             </EmptyContent>
           </Empty>

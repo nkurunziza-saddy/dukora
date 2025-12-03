@@ -22,6 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 async function StoreStats() {
+  const t = await getTranslations("commerceAdmin.stats");
   const metricsResult = await getTodaysMetrics({});
   const metrics = metricsResult.data || {
     views: 0,
@@ -33,27 +34,27 @@ async function StoreStats() {
   const stats = [
     {
       icon: DollarSign,
-      title: "Today's Revenue",
+      title: t("todaysRevenue"),
       value: `$${Number(metrics.revenue).toFixed(2)}`,
-      change: `${metrics.orders} orders`,
+      change: `${metrics.orders} ${t("orders")}`,
     },
     {
       icon: Store,
-      title: "Store Views",
+      title: t("storeViews"),
       value: metrics.views.toString(),
-      change: "Today",
+      change: t("today"),
     },
     {
       icon: Package,
-      title: "Cart Additions",
+      title: t("cartAdditions"),
       value: metrics.addedToCart.toString(),
-      change: "Products added to cart",
+      change: t("productsAddedToCart"),
     },
     {
       icon: TrendingUp,
-      title: "Orders",
+      title: t("ordersTitle"),
       value: metrics.orders.toString(),
-      change: "Today",
+      change: t("today"),
     },
   ];
 
@@ -73,6 +74,7 @@ async function StoreStats() {
 }
 
 async function PublishedProductsTab() {
+  const t = await getTranslations("commerceAdmin.errors");
   const result = await getAdminStoreProducts({
     page: 1,
     pageSize: 50,
@@ -80,26 +82,29 @@ async function PublishedProductsTab() {
   });
 
   if (!result.data) {
-    return <div className="text-center py-12">Failed to load products</div>;
+    return <div className="text-center py-12">{t("failedToLoadProducts")}</div>;
   }
 
   return <StoreProductsTable products={result.data.storeProducts} />;
 }
 
 async function InventoryProductsTab() {
+  const t = await getTranslations("commerceAdmin.errors");
   const result = await getAvailableInventoryProducts({
     page: 1,
     pageSize: 50,
   });
 
   if (!result.data) {
-    return <div className="text-center py-12">Failed to load products</div>;
+    return <div className="text-center py-12">{t("failedToLoadProducts")}</div>;
   }
 
   return <InventoryProductsTable products={result.data.products} />;
 }
 
 export default async function StoreProductsPage() {
+  const t = await getTranslations("commerceAdmin");
+  const tTabs = await getTranslations("commerceAdmin.tabs");
   const getBusinessId = async () => {
     const session = await getCurrentSession();
     return session?.user?.businessId ?? "";
@@ -108,8 +113,8 @@ export default async function StoreProductsPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div className="head">
-          <h1 className="">Online Store</h1>
-          <p className="">Manage your online store products and performance</p>
+          <h1 className="">{t("title")}</h1>
+          <p className="">{t("description")}</p>
         </div>
         <div>
           <GotoStore businessId={await getBusinessId()} />
@@ -130,8 +135,8 @@ export default async function StoreProductsPage() {
 
       <Tabs className="space-y-4" defaultValue="published">
         <TabsList>
-          <TabsTab value="published">Published Products</TabsTab>
-          <TabsTab value="inventory">Inventory</TabsTab>
+          <TabsTab value="published">{tTabs("publishedProducts")}</TabsTab>
+          <TabsTab value="inventory">{tTabs("inventory")}</TabsTab>
         </TabsList>
 
         <TabsPanel className="space-y-4" value="published">

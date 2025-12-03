@@ -112,16 +112,16 @@ export const getCountries = (t: (key: string) => string) => [
 ];
 
 export const getMonths = (t: (key: string) => string) => [
-  { value: "1", label: t("monthJanuary") },
-  { value: "2", label: t("monthFebruary") },
-  { value: "3", label: t("monthMarch") },
-  { value: "4", label: t("monthApril") },
-  { value: "5", label: t("monthMay") },
-  { value: "6", label: t("monthJune") },
-  { value: "7", label: t("monthJuly") },
-  { value: "8", label: t("monthAugust") },
-  { value: "9", label: t("monthSeptember") },
-  { value: "10", label: t("monthOctober") },
-  { value: "11", label: t("monthNovember") },
-  { value: "12", label: t("monthDecember") },
+  { value: "1", label: t("months.january") },
+  { value: "2", label: t("months.february") },
+  { value: "3", label: t("months.march") },
+  { value: "4", label: t("months.april") },
+  { value: "5", label: t("months.may") },
+  { value: "6", label: t("months.june") },
+  { value: "7", label: t("months.july") },
+  { value: "8", label: t("months.august") },
+  { value: "9", label: t("months.september") },
+  { value: "10", label: t("months.october") },
+  { value: "11", label: t("months.november") },
+  { value: "12", label: t("months.december") },
 ];

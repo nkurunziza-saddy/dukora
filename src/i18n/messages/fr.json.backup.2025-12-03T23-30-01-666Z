@@ -1618,10 +1618,7 @@
       "total": "Total",
       "proceedToCheckout": "Passer à la caisse",
       "clearCart": "Vider le panier",
-      "noImage": "Pas d'image",
-      "discount": "Remise",
-      "calculatedAtCheckout": "Calculé au paiement",
-      "goToStore": "Aller au magasin"
+      "noImage": "Pas d'image"
     },
     "checkout": {
       "billingAddress": "Adresse de facturation",
@@ -1776,14 +1773,8 @@
         "noOrdersFound": "Aucune Commande Trouvée",
         "continueShopping": "Continuer les Achats",
         "tableHeaders": {
-          "orderNumber": "Numéro de Commande",
-          "date": "Date",
-          "status": "Statut",
-          "total": "Total"
-        },
-        "errorLoadingStats": "Erreur lors du chargement des statistiques",
-        "errorLoadingOrders": "Erreur lors du chargement des commandes",
-        "noOrdersYet": "Vous n'avez pas encore passé de commande"
+          "orderNumber": "Numéro de Commande"
+        }
       }
     }
   },

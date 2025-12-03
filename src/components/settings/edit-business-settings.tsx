@@ -8,7 +8,7 @@ import {
   getCountries,
   getCurrencies,
   getMonths,
-} from "@/app/[locale]/(onboarding)/onboarding/_components/onboarding-utils";
+} from "@/components/onboarding/onboarding-utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -53,7 +53,7 @@ export function EditBusinessSettings({
         (settings.find((s) => s.key === "timezone")?.value as string) || "",
       fiscalStartMonth:
         String(
-          settings.find((s) => s.key === "fiscalStartMonth")?.value || "",
+          settings.find((s) => s.key === "fiscalStartMonth")?.value || ""
         ) || "",
       pricesIncludeTax:
         (settings.find((s) => s.key === "pricesIncludeTax")
@@ -151,7 +151,7 @@ export function EditBusinessSettings({
                     {t("currency")}
                   </Label>
                   <Select
-                    items={getCurrencies(t)}
+                    items={getCurrencies()}
                     onValueChange={field.handleChange}
                     value={field.state.value}
                   >
@@ -159,7 +159,7 @@ export function EditBusinessSettings({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectPopup>
-                      {getCurrencies(t).map((currency) => (
+                      {getCurrencies().map((currency) => (
                         <SelectItem key={currency.value} value={currency.value}>
                           {currency.label}
                         </SelectItem>
@@ -181,7 +181,7 @@ export function EditBusinessSettings({
                     onValueChange={(value) => {
                       field.handleChange(value);
                       const country = getCountries(t).find(
-                        (c) => c.value === value,
+                        (c) => c.value === value
                       );
                       if (country) {
                         form.setFieldValue("timezone", country.timezone);

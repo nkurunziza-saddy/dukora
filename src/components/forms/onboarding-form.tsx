@@ -49,7 +49,6 @@ import { Switch } from "@/components/ui/switch";
 import { UserRole } from "@/lib/schema/schema-types";
 import { businessInitialization } from "@/server/actions/onboarding-actions";
 import { defaultCategories, userRolesObject } from "@/utils/constants";
-import LocaleSwitcher from "./language-switcher";
 import {
   CATEGORY_LIMIT,
   getBusinessTypes,
@@ -61,8 +60,9 @@ import {
   onboardingSchema,
   type OnboardingFormData,
   WAREHOUSES_LIMIT,
-} from "./onboarding-utils";
+} from "@/components/onboarding/onboarding-utils";
 import { useRouter } from "next/navigation";
+import LocaleSwitcher from "../onboarding/language-switcher";
 
 const STORAGE_KEY = "onboarding-form-data";
 
@@ -500,7 +500,7 @@ export default function OnboardingForm() {
                               {tOnboarding("fiscalYearStartMonth.label")} *
                             </label>
                             <Select
-                              items={getMonths(t)}
+                              items={getMonths(tCommon)}
                               onValueChange={(value) =>
                                 field.handleChange(value)
                               }
@@ -510,7 +510,7 @@ export default function OnboardingForm() {
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectPopup>
-                                {getMonths(t).map((month) => (
+                                {getMonths(tCommon).map((month) => (
                                   <SelectItem
                                     key={month.value}
                                     value={month.value}

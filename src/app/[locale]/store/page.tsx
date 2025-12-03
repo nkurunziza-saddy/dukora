@@ -63,7 +63,7 @@ async function StoreLists() {
           <div className="pgtx">
             <div className="flex items-center justify-between mb-10">
               <h2 className="text-xl font-medium text-foreground mb-4 text-balance">
-                Popular Stores
+                {t("popularStores")}
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border/2">
@@ -80,7 +80,7 @@ async function StoreLists() {
           <div className="pgtx">
             <div className="flex items-center justify-between mb-10">
               <h2 className="text-xl font-medium text-foreground mb-4 text-balance">
-                Frequently Visited Stores
+                {t("frequentlyVisitedStores")}
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border/2">
@@ -97,7 +97,7 @@ async function StoreLists() {
           <div className="pgtx">
             <div className="flex items-center justify-between mb-10">
               <h2 className="text-xl font-medium text-foreground mb-4 text-balance">
-                Recently Visited Stores
+                {t("recentlyVisitedStores")}
               </h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border border border-border/2">

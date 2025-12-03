@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { OrderStats } from "@/components/store/order-stats";
 import { OrderStatusBadge } from "@/components/store/order-status-badge";
@@ -39,6 +40,8 @@ async function TrackOrderContent({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+  const t = await getTranslations("Store.Orders.Track");
+  const tHeaders = await getTranslations("Store.Orders.Track.tableHeaders");
   const params = await searchParams;
   const page = Number(params.page) || 1;
   const status = params.status as string | undefined;
@@ -51,7 +54,7 @@ async function TrackOrderContent({
   if (statsResult.error || !statsResult.data) {
     return (
       <Empty>
-        <EmptyTitle>Error loading order statistics</EmptyTitle>
+        <EmptyTitle>{t("errorLoadingStats")}</EmptyTitle>
       </Empty>
     );
   }
@@ -59,7 +62,7 @@ async function TrackOrderContent({
   if (ordersResult.error || !ordersResult.data) {
     return (
       <Empty>
-        <EmptyTitle>Error loading orders</EmptyTitle>
+        <EmptyTitle>{t("errorLoadingOrders")}</EmptyTitle>
       </Empty>
     );
   }
@@ -77,19 +80,23 @@ async function TrackOrderContent({
 
       {orders.length === 0 ? (
         <Empty>
-          <EmptyTitle>No Orders Found</EmptyTitle>
-          <EmptyDescription>You haven't placed any orders yet</EmptyDescription>
-          <Button render={<Link href="/store" />}>Continue Shopping</Button>
+          <EmptyTitle>{t("noOrdersFound")}</EmptyTitle>
+          <EmptyDescription>{t("noOrdersYet")}</EmptyDescription>
+          <Button render={<Link href="/store" />}>
+            {t("continueShopping")}
+          </Button>
         </Empty>
       ) : (
         <>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Order Number</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Total</TableHead>
+                <TableHead>{tHeaders("orderNumber")}</TableHead>
+                <TableHead>{tHeaders("date")}</TableHead>
+                <TableHead>{tHeaders("status")}</TableHead>
+                <TableHead className="text-right">
+                  {tHeaders("total")}
+                </TableHead>
                 <TableHead />
               </TableRow>
             </TableHeader>

@@ -201,6 +201,7 @@
     "costPrice": "Cost price",
     "createdAt": "Created at",
     "createdBy": "Created by",
+    "currency": "Currency",
     "date": "Date",
     "pleaseWait": "Please wait",
     "default": "Default",
@@ -215,9 +216,11 @@
     "enterProductName": "Enter product name",
     "error": "Error",
     "errorLoading": "Error loading",
+    "exclTax": "excl. tax",
     "export": "Export",
     "filter": "Filter",
     "helpStarting": "Want help starting",
+    "inclTax": "incl. tax",
     "isActive": "Is active",
     "isDefault": "Is default",
     "isPreferred": "Is preferred",
@@ -226,6 +229,20 @@
     "leadTimeDays": "Lead time days",
     "loading": "Loading",
     "maxStock": "Max stock",
+    "months": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    },
     "name": "Name",
     "next": "Next",
     "no": "No",
@@ -271,6 +288,15 @@
     "total": "Total",
     "type": "Type",
     "unit": "Unit",
+    "units": {
+      "feet": "Feet",
+      "gallons": "Gallons",
+      "kilograms": "Kilograms",
+      "liters": "Liters",
+      "meters": "Meters",
+      "pieces": "Pieces",
+      "pounds": "Pounds"
+    },
     "unitKilograms": "Kilograms",
     "unitPieces": "Pieces",
     "unitPounds": "Pounds",
@@ -282,6 +308,15 @@
     "yes": "Yes"
   },
   "financialCalculator": {
+    "title": "Financial Calculators",
+    "description": "Calculate loans, interest, savings goals, and taxes with precision",
+    "tabs": {
+      "simpleInterest": "Simple Interest",
+      "loanCalculator": "Loan Calculator",
+      "compoundInterest": "Compound Interest",
+      "savingsGoal": "Savings Goal",
+      "taxCalculator": "Tax Calculator"
+    },
     "compoundCalculator": {
       "annualRateLabel": "Annual Interest Rate (%)",
       "compoundingFrequencyLabel": "Compounding Frequency (per year)",
@@ -1016,11 +1051,51 @@
     "theme": "Theme",
     "timezone": "Timezone",
     "title": "Settings",
+    "description": "Manage your preferences",
     "user": "User",
     "userProfileUpdateFailed": "Failed to update user profile",
     "userSettingsUpdated": "User settings updated",
     "userSettingsUpdateFailed": "Failed to update user settings",
-    "userUpdated": "User profile updated successfully"
+    "userUpdated": "User profile updated successfully",
+    "errors": {
+      "businessOrUserNotFound": "Business or user not found. Please check your session.",
+      "businessDataNotAvailable": "Business data is not available. Please try refreshing the page."
+    },
+    "sections": {
+      "business": "Business",
+      "account": "Account"
+    },
+    "tabs": {
+      "businessDetails": "Business Details",
+      "businessSettings": "Business Settings",
+      "categories": "Categories",
+      "warehouses": "Warehouses",
+      "payments": "Payments",
+      "profile": "Profile",
+      "preferences": "Preferences",
+      "notifications": "Notifications",
+      "security": "Security"
+    },
+    "businessDetails": {
+      "title": "Business Details",
+      "description": "Update your business information and branding"
+    },
+    "categories": {
+      "title": "Categories",
+      "description": "Manage product and service categories"
+    },
+    "warehouses": {
+      "title": "Warehouses",
+      "description": "Manage your warehouse locations and inventory"
+    },
+    "profileDetails": {
+      "title": "Profile Details",
+      "description": "Update your personal information and profile"
+    },
+    "userSettings": {
+      "title": "User Settings",
+      "description": "Configure your account preferences and notifications"
+    }
   },
   "stripe": {
     "businessIdMissing": "Business ID is missing. Cannot connect Stripe account.",
@@ -1543,7 +1618,10 @@
       "total": "Total",
       "proceedToCheckout": "Proceed To Checkout",
       "clearCart": "Clear Cart",
-      "noImage": "No Image"
+      "noImage": "No Image",
+      "discount": "Discount",
+      "calculatedAtCheckout": "Calculated at checkout",
+      "goToStore": "Go to Store"
     },
     "checkout": {
       "billingAddress": "Billing Address",
@@ -1665,5 +1743,132 @@
     "createOrder": "Create Order",
     "categoriesList": "Categories List",
     "createOrderDescription": "Create a new customer order by adding products and customer details"
+  },
+  "commerceAdmin": {
+    "title": "Online Store",
+    "description": "Manage your online store products and performance",
+    "stats": {
+      "todaysRevenue": "Today's Revenue",
+      "orders": "orders",
+      "storeViews": "Store Views",
+      "today": "Today",
+      "cartAdditions": "Cart Additions",
+      "productsAddedToCart": "Products added to cart",
+      "ordersTitle": "Orders"
+    },
+    "tabs": {
+      "publishedProducts": "Published Products",
+      "inventory": "Inventory"
+    },
+    "errors": {
+      "failedToLoadProducts": "Failed to load products"
+    }
+  },
+  "Store": {
+    "Page": {
+      "popularStores": "Popular Stores",
+      "frequentlyVisitedStores": "Frequently Visited Stores",
+      "recentlyVisitedStores": "Recently Visited Stores",
+      "noStoresFound": "No stores found"
+    },
+    "Orders": {
+      "Track": {
+        "noOrdersFound": "No Orders Found",
+        "continueShopping": "Continue Shopping",
+        "tableHeaders": {
+          "orderNumber": "Order Number",
+          "date": "Date",
+          "status": "Status",
+          "total": "Total"
+        },
+        "errorLoadingStats": "Error loading order statistics",
+        "errorLoadingOrders": "Error loading orders",
+        "noOrdersYet": "You haven't placed any orders yet"
+      }
+    }
+  },
+  "commerceAnalytics": {
+    "title": "Store Analytics",
+    "description": "Monitor your store's performance and insights",
+    "sections": {
+      "todaysPerformance": "Today's Performance",
+      "last30DaysOverview": "Last 30 Days Overview"
+    },
+    "stats": {
+      "storeViews": "Store Views",
+      "today": "Today",
+      "cartAdds": "Cart Adds",
+      "toPurchase": "→ purchase",
+      "orders": "Orders",
+      "conversion": "conversion",
+      "revenue": "Revenue",
+      "avgOrder": "avg order"
+    },
+    "topProducts": {
+      "title": "Top Products (Last 30 Days)",
+      "description": "Best performing products by revenue",
+      "noData": "No sales data yet",
+      "tableHeaders": {
+        "product": "Product",
+        "views": "Views",
+        "addedToCart": "Added to Cart",
+        "orders": "Orders",
+        "revenue": "Revenue"
+      },
+      "conversion": "conversion"
+    },
+    "performance": {
+      "totalViews": "Total Views",
+      "last30Days": "Last 30 days",
+      "cartAdditions": "Cart Additions",
+      "ofViews": "of views",
+      "noViewsYet": "No views yet",
+      "conversionRate": "Conversion Rate",
+      "ordersFrom": "orders from",
+      "views": "views",
+      "totalOrders": "Total Orders",
+      "totalRevenue": "Total Revenue",
+      "avgOrderValue": "Avg Order Value",
+      "perOrder": "Per order"
+    },
+    "errors": {
+      "failedToLoadPerformanceData": "Failed to load performance data"
+    }
+  },
+  "commerceOrders": {
+    "title": "Store Orders",
+    "description": "Manage orders from your online store",
+    "searchPlaceholder": "Search by order number, customer...",
+    "stats": {
+      "totalOrders": "Total Orders",
+      "pending": "pending",
+      "totalRevenue": "Total Revenue",
+      "allTime": "All time",
+      "pendingFulfillment": "Pending Fulfillment",
+      "awaitingProcessing": "Awaiting processing",
+      "shipped": "Shipped",
+      "onTheWay": "On the way"
+    },
+    "status": {
+      "all": "All Status",
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
+    "fulfillment": {
+      "all": "All Fulfillment",
+      "pending": "Pending",
+      "reserved": "Reserved",
+      "picked": "Picked",
+      "packed": "Packed",
+      "shipped": "Shipped",
+      "delivered": "Delivered"
+    },
+    "errors": {
+      "failedToLoadOrders": "Failed to load orders"
+    }
   }
 }

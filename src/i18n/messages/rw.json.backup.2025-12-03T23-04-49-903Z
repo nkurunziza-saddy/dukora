@@ -465,7 +465,7 @@
     "store": "Iduka",
     "autoSync": "Guhuza Otomatike",
     "overallSyncHealth": "Ubuzima bw'ihuzwa muri rusange",
-    "connectedStores": "Amaduka yahujwe"
+    "connectedStores": "TRANSLATE_ME"
   },
   "product": {
     "copyId": "Koporora ID y'igicuruzwa",
@@ -637,8 +637,8 @@
       "pieces": "Ibice",
       "pounds": "Amapani"
     },
-    "currency": "Ifaranga",
-    "pleaseWait": "Mwihangane"
+    "currency": "TRANSLATE_ME",
+    "pleaseWait": "TRANSLATE_ME"
   },
   "schedule": {
     "today": "Uyu munsi",
@@ -800,15 +800,6 @@
       "salesAmountLabel": "Amafaranga yose yagurishijwe (RWF)",
       "title": "Kalkilateri ya TVA (Umusoro ku nyongeragaciro)",
       "vatDueLabel": "TVA y'ukwezi igomba kwishyurwa (RWF)"
-    },
-    "title": "Ibaruramari",
-    "description": "Kubara inguzanyo, inyungu, intego zo kuzigama n'imisoro neza",
-    "tabs": {
-      "simpleInterest": "Inyungu Yoroshye",
-      "loanCalculator": "Ibaruramari ry'Inguzanyo",
-      "compoundInterest": "Inyungu Zikomatanynije",
-      "savingsGoal": "Intego yo Kuzigama",
-      "taxCalculator": "Ibaruramari ry'Imisoro"
     }
   },
   "notifications": {
@@ -852,23 +843,23 @@
     "stockLevelUpdated": "Urwego rw'ububiko rwavuguruwe kuri {product}",
     "supplierPaymentDue": "Ubwishyu bugomba {supplier} mu minsi 3",
     "systemMaintenance": "Gukora neza kwa sisitemu biteganyijwe kuri uyu ijoro saa munani",
-    "criticalAlerts": "Inyishu Z'ingenzi",
-    "criticalAlertsDescription": "Kwakira ubutumwa ku bintu by'ingenzi",
-    "emailNotificationsDescription": "Kwakira amakuru bya imeri",
-    "lowStockAlerts": "Inyishu z'Ibicuruzwa Bike",
-    "lowStockAlertsDescription": "Kumenyeshwa iyo ibicuruzwa bigabanutse",
-    "newOrders": "Amatungo Mashya",
-    "newOrdersDescription": "Kwakira ubutumwa ku matungo mashya",
-    "paymentConfirmations": "Kwemeza Ubwishyu",
-    "paymentConfirmationsDescription": "Kwakira ubutumwa bwo kwemeza ubwishyu",
-    "paymentUpdates": "Amakuru y'Ubwishyu",
-    "paymentUpdatesDescription": "Kumenyeshwa impinduka z'uko ubwishyu bimeze",
-    "pushNotificationsDescription": "Kwakira ubutumwa ku mushinga wawe",
-    "reports": "Raporo",
-    "reportsDescription": "Kwakira raporo buri gihe ku meri",
-    "saveSettings": "Kubika Igenamiterere",
-    "smsNotifications": "Ubutumwa bwa SMS",
-    "smsNotificationsDescription": "Kwakira ubutumwa bwa SMS ku bintu by'ingenzi"
+    "criticalAlerts": "TRANSLATE_ME",
+    "criticalAlertsDescription": "TRANSLATE_ME",
+    "emailNotificationsDescription": "TRANSLATE_ME",
+    "lowStockAlerts": "TRANSLATE_ME",
+    "lowStockAlertsDescription": "TRANSLATE_ME",
+    "newOrders": "TRANSLATE_ME",
+    "newOrdersDescription": "TRANSLATE_ME",
+    "paymentConfirmations": "TRANSLATE_ME",
+    "paymentConfirmationsDescription": "TRANSLATE_ME",
+    "paymentUpdates": "TRANSLATE_ME",
+    "paymentUpdatesDescription": "TRANSLATE_ME",
+    "pushNotificationsDescription": "TRANSLATE_ME",
+    "reports": "TRANSLATE_ME",
+    "reportsDescription": "TRANSLATE_ME",
+    "saveSettings": "TRANSLATE_ME",
+    "smsNotifications": "TRANSLATE_ME",
+    "smsNotificationsDescription": "TRANSLATE_ME"
   },
   "navigation": {
     "dashboard": "Dashibodi",
@@ -1058,8 +1049,8 @@
           "description": "Reba ibicuruzwa by'icyiciro"
         },
         "checkout": {
-          "title": "Ibaruramari",
-          "description": "Kubara inguzanyo, inyungu, intego zo kuzigama n'imisoro neza"
+          "title": "TRANSLATE_ME",
+          "description": "TRANSLATE_ME"
         }
       },
       "orders": {
@@ -1163,45 +1154,45 @@
     "userSettingsUpdateFailed": "Byanze kuvugurura igenamiterere ry'umukoresha",
     "userSettingsUpdated": "Igenamiterere ry'umukoresha ryavuguruwe",
     "userUpdated": "Umwirondoro w'umukoresha wavuguruwe neza",
-    "description": "Kubara inguzanyo, inyungu, intego zo kuzigama n'imisoro neza",
+    "description": "TRANSLATE_ME",
     "errors": {
-      "businessOrUserNotFound": "Ubucuruzi cyangwa umukoresha ntaboshe. Nyamuneka reba ikirango cyawe.",
-      "businessDataNotAvailable": "Amakuru y'ubucuruzi ntaboneka. Nyamuneka ongera usubize urupapuro."
+      "businessOrUserNotFound": "TRANSLATE_ME",
+      "businessDataNotAvailable": "TRANSLATE_ME"
     },
     "sections": {
-      "business": "Ubucuruzi",
-      "account": "Konti"
+      "business": "TRANSLATE_ME",
+      "account": "TRANSLATE_ME"
     },
     "tabs": {
-      "businessDetails": "Ibisobanuro by'Ubucuruzi",
-      "businessSettings": "Igenamiterere ry'Ubucuruzi",
-      "categories": "Ibyiciro",
-      "warehouses": "Ububiko",
-      "payments": "Ubwishyu",
-      "profile": "Umwirondoro",
-      "preferences": "Ibyo Uhitamo",
-      "notifications": "Ubutumwa",
-      "security": "Umutekano"
+      "businessDetails": "TRANSLATE_ME",
+      "businessSettings": "TRANSLATE_ME",
+      "categories": "TRANSLATE_ME",
+      "warehouses": "TRANSLATE_ME",
+      "payments": "TRANSLATE_ME",
+      "profile": "TRANSLATE_ME",
+      "preferences": "TRANSLATE_ME",
+      "notifications": "TRANSLATE_ME",
+      "security": "TRANSLATE_ME"
     },
     "businessDetails": {
-      "title": "Ibaruramari",
-      "description": "Kubara inguzanyo, inyungu, intego zo kuzigama n'imisoro neza"
+      "title": "TRANSLATE_ME",
+      "description": "TRANSLATE_ME"
     },
     "categories": {
-      "title": "Ibaruramari",
-      "description": "Kubara inguzanyo, inyungu, intego zo kuzigama n'imisoro neza"
+      "title": "TRANSLATE_ME",
+      "description": "TRANSLATE_ME"
     },
     "warehouses": {
-      "title": "Ibaruramari",
-      "description": "Kubara inguzanyo, inyungu, intego zo kuzigama n'imisoro neza"
+      "title": "TRANSLATE_ME",
+      "description": "TRANSLATE_ME"
     },
     "profileDetails": {
-      "title": "Ibaruramari",
-      "description": "Kubara inguzanyo, inyungu, intego zo kuzigama n'imisoro neza"
+      "title": "TRANSLATE_ME",
+      "description": "TRANSLATE_ME"
     },
     "userSettings": {
-      "title": "Ibaruramari",
-      "description": "Kubara inguzanyo, inyungu, intego zo kuzigama n'imisoro neza"
+      "title": "TRANSLATE_ME",
+      "description": "TRANSLATE_ME"
     }
   },
   "stripe": {
@@ -1570,7 +1561,7 @@
     "createOrder": "Hanga itumizwa",
     "categoriesList": "Urutonde rw'ibyiciro",
     "createOrderDescription": "Hanga itumizwa rishya ry'umukiriya wongeraho ibicuruzwa n'amakuru y'umukiriya",
-    "toggleStatus": "Guhindura uko bimeze"
+    "toggleStatus": "TRANSLATE_ME"
   },
   "store": {
     "welcomeToStore": "Murakaza neza mu iduka rya Dukora",
@@ -1651,10 +1642,7 @@
       "total": "Byose",
       "proceedToCheckout": "Komeza kwishyura",
       "clearCart": "Siba agatebo",
-      "noImage": "Nta shusho",
-      "discount": "Kugabanyirizwa",
-      "calculatedAtCheckout": "Bizabarirwa mu kwishyura",
-      "goToStore": "Jya mu Iduka"
+      "noImage": "Nta shusho"
     },
     "checkout": {
       "billingAddress": "Aderesi yo kwishyuriraho",
@@ -1745,130 +1733,31 @@
     "backToStore": "Subira mu iduka"
   },
   "commerceAdmin": {
-    "title": "Ibaruramari",
-    "description": "Kubara inguzanyo, inyungu, intego zo kuzigama n'imisoro neza",
+    "title": "TRANSLATE_ME",
+    "description": "TRANSLATE_ME",
     "stats": {
-      "todaysRevenue": "Amafaranga Yinjiye Uyu Munsi",
-      "orders": "Amatungo",
-      "storeViews": "Kureba Iduka",
-      "today": "Uyu Munsi",
-      "cartAdditions": "Kongereza mu Gitebo",
-      "productsAddedToCart": "Ibicuruzwa byongeye mu gitebo",
-      "ordersTitle": "Amatungo"
+      "todaysRevenue": "TRANSLATE_ME",
+      "orders": "TRANSLATE_ME",
+      "storeViews": "TRANSLATE_ME",
+      "today": "TRANSLATE_ME",
+      "cartAdditions": "TRANSLATE_ME",
+      "productsAddedToCart": "TRANSLATE_ME",
+      "ordersTitle": "TRANSLATE_ME"
     },
     "tabs": {
-      "publishedProducts": "Ibicuruzwa Byatangajwe",
-      "inventory": "Ububiko"
+      "publishedProducts": "TRANSLATE_ME",
+      "inventory": "TRANSLATE_ME"
     },
     "errors": {
-      "failedToLoadProducts": "Kunanirwa gupakurura ibicuruzwa"
+      "failedToLoadProducts": "TRANSLATE_ME"
     }
   },
   "Store": {
     "Page": {
-      "popularStores": "Amaduka Akunzwe",
-      "frequentlyVisitedStores": "Amaduka Asuragwa Kenshi",
-      "recentlyVisitedStores": "Amaduka Yasuwe Vuba Aha",
-      "noStoresFound": "Nta duka ryabonetse"
-    },
-    "Orders": {
-      "Track": {
-        "noOrdersFound": "Nta Tungo Ryabonetse",
-        "continueShopping": "Komeza Kugura",
-        "tableHeaders": {
-          "orderNumber": "Numero y'Itungo",
-          "date": "Itariki",
-          "status": "Uko bimeze",
-          "total": "Yose hamwe"
-        },
-        "errorLoadingStats": "Kunanirwa gupakurura imibare",
-        "errorLoadingOrders": "Kunanirwa gupakurura amatungo",
-        "noOrdersYet": "Nta tungo uratanga"
-      }
-    }
-  },
-  "commerceAnalytics": {
-    "title": "Ibaruramari",
-    "description": "Kubara inguzanyo, inyungu, intego zo kuzigama n'imisoro neza",
-    "sections": {
-      "todaysPerformance": "Imikorere y'Uyu Munsi",
-      "last30DaysOverview": "Incamake y'Iminsi 30 Ishize"
-    },
-    "stats": {
-      "storeViews": "Kureba Iduka",
-      "today": "Uyu Munsi",
-      "cartAdds": "Kongereza mu Gitebo",
-      "toPurchase": "→ kugura",
-      "orders": "Amatungo",
-      "conversion": "guhindura",
-      "revenue": "Amafaranga Yinjiye",
-      "avgOrder": "itungo rya kijyepfo"
-    },
-    "topProducts": {
-      "title": "Ibaruramari",
-      "description": "Kubara inguzanyo, inyungu, intego zo kuzigama n'imisoro neza",
-      "noData": "Nta makuru y'ivuguruzi kugeza ubu",
-      "tableHeaders": {
-        "product": "Igicuruzwa",
-        "views": "kureba",
-        "addedToCart": "Byongeye mu Gitebo",
-        "orders": "Amatungo",
-        "revenue": "Amafaranga Yinjiye"
-      },
-      "conversion": "guhindura"
-    },
-    "performance": {
-      "totalViews": "Kureba Kwose",
-      "last30Days": "Iminsi 30 ishize",
-      "cartAdditions": "Kongereza mu Gitebo",
-      "ofViews": "byo kureba",
-      "noViewsYet": "Nta kureba kugeza ubu",
-      "conversionRate": "Igipimo cyo Guhinduka",
-      "ordersFrom": "amatungo kuri",
-      "views": "kureba",
-      "totalOrders": "Amatungo Yose",
-      "totalRevenue": "Amafaranga Yose Yinjiye",
-      "avgOrderValue": "Agaciro ka Kijyepfo k'Itungo",
-      "perOrder": "kuri buri tungo"
-    },
-    "errors": {
-      "failedToLoadPerformanceData": "Kunanirwa gupakurura amakuru y'imikorere"
-    }
-  },
-  "commerceOrders": {
-    "title": "Ibaruramari",
-    "description": "Kubara inguzanyo, inyungu, intego zo kuzigama n'imisoro neza",
-    "searchPlaceholder": "Shakisha ukoresheje numero y'itungo, umukiriya...",
-    "stats": {
-      "totalOrders": "Amatungo Yose",
-      "pending": "bitegereje",
-      "totalRevenue": "Amafaranga Yose Yinjiye",
-      "allTime": "Igihe cyose",
-      "pendingFulfillment": "Gutegereza Gutunganywa",
-      "awaitingProcessing": "Itegereje gutunganywa",
-      "shipped": "Byoherejwe",
-      "onTheWay": "Biri munzira"
-    },
-    "status": {
-      "all": "Byose",
-      "pending": "bitegereje",
-      "confirmed": "Byemejwe",
-      "processing": "Biratunganywa",
-      "shipped": "Byoherejwe",
-      "delivered": "Byashitswe",
-      "cancelled": "Byahagaritswe"
-    },
-    "fulfillment": {
-      "all": "Byose",
-      "pending": "bitegereje",
-      "reserved": "Byabitswe",
-      "picked": "Byatoranyijwe",
-      "packed": "Byapakijwe",
-      "shipped": "Byoherejwe",
-      "delivered": "Byashitswe"
-    },
-    "errors": {
-      "failedToLoadOrders": "Kunanirwa gupakurura amatungo"
+      "popularStores": "TRANSLATE_ME",
+      "frequentlyVisitedStores": "TRANSLATE_ME",
+      "recentlyVisitedStores": "TRANSLATE_ME",
+      "noStoresFound": "TRANSLATE_ME"
     }
   }
 }

@@ -1618,10 +1618,7 @@
       "total": "Jumla",
       "proceedToCheckout": "Endelea Kulipa",
       "clearCart": "Futa Kikapu",
-      "noImage": "Hakuna Picha",
-      "discount": "Punguzo",
-      "calculatedAtCheckout": "Itahesabiwa wakati wa malipo",
-      "goToStore": "Nenda Dukani"
+      "noImage": "Hakuna Picha"
     },
     "checkout": {
       "billingAddress": "Anwani ya Malipo",
@@ -1776,14 +1773,8 @@
         "noOrdersFound": "Hakuna Agizo Lililopatikana",
         "continueShopping": "Endelea Kununua",
         "tableHeaders": {
-          "orderNumber": "Nambari ya Agizo",
-          "date": "Tarehe",
-          "status": "Hali",
-          "total": "Jumla"
-        },
-        "errorLoadingStats": "Hitilafu kupakia takwimu",
-        "errorLoadingOrders": "Hitilafu kupakia maagizo",
-        "noOrdersYet": "Hujatoa agizo lolote bado"
+          "orderNumber": "Nambari ya Agizo"
+        }
       }
     }
   },

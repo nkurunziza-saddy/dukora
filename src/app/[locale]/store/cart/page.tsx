@@ -18,7 +18,8 @@ import { useCurrency } from "@/lib/hooks/use-currency";
 import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 
 const CartPage = () => {
-  const t = useTranslations("store.checkout");
+  const tCheckout = useTranslations("store.checkout");
+  const tCart = useTranslations("store.cart");
   const router = useRouter();
   const { state } = useCart();
   const { updateQuantity, removeItem, clearCart } = useCartActions();
@@ -39,9 +40,9 @@ const CartPage = () => {
         <div className="pgtx ">
           <Empty>
             <EmptyHeader>
-              <EmptyTitle>Your cart is empty</EmptyTitle>
+              <EmptyTitle>{tCart("yourCartIsEmpty")}</EmptyTitle>
               <EmptyDescription>
-                Add some products to get started
+                {tCart("addItemsToGetStarted")}
               </EmptyDescription>
             </EmptyHeader>
             <EmptyContent>
@@ -49,7 +50,7 @@ const CartPage = () => {
                 render={<Link href={`store/${businessId}/products`} />}
                 size="sm"
               >
-                Continue Shopping
+                {tCart("continueShopping")}
               </Button>
             </EmptyContent>
           </Empty>
@@ -62,7 +63,7 @@ const CartPage = () => {
       <div className="pgtx ">
         <div className="mb-8">
           <h1 className="text-xl font-medium text-foreground mb-2 text-balance">
-            Shopping Cart
+            {tCart("shoppingCart")}
           </h1>
           <p className="text-sm text-text-secondary text-pretty">
             {state.totalItems} {state.totalItems === 1 ? "item" : "items"}
@@ -73,7 +74,7 @@ const CartPage = () => {
             <div className="flex justify-between items-center">
               <h2 className="font-medium">Items</h2>
               <Button onClick={clearCart} size="sm" variant="ghost">
-                Clear All
+                {tCart("clearCart")}
               </Button>
             </div>
             <div></div>
@@ -160,7 +161,7 @@ const CartPage = () => {
               <div className="sticky top-18 px-4 border-t border-r border-b py-4">
                 <div className="mb-6">
                   <div className="text-base font-medium">
-                    {t("orderSummary")}
+                    {tCheckout("orderSummary")}
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -182,29 +183,29 @@ const CartPage = () => {
 
                   <div className=" space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span>{t("subtotal")}</span>
+                      <span>{tCheckout("subtotal")}</span>
                       <span>${state.totalPrice.toFixed(2)}</span>
                     </div>
 
                     <div className="flex justify-between text-sm">
-                      <span>Discount</span>
-                      <span>Checked at checkout</span>
+                      <span>{tCart("discount")}</span>
+                      <span>{tCart("calculatedAtCheckout")}</span>
                     </div>
 
                     <div className="flex justify-between text-sm">
-                      <span>{t("tax")}</span>
-                      <span className="">Calculated at checkout</span>
+                      <span>{tCheckout("tax")}</span>
+                      <span className="">{tCart("calculatedAtCheckout")}</span>
                     </div>
 
                     <div className="flex justify-between text-sm">
-                      <span>{t("shipping")}</span>
-                      <span className="">Calculated at checkout</span>
+                      <span>{tCheckout("shipping")}</span>
+                      <span className="">{tCart("calculatedAtCheckout")}</span>
                     </div>
 
                     <Separator className={"border-t border-dashed my-4"} />
 
                     <div className=" flex justify-between text-sm font-medium">
-                      <span>{t("total")}</span>
+                      <span>{tCheckout("total")}</span>
                       <span>${state.totalPrice.toFixed(2)}</span>
                     </div>
                   </div>
@@ -213,14 +214,14 @@ const CartPage = () => {
                       className="w-full"
                       render={<Link href={`/store/checkout`} />}
                     >
-                      Proceed to Checkout
+                      {tCart("proceedToCheckout")}
                     </Button>
                     <Button
                       className="w-full"
                       onClick={() => router.back()}
                       variant="outline"
                     >
-                      Continue Shopping
+                      {tCart("continueShopping")}
                     </Button>
                   </div>
                 </div>

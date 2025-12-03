@@ -1651,10 +1651,7 @@
       "total": "Byose",
       "proceedToCheckout": "Komeza kwishyura",
       "clearCart": "Siba agatebo",
-      "noImage": "Nta shusho",
-      "discount": "Kugabanyirizwa",
-      "calculatedAtCheckout": "Bizabarirwa mu kwishyura",
-      "goToStore": "Jya mu Iduka"
+      "noImage": "Nta shusho"
     },
     "checkout": {
       "billingAddress": "Aderesi yo kwishyuriraho",
@@ -1776,14 +1773,8 @@
         "noOrdersFound": "Nta Tungo Ryabonetse",
         "continueShopping": "Komeza Kugura",
         "tableHeaders": {
-          "orderNumber": "Numero y'Itungo",
-          "date": "Itariki",
-          "status": "Uko bimeze",
-          "total": "Yose hamwe"
-        },
-        "errorLoadingStats": "Kunanirwa gupakurura imibare",
-        "errorLoadingOrders": "Kunanirwa gupakurura amatungo",
-        "noOrdersYet": "Nta tungo uratanga"
+          "orderNumber": "Numero y'Itungo"
+        }
       }
     }
   },

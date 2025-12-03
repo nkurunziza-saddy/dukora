@@ -126,7 +126,7 @@
     "totalAmount": "Montant total",
     "supplier": "Fournisseur",
     "orderDate": "Date de commande",
-    "pleaseWait": "Veuillez patienter"
+    "pleaseWait": "TRANSLATE_ME"
   },
   "forms": {
     "productName": "Nom du Produit",
@@ -594,7 +594,7 @@
     "store": "Boutique",
     "autoSync": "Synchronisation automatique",
     "overallSyncHealth": "Santé globale de la synchronisation",
-    "connectedStores": "Magasins connectés"
+    "connectedStores": "TRANSLATE_ME"
   },
   "product": {
     "copyId": "Copier l'ID du produit",
@@ -800,15 +800,6 @@
       "salesAmountLabel": "Montant total des ventes (RWF)",
       "title": "Calculateur de TVA (Taxe sur la valeur ajoutée)",
       "vatDueLabel": "TVA mensuelle due (RWF)"
-    },
-    "title": "Calculatrices Financières",
-    "description": "Calculez les prêts, les intérêts, les objectifs d'épargne et les taxes avec précision",
-    "tabs": {
-      "simpleInterest": "Intérêt Simple",
-      "loanCalculator": "Calculatrice de Prêt",
-      "compoundInterest": "Intérêt Composé",
-      "savingsGoal": "Objectif d'Épargne",
-      "taxCalculator": "Calculatrice de Taxes"
     }
   },
   "notifications": {
@@ -852,23 +843,23 @@
     "stockLevelUpdated": "Niveau de stock mis à jour pour {product}",
     "supplierPaymentDue": "Paiement dû à {supplier} dans 3 jours",
     "systemMaintenance": "Maintenance du système prévue cette nuit à 2h du matin",
-    "criticalAlerts": "Alertes Critiques",
-    "criticalAlertsDescription": "Recevoir des notifications pour les événements critiques",
-    "emailNotificationsDescription": "Recevoir des mises à jour par e-mail",
-    "lowStockAlerts": "Alertes de Stock Faible",
-    "lowStockAlertsDescription": "Être notifié lorsque les stocks sont bas",
-    "newOrders": "Nouvelles Commandes",
-    "newOrdersDescription": "Recevoir des notifications pour les nouvelles commandes",
-    "paymentConfirmations": "Confirmations de Paiement",
-    "paymentConfirmationsDescription": "Recevoir des confirmations de paiement",
-    "paymentUpdates": "Mises à Jour des Paiements",
-    "paymentUpdatesDescription": "Être notifié des changements de statut de paiement",
-    "pushNotificationsDescription": "Recevoir des notifications push sur votre appareil",
-    "reports": "Rapports",
-    "reportsDescription": "Recevoir des rapports périodiques par e-mail",
-    "saveSettings": "Enregistrer les Paramètres",
-    "smsNotifications": "Notifications SMS",
-    "smsNotificationsDescription": "Recevoir des messages SMS pour les événements importants"
+    "criticalAlerts": "TRANSLATE_ME",
+    "criticalAlertsDescription": "TRANSLATE_ME",
+    "emailNotificationsDescription": "TRANSLATE_ME",
+    "lowStockAlerts": "TRANSLATE_ME",
+    "lowStockAlertsDescription": "TRANSLATE_ME",
+    "newOrders": "TRANSLATE_ME",
+    "newOrdersDescription": "TRANSLATE_ME",
+    "paymentConfirmations": "TRANSLATE_ME",
+    "paymentConfirmationsDescription": "TRANSLATE_ME",
+    "paymentUpdates": "TRANSLATE_ME",
+    "paymentUpdatesDescription": "TRANSLATE_ME",
+    "pushNotificationsDescription": "TRANSLATE_ME",
+    "reports": "TRANSLATE_ME",
+    "reportsDescription": "TRANSLATE_ME",
+    "saveSettings": "TRANSLATE_ME",
+    "smsNotifications": "TRANSLATE_ME",
+    "smsNotificationsDescription": "TRANSLATE_ME"
   },
   "navigation": {
     "dashboard": "Tableau de bord",
@@ -1058,8 +1049,8 @@
           "description": "Parcourir les produits par catégorie"
         },
         "checkout": {
-          "title": "Calculatrices Financières",
-          "description": "Calculez les prêts, les intérêts, les objectifs d'épargne et les taxes avec précision"
+          "title": "TRANSLATE_ME",
+          "description": "TRANSLATE_ME"
         }
       },
       "orders": {
@@ -1163,45 +1154,45 @@
     "timezone": "Fuseau horaire",
     "userProfileUpdateFailed": "Échec de la mise à jour du profil utilisateur",
     "userUpdated": "Profil utilisateur mis à jour avec succès",
-    "description": "Calculez les prêts, les intérêts, les objectifs d'épargne et les taxes avec précision",
+    "description": "TRANSLATE_ME",
     "errors": {
-      "businessOrUserNotFound": "Entreprise ou utilisateur introuvable. Veuillez vérifier votre session.",
-      "businessDataNotAvailable": "Les données de l'entreprise ne sont pas disponibles. Veuillez actualiser la page."
+      "businessOrUserNotFound": "TRANSLATE_ME",
+      "businessDataNotAvailable": "TRANSLATE_ME"
     },
     "sections": {
-      "business": "Entreprise",
-      "account": "Compte"
+      "business": "TRANSLATE_ME",
+      "account": "TRANSLATE_ME"
     },
     "tabs": {
-      "businessDetails": "Détails de l'Entreprise",
-      "businessSettings": "Paramètres de l'Entreprise",
-      "categories": "Catégories",
-      "warehouses": "Entrepôts",
-      "payments": "Paiements",
-      "profile": "Profil",
-      "preferences": "Préférences",
-      "notifications": "Notifications",
-      "security": "Sécurité"
+      "businessDetails": "TRANSLATE_ME",
+      "businessSettings": "TRANSLATE_ME",
+      "categories": "TRANSLATE_ME",
+      "warehouses": "TRANSLATE_ME",
+      "payments": "TRANSLATE_ME",
+      "profile": "TRANSLATE_ME",
+      "preferences": "TRANSLATE_ME",
+      "notifications": "TRANSLATE_ME",
+      "security": "TRANSLATE_ME"
     },
     "businessDetails": {
-      "title": "Calculatrices Financières",
-      "description": "Calculez les prêts, les intérêts, les objectifs d'épargne et les taxes avec précision"
+      "title": "TRANSLATE_ME",
+      "description": "TRANSLATE_ME"
     },
     "categories": {
-      "title": "Calculatrices Financières",
-      "description": "Calculez les prêts, les intérêts, les objectifs d'épargne et les taxes avec précision"
+      "title": "TRANSLATE_ME",
+      "description": "TRANSLATE_ME"
     },
     "warehouses": {
-      "title": "Calculatrices Financières",
-      "description": "Calculez les prêts, les intérêts, les objectifs d'épargne et les taxes avec précision"
+      "title": "TRANSLATE_ME",
+      "description": "TRANSLATE_ME"
     },
     "profileDetails": {
-      "title": "Calculatrices Financières",
-      "description": "Calculez les prêts, les intérêts, les objectifs d'épargne et les taxes avec précision"
+      "title": "TRANSLATE_ME",
+      "description": "TRANSLATE_ME"
     },
     "userSettings": {
-      "title": "Calculatrices Financières",
-      "description": "Calculez les prêts, les intérêts, les objectifs d'épargne et les taxes avec précision"
+      "title": "TRANSLATE_ME",
+      "description": "TRANSLATE_ME"
     }
   },
   "stripe": {
@@ -1618,10 +1609,7 @@
       "total": "Total",
       "proceedToCheckout": "Passer à la caisse",
       "clearCart": "Vider le panier",
-      "noImage": "Pas d'image",
-      "discount": "Remise",
-      "calculatedAtCheckout": "Calculé au paiement",
-      "goToStore": "Aller au magasin"
+      "noImage": "Pas d'image"
     },
     "checkout": {
       "billingAddress": "Adresse de facturation",
@@ -1742,133 +1730,34 @@
     "createOrder": "Créer une commande",
     "categoriesList": "Liste des catégories",
     "createOrderDescription": "Créez une nouvelle commande client en ajoutant des produits et les détails du client",
-    "toggleStatus": "Basculer le statut"
+    "toggleStatus": "TRANSLATE_ME"
   },
   "commerceAdmin": {
-    "title": "Calculatrices Financières",
-    "description": "Calculez les prêts, les intérêts, les objectifs d'épargne et les taxes avec précision",
+    "title": "TRANSLATE_ME",
+    "description": "TRANSLATE_ME",
     "stats": {
-      "todaysRevenue": "Revenus d'Aujourd'hui",
-      "orders": "Commandes",
-      "storeViews": "Vues du Magasin",
-      "today": "Aujourd'hui",
-      "cartAdditions": "Ajouts au Panier",
-      "productsAddedToCart": "Produits ajoutés au panier",
-      "ordersTitle": "Commandes"
+      "todaysRevenue": "TRANSLATE_ME",
+      "orders": "TRANSLATE_ME",
+      "storeViews": "TRANSLATE_ME",
+      "today": "TRANSLATE_ME",
+      "cartAdditions": "TRANSLATE_ME",
+      "productsAddedToCart": "TRANSLATE_ME",
+      "ordersTitle": "TRANSLATE_ME"
     },
     "tabs": {
-      "publishedProducts": "Produits Publiés",
-      "inventory": "Inventaire"
+      "publishedProducts": "TRANSLATE_ME",
+      "inventory": "TRANSLATE_ME"
     },
     "errors": {
-      "failedToLoadProducts": "Échec du chargement des produits"
+      "failedToLoadProducts": "TRANSLATE_ME"
     }
   },
   "Store": {
     "Page": {
-      "popularStores": "Magasins Populaires",
-      "frequentlyVisitedStores": "Magasins Fréquemment Visités",
-      "recentlyVisitedStores": "Magasins Récemment Visités",
-      "noStoresFound": "Aucun magasin trouvé"
-    },
-    "Orders": {
-      "Track": {
-        "noOrdersFound": "Aucune Commande Trouvée",
-        "continueShopping": "Continuer les Achats",
-        "tableHeaders": {
-          "orderNumber": "Numéro de Commande",
-          "date": "Date",
-          "status": "Statut",
-          "total": "Total"
-        },
-        "errorLoadingStats": "Erreur lors du chargement des statistiques",
-        "errorLoadingOrders": "Erreur lors du chargement des commandes",
-        "noOrdersYet": "Vous n'avez pas encore passé de commande"
-      }
-    }
-  },
-  "commerceAnalytics": {
-    "title": "Calculatrices Financières",
-    "description": "Calculez les prêts, les intérêts, les objectifs d'épargne et les taxes avec précision",
-    "sections": {
-      "todaysPerformance": "Performance d'Aujourd'hui",
-      "last30DaysOverview": "Aperçu des 30 Derniers Jours"
-    },
-    "stats": {
-      "storeViews": "Vues du Magasin",
-      "today": "Aujourd'hui",
-      "cartAdds": "Ajouts au Panier",
-      "toPurchase": "→ achat",
-      "orders": "Commandes",
-      "conversion": "conversion",
-      "revenue": "Revenus",
-      "avgOrder": "commande moy"
-    },
-    "topProducts": {
-      "title": "Calculatrices Financières",
-      "description": "Calculez les prêts, les intérêts, les objectifs d'épargne et les taxes avec précision",
-      "noData": "Aucune donnée de vente pour le moment",
-      "tableHeaders": {
-        "product": "Produit",
-        "views": "vues",
-        "addedToCart": "Ajouté au Panier",
-        "orders": "Commandes",
-        "revenue": "Revenus"
-      },
-      "conversion": "conversion"
-    },
-    "performance": {
-      "totalViews": "Vues Totales",
-      "last30Days": "30 derniers jours",
-      "cartAdditions": "Ajouts au Panier",
-      "ofViews": "des vues",
-      "noViewsYet": "Aucune vue pour le moment",
-      "conversionRate": "Taux de Conversion",
-      "ordersFrom": "commandes sur",
-      "views": "vues",
-      "totalOrders": "Commandes Totales",
-      "totalRevenue": "Revenus Totaux",
-      "avgOrderValue": "Valeur Moyenne de Commande",
-      "perOrder": "par commande"
-    },
-    "errors": {
-      "failedToLoadPerformanceData": "Échec du chargement des données de performance"
-    }
-  },
-  "commerceOrders": {
-    "title": "Calculatrices Financières",
-    "description": "Calculez les prêts, les intérêts, les objectifs d'épargne et les taxes avec précision",
-    "searchPlaceholder": "Rechercher par numéro de commande, client...",
-    "stats": {
-      "totalOrders": "Commandes Totales",
-      "pending": "en attente",
-      "totalRevenue": "Revenus Totaux",
-      "allTime": "Tout le temps",
-      "pendingFulfillment": "Traitement en Attente",
-      "awaitingProcessing": "En attente de traitement",
-      "shipped": "Expédié",
-      "onTheWay": "En route"
-    },
-    "status": {
-      "all": "Tous",
-      "pending": "en attente",
-      "confirmed": "Confirmé",
-      "processing": "En Cours",
-      "shipped": "Expédié",
-      "delivered": "Livré",
-      "cancelled": "Annulé"
-    },
-    "fulfillment": {
-      "all": "Tous",
-      "pending": "en attente",
-      "reserved": "Réservé",
-      "picked": "Prélevé",
-      "packed": "Emballé",
-      "shipped": "Expédié",
-      "delivered": "Livré"
-    },
-    "errors": {
-      "failedToLoadOrders": "Échec du chargement des commandes"
+      "popularStores": "TRANSLATE_ME",
+      "frequentlyVisitedStores": "TRANSLATE_ME",
+      "recentlyVisitedStores": "TRANSLATE_ME",
+      "noStoresFound": "TRANSLATE_ME"
     }
   }
 }

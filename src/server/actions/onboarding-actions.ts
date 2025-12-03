@@ -1,6 +1,6 @@
 "use server";
 
-import type { OnboardingFormData } from "@/app/[locale]/(onboarding)/onboarding/_components/onboarding-utils";
+import type { OnboardingFormData } from "@/components/onboarding/onboarding-utils";
 import { createManyInvitations } from "@/server/actions/invitation-actions";
 import { ERROR_CODE } from "../constants/errors";
 import { PERMISSION } from "../constants/permissions";

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { CompoundInterestCalculator } from "@/components/financial-calculator/compound-interest-calculator";
 import { LoanCalculator } from "@/components/financial-calculator/loan-calculator";
 import { SavingsGoalCalculator } from "@/components/financial-calculator/savings-goal-calculator";
@@ -14,23 +15,24 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-export default function financialCalculatorPage() {
+export default async function financialCalculatorPage() {
+  const t = await getTranslations("financialCalculator");
+  const tTabs = await getTranslations("financialCalculator.tabs");
+
   return (
     <div className="flex flex-col gap-y-6">
       <div className="head">
-        <h1 className="">Financial Calculators</h1>
-        <p className="">
-          Calculate loans, interest, savings goals, and taxes with precision
-        </p>
+        <h1 className="">{t("title")}</h1>
+        <p className="">{t("description")}</p>
       </div>
 
       <Tabs className="w-full" defaultValue="simple">
         <TabsList className="">
-          <TabsTab value="simple">Simple Interest</TabsTab>
-          <TabsTab value="loan">Loan Calculator</TabsTab>
-          <TabsTab value="compound">Compound Interest</TabsTab>
-          <TabsTab value="savings">Savings Goal</TabsTab>
-          <TabsTab value="tax">Tax Calculator</TabsTab>
+          <TabsTab value="simple">{tTabs("simpleInterest")}</TabsTab>
+          <TabsTab value="loan">{tTabs("loanCalculator")}</TabsTab>
+          <TabsTab value="compound">{tTabs("compoundInterest")}</TabsTab>
+          <TabsTab value="savings">{tTabs("savingsGoal")}</TabsTab>
+          <TabsTab value="tax">{tTabs("taxCalculator")}</TabsTab>
         </TabsList>
 
         <div className="mt-6">
