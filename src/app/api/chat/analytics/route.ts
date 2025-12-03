@@ -1,4 +1,4 @@
-import { openrouter } from "@openrouter/ai-sdk-provider";
+import { google, type GoogleGenerativeAIProviderOptions } from "@ai-sdk/google";
 import {
   consumeStream,
   convertToModelMessages,
@@ -29,8 +29,17 @@ Focus on delivering high-quality financial analysis that would be valuable in a 
   ];
 
   const result = streamText({
-    model: openrouter("deepseek/deepseek-r1-0528-qwen3-8b:free"),
+    model: google("gemini-2.5-pro"),
+    providerOptions: {
+      google: {
+        thinkingConfig: {
+          thinkingLevel: "high",
+          includeThoughts: true,
+        },
+      } satisfies GoogleGenerativeAIProviderOptions,
+    },
     prompt,
+    tools: { code_execution: google.tools.codeExecution({}) },
     abortSignal: req.signal,
     maxOutputTokens: 2000,
     temperature: 0.7,

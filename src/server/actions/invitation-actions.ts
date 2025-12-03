@@ -177,8 +177,12 @@ export const createManyInvitations = createProtectedAction(
       "businessId" | "id" | "code" | "expiresAt" | "isAccepted" | "invitedBy"
     >[]
   ) => {
-    if (invitationsData === null) {
+    if (invitationsData === null || invitationsData === undefined) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
+    }
+    
+    if (invitationsData.length === 0) {
+      return { data: [], error: null };
     }
     const invitations: Omit<
       InsertInvitation,

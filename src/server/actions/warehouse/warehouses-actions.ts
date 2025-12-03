@@ -132,8 +132,12 @@ export const createManyWarehouses = createProtectedAction(
       deleted: SelectWarehouse[];
     }
   ) => {
-    if (data === null) {
+    if (data === null || data === undefined) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
+    }
+    
+    if (data.created.length === 0 && data.deleted.length === 0) {
+      return { data: { createdWarehouses: { data: [], error: null }, deleteWarehouses: [] }, error: null };
     }
     const warehouses: InsertWarehouse[] = data.created.map((warehouse) => ({
       ...warehouse,

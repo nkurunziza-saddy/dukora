@@ -1,4 +1,4 @@
-import { openrouter } from "@openrouter/ai-sdk-provider";
+import { google } from "@ai-sdk/google";
 import {
   consumeStream,
   convertToModelMessages,
@@ -29,7 +29,7 @@ Always maintain a helpful, knowledgeable tone while being mindful of the complex
   ];
 
   const result = streamText({
-    model: openrouter("deepseek/deepseek-r1-0528-qwen3-8b:free"),
+    model: google("gemini-2.5-pro"),
     prompt,
     abortSignal: req.signal,
     maxOutputTokens: 2000,

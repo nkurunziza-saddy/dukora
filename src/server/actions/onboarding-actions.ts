@@ -28,12 +28,12 @@ export async function businessInitialization(data: OnboardingFormData) {
       businessType,
     };
 
-    const businessSettingsRecordArray = Object.entries(businessSettings).map(
-      (item) => ({
+    const businessSettingsRecordArray = Object.entries(businessSettings)
+      .filter(([_, value]) => value !== undefined && value !== "")
+      .map((item) => ({
         key: item[0],
-        value: item[1],
-      })
-    );
+        value: String(item[1]),
+      }));
 
     const business = await createBusiness(businessData);
 

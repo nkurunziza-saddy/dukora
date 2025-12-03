@@ -3,7 +3,7 @@
 import { useForm } from "@tanstack/react-form";
 import { XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -51,6 +51,7 @@ import { businessInitialization } from "@/server/actions/onboarding-actions";
 import { defaultCategories, userRolesObject } from "@/utils/constants";
 import LocaleSwitcher from "./language-switcher";
 import {
+  CATEGORY_LIMIT,
   getBusinessTypes,
   getCountries,
   getCurrencies,
@@ -58,19 +59,23 @@ import {
   getSteps,
   INVITATIONS_LIMIT,
   onboardingSchema,
+  type OnboardingFormData,
   WAREHOUSES_LIMIT,
 } from "./onboarding-utils";
+import { useRouter } from "next/navigation";
 
-const CATEGORY_LIMIT = 10;
+const STORAGE_KEY = "onboarding-form-data";
 
-export default function OnboardingFlow() {
+export default function OnboardingForm() {
   const t = useTranslations("forms");
   const tCommon = useTranslations("common");
   const tOnboarding = useTranslations("onboarding");
   const steps = getSteps(tOnboarding);
-
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [newCategory, setNewCategory] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const form = useForm({
     defaultValues: {
@@ -85,7 +90,7 @@ export default function OnboardingFlow() {
       teamMembers: [] as Array<{ email: string; role: UserRole }>,
       categories: [] as string[],
       warehouses: [{ name: "Main Warehouse", isDefault: true }],
-    },
+    } as OnboardingFormData,
     validators: {
       onBlur: onboardingSchema,
     },
@@ -98,7 +103,9 @@ export default function OnboardingFlow() {
         const req = await businessInitialization(value);
         if (req.data) {
           form.reset();
-          toast.success(tCommon("redirecting"), {});
+          localStorage.removeItem(STORAGE_KEY);
+          toast.success(tCommon("redirecting"));
+          router.push("/dashboard");
         } else {
           toast.error(tCommon("error"), {
             description: req.error?.split("_").join(" ").toLowerCase(),
@@ -111,8 +118,10 @@ export default function OnboardingFlow() {
     },
     onSubmitInvalid({ formApi }) {
       const errorMap = formApi.state.errorMap.onChange!;
+      if (!formRef.current) return;
+
       const inputs = Array.from(
-        document.querySelectorAll("#onboarding-form input")
+        formRef.current.querySelectorAll("input")
       ) as HTMLInputElement[];
 
       let firstInput: HTMLInputElement | undefined;
@@ -129,9 +138,15 @@ export default function OnboardingFlow() {
   const nextStep = async () => {
     const fieldsToValidate = getFieldsForStep(currentStep);
 
+    await Promise.all(
+      fieldsToValidate.map((fieldName) =>
+        form.validateField(fieldName as keyof OnboardingFormData, "blur")
+      )
+    );
+
     let isValid = true;
     for (const fieldName of fieldsToValidate) {
-      const field = form.getFieldMeta(fieldName as any);
+      const field = form.getFieldMeta(fieldName as keyof OnboardingFormData);
       if (field?.errors && field.errors.length > 0) {
         isValid = false;
         break;
@@ -170,6 +185,45 @@ export default function OnboardingFlow() {
         return [];
     }
   };
+
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        Object.keys(data).forEach((key) => {
+          form.setFieldValue(key as keyof OnboardingFormData, data[key]);
+        });
+      } catch (error) {
+        console.error("Failed to load saved form data:", error);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const formData = form.state.values;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [form.state.values]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      const hasData =
+        form.state.values.businessName ||
+        form.state.values.teamMembers.length > 0 ||
+        form.state.values.categories.length > 0;
+
+      if (hasData && !form.state.isSubmitting) {
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [form.state.values, form.state.isSubmitting]);
 
   return (
     <div className="min-h-screen py-8">
@@ -226,7 +280,12 @@ export default function OnboardingFlow() {
               e.preventDefault();
               form.handleSubmit();
             }}
+            ref={formRef}
           >
+            <div aria-live="polite" className="sr-only">
+              Step {currentStep} of {steps.length}:{" "}
+              {steps.find((s) => s.step === currentStep)?.title}
+            </div>
             <CardPanel>
               {currentStep === 1 && (
                 <div className="space-y-4">
@@ -556,13 +615,15 @@ export default function OnboardingFlow() {
 
                         <FieldGroup className="gap-4">
                           {(field.state.value || []).map(
-                            (_: any, index: number) => (
+                            (member, index: number) => (
                               <div
                                 className="flex gap-1 items-start"
                                 key={index}
                               >
                                 <form.Field
-                                  name={`teamMembers[${index}].email` as any}
+                                  name={
+                                    `teamMembers[${index}].email` as `teamMembers[${number}].email`
+                                  }
                                 >
                                   {(subField) => {
                                     const isSubFieldInvalid =
@@ -583,7 +644,7 @@ export default function OnboardingFlow() {
                                               onBlur={subField.handleBlur}
                                               onChange={(e) =>
                                                 subField.handleChange(
-                                                  e.target.value as any
+                                                  e.target.value
                                                 )
                                               }
                                               placeholder={tOnboarding(
@@ -607,7 +668,9 @@ export default function OnboardingFlow() {
                                 </form.Field>
 
                                 <form.Field
-                                  name={`teamMembers[${index}].role` as any}
+                                  name={
+                                    `teamMembers[${index}].role` as `teamMembers[${number}].role`
+                                  }
                                 >
                                   {(subField) => {
                                     const isSubFieldInvalid =
@@ -622,9 +685,7 @@ export default function OnboardingFlow() {
                                         <FieldContent>
                                           <Select
                                             onValueChange={(value) =>
-                                              subField.handleChange(
-                                                value as any
-                                              )
+                                              subField.handleChange(value)
                                             }
                                             value={subField.state.value}
                                           >
@@ -758,7 +819,7 @@ export default function OnboardingFlow() {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {defaultCategories.map((category) => {
                               const isSelected = currentCategories.some(
-                                (c: any) => c === category
+                                (c) => c === category
                               );
                               return (
                                 <button
@@ -849,15 +910,32 @@ export default function OnboardingFlow() {
                       field.state.meta.isTouched && !field.state.meta.isValid;
                     const handleSetDefault = (index: number) => {
                       const newArr = (field.state.value || []).map(
-                        (w: any, i: number) => ({
+                        (w, i: number) => ({
                           ...w,
                           isDefault: i === index,
                         })
                       );
-                      if (!newArr.some((w: any) => w.isDefault)) {
-                        newArr[0].isDefault = true;
-                      }
                       field.setValue(newArr);
+                    };
+
+                    const handleRemoveWarehouse = (index: number) => {
+                      const warehouses = field.state.value || [];
+                      const wasDefault = warehouses[index]?.isDefault;
+
+                      field.removeValue(index);
+
+                      // If we removed the default warehouse, set the first one as default
+                      if (wasDefault && warehouses.length > 1) {
+                        setTimeout(() => {
+                          const updated = field.state.value || [];
+                          if (
+                            updated.length > 0 &&
+                            !updated.some((w) => w.isDefault)
+                          ) {
+                            handleSetDefault(0);
+                          }
+                        }, 0);
+                      }
                     };
 
                     return (
@@ -937,7 +1015,9 @@ export default function OnboardingFlow() {
                                       aria-label={`Remove warehouse ${
                                         index + 1
                                       }`}
-                                      onClick={() => field.removeValue(index)}
+                                      onClick={() =>
+                                        handleRemoveWarehouse(index)
+                                      }
                                       size="icon-xs"
                                       type="button"
                                       variant="ghost"

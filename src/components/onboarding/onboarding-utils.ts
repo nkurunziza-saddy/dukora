@@ -21,7 +21,17 @@ export const onboardingSchema = z.object({
   timezone: z.string().min(1, "Timezone is required"),
   fiscalStartMonth: z.string().min(1, "Fiscal start month is required"),
   pricesIncludeTax: z.boolean(),
-  defaultVatRate: z.string(),
+  defaultVatRate: z
+    .string()
+    .optional()
+    .refine(
+      (val) => {
+        if (!val || val === "") return true;
+        const num = parseFloat(val);
+        return !isNaN(num) && num >= 0 && num <= 100;
+      },
+      { message: "VAT rate must be between 0 and 100" }
+    ),
   teamMembers: z
     .array(
       z.object({

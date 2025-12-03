@@ -6,6 +6,10 @@ const main = async () => {
   console.log("Resetting database...");
 
   console.log("Clearing existing transactional and catalog data...");
+  await db.delete(schema.businessesTable);
+  await db.delete(schema.usersTable);
+  await db.delete(schema.sessionsTable);
+  await db.delete(schema.accountsTable);
   await db.delete(schema.auditLogsTable);
   await db.delete(schema.profitReportsTable);
   await db.delete(schema.metricsTable);

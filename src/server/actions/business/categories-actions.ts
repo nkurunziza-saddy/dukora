@@ -110,8 +110,12 @@ export const deleteCategory = createProtectedAction(
 export const upsertManyCategories = createProtectedAction(
   PERMISSION.CATEGORY_CREATE,
   async (user, categoriesData: string[]) => {
-    if (categoriesData === null) {
+    if (categoriesData === null || categoriesData === undefined) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
+    }
+    
+    if (categoriesData.length === 0) {
+      return { data: { data: [], error: null }, error: null };
     }
     const categories: InsertCategory[] = categoriesData.map((category) => ({
       value: category,

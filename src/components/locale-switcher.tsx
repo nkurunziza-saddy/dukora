@@ -6,7 +6,7 @@ import { useEffect, useId, useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "./ui/label";
 
-const languageItems = [
+export const LANGUAGE_ITEMS = [
   {
     value: "en",
     label: "English",
@@ -50,7 +50,7 @@ export default function LocaleSwitcher() {
           Choose language
         </legend>
         <div className="grid grid-cols-2 gap-3">
-          {languageItems.map((item) => (
+          {LANGUAGE_ITEMS.map((item) => (
             <div className="animate-pulse" key={item.value}>
               <div className="h-16 bg-muted rounded-md" />
               <div className="mt-2 h-4 bg-muted rounded w-16" />
@@ -68,7 +68,7 @@ export default function LocaleSwitcher() {
         onValueChange={handleLocaleChange}
         value={locale}
       >
-        {languageItems.map((item) => (
+        {LANGUAGE_ITEMS.map((item) => (
           <div
             className="border-input has-checked:border-primary/50 has-checked:bg-accent/50 relative flex flex-col items-center gap-3 rounded-md border p-3 shadow-xs outline-none transition-colors hover:bg-accent/30"
             key={`${id}-${item.value}`}

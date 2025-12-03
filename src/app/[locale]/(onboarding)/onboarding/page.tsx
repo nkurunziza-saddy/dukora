@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
-import OnboardingFlow from "./_components/onboarding-form";
+import OnboardingForm from "./_components/onboarding-form";
+import { OnboardingErrorBoundary } from "./_components/onboarding-error-boundary";
 
 export async function generateMetadata(): Promise<Metadata> {
   return constructI18nMetadata({
@@ -9,7 +10,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const page = () => {
-  return <OnboardingFlow />;
+  return (
+    <OnboardingErrorBoundary>
+      <OnboardingForm />
+    </OnboardingErrorBoundary>
+  );
 };
 
 export default page;

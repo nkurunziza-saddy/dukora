@@ -6,13 +6,7 @@ import { useLocale } from "next-intl";
 import { useEffect, useId, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, MenuItem, MenuPopup, MenuTrigger } from "@/components/ui/menu";
-
-const languageItems = [
-  { value: "en", label: "English" },
-  { value: "fr", label: "Français" },
-  { value: "sw", label: "Kiswahili" },
-  { value: "rw", label: "Kinyarwanda" },
-];
+import { LANGUAGE_ITEMS } from "@/components/locale-switcher";
 
 export default function LocaleSwitcher() {
   const id = useId();
@@ -38,7 +32,7 @@ export default function LocaleSwitcher() {
         <SettingsIcon size={16} />
       </MenuTrigger>
       <MenuPopup align="end">
-        {languageItems.map((item) => (
+        {LANGUAGE_ITEMS.map((item) => (
           <MenuItem
             key={`${id}-${item.value}`}
             onClick={() => handleLocaleChange(item.value)}
