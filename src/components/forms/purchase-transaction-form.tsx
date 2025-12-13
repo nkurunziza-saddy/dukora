@@ -25,7 +25,7 @@ import {
 import type {
   InsertTransaction,
   SelectTransaction,
-} from "@/lib/schema/schema-types";
+} from "@/lib/schema/schema.types";
 import { cn } from "@/lib/utils";
 import { createTransactionAndWarehouseItem } from "@/server/actions/transaction-actions";
 import { TriggerDialog } from "../shared/reusable-form-dialog";
@@ -209,7 +209,7 @@ export default function PurchaseTransactionForm({
                                 "h-4 w-4",
                                 product.id === field.state.value
                                   ? "opacity-100"
-                                  : "opacity-0",
+                                  : "opacity-0"
                               )}
                             />
                           </div>
@@ -273,7 +273,7 @@ export default function PurchaseTransactionForm({
                                   "h-4 w-4",
                                   item.id === field.state.value
                                     ? "opacity-100"
-                                    : "opacity-0",
+                                    : "opacity-0"
                                 )}
                               />
                             </div>
@@ -342,7 +342,7 @@ export default function PurchaseTransactionForm({
                                 "h-4 w-4",
                                 supplier.id === field.state.value
                                   ? "opacity-100"
-                                  : "opacity-0",
+                                  : "opacity-0"
                               )}
                             />
                           </div>

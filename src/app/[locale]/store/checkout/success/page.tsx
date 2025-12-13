@@ -7,7 +7,7 @@ import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { SelectCustomerOrder } from "@/lib/schema/schema-types";
+import type { SelectCustomerOrder } from "@/lib/schema/schema.types";
 import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 import { getCustomerOrderByOrderNumber } from "@/server/actions/shopper/orders-actions";
 

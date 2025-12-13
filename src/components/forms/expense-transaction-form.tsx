@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import type { SelectExpense } from "@/lib/schema/schema-types";
+import type { SelectExpense } from "@/lib/schema/schema.types";
 import { createExpense } from "@/server/actions/expense-actions";
 import { TriggerDialog } from "../shared/reusable-form-dialog";
 import { Separator } from "../ui/separator";

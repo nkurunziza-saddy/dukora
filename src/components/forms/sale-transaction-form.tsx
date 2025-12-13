@@ -27,7 +27,7 @@ import {
 import type {
   InsertTransaction,
   SelectTransaction,
-} from "@/lib/schema/schema-types";
+} from "@/lib/schema/schema.types";
 import { cn } from "@/lib/utils";
 import { createTransaction } from "@/server/actions/transaction-actions";
 import { TriggerDialog } from "../shared/reusable-form-dialog";

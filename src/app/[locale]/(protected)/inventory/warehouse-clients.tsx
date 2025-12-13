@@ -9,14 +9,14 @@ import type {
   ExtendedWarehouseItemPayload,
   SelectProduct,
   SelectWarehouse,
-} from "@/lib/schema/schema-types";
+} from "@/lib/schema/schema.types";
 import { ProductColumn } from "@/utils/columns/product-column";
 import { WarehouseColumn } from "@/utils/columns/warehouse-column";
 import { WarehouseItemColumn } from "@/utils/columns/warehouse-item-column";
 
 function getWarehouseItemCount(
   warehouseId: string,
-  warehouseItems: ExtendedWarehouseItemPayload[],
+  warehouseItems: ExtendedWarehouseItemPayload[]
 ) {
   return warehouseItems.filter((item) => item.warehouseId === warehouseId)
     .length;
@@ -51,7 +51,7 @@ export default function WarehouseTableClient({
     ...warehouse,
     warehouseItemCount: getWarehouseItemCount(
       warehouse.id,
-      warehouseItemsWithProduct,
+      warehouseItemsWithProduct
     ),
   }));
 
@@ -93,7 +93,7 @@ export default function WarehouseTableClient({
     },
     renderContent: (warehouse) => {
       const items = warehouseItemsWithProductCount.filter(
-        (item) => item.warehouseId === warehouse.id,
+        (item) => item.warehouseId === warehouse.id
       );
       if (!items.length) return null;
       return (

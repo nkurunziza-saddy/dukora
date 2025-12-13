@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import type { InsertStoreSetting } from "@/lib/schema/schema-types";
+import type { InsertStoreSetting } from "@/lib/schema/schema.types";
 import {
   toggleStoreEnabled,
   updateStoreSettings,

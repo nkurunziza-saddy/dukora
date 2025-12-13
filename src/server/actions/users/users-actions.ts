@@ -5,7 +5,7 @@ import { revalidateTag } from "next/cache";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { usersTable } from "@/lib/schema";
-import type { InsertUser, UserRole } from "@/lib/schema/schema-types";
+import type { InsertUser, UserRole } from "@/lib/schema/schema.types";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";

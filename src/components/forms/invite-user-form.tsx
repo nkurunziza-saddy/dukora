@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { USER_ROLES } from "@/lib/schema/models/enums";
-import { UserRole } from "@/lib/schema/schema-types";
+import { UserRole } from "@/lib/schema/schema.types";
 import { createInvitation } from "@/server/actions/invitation-actions";
 import { userRolesObject } from "@/utils/constants";
 

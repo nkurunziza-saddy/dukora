@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { SelectSchedule } from "@/lib/schema/schema-types";
+import type { SelectSchedule } from "@/lib/schema/schema.types";
 
 export default async function UserSchedules({
   schedules,

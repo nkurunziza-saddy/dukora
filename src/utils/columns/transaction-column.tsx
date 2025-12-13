@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   type CompressedTransactionPayload,
   TransactionType,
-} from "@/lib/schema/schema-types";
+} from "@/lib/schema/schema.types";
 import { AbbreviatedText, MobileResponsive } from "@/utils/mobile-responsive";
 
 export function TransactionColumn(

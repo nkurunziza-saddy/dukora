@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import type { SelectWarehouse } from "@/lib/schema/schema-types";
+import type { SelectWarehouse } from "@/lib/schema/schema.types";
 import { createManyWarehouses } from "@/server/actions/warehouse/warehouses-actions";
 import { LIMITS, warehousesSchema } from "./settings-utils";
 
@@ -41,7 +41,7 @@ export function EditWarehouses({
       const expectedNames = new Set(value.warehouses.map((w) => w.name));
 
       const created = value.warehouses.filter(
-        (w) => !existingNames.has(w.name),
+        (w) => !existingNames.has(w.name)
       );
 
       const deleted = warehouses.filter((w) => !expectedNames.has(w.name));

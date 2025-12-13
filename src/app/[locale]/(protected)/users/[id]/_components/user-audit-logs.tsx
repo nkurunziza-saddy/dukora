@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { SelectAuditLog } from "@/lib/schema/schema-types";
+import type { SelectAuditLog } from "@/lib/schema/schema.types";
 
 export default async function UserAuditLogs({
   auditLogs,

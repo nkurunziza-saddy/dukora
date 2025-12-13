@@ -1,7 +1,7 @@
 "use server";
 
 import { cacheTag, revalidateTag } from "next/cache";
-import type { InsertStoreSetting } from "@/lib/schema/schema-types";
+import type { InsertStoreSetting } from "@/lib/schema/schema.types";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";

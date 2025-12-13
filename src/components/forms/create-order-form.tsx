@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import type { SelectPurchaseOrder } from "@/lib/schema/schema-types";
+import type { SelectPurchaseOrder } from "@/lib/schema/schema.types";
 
 export function CreateOrderDialog() {
   const t = useTranslations("orders");

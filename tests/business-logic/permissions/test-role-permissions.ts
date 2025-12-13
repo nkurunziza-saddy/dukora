@@ -6,7 +6,7 @@
  * Tests pure permission checking functions (no database/auth needed)
  */
 
-import { UserRole } from "@/lib/schema/schema-types";
+import { UserRole } from "@/lib/schema/schema.types";
 import {
   getPermissionCount,
   getPermissionsForRole,

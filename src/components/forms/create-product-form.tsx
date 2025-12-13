@@ -25,7 +25,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useCurrency } from "@/lib/hooks/use-currency";
 import { useBusinessSettings, useCategories } from "@/lib/hooks/use-queries";
-import type { SelectProduct } from "@/lib/schema/schema-types";
+import type { SelectProduct } from "@/lib/schema/schema.types";
 import {
   createProduct,
   updateProduct,

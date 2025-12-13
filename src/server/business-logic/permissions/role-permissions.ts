@@ -1,4 +1,4 @@
-import { UserRole } from "@/lib/schema/schema-types";
+import { UserRole } from "@/lib/schema/schema.types";
 import { PERMISSION, PermissionGroups } from "@/server/constants/permissions";
 
 export const RolePermissions = {

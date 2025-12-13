@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import type { SelectBusinessSetting } from "@/lib/schema/schema-types";
+import type { SelectBusinessSetting } from "@/lib/schema/schema.types";
 import { upsertBusinessSettings } from "@/server/actions/business/settings-actions";
 import { LIMITS, settingsSchema } from "./settings-utils";
 

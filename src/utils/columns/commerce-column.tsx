@@ -7,7 +7,7 @@ import CommerceRowActions from "@/components/table/commerce/commerce-row-actions
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
 import { useCurrency } from "@/lib/hooks/use-currency";
-import { ProductStatus, type SelectProduct } from "@/lib/schema/schema-types";
+import { ProductStatus, type SelectProduct } from "@/lib/schema/schema.types";
 
 export function CommerceColumn(
   t: (key: string) => string

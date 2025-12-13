@@ -7,7 +7,7 @@ import type {
   SelectSchedule,
   SelectTransaction,
   SelectUser,
-} from "@/lib/schema/schema-types";
+} from "@/lib/schema/schema.types";
 
 type ExtendedUserPayload = SelectUser & {
   business: SelectBusiness | null;

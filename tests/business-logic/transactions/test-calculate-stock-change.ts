@@ -6,7 +6,7 @@
  * Tests pure stock calculation functions (no database/auth needed)
  */
 
-import type { TransactionType } from "@/lib/schema/schema-types";
+import type { TransactionType } from "@/lib/schema/schema.types";
 import {
   calculateStockChange,
   isStockDecreaseType,
@@ -30,7 +30,7 @@ function assert(
   condition: boolean,
   testName: string,
   expected?: unknown,
-  actual?: unknown,
+  actual?: unknown
 ) {
   if (condition) {
     console.log(`${colors.green}✓${colors.reset} ${testName}`);
@@ -39,10 +39,10 @@ function assert(
     console.log(`${colors.red}✗${colors.reset} ${testName}`);
     if (expected !== undefined && actual !== undefined) {
       console.log(
-        `  Expected: ${colors.yellow}${JSON.stringify(expected)}${colors.reset}`,
+        `  Expected: ${colors.yellow}${JSON.stringify(expected)}${colors.reset}`
       );
       console.log(
-        `  Actual:   ${colors.red}${JSON.stringify(actual)}${colors.reset}`,
+        `  Actual:   ${colors.red}${JSON.stringify(actual)}${colors.reset}`
       );
     }
     testsFailed++;
@@ -73,7 +73,7 @@ function testCalculateStockChange() {
       result === expected,
       `${type} with quantity ${quantity} should return ${expected}`,
       expected,
-      result,
+      result
     );
   });
 
@@ -92,7 +92,7 @@ function testCalculateStockChange() {
       result === expected,
       `${type} with quantity ${quantity} should return ${expected}`,
       expected,
-      result,
+      result
     );
   });
 
@@ -104,7 +104,7 @@ function testCalculateStockChange() {
     result1 === 10,
     "STOCK_ADJUSTMENT with positive quantity returns positive",
     10,
-    result1,
+    result1
   );
 
   const result2 = calculateStockChange("STOCK_ADJUSTMENT", -10);
@@ -112,7 +112,7 @@ function testCalculateStockChange() {
     result2 === -10,
     "STOCK_ADJUSTMENT with negative quantity returns negative",
     -10,
-    result2,
+    result2
   );
 
   // Negative quantities should be converted to absolute
@@ -121,7 +121,7 @@ function testCalculateStockChange() {
     result3 === -10,
     "SALE with negative quantity should still decrease stock",
     -10,
-    result3,
+    result3
   );
 
   const result4 = calculateStockChange("PURCHASE", -10);
@@ -129,7 +129,7 @@ function testCalculateStockChange() {
     result4 === 10,
     "PURCHASE with negative quantity should still increase stock",
     10,
-    result4,
+    result4
   );
 
   // Zero quantity
@@ -170,7 +170,7 @@ function testIsStockDecreaseType() {
       result === false,
       `${type} should NOT be a decrease type`,
       false,
-      result,
+      result
     );
   });
 }
@@ -208,7 +208,7 @@ function testIsStockIncreaseType() {
       result === false,
       `${type} should NOT be an increase type`,
       false,
-      result,
+      result
     );
   });
 }
@@ -240,14 +240,14 @@ function testIntegration() {
         !isDecrease && !isIncrease,
         `STOCK_ADJUSTMENT should be neither increase nor decrease`,
         false,
-        isDecrease || isIncrease,
+        isDecrease || isIncrease
       );
     } else {
       assert(
         (isDecrease && !isIncrease) || (!isDecrease && isIncrease),
         `${type} should be exactly one of: increase or decrease`,
         true,
-        (isDecrease && !isIncrease) || (!isDecrease && isIncrease),
+        (isDecrease && !isIncrease) || (!isDecrease && isIncrease)
       );
     }
   });
@@ -259,7 +259,7 @@ function testIntegration() {
     result1 + result2 === 0,
     "SALE and PURCHASE of same quantity should cancel out",
     0,
-    result1 + result2,
+    result1 + result2
   );
 }
 
@@ -268,13 +268,13 @@ function testIntegration() {
 // ============================================================================
 async function runAllTests() {
   console.log(
-    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`,
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
   );
   console.log(
-    `${colors.blue}║  Stock Change Calculation Test Suite                      ║${colors.reset}`,
+    `${colors.blue}║  Stock Change Calculation Test Suite                      ║${colors.reset}`
   );
   console.log(
-    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`,
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
   );
 
   testCalculateStockChange();
@@ -284,7 +284,7 @@ async function runAllTests() {
 
   // Summary
   console.log(
-    `\n${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`,
+    `\n${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`
   );
   console.log(`${colors.cyan}Test Summary:${colors.reset}`);
   console.log(`  ${colors.green}Passed: ${testsPassed}${colors.reset}`);
@@ -304,7 +304,7 @@ async function runAllTests() {
 runAllTests().catch((error) => {
   console.error(
     `${colors.red}Test suite failed with error:${colors.reset}`,
-    error,
+    error
   );
   process.exit(1);
 });

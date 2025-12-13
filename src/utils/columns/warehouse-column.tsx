@@ -5,10 +5,10 @@ import { format } from "date-fns";
 import { ChevronDownIcon, ChevronRightIcon } from "lucide-react";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
-import type { SelectWarehouse } from "@/lib/schema/schema-types";
+import type { SelectWarehouse } from "@/lib/schema/schema.types";
 
 export function WarehouseColumn(
-  t: (key: string) => string,
+  t: (key: string) => string
 ): ColumnDef<SelectWarehouse & { warehouseItemCount: number }>[] {
   return [
     {

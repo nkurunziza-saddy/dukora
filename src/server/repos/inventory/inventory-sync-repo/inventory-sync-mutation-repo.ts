@@ -12,7 +12,7 @@ import {
 import type {
   InsertAuditLog,
   SelectWarehouseItem,
-} from "@/lib/schema/schema-types";
+} from "@/lib/schema/schema.types";
 import { ERROR_CODE } from "@/server/constants/errors";
 
 /**

@@ -5,7 +5,7 @@ import type {
   InsertWarehouseItem,
   SelectProduct,
   SelectWarehouseItem,
-} from "@/lib/schema/schema-types";
+} from "@/lib/schema/schema.types";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";

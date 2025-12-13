@@ -7,7 +7,7 @@ import {
   transactionsTable,
   usersTable,
 } from "@/lib/schema";
-import type { TransactionType } from "@/lib/schema/schema-types";
+import type { TransactionType } from "@/lib/schema/schema.types";
 import { ERROR_CODE } from "@/server/constants/errors";
 
 export const get_transaction_metrics_for_interval = async (

@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { SelectExpense } from "@/lib/schema/schema-types";
+import type { SelectExpense } from "@/lib/schema/schema.types";
 
 export default async function UserExpenses({
   expenses,

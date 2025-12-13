@@ -6,7 +6,7 @@ import { auditLogsTable, interBusinessPaymentsTable } from "@/lib/schema";
 import type {
   InsertAuditLog,
   InsertInterBusinessPayment,
-} from "@/lib/schema/schema-types";
+} from "@/lib/schema/schema.types";
 import { ERROR_CODE } from "@/server/constants/errors";
 
 import * as notificationRepo from "@/server/repos/shared/notification-repo";

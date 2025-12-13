@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { useSession } from "@/lib/auth-client";
 import { USER_ROLES } from "@/lib/schema/models/enums";
-import type { SelectUser } from "@/lib/schema/schema-types";
+import type { SelectUser } from "@/lib/schema/schema.types";
 import { updateUser } from "@/server/actions/users/users-actions";
 import { userRolesObject } from "@/utils/constants";
 

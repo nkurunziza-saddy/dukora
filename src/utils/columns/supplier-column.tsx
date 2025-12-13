@@ -5,10 +5,10 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
 import SupplierRowActions from "@/components/table/suppliers/supplier-row-actions";
-import type { SelectSupplier } from "@/lib/schema/schema-types";
+import type { SelectSupplier } from "@/lib/schema/schema.types";
 
 export function SupplierColumn(
-  t: (key: string) => string,
+  t: (key: string) => string
 ): ColumnDef<SelectSupplier>[] {
   return [
     {

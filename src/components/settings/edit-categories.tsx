@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import type { SelectCategory } from "@/lib/schema/schema-types";
+import type { SelectCategory } from "@/lib/schema/schema.types";
 import { upsertManyCategories } from "@/server/actions/business/categories-actions";
 import { defaultCategories } from "@/utils/constants";
 import { categoriesSchema, LIMITS } from "./settings-utils";
@@ -74,7 +74,7 @@ export function EditCategories({
             } else {
               if (currentCategories.length >= LIMITS.CATEGORY_LIMIT) {
                 toast.error(
-                  `You can select up to ${LIMITS.CATEGORY_LIMIT} categories.`,
+                  `You can select up to ${LIMITS.CATEGORY_LIMIT} categories.`
                 );
                 return;
               }
@@ -91,7 +91,7 @@ export function EditCategories({
             }
             if (currentCategories.length >= LIMITS.CATEGORY_LIMIT) {
               toast.error(
-                `You can select up to ${LIMITS.CATEGORY_LIMIT} categories.`,
+                `You can select up to ${LIMITS.CATEGORY_LIMIT} categories.`
               );
               return;
             }
@@ -133,7 +133,7 @@ export function EditCategories({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {defaultCategories.map((category) => {
                     const isSelected = currentCategories.some(
-                      (cat) => cat === category,
+                      (cat) => cat === category
                     );
                     const canSelect = !isAtLimit || isSelected;
 

@@ -8,7 +8,7 @@ import { auditLogsTable, invitationsTable, usersTable } from "@/lib/schema";
 import type {
   InsertAuditLog,
   InsertInvitation,
-} from "@/lib/schema/schema-types";
+} from "@/lib/schema/schema.types";
 import { generateRandomCode } from "@/lib/utils/generate-random-code";
 import { ERROR_CODE } from "@/server/constants/errors";
 

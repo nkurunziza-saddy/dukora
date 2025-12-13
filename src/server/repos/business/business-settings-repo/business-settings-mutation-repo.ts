@@ -5,7 +5,7 @@ import { auditLogsTable, businessSettingsTable } from "@/lib/schema";
 import type {
   InsertAuditLog,
   InsertBusinessSetting,
-} from "@/lib/schema/schema-types";
+} from "@/lib/schema/schema.types";
 import { ERROR_CODE } from "@/server/constants/errors";
 
 export async function upsert(

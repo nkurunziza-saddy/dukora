@@ -3,7 +3,7 @@ import type {
   SelectExpense,
   SelectProduct,
   SelectTransaction,
-} from "@/lib/schema/schema-types";
+} from "@/lib/schema/schema.types";
 
 type TransactionPayload = SelectTransaction & {
   product: SelectProduct;

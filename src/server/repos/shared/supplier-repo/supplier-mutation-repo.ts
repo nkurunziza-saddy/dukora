@@ -3,7 +3,7 @@
 import { and, eq, isNull } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { auditLogsTable, suppliersTable } from "@/lib/schema";
-import type { InsertAuditLog, InsertSupplier } from "@/lib/schema/schema-types";
+import type { InsertAuditLog, InsertSupplier } from "@/lib/schema/schema.types";
 import { ERROR_CODE } from "@/server/constants/errors";
 
 export async function create(

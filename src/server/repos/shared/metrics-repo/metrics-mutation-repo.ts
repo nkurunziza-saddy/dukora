@@ -3,7 +3,7 @@
 import { and, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { metricsTable } from "@/lib/schema";
-import type { InsertMetric } from "@/lib/schema/schema-types";
+import type { InsertMetric } from "@/lib/schema/schema.types";
 import { ERROR_CODE } from "@/server/constants/errors";
 
 export async function insert_metric(

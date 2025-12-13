@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import type { SelectSupplier } from "@/lib/schema/schema-types";
+import type { SelectSupplier } from "@/lib/schema/schema.types";
 import {
   createSupplier,
   updateSupplier,
@@ -67,7 +67,7 @@ export default function SupplierForm({
             : `${t("supplier")} ${tCommon("add")} ${tCommon("confirm")}`,
           {
             description: format(new Date(), "MMM dd, yyyy"),
-          },
+          }
         );
       } else {
         toast.error(tCommon("error"), {

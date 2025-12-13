@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import type { SelectBusiness } from "@/lib/schema/schema-types";
+import type { SelectBusiness } from "@/lib/schema/schema.types";
 import { updateBusiness } from "@/server/actions/business/business-actions";
 import { businessDetailsSchema, LIMITS } from "./settings-utils";
 

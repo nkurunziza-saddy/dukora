@@ -1,6 +1,6 @@
 "use server";
 import { revalidateTag } from "next/cache";
-import type { InsertBusiness } from "@/lib/schema/schema-types";
+import type { InsertBusiness } from "@/lib/schema/schema.types";
 import { getCurrentSession } from "@/server/actions/auth-actions";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";

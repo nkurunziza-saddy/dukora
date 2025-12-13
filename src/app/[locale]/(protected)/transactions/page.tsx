@@ -15,11 +15,23 @@ export async function generateMetadata(): Promise<Metadata> {
 async function TransactionsTable({
   page,
   pageSize,
+  sorting,
+  filters,
+  search,
 }: {
   page: number;
   pageSize: number;
+  sorting?: { id: string; desc: boolean }[];
+  filters?: { id: string; value: unknown }[];
+  search?: string;
 }) {
-  const transactions = await getTransactionsPaginated({ page, pageSize });
+  const transactions = await getTransactionsPaginated({
+    page,
+    pageSize,
+    sorting,
+    filters,
+    search,
+  });
 
   if (!transactions.data) {
     return (
@@ -37,21 +49,46 @@ async function TransactionsTable({
       pageSize={pageSize}
       tag="transactions"
       totalCount={transactions.data.totalCount}
+      enableManualSorting={true}
+      enableManualFiltering={true}
     />
   );
 }
 
 export default async function TransactionsPage(
-  props: PageProps<"/[locale]/transactions">,
+  props: PageProps<"/[locale]/transactions">
 ) {
   const query = await props.searchParams;
   const page = Number(query.page) || 1;
   const pageSize = Number(query.pageSize) || 10;
 
+  // Parse sorting
+  let sorting: { id: string; desc: boolean }[] | undefined;
+  if (query.sort) {
+    const sortParam = String(query.sort);
+    const [id, desc] = sortParam.split(".");
+    sorting = [{ id, desc: desc === "desc" }];
+  }
+
+  // Parse filters
+  // For now, we only support "type" filter as per requirement/repo implementation
+  let filters: { id: string; value: unknown }[] | undefined;
+  if (query.type) {
+    filters = [{ id: "type", value: query.type }];
+  }
+
+  const search = typeof query.search === "string" ? query.search : undefined;
+
   return (
     <div className="space-y-6">
       <Suspense fallback={<TableSkeleton />}>
-        <TransactionsTable page={page} pageSize={pageSize} />
+        <TransactionsTable
+          page={page}
+          pageSize={pageSize}
+          sorting={sorting}
+          filters={filters}
+          search={search}
+        />
       </Suspense>
     </div>
   );

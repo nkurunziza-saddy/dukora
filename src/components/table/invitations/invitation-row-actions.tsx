@@ -14,7 +14,7 @@ import {
   MenuPopup,
   MenuTrigger,
 } from "@/components/ui/menu";
-import type { ExtendedInvitationPayload } from "@/lib/schema/schema-types";
+import type { ExtendedInvitationPayload } from "@/lib/schema/schema.types";
 import ConfirmDialog from "../../shared/confirm-dialog";
 
 export interface InvitationRowActionsProps {

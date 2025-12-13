@@ -9,7 +9,7 @@ import type {
   SelectTransaction,
   SelectWarehouse,
   SelectWarehouseItem,
-} from "@/lib/schema/schema-types";
+} from "@/lib/schema/schema.types";
 
 type ExtendedProductPayload = SelectProduct & {
   category: SelectCategory | null;

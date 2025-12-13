@@ -1,6 +1,6 @@
 "use server";
 import { revalidateTag } from "next/cache";
-import type { InsertCategory } from "@/lib/schema/schema-types";
+import type { InsertCategory } from "@/lib/schema/schema.types";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
@@ -113,7 +113,7 @@ export const upsertManyCategories = createProtectedAction(
     if (categoriesData === null || categoriesData === undefined) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
     }
-    
+
     if (categoriesData.length === 0) {
       return { data: { data: [], error: null }, error: null };
     }

@@ -10,7 +10,7 @@ import {
 import type {
   SelectProduct,
   SelectTransaction,
-} from "@/lib/schema/schema-types";
+} from "@/lib/schema/schema.types";
 import { getUserIfHasPermission } from "@/server/actions/auth/permission-middleware";
 import { getWarehouseItemsByBusiness } from "@/server/actions/inventory/warehouse-items-actions";
 import { ERROR_CODE } from "@/server/constants/errors";

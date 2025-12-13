@@ -4,7 +4,7 @@ import { revalidateTag } from "next/cache";
 import type {
   InsertTransaction,
   TransactionType,
-} from "@/lib/schema/schema-types";
+} from "@/lib/schema/schema.types";
 import { calculateTaxAmount } from "@/server/business-logic/taxes/calculate-tax";
 import {
   validateTransactionData,
@@ -31,11 +31,29 @@ export const getTransactions = createProtectedAction(
 
 export const getTransactionsPaginated = createProtectedAction(
   PERMISSION.FINANCIAL_VIEW,
-  async (user, { page, pageSize }: { page: number; pageSize: number }) => {
+  async (
+    user,
+    {
+      page,
+      pageSize,
+      sorting,
+      filters,
+      search,
+    }: {
+      page: number;
+      pageSize: number;
+      sorting?: { id: string; desc: boolean }[];
+      filters?: { id: string; value: unknown }[];
+      search?: string;
+    }
+  ) => {
     const transactions = await transactionRepo.get_all_paginated(
       user.businessId ?? "",
       page,
-      pageSize
+      pageSize,
+      sorting,
+      filters,
+      search
     );
     if (transactions.error) {
       return { data: null, error: transactions.error };

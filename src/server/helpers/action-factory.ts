@@ -1,5 +1,5 @@
 import type { SessionUser } from "@/lib/auth";
-import type { UserRole } from "@/lib/schema/schema-types";
+import type { UserRole } from "@/lib/schema/schema.types";
 import { getCurrentSession } from "@/server/actions/auth-actions";
 import { ERROR_CODE } from "@/server/constants/errors";
 import type { PERMISSION } from "@/server/constants/permissions";

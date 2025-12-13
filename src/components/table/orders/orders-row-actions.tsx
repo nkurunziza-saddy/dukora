@@ -13,7 +13,7 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
-import type { SelectPurchaseOrder } from "@/lib/schema/schema-types";
+import type { SelectPurchaseOrder } from "@/lib/schema/schema.types";
 
 export interface OrderRowActionsProps {
   order: SelectPurchaseOrder;

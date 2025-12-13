@@ -15,7 +15,7 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
-import type { SelectUser } from "@/lib/schema/schema-types";
+import type { SelectUser } from "@/lib/schema/schema.types";
 import { UpdateUserForm } from "../../forms/update-user-form";
 import { HoverPrefetchLink } from "../../hover-prefetch-link";
 import ConfirmDialog from "../../shared/confirm-dialog";

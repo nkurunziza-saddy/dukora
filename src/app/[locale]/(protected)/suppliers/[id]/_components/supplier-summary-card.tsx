@@ -3,7 +3,7 @@ import { Card, CardHeader, CardPanel, CardTitle } from "@/components/ui/card";
 import type {
   SelectProductSupplier,
   SelectSupplier,
-} from "@/lib/schema/schema-types";
+} from "@/lib/schema/schema.types";
 
 type ExtendedSupplierPayload = SelectSupplier & {
   productSuppliers: SelectProductSupplier[];

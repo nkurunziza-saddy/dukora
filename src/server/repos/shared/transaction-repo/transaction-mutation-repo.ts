@@ -13,7 +13,7 @@ import type {
   InsertProductSupplier,
   InsertTransaction,
   SelectWarehouseItem,
-} from "@/lib/schema/schema-types";
+} from "@/lib/schema/schema.types";
 import { calculateStockChange } from "@/server/business-logic/transactions";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { create as createWarehouseItem } from "@/server/repos/inventory/warehouse-item-repo";

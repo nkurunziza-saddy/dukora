@@ -3,7 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
-import type { SelectProductSupplier } from "@/lib/schema/schema-types";
+import type { SelectProductSupplier } from "@/lib/schema/schema.types";
 import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 
 export function ProductSupplierColumn(

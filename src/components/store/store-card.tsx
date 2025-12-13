@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import type { SelectBusiness } from "@/lib/schema/schema-types";
+import type { SelectBusiness } from "@/lib/schema/schema.types";
 
 const StoreCard = ({ business }: { business: SelectBusiness }) => {
   return (

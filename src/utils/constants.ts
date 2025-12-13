@@ -1,4 +1,4 @@
-import { TransactionType, UserRole } from "@/lib/schema/schema-types";
+import { TransactionType, UserRole } from "@/lib/schema/schema.types";
 
 export const userRolesObject = [
   { value: UserRole.ADMIN, label: "Admin" },

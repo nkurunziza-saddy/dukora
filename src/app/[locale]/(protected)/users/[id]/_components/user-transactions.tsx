@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { SelectTransaction } from "@/lib/schema/schema-types";
+import type { SelectTransaction } from "@/lib/schema/schema.types";
 
 export default async function UserTransactions({
   transactions,

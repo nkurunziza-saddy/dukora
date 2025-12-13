@@ -46,7 +46,7 @@ import {
   StepperTrigger,
 } from "@/components/ui/stepper";
 import { Switch } from "@/components/ui/switch";
-import { UserRole } from "@/lib/schema/schema-types";
+import { UserRole } from "@/lib/schema/schema.types";
 import { businessInitialization } from "@/server/actions/onboarding-actions";
 import { defaultCategories, userRolesObject } from "@/utils/constants";
 import {

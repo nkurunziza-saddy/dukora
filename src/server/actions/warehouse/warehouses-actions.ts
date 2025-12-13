@@ -4,7 +4,7 @@ import { revalidateTag } from "next/cache";
 import type {
   InsertWarehouse,
   SelectWarehouse,
-} from "@/lib/schema/schema-types";
+} from "@/lib/schema/schema.types";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import { createProtectedAction } from "@/server/helpers/action-factory";
@@ -135,9 +135,15 @@ export const createManyWarehouses = createProtectedAction(
     if (data === null || data === undefined) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
     }
-    
+
     if (data.created.length === 0 && data.deleted.length === 0) {
-      return { data: { createdWarehouses: { data: [], error: null }, deleteWarehouses: [] }, error: null };
+      return {
+        data: {
+          createdWarehouses: { data: [], error: null },
+          deleteWarehouses: [],
+        },
+        error: null,
+      };
     }
     const warehouses: InsertWarehouse[] = data.created.map((warehouse) => ({
       ...warehouse,

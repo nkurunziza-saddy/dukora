@@ -15,7 +15,7 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
-import type { SelectSupplier } from "@/lib/schema/schema-types";
+import type { SelectSupplier } from "@/lib/schema/schema.types";
 import SupplierForm from "../../forms/create-supplier-form";
 import { HoverPrefetchLink } from "../../hover-prefetch-link";
 import ConfirmDialog from "../../shared/confirm-dialog";

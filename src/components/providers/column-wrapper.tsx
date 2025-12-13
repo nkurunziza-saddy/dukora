@@ -19,6 +19,8 @@ type ColumnWrapperProps<T> = {
   page: number;
   pageSize: number;
   tag: tagEnum;
+  enableManualSorting?: boolean;
+  enableManualFiltering?: boolean;
 };
 
 const ColumnWrapper = <T,>({
@@ -28,6 +30,7 @@ const ColumnWrapper = <T,>({
   page,
   pageSize,
   tag,
+  ...props
 }: ColumnWrapperProps<T>) => {
   const t = useTranslations(tag === "payments" ? "payments" : "common");
   return (
@@ -38,6 +41,8 @@ const ColumnWrapper = <T,>({
       pageSize={pageSize}
       tag={tag}
       totalCount={totalCount}
+      enableManualSorting={props.enableManualSorting}
+      enableManualFiltering={props.enableManualFiltering}
     />
   );
 };

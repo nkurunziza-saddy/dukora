@@ -5,7 +5,7 @@ import { auditLogsTable, warehousesTable } from "@/lib/schema";
 import type {
   InsertAuditLog,
   InsertWarehouse,
-} from "@/lib/schema/schema-types";
+} from "@/lib/schema/schema.types";
 import { ERROR_CODE } from "@/server/constants/errors";
 
 export async function create(warehouse: InsertWarehouse, userId: string) {

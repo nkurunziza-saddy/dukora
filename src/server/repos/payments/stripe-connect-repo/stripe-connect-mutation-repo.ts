@@ -3,7 +3,7 @@
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { auditLogsTable, businessesTable } from "@/lib/schema";
-import type { InsertAuditLog } from "@/lib/schema/schema-types";
+import type { InsertAuditLog } from "@/lib/schema/schema.types";
 import { stripe } from "@/lib/stripe";
 import { ERROR_CODE } from "@/server/constants/errors";
 

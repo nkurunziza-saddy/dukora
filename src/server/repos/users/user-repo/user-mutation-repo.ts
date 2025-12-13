@@ -3,7 +3,7 @@
 import { and, eq, isNull } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { usersTable } from "@/lib/schema";
-import type { InsertUser } from "@/lib/schema/schema-types";
+import type { InsertUser } from "@/lib/schema/schema.types";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { get_by_id } from "./user-query-repo";
 

@@ -19,7 +19,7 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from "@/components/ui/menu";
-import type { SelectProduct } from "@/lib/schema/schema-types";
+import type { SelectProduct } from "@/lib/schema/schema.types";
 import { deleteProduct } from "@/server/actions/inventory/products-actions";
 
 export interface CommerceRowActionsProps {

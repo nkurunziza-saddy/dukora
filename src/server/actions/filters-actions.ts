@@ -1,4 +1,4 @@
-import type { TransactionType } from "@/lib/schema/schema-types";
+import type { TransactionType } from "@/lib/schema/schema.types";
 import { getUserIfHasPermission } from "@/server/actions/auth/permission-middleware";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";

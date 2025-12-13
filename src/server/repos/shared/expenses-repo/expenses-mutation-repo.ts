@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { auditLogsTable, expensesTable } from "@/lib/schema";
-import type { InsertAuditLog, InsertExpense } from "@/lib/schema/schema-types";
+import type { InsertAuditLog, InsertExpense } from "@/lib/schema/schema.types";
 import { ERROR_CODE } from "@/server/constants/errors";
 
 export async function create(expense: InsertExpense) {

@@ -16,7 +16,7 @@ import OrdersRowActions from "@/components/table/orders/orders-row-actions";
 import { Badge } from "@/components/ui/badge";
 import { useCurrency } from "@/lib/hooks/use-currency";
 import { ORDER_STATUS } from "@/lib/schema/models/enums";
-import type { SelectPurchaseOrder } from "@/lib/schema/schema-types";
+import type { SelectPurchaseOrder } from "@/lib/schema/schema.types";
 
 export function OrderColumn(
   t: (key: string) => string

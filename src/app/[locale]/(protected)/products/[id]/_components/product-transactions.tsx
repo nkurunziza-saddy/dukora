@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { ExtendedProductPayload } from "@/lib/schema/schema-types";
+import type { ExtendedProductPayload } from "@/lib/schema/schema.types";
 
 export default async function ProductTransactions({
   transactions,

@@ -7,7 +7,7 @@ import {
   buildInviteEmailText,
 } from "@/components/email-templates/invitation-email";
 import { resend } from "@/lib/email";
-import type { InsertInvitation } from "@/lib/schema/schema-types";
+import type { InsertInvitation } from "@/lib/schema/schema.types";
 import { ERROR_CODE } from "@/server/constants/errors";
 import { PERMISSION } from "@/server/constants/permissions";
 import {
@@ -180,7 +180,7 @@ export const createManyInvitations = createProtectedAction(
     if (invitationsData === null || invitationsData === undefined) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
     }
-    
+
     if (invitationsData.length === 0) {
       return { data: [], error: null };
     }

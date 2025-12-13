@@ -1,8 +1,8 @@
-import type { TransactionType } from "@/lib/schema/schema-types";
+import type { TransactionType } from "@/lib/schema/schema.types";
 
 export function calculateStockChange(
   type: TransactionType,
-  quantity: number,
+  quantity: number
 ): number {
   const decreaseTypes: TransactionType[] = [
     "SALE",

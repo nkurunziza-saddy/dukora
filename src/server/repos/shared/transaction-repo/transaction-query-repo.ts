@@ -1,9 +1,20 @@
 "use cache";
 
-import { and, count, desc, eq, gte, lte } from "drizzle-orm";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  gte,
+  ilike,
+  inArray,
+  lte,
+  or,
+} from "drizzle-orm";
 import { db } from "@/lib/db";
 import { productsTable, transactionsTable, usersTable } from "@/lib/schema";
-import type { TransactionType } from "@/lib/schema/schema-types";
+import { TransactionType } from "@/lib/schema/schema.types";
 import { ERROR_CODE } from "@/server/constants/errors";
 
 export const get_all = async (businessId: string) => {
@@ -41,7 +52,10 @@ export const get_all = async (businessId: string) => {
 export const get_all_paginated = async (
   businessId: string,
   page: number,
-  pageSize: number
+  pageSize: number,
+  sorting?: { id: string; desc: boolean }[],
+  filters?: { id: string; value: unknown }[],
+  search?: string
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -49,6 +63,57 @@ export const get_all_paginated = async (
 
   try {
     const offset = (page - 1) * pageSize;
+
+    // Build where clause
+    const whereConditions = [eq(transactionsTable.businessId, businessId)];
+
+    if (filters) {
+      filters.forEach((filter) => {
+        if (filter.id === "type" && filter.value) {
+          const types = Array.isArray(filter.value)
+            ? filter.value
+            : (filter.value as string).split(",");
+
+          // Cast to TransactionType[]
+          const validTypes = types.filter((t: any) =>
+            Object.values(TransactionType).includes(t as TransactionType)
+          ) as TransactionType[];
+
+          if (validTypes.length > 0) {
+            whereConditions.push(inArray(transactionsTable.type, validTypes));
+          }
+        }
+      });
+    }
+
+    if (search) {
+      whereConditions.push(
+        or(
+          ilike(transactionsTable.reference, `%${search}%`),
+          ilike(transactionsTable.note, `%${search}%`),
+          ilike(productsTable.name, `%${search}%`),
+          ilike(usersTable.name, `%${search}%`)
+        )
+      );
+    }
+
+    // Build order by
+    let orderBy: any = desc(transactionsTable.createdAt);
+    if (sorting && sorting.length > 0) {
+      const sort = sorting[0];
+      // Map sort.id to table columns
+      const columnMap: Record<string, any> = {
+        createdAt: transactionsTable.createdAt,
+        quantity: transactionsTable.quantity,
+        // Add other sortable columns
+      };
+
+      const column = columnMap[sort.id];
+      if (column) {
+        orderBy = sort.desc ? desc(column) : asc(column); // Need to import asc
+      }
+    }
+
     const transactions = await db
       .select({
         type: transactionsTable.type,
@@ -60,20 +125,20 @@ export const get_all_paginated = async (
         createdBy: usersTable.name,
       })
       .from(transactionsTable)
-      .where(eq(transactionsTable.businessId, businessId))
+      .where(and(...whereConditions)) // Need to spread conditions
       .innerJoin(
         productsTable,
         eq(productsTable.id, transactionsTable.productId)
       )
       .innerJoin(usersTable, eq(usersTable.id, transactionsTable.createdBy))
-      .orderBy(desc(transactionsTable.createdAt))
+      .orderBy(orderBy)
       .limit(pageSize)
       .offset(offset);
 
     const [totalCount] = await db
       .select({ count: count() })
       .from(transactionsTable)
-      .where(eq(transactionsTable.businessId, businessId))
+      .where(and(...whereConditions))
       .innerJoin(
         productsTable,
         eq(productsTable.id, transactionsTable.productId)
