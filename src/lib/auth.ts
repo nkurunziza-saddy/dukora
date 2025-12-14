@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { nextCookies } from "better-auth/next-js";
 import { USER_ROLES } from "@/lib/schema/models/enums";
 import { db } from "./db";
 import { UserRole } from "./schema/schema.types";
@@ -53,6 +54,7 @@ export const auth = betterAuth({
   verification: {
     modelName: "verificationsTable",
   },
+  plugins: [nextCookies()],
 });
 
 export type SessionUser = typeof auth.$Infer.Session.user;
