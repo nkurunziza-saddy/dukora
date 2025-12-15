@@ -1,6 +1,6 @@
 "use client";
 
-import { Input as InputPrimitive } from "@base-ui-components/react/input";
+import { Input as InputPrimitive } from "@base-ui/react/input";
 
 import { cn } from "@/lib/utils";
 
@@ -15,7 +15,7 @@ function Input({
     <span
       className={cn(
         "relative inline-flex w-full rounded-lg border border-input bg-background text-base/5 ring-ring/24 transition-[color,background-color,box-shadow,border-color] has-focus-visible:border-ring has-focus-visible:ring-[3px] has-disabled:opacity-64 has-aria-invalid:border-destructive/36  has-focus-visible:has-aria-invalid:border-destructive/64 has-focus-visible:has-aria-invalid:ring-destructive/16 sm:text-sm dark:bg-input/32 dark:has-aria-invalid:ring-destructive/24",
-        className,
+        className
       )}
       data-slot="input-control"
     >
@@ -28,7 +28,7 @@ function Input({
           props.type === "search" &&
             "[&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none [&::-webkit-search-results-button]:appearance-none [&::-webkit-search-results-decoration]:appearance-none",
           props.type === "file" &&
-            "text-muted-foreground file:me-3 file:bg-transparent file:text-sm file:font-medium file:text-foreground",
+            "text-muted-foreground file:me-3 file:bg-transparent file:text-sm file:font-medium file:text-foreground"
         )}
         data-slot="input"
         size={typeof size === "number" ? size : undefined}

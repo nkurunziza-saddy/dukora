@@ -1,7 +1,7 @@
 "use client";
 
-import { mergeProps } from "@base-ui-components/react/merge-props";
-import { useRender } from "@base-ui-components/react/use-render";
+import { mergeProps } from "@base-ui/react/merge-props";
+import { useRender } from "@base-ui/react/use-render";
 import { CheckIcon, LoaderCircleIcon } from "lucide-react";
 import * as React from "react";
 import { createContext, useContext } from "react";
@@ -24,10 +24,10 @@ type StepItemContextValue = {
 type StepState = "active" | "completed" | "inactive" | "loading";
 
 const StepperContext = createContext<StepperContextValue | undefined>(
-  undefined,
+  undefined
 );
 const StepItemContext = createContext<StepItemContextValue | undefined>(
-  undefined,
+  undefined
 );
 
 const useStepper = () => {
@@ -70,7 +70,7 @@ function Stepper({
       }
       onValueChange?.(step);
     },
-    [value, onValueChange],
+    [value, onValueChange]
   );
 
   const currentStep = value ?? activeStep;
@@ -86,7 +86,7 @@ function Stepper({
       <div
         className={cn(
           "group/stepper inline-flex data-[orientation=horizontal]:w-full data-[orientation=horizontal]:flex-row data-[orientation=vertical]:flex-col",
-          className,
+          className
         )}
         data-orientation={orientation}
         data-slot="stepper"
@@ -130,7 +130,7 @@ function StepperItem({
       <div
         className={cn(
           "group/step flex items-center group-data-[orientation=horizontal]/stepper:flex-row group-data-[orientation=vertical]/stepper:flex-col",
-          className,
+          className
         )}
         data-slot="stepper-item"
         data-state={state}
@@ -158,7 +158,7 @@ function StepperTrigger({
     "data-slot": "stepper-trigger",
     className: cn(
       "focus-visible:border-ring focus-visible:ring-ring/50 inline-flex items-center gap-3 rounded-full outline-none focus-visible:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50",
-      className,
+      className
     ),
     onClick: () => setActiveStep(step),
     disabled: isDisabled,
@@ -186,7 +186,7 @@ function StepperIndicator({
     "data-slot": "stepper-indicator",
     className: cn(
       "bg-muted text-muted-foreground data-[state=active]:bg-primary data-[state=completed]:bg-primary data-[state=active]:text-primary-foreground data-[state=completed]:text-primary-foreground relative flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-medium",
-      className,
+      className
     ),
     "data-state": state,
     children: children ?? (
@@ -253,7 +253,7 @@ function StepperSeparator({
     <div
       className={cn(
         "bg-muted group-data-[state=completed]/step:bg-primary m-0.5 group-data-[orientation=horizontal]/stepper:h-0.5 group-data-[orientation=horizontal]/stepper:w-full group-data-[orientation=horizontal]/stepper:flex-1 group-data-[orientation=vertical]/stepper:h-12 group-data-[orientation=vertical]/stepper:w-0.5",
-        className,
+        className
       )}
       data-slot="stepper-separator"
       {...props}

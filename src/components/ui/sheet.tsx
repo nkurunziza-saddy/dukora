@@ -1,6 +1,6 @@
 "use client";
 
-import { Dialog as SheetPrimitive } from "@base-ui-components/react/dialog";
+import { Dialog as SheetPrimitive } from "@base-ui/react/dialog";
 import { XIcon } from "lucide-react";
 import type * as React from "react";
 
@@ -36,7 +36,7 @@ function SheetBackdrop({
     <SheetPrimitive.Backdrop
       className={cn(
         "data-starting-style:animate-in data-ending-style:animate-out data-ending-style:fade-out-0 data-starting-style:fade-in-0 fixed inset-0 z-50 bg-black/50",
-        className,
+        className
       )}
       data-slot="sheet-backdrop"
       {...props}
@@ -68,7 +68,7 @@ function SheetPopup({
             "data-ending-style:slide-out-to-top data-starting-style:slide-in-from-top inset-x-0 top-0 h-auto border-b",
           side === "bottom" &&
             "data-ending-style:slide-out-to-bottom data-starting-style:slide-in-from-bottom inset-x-0 bottom-0 h-auto border-t",
-          className,
+          className
         )}
         data-slot="sheet-popup"
         {...props}

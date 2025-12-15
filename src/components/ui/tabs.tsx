@@ -1,6 +1,6 @@
 "use client";
 
-import { Tabs as TabsPrimitive } from "@base-ui-components/react/tabs";
+import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
 
 import { cn } from "@/lib/utils";
 
@@ -11,7 +11,7 @@ function Tabs({ className, ...props }: TabsPrimitive.Root.Props) {
     <TabsPrimitive.Root
       className={cn(
         "flex flex-col gap-2 data-[orientation=vertical]:flex-row",
-        className,
+        className
       )}
       data-slot="tabs"
       {...props}
@@ -35,7 +35,7 @@ function TabsList({
         variant === "default"
           ? "rounded-lg bg-muted p-0.5 text-muted-foreground/64"
           : "data-[orientation=horizontal]:py-1 data-[orientation=vertical]:px-1 *:data-[slot=tabs-trigger]:hover:bg-accent",
-        className,
+        className
       )}
       data-slot="tabs-list"
       {...props}
@@ -46,7 +46,7 @@ function TabsList({
           "absolute bottom-0 left-0 h-(--active-tab-height) w-(--active-tab-width) translate-x-(--active-tab-left) -translate-y-(--active-tab-bottom) transition-[width,translate] duration-200 ease-in-out",
           variant === "underline"
             ? "z-10 bg-primary data-[orientation=horizontal]:-bottom-[calc(--spacing(1)+1px)] data-[orientation=horizontal]:h-0.5 data-[orientation=vertical]:-start-[calc(--spacing(1)+1px)] data-[orientation=vertical]:w-0.5"
-            : "-z-1 rounded-md bg-background shadow-sm dark:bg-accent",
+            : "-z-1 rounded-md bg-background shadow-sm dark:bg-accent"
         )}
         data-slot="tab-indicator"
       />
@@ -62,7 +62,7 @@ function TabsTab({ className, ...props }: TabsPrimitive.Tab.Props) {
         "hover:text-muted-foreground data-selected:text-foreground",
         "gap-1.5 px-[calc(--spacing(2.5)-1px)] py-[calc(--spacing(1.5)-1px)]",
         "data-[orientation=vertical]:w-full data-[orientation=vertical]:justify-start",
-        className,
+        className
       )}
       data-slot="tabs-trigger"
       {...props}
