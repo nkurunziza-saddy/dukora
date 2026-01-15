@@ -39,7 +39,7 @@ function FeaturedProductsLoading() {
 }
 
 export default async function StorePage(
-  props: PageProps<"/[locale]/store/[businessId]">
+  props: PageProps<"/[locale]/store/[businessId]">,
 ) {
   return (
     <main className="min-h-screen">

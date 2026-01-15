@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import type { ExtendedWarehouseItemPayload } from "@/lib/schema/schema.types";
 
 export function WarehouseItemColumn(
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<ExtendedWarehouseItemPayload & { productCount: number }>[] {
   return [
     {

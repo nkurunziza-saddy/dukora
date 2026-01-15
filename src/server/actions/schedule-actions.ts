@@ -12,13 +12,13 @@ export const getSchedules = createProtectedAction(
   async (user) => {
     const schedules = await scheduleRepo.get_all(
       user.businessId ?? "",
-      user.id
+      user.id,
     );
     if (schedules.error) {
       return { data: null, error: schedules.error };
     }
     return { data: schedules.data, error: null };
-  }
+  },
 );
 
 export const getSchedulesPaginated = createProtectedAction(
@@ -28,13 +28,13 @@ export const getSchedulesPaginated = createProtectedAction(
       user.businessId ?? "",
       user.id,
       page,
-      pageSize
+      pageSize,
     );
     if (schedules.error) {
       return { data: null, error: schedules.error };
     }
     return { data: schedules.data, error: null };
-  }
+  },
 );
 
 export const getSchedulesOverview = createProtectedAction(
@@ -43,13 +43,13 @@ export const getSchedulesOverview = createProtectedAction(
     const schedules = await scheduleRepo.get_overview(
       user.businessId ?? "",
       user.id,
-      limit
+      limit,
     );
     if (schedules.error) {
       return { data: null, error: schedules.error };
     }
     return { data: schedules.data, error: null };
-  }
+  },
 );
 
 export const getScheduleById = createProtectedAction(
@@ -60,13 +60,13 @@ export const getScheduleById = createProtectedAction(
     }
     const schedule = await scheduleRepo.get_by_id(
       scheduleId,
-      user.businessId ?? ""
+      user.businessId ?? "",
     );
     if (schedule.error) {
       return { data: null, error: schedule.error };
     }
     return { data: schedule.data, error: null };
-  }
+  },
 );
 
 export const createSchedule = createProtectedAction(
@@ -83,7 +83,7 @@ export const createSchedule = createProtectedAction(
     const res = await scheduleRepo.create(
       user.businessId ?? "",
       user.id,
-      schedule
+      schedule,
     );
     if (res.error) {
       return { data: null, error: res.error };
@@ -91,7 +91,7 @@ export const createSchedule = createProtectedAction(
     revalidateTag(`schedules-${user.businessId}`, "max");
     revalidateTag("schedules", "max");
     return { data: res.data, error: null };
-  }
+  },
 );
 
 export const updateSchedule = createProtectedAction(
@@ -104,7 +104,7 @@ export const updateSchedule = createProtectedAction(
     }: {
       scheduleId: string;
       updates: Partial<Omit<InsertSchedule, "userId" | "businessId">>;
-    }
+    },
   ) => {
     if (!scheduleId?.trim()) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -113,7 +113,7 @@ export const updateSchedule = createProtectedAction(
       scheduleId,
       user.businessId ?? "",
       user.id,
-      updates
+      updates,
     );
     if (updatedSchedule.error) {
       return { data: null, error: updatedSchedule.error };
@@ -121,7 +121,7 @@ export const updateSchedule = createProtectedAction(
     revalidateTag(`schedules-${user.businessId}`, "max");
     revalidateTag(`schedule-${scheduleId}`, "max");
     return { data: updatedSchedule.data, error: null };
-  }
+  },
 );
 
 export const deleteSchedule = createProtectedAction(
@@ -134,7 +134,7 @@ export const deleteSchedule = createProtectedAction(
     revalidateTag(`schedules-${user.businessId}`, "max");
     revalidateTag(`schedule-${scheduleId}`, "max");
     return { data: { success: true }, error: null };
-  }
+  },
 );
 
 export const createManySchedules = createProtectedAction(
@@ -151,5 +151,5 @@ export const createManySchedules = createProtectedAction(
     revalidateTag(`schedules-${user.businessId}`, "max");
     revalidateTag("schedules", "max");
     return { data: createdSchedules, error: null };
-  }
+  },
 );

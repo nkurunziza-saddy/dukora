@@ -126,7 +126,7 @@ export function GlobalStoreSearch({
                 <p className="text-xs text-muted-foreground">
                   {formatCurrencyWithCode(
                     parseFloat(result.price || "0"),
-                    result.currency || "RWF"
+                    result.currency || "RWF",
                   )}
                 </p>
               </Link>

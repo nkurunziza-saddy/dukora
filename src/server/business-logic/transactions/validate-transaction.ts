@@ -15,7 +15,7 @@ export type TransactionInput = Omit<
 >;
 
 export function validateTransactionData(
-  data: TransactionInput
+  data: TransactionInput,
 ): ValidationResult {
   if (!data.productId?.trim()) {
     return { valid: false, error: ERROR_CODE.MISSING_INPUT };
@@ -41,7 +41,7 @@ export function validateTransactionData(
 }
 
 export function validateTransactionDataWithoutWarehouse(
-  data: Omit<TransactionInput, "warehouseItemId">
+  data: Omit<TransactionInput, "warehouseItemId">,
 ): ValidationResult {
   if (!data.productId?.trim()) {
     return { valid: false, error: ERROR_CODE.MISSING_INPUT };
@@ -71,7 +71,7 @@ export function validateTransactionId(transactionId: string): ValidationResult {
 }
 
 export function validateTransactionType(
-  type: TransactionType | null | undefined
+  type: TransactionType | null | undefined,
 ): ValidationResult {
   if (!type) {
     return { valid: false, error: ERROR_CODE.MISSING_INPUT };

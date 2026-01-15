@@ -337,7 +337,7 @@ export default async function StoreAnalyticsPage() {
               {[...Array(4)].map((_, i) => (
                 <div
                   className="h-32 bg-muted animate-pulse rounded-lg"
-                  key={i}
+                  key={`perf-stat-skeleton-${i}`}
                 />
               ))}
             </div>
@@ -357,7 +357,7 @@ export default async function StoreAnalyticsPage() {
               {[...Array(6)].map((_, i) => (
                 <div
                   className="h-32 bg-muted animate-pulse rounded-lg"
-                  key={i}
+                  key={`overview-skeleton-${i}`}
                 />
               ))}
             </div>

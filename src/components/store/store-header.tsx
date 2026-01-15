@@ -42,7 +42,7 @@ const StoreHeader = () => {
                   "text-xs hover:text-foreground transition",
                   pathname === `/${locale}/store`
                     ? "text-foreground font-medium"
-                    : "text-text-secondary"
+                    : "text-text-secondary",
                 )}
                 href={`/${locale}/store`}
               >
@@ -53,7 +53,7 @@ const StoreHeader = () => {
                   "text-xs hover:text-foreground transition",
                   pathname?.startsWith(`/${locale}/store/orders`)
                     ? "text-foreground font-medium"
-                    : "text-text-secondary"
+                    : "text-text-secondary",
                 )}
                 href={`/${locale}/store/orders/track`}
               >
@@ -63,7 +63,7 @@ const StoreHeader = () => {
                 <Link
                   className={cn(
                     "text-xs hover:text-foreground transition",
-                    "text-text-secondary"
+                    "text-text-secondary",
                   )}
                   href={`/${locale}/commerce`}
                 >
@@ -108,7 +108,7 @@ const StoreHeader = () => {
                       "text-xs hover:text-foreground transition",
                       pathname === `/${locale}/store/${businessId}`
                         ? "text-foreground font-medium"
-                        : "text-text-secondary"
+                        : "text-text-secondary",
                     )}
                     href={`/${locale}/store/${businessId}`}
                   >
@@ -118,10 +118,10 @@ const StoreHeader = () => {
                     className={cn(
                       "text-xs hover:text-foreground transition",
                       pathname?.startsWith(
-                        `/${locale}/store/${businessId}/products`
+                        `/${locale}/store/${businessId}/products`,
                       )
                         ? "text-foreground font-medium"
-                        : "text-text-secondary"
+                        : "text-text-secondary",
                     )}
                     href={`/${locale}/store/${businessId}/products`}
                   >
@@ -131,10 +131,10 @@ const StoreHeader = () => {
                     className={cn(
                       "text-xs hover:text-foreground transition",
                       pathname?.startsWith(
-                        `/${locale}/store/${businessId}/categories`
+                        `/${locale}/store/${businessId}/categories`,
                       )
                         ? "text-foreground font-medium"
-                        : "text-text-secondary"
+                        : "text-text-secondary",
                     )}
                     href={`/${locale}/store/${businessId}/categories`}
                   >

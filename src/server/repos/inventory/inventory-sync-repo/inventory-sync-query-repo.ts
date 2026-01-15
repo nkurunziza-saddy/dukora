@@ -15,7 +15,7 @@ import { ERROR_CODE } from "@/server/constants/errors";
  */
 export const get_inventory_status_for_store_product = async (
   storeProductId: string,
-  businessId: string
+  businessId: string,
 ) => {
   if (!storeProductId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -41,21 +41,21 @@ export const get_inventory_status_for_store_product = async (
       .from(storeProductsTable)
       .innerJoin(
         productsTable,
-        eq(storeProductsTable.productId, productsTable.id)
+        eq(storeProductsTable.productId, productsTable.id),
       )
       .leftJoin(
         warehouseItemsTable,
-        eq(productsTable.id, warehouseItemsTable.productId)
+        eq(productsTable.id, warehouseItemsTable.productId),
       )
       .leftJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .where(
         and(
           eq(storeProductsTable.id, storeProductId),
-          eq(storeProductsTable.businessId, businessId)
-        )
+          eq(storeProductsTable.businessId, businessId),
+        ),
       )
       .groupBy(storeProductsTable.id, productsTable.id);
 
@@ -75,7 +75,7 @@ export const get_inventory_status_for_store_product = async (
  */
 export const check_inventory_availability = async (
   items: { storeProductId: string; quantity: number }[],
-  businessId: string
+  businessId: string,
 ) => {
   if (!items.length || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -95,24 +95,24 @@ export const check_inventory_availability = async (
           .from(storeProductsTable)
           .innerJoin(
             productsTable,
-            eq(storeProductsTable.productId, productsTable.id)
+            eq(storeProductsTable.productId, productsTable.id),
           )
           .leftJoin(
             warehouseItemsTable,
-            eq(productsTable.id, warehouseItemsTable.productId)
+            eq(productsTable.id, warehouseItemsTable.productId),
           )
           .where(
             and(
               eq(storeProductsTable.id, item.storeProductId),
               eq(storeProductsTable.businessId, businessId),
-              eq(storeProductsTable.isPublished, true)
-            )
+              eq(storeProductsTable.isPublished, true),
+            ),
           )
           .groupBy(
             storeProductsTable.id,
             productsTable.id,
             productsTable.name,
-            storeProductsTable.storeTitle
+            storeProductsTable.storeTitle,
           );
 
         if (!result) {
@@ -135,7 +135,7 @@ export const check_inventory_availability = async (
           requested: item.quantity,
           inStock: Number(result.available),
         };
-      })
+      }),
     );
 
     const allAvailable = checks.every((c) => c.available);
@@ -174,28 +174,28 @@ export const get_products_needing_sync = async (businessId: string) => {
       .from(storeProductsTable)
       .innerJoin(
         productsTable,
-        eq(storeProductsTable.productId, productsTable.id)
+        eq(storeProductsTable.productId, productsTable.id),
       )
       .leftJoin(
         warehouseItemsTable,
-        eq(productsTable.id, warehouseItemsTable.productId)
+        eq(productsTable.id, warehouseItemsTable.productId),
       )
       .where(
         and(
           eq(storeProductsTable.businessId, businessId),
           eq(storeProductsTable.isPublished, true),
-          isNull(storeProductsTable.deletedAt)
-        )
+          isNull(storeProductsTable.deletedAt),
+        ),
       )
       .groupBy(
         storeProductsTable.id,
         productsTable.id,
         storeProductsTable.storeTitle,
         productsTable.name,
-        storeProductsTable.cachedStock
+        storeProductsTable.cachedStock,
       )
       .having(
-        sql`${storeProductsTable.cachedStock} != COALESCE(SUM(${warehouseItemsTable.quantity} - ${warehouseItemsTable.reservedQty}), 0)`
+        sql`${storeProductsTable.cachedStock} != COALESCE(SUM(${warehouseItemsTable.quantity} - ${warehouseItemsTable.reservedQty}), 0)`,
       );
 
     return { data: products, error: null };
@@ -210,7 +210,7 @@ export const get_products_needing_sync = async (businessId: string) => {
  */
 export const get_warehouse_items_for_product = async (
   productId: string,
-  businessId: string
+  businessId: string,
 ) => {
   if (!productId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -229,21 +229,21 @@ export const get_warehouse_items_for_product = async (
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .innerJoin(
         productsTable,
-        eq(warehouseItemsTable.productId, productsTable.id)
+        eq(warehouseItemsTable.productId, productsTable.id),
       )
       .where(
         and(
           eq(warehouseItemsTable.productId, productId),
           eq(warehousesTable.businessId, businessId),
-          gt(warehouseItemsTable.quantity, 0)
-        )
+          gt(warehouseItemsTable.quantity, 0),
+        ),
       )
       .orderBy(
-        sql`${warehouseItemsTable.quantity} - ${warehouseItemsTable.reservedQty} DESC`
+        sql`${warehouseItemsTable.quantity} - ${warehouseItemsTable.reservedQty} DESC`,
       );
 
     return { data: items, error: null };

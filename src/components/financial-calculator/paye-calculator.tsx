@@ -70,7 +70,10 @@ export function PAYECalculator() {
               <Label className="text-sm" htmlFor="employeeType">
                 {t("payeCalculator.employeeTypeLabel")}
               </Label>
-              <Select onValueChange={setEmployeeType} value={employeeType}>
+              <Select
+                onValueChange={(value) => value && setEmployeeType(value)}
+                value={employeeType}
+              >
                 <SelectTrigger
                   className="focus:ring-2 focus:ring-primary/20"
                   id="employeeType"

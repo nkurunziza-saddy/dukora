@@ -24,7 +24,7 @@ export const get_all = async (businessId: string) => {
 export const get_all_paginated = async (
   businessId: string,
   page: number,
-  pageSize: number
+  pageSize: number,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -60,7 +60,7 @@ export const get_by_id = async (warehouseId: string, businessId: string) => {
     const warehouse = await db.query.warehousesTable.findFirst({
       where: and(
         eq(warehousesTable.id, warehouseId),
-        eq(warehousesTable.businessId, businessId)
+        eq(warehousesTable.businessId, businessId),
       ),
       with: {
         transactions: true,

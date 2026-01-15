@@ -126,14 +126,14 @@ export default function SaleTransactionForm({
   const selectedWarehouseItem = useMemo(
     () =>
       productDetailsData?.warehouseItems.find(
-        (item) => item.id === warehouseItemId
+        (item) => item.id === warehouseItemId,
       ),
-    [productDetailsData?.warehouseItems, warehouseItemId]
+    [productDetailsData?.warehouseItems, warehouseItemId],
   );
 
   const hasInsufficientStock = useMemo(
     () => selectedWarehouseItem && quantity > selectedWarehouseItem.quantity,
-    [selectedWarehouseItem, quantity]
+    [selectedWarehouseItem, quantity],
   );
 
   const { data: settings } = useBusinessSettings();
@@ -239,7 +239,7 @@ export default function SaleTransactionForm({
                                 "h-4 w-4",
                                 product.id === field.state.value
                                   ? "opacity-100"
-                                  : "opacity-0"
+                                  : "opacity-0",
                               )}
                             />
                           </div>
@@ -282,7 +282,7 @@ export default function SaleTransactionForm({
                           const warehouseId =
                             typeof item === "string"
                               ? productDetailsData?.warehouseItems.find(
-                                  (w) => w.id === item
+                                  (w) => w.id === item,
                                 )?.warehouseId
                               : (item as any).warehouseId;
                           if (warehouseId) {
@@ -318,7 +318,7 @@ export default function SaleTransactionForm({
                                   "h-4 w-4",
                                   item.id === field.state.value
                                     ? "opacity-100"
-                                    : "opacity-0"
+                                    : "opacity-0",
                                 )}
                               />
                             </div>
@@ -365,7 +365,7 @@ export default function SaleTransactionForm({
                       "text-sm font-medium",
                       hasInsufficientStock
                         ? "text-destructive"
-                        : "text-muted-foreground"
+                        : "text-muted-foreground",
                     )}
                   >
                     {tInventory("onHand")}: {selectedWarehouseItem.quantity}

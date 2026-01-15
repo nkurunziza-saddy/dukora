@@ -13,7 +13,7 @@ export const CURRENCY_PRECISION = 2;
 export function safeDivision(
   numerator: number,
   denominator: number,
-  decimals: number = CURRENCY_PRECISION
+  decimals: number = CURRENCY_PRECISION,
 ): number {
   if (denominator === 0 || !Number.isFinite(denominator)) {
     return 0;
@@ -31,7 +31,7 @@ export function safeDivision(
  */
 export function roundToDecimals(
   value: number,
-  decimals: number = CURRENCY_PRECISION
+  decimals: number = CURRENCY_PRECISION,
 ): number {
   if (!Number.isFinite(value)) {
     return 0;
@@ -95,11 +95,11 @@ export function subtractCurrency(amount1: number, amount2: number): number {
  */
 export function calculatePercentage(
   amount: number,
-  percentage: number
+  percentage: number,
 ): number {
   if (percentage < 0 || percentage > 100) {
     throw new Error(
-      `Invalid percentage: ${percentage}. Must be between 0 and 100.`
+      `Invalid percentage: ${percentage}. Must be between 0 and 100.`,
     );
   }
   return multiplyCurrency(amount, percentage / 100);
@@ -111,7 +111,7 @@ export function calculatePercentage(
  */
 export function calculateMarginPercentage(
   revenue: number,
-  cost: number
+  cost: number,
 ): number {
   if (revenue <= 0) {
     return 0;

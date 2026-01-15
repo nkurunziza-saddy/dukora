@@ -3,7 +3,6 @@ import { MinusIcon, PlusIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -139,14 +138,14 @@ const CartPage = () => {
                             <p className="text-sm text-muted-foreground">
                               {formatCurrencyWithCode(
                                 parseFloat(item.price),
-                                item.currency || "RWF"
+                                item.currency || "RWF",
                               )}{" "}
                               each
                             </p>
                             <p className="font-medium">
                               {formatCurrencyWithCode(
                                 parseFloat(item.price) * item.quantity,
-                                item.currency || "RWF"
+                                item.currency || "RWF",
                               )}
                             </p>
                           </div>
@@ -173,7 +172,7 @@ const CartPage = () => {
                       <span className="font-medium">
                         {formatCurrencyWithCode(
                           state.totalPrice,
-                          businessCurrency || "RWF"
+                          businessCurrency || "RWF",
                         )}
                       </span>
                     </div>

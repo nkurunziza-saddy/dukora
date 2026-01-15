@@ -1,5 +1,5 @@
 import data from "./data.json";
-import { Filters, PaginatedData } from "./types";
+import type { Filters, PaginatedData } from "./types";
 
 const DEFAULT_PAGE = 0;
 const DEFAULT_PAGE_SIZE = 10;
@@ -16,7 +16,6 @@ export type UserFilters = Filters<User>;
 export async function fetchUsers(
   filtersAndPagination: UserFilters
 ): Promise<PaginatedData<User>> {
-  console.log("fetchUsers", filtersAndPagination);
   const {
     pageIndex = DEFAULT_PAGE,
     pageSize = DEFAULT_PAGE_SIZE,

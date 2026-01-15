@@ -52,7 +52,7 @@ function logSuccess(message: string) {
 
 function logInfo(label: string, value: any) {
   console.log(
-    `  ${colors.yellow}${label}:${colors.reset} ${JSON.stringify(value, null, 2)}`
+    `  ${colors.yellow}${label}:${colors.reset} ${JSON.stringify(value, null, 2)}`,
   );
 }
 
@@ -60,7 +60,7 @@ function logInfo(label: string, value: any) {
 // Mock Data Creation
 // ============================================================================
 function createMockProduct(
-  overrides: Partial<SelectProduct> = {}
+  overrides: Partial<SelectProduct> = {},
 ): SelectProduct {
   return {
     id: "prod-1",
@@ -222,21 +222,21 @@ function createMockWarehouseItems(): ExtendedWarehouseItemPayload[] {
 // ============================================================================
 function simulateMetricsWorkflow() {
   console.log(
-    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`,
   );
   console.log(
-    `${colors.blue}║  Metrics Calculation Workflow Demonstration               ║${colors.reset}`
+    `${colors.blue}║  Metrics Calculation Workflow Demonstration               ║${colors.reset}`,
   );
   console.log(
-    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`,
   );
 
   // Setup test month (2 months ago)
   const testMonth = startOfMonth(subMonths(new Date(), 2));
-  const testMonthEnd = endOfMonth(testMonth);
+  const _testMonthEnd = endOfMonth(testMonth);
 
   log(
-    `\n${colors.magenta}Testing metrics for: ${testMonth.toISOString().split("T")[0]}${colors.reset}`
+    `\n${colors.magenta}Testing metrics for: ${testMonth.toISOString().split("T")[0]}${colors.reset}`,
   );
 
   // ============================================================================
@@ -261,7 +261,7 @@ function simulateMetricsWorkflow() {
   logSuccess(`Fetched ${expenses.length} expenses`);
   const totalExpenses = expenses.reduce(
     (sum, e) => sum + parseFloat(e.amount),
-    0
+    0,
   );
   logInfo("Total Expenses", `$${totalExpenses.toFixed(2)}`);
 
@@ -289,7 +289,7 @@ function simulateMetricsWorkflow() {
       quantity: w.quantity,
       costPrice: w.product.costPrice,
       value: w.quantity * parseFloat(w.product.costPrice),
-    }))
+    })),
   );
 
   // ============================================================================
@@ -301,7 +301,7 @@ function simulateMetricsWorkflow() {
     transactions,
     expenses,
     openingStock,
-    closingStock
+    closingStock,
   );
 
   logSuccess("Metrics calculated successfully");
@@ -315,21 +315,21 @@ function simulateMetricsWorkflow() {
 
   console.log(`\n  Costs & Profitability:`);
   console.log(
-    `    COGS:                 $${metrics.costOfGoodsSold.toFixed(2)}`
+    `    COGS:                 $${metrics.costOfGoodsSold.toFixed(2)}`,
   );
   console.log(`    Gross Profit:         $${metrics.grossProfit.toFixed(2)}`);
   console.log(
-    `    Operating Expenses:   $${metrics.operatingExpenses.toFixed(2)}`
+    `    Operating Expenses:   $${metrics.operatingExpenses.toFixed(2)}`,
   );
   console.log(
-    `    Operating Income:     $${metrics.operatingIncome.toFixed(2)}`
+    `    Operating Income:     $${metrics.operatingIncome.toFixed(2)}`,
   );
   console.log(`    Net Income:           $${metrics.netIncome.toFixed(2)}`);
 
   console.log(`\n  Margins:`);
   console.log(`    Gross Margin:         ${metrics.grossMargin.toFixed(2)}%`);
   console.log(
-    `    Operating Margin:     ${metrics.operatingMargin.toFixed(2)}%`
+    `    Operating Margin:     ${metrics.operatingMargin.toFixed(2)}%`,
   );
   console.log(`    Net Margin:           ${metrics.netMargin.toFixed(2)}%`);
 
@@ -338,7 +338,7 @@ function simulateMetricsWorkflow() {
   console.log(`    Purchases:            $${metrics.purchases.toFixed(2)}`);
   console.log(`    Closing Stock:        $${metrics.closingStock.toFixed(2)}`);
   console.log(
-    `    Inventory Turnover:   ${metrics.inventoryTurnover.toFixed(2)}x`
+    `    Inventory Turnover:   ${metrics.inventoryTurnover.toFixed(2)}x`,
   );
   console.log(`    Days on Hand:         ${metrics.daysOnHand} days`);
 
@@ -346,7 +346,7 @@ function simulateMetricsWorkflow() {
   console.log(`    Transaction Count:    ${metrics.transactionCount}`);
   console.log(`    Unique Products Sold: ${metrics.uniqueProductsSold}`);
   console.log(
-    `    Average Order Value:  $${metrics.averageOrderValue.toFixed(2)}`
+    `    Average Order Value:  $${metrics.averageOrderValue.toFixed(2)}`,
   );
   console.log(`    Return Rate:          ${metrics.returnRate.toFixed(2)}%`);
 
@@ -376,16 +376,16 @@ function simulateMetricsWorkflow() {
 
   console.log(`\n${colors.yellow}Data Quality Report:${colors.reset}`);
   console.log(
-    `  Total Transactions:   ${metrics.dataQuality.totalTransactions}`
+    `  Total Transactions:   ${metrics.dataQuality.totalTransactions}`,
   );
   console.log(
-    `  Valid Transactions:   ${metrics.dataQuality.validTransactions}`
+    `  Valid Transactions:   ${metrics.dataQuality.validTransactions}`,
   );
   console.log(
-    `  Has Inventory Data:   ${metrics.dataQuality.hasInventoryData ? "✓" : "✗"}`
+    `  Has Inventory Data:   ${metrics.dataQuality.hasInventoryData ? "✓" : "✗"}`,
   );
   console.log(
-    `  Has Expense Data:     ${metrics.dataQuality.hasExpenseData ? "✓" : "✗"}`
+    `  Has Expense Data:     ${metrics.dataQuality.hasExpenseData ? "✓" : "✗"}`,
   );
   console.log(`  Calculation Date:     ${metrics.dataQuality.calculationDate}`);
 
@@ -397,14 +397,14 @@ function simulateMetricsWorkflow() {
     (metrics.dataQuality.hasExpenseData ? 30 : 0);
 
   console.log(
-    `\n  ${colors.green}Data Quality Score: ${dataQualityScore.toFixed(0)}%${colors.reset}`
+    `\n  ${colors.green}Data Quality Score: ${dataQualityScore.toFixed(0)}%${colors.reset}`,
   );
 
   // ============================================================================
   logSection("Workflow Summary");
   // ============================================================================
   console.log(
-    `\n${colors.green}✓ Workflow completed successfully!${colors.reset}`
+    `\n${colors.green}✓ Workflow completed successfully!${colors.reset}`,
   );
   console.log(`\nThis workflow demonstrates:`);
   console.log(`  1. Fetching transactions for a specific time period`);
@@ -416,7 +416,7 @@ function simulateMetricsWorkflow() {
   console.log(`  7. Validating data quality`);
 
   console.log(
-    `\n${colors.cyan}Note: This is a simulation using mock data.${colors.reset}`
+    `\n${colors.cyan}Note: This is a simulation using mock data.${colors.reset}`,
   );
   console.log(`For full integration testing, connect to a test database.`);
 }
@@ -442,7 +442,7 @@ function simulateGetMonthlyMetricsWorkflow() {
   ];
 
   logSuccess(
-    `Retrieved ${mockStoredMetrics.length} metrics from database (simulated)`
+    `Retrieved ${mockStoredMetrics.length} metrics from database (simulated)`,
   );
   logInfo("Stored Metrics", mockStoredMetrics);
 }
@@ -457,16 +457,16 @@ function runAllWorkflows() {
     simulateGetMonthlyMetricsWorkflow();
 
     console.log(
-      `\n${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`
+      `\n${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`,
     );
     console.log(
-      `${colors.green}✓ All workflow demonstrations completed successfully!${colors.reset}\n`
+      `${colors.green}✓ All workflow demonstrations completed successfully!${colors.reset}\n`,
     );
     process.exit(0);
   } catch (error) {
     console.error(
       `\n${colors.red}✗ Workflow demonstration failed:${colors.reset}`,
-      error
+      error,
     );
     process.exit(1);
   }

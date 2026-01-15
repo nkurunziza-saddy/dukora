@@ -11,7 +11,7 @@ import { ERROR_CODE } from "@/server/constants/errors";
 export async function record_product_view(
   businessId: string,
   storeProductId: string,
-  date: Date = new Date()
+  date: Date = new Date(),
 ) {
   if (!businessId || !storeProductId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -55,7 +55,7 @@ export async function record_product_view(
 export async function record_add_to_cart(
   businessId: string,
   storeProductId: string,
-  date: Date = new Date()
+  date: Date = new Date(),
 ) {
   if (!businessId || !storeProductId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -102,7 +102,7 @@ export async function record_purchase(
   businessId: string,
   storeProductId: string | null, // null for store-level
   orderAmount: number,
-  date: Date = new Date()
+  date: Date = new Date(),
 ) {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -152,7 +152,7 @@ export async function record_store_level_metrics(
   addedToCart: number,
   orders: number,
   revenue: number,
-  date: Date = new Date()
+  date: Date = new Date(),
 ) {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -201,7 +201,7 @@ export async function record_store_level_metrics(
  */
 export async function calculate_daily_metrics(
   businessId: string,
-  date: Date = new Date()
+  date: Date = new Date(),
 ) {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -224,8 +224,8 @@ export async function calculate_daily_metrics(
         and(
           eq(storeMetricsTable.businessId, businessId),
           eq(storeMetricsTable.metricDate, metricDate),
-          sql`${storeMetricsTable.storeProductId} IS NOT NULL` // Product-level only
-        )
+          sql`${storeMetricsTable.storeProductId} IS NOT NULL`, // Product-level only
+        ),
       );
 
     if (!aggregated) {

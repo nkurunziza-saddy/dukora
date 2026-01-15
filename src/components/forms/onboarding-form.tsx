@@ -2,9 +2,22 @@
 
 import { useForm } from "@tanstack/react-form";
 import { XIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import {
+  CATEGORY_LIMIT,
+  getBusinessTypes,
+  getCountries,
+  getCurrencies,
+  getMonths,
+  getSteps,
+  INVITATIONS_LIMIT,
+  type OnboardingFormData,
+  onboardingSchema,
+  WAREHOUSES_LIMIT,
+} from "@/components/onboarding/onboarding-utils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -49,19 +62,6 @@ import { Switch } from "@/components/ui/switch";
 import { UserRole } from "@/lib/schema/schema.types";
 import { businessInitialization } from "@/server/actions/onboarding-actions";
 import { defaultCategories, userRolesObject } from "@/utils/constants";
-import {
-  CATEGORY_LIMIT,
-  getBusinessTypes,
-  getCountries,
-  getCurrencies,
-  getMonths,
-  getSteps,
-  INVITATIONS_LIMIT,
-  onboardingSchema,
-  type OnboardingFormData,
-  WAREHOUSES_LIMIT,
-} from "@/components/onboarding/onboarding-utils";
-import { useRouter } from "next/navigation";
 import LocaleSwitcher from "../onboarding/language-switcher";
 
 const STORAGE_KEY = "onboarding-form-data";
@@ -74,7 +74,7 @@ export default function OnboardingForm() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [newCategory, setNewCategory] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [_isSubmitting, _setIsSubmitting] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
   const form = useForm({
@@ -121,7 +121,7 @@ export default function OnboardingForm() {
       if (!formRef.current) return;
 
       const inputs = Array.from(
-        formRef.current.querySelectorAll("input")
+        formRef.current.querySelectorAll("input"),
       ) as HTMLInputElement[];
 
       let firstInput: HTMLInputElement | undefined;
@@ -140,8 +140,8 @@ export default function OnboardingForm() {
 
     await Promise.all(
       fieldsToValidate.map((fieldName) =>
-        form.validateField(fieldName as keyof OnboardingFormData, "blur")
-      )
+        form.validateField(fieldName as keyof OnboardingFormData, "blur"),
+      ),
     );
 
     let isValid = true;
@@ -198,7 +198,7 @@ export default function OnboardingForm() {
         console.error("Failed to load saved form data:", error);
       }
     }
-  }, []);
+  }, [form.setFieldValue]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -310,7 +310,7 @@ export default function OnboardingForm() {
                             onBlur={field.handleBlur}
                             onChange={(e) => field.handleChange(e.target.value)}
                             placeholder={tOnboarding(
-                              "businessName.placeholder"
+                              "businessName.placeholder",
                             )}
                             value={field.state.value}
                           />
@@ -340,7 +340,9 @@ export default function OnboardingForm() {
                           </label>
                           <Select
                             items={getBusinessTypes(t)}
-                            onValueChange={(value) => field.handleChange(value)}
+                            onValueChange={(value) =>
+                              value && field.handleChange(value)
+                            }
                             value={field.state.value}
                           >
                             <SelectTrigger id={field.name}>
@@ -381,7 +383,7 @@ export default function OnboardingForm() {
                             <Select
                               items={getCurrencies()}
                               onValueChange={(value) =>
-                                field.handleChange(value)
+                                value && field.handleChange(value)
                               }
                               value={field.state.value}
                             >
@@ -425,14 +427,15 @@ export default function OnboardingForm() {
                             <Select
                               items={getCountries(t)}
                               onValueChange={(value) => {
+                                if (!value) return;
                                 field.handleChange(value);
                                 const country = getCountries(t).find(
-                                  (c) => c.value === value
+                                  (c) => c.value === value,
                                 );
                                 if (country) {
                                   form.setFieldValue(
                                     "timezone",
-                                    country.timezone
+                                    country.timezone,
                                   );
                                 }
                               }}
@@ -502,7 +505,7 @@ export default function OnboardingForm() {
                             <Select
                               items={getMonths(tCommon)}
                               onValueChange={(value) =>
-                                field.handleChange(value)
+                                value && field.handleChange(value)
                               }
                               value={field.state.value}
                             >
@@ -579,7 +582,7 @@ export default function OnboardingForm() {
                             onBlur={field.handleBlur}
                             onChange={(e) => field.handleChange(e.target.value)}
                             placeholder={tOnboarding(
-                              "defaultVatRate.placeholder"
+                              "defaultVatRate.placeholder",
                             )}
                             step="0.01"
                             type="number"
@@ -615,7 +618,7 @@ export default function OnboardingForm() {
 
                         <FieldGroup className="gap-4">
                           {(field.state.value || []).map(
-                            (member, index: number) => (
+                            (_member, index: number) => (
                               <div
                                 className="flex gap-1 items-start"
                                 key={index}
@@ -644,11 +647,11 @@ export default function OnboardingForm() {
                                               onBlur={subField.handleBlur}
                                               onChange={(e) =>
                                                 subField.handleChange(
-                                                  e.target.value
+                                                  e.target.value,
                                                 )
                                               }
                                               placeholder={tOnboarding(
-                                                "teamMembers.emailPlaceholder"
+                                                "teamMembers.emailPlaceholder",
                                               )}
                                               type="email"
                                               value={subField.state.value}
@@ -685,7 +688,10 @@ export default function OnboardingForm() {
                                         <FieldContent>
                                           <Select
                                             onValueChange={(value) =>
-                                              subField.handleChange(value)
+                                              value &&
+                                              subField.handleChange(
+                                                value as typeof subField.state.value,
+                                              )
                                             }
                                             value={subField.state.value}
                                           >
@@ -736,7 +742,7 @@ export default function OnboardingForm() {
                                   )}
                                 </div>
                               </div>
-                            )
+                            ),
                           )}
 
                           <Button
@@ -782,7 +788,7 @@ export default function OnboardingForm() {
                       } else {
                         if (currentCategories.length >= CATEGORY_LIMIT) {
                           toast.error(
-                            `You can select up to ${CATEGORY_LIMIT} categories.`
+                            `You can select up to ${CATEGORY_LIMIT} categories.`,
                           );
                           return;
                         }
@@ -801,7 +807,7 @@ export default function OnboardingForm() {
                         toast.error(
                           tOnboarding("errors.maxCategories", {
                             limit: CATEGORY_LIMIT,
-                          })
+                          }),
                         );
                         return;
                       }
@@ -819,7 +825,7 @@ export default function OnboardingForm() {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {defaultCategories.map((category) => {
                               const isSelected = currentCategories.some(
-                                (c) => c === category
+                                (c) => c === category,
                               );
                               return (
                                 <button
@@ -857,7 +863,7 @@ export default function OnboardingForm() {
                                 }
                               }}
                               placeholder={tOnboarding(
-                                "categories.placeholder"
+                                "categories.placeholder",
                               )}
                               value={newCategory}
                             />
@@ -913,7 +919,7 @@ export default function OnboardingForm() {
                         (w, i: number) => ({
                           ...w,
                           isDefault: i === index,
-                        })
+                        }),
                       );
                       field.setValue(newArr);
                     };
@@ -971,11 +977,11 @@ export default function OnboardingForm() {
                                             onBlur={subField.handleBlur}
                                             onChange={(e) =>
                                               subField.handleChange(
-                                                e.target.value
+                                                e.target.value,
                                               )
                                             }
                                             placeholder={tOnboarding(
-                                              "warehouses.placeholder"
+                                              "warehouses.placeholder",
                                             )}
                                             value={subField.state.value}
                                           />

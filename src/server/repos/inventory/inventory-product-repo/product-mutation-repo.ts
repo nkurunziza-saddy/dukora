@@ -43,7 +43,7 @@ export async function update(
   productId: string,
   businessId: string,
   userId: string,
-  updates: Partial<InsertProduct>
+  updates: Partial<InsertProduct>,
 ) {
   if (!productId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -57,8 +57,8 @@ export async function update(
           and(
             eq(productsTable.id, productId),
             eq(productsTable.businessId, businessId),
-            isNull(productsTable.deletedAt)
-          )
+            isNull(productsTable.deletedAt),
+          ),
         )
         .returning();
 
@@ -92,7 +92,7 @@ export async function update(
 export async function remove(
   productId: string,
   businessId: string,
-  userId: string
+  userId: string,
 ) {
   if (!productId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -112,8 +112,8 @@ export async function remove(
         .where(
           and(
             eq(productsTable.id, productId),
-            eq(productsTable.businessId, businessId)
-          )
+            eq(productsTable.businessId, businessId),
+          ),
         )
         .returning();
 

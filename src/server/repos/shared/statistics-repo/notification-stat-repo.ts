@@ -22,8 +22,8 @@ export const get_notification_stats = async (businessId: string) => {
         .where(
           and(
             eq(notificationsTable.businessId, businessId),
-            eq(notificationsTable.read, false)
-          )
+            eq(notificationsTable.read, false),
+          ),
         ),
       db
         .select({ count: count() })
@@ -32,8 +32,8 @@ export const get_notification_stats = async (businessId: string) => {
           and(
             eq(notificationsTable.businessId, businessId),
             eq(notificationsTable.read, false),
-            eq(notificationsTable.priority, "high")
-          )
+            eq(notificationsTable.priority, "high"),
+          ),
         ),
     ]);
 

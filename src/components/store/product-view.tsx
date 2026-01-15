@@ -68,7 +68,7 @@ export function ProductView({ product }: { product: StoreProduct }) {
                 <span className="text-lg font-semibold">
                   {formatCurrencyWithCode(
                     finalPrice,
-                    product.currency || "RWF"
+                    product.currency || "RWF",
                   )}
                 </span>
                 {isOnSale && (
@@ -76,7 +76,7 @@ export function ProductView({ product }: { product: StoreProduct }) {
                     <span className="text-lg text-muted-foreground line-through">
                       {formatCurrencyWithCode(
                         parseFloat(product.costPrice || "0"),
-                        product.currency || "RWF"
+                        product.currency || "RWF",
                       )}
                     </span>
                     <Badge className="text-sm" variant="error">
@@ -90,7 +90,7 @@ export function ProductView({ product }: { product: StoreProduct }) {
                   {t("youSave")}{" "}
                   {formatCurrencyWithCode(
                     parseFloat(product.costPrice || "0") - finalPrice,
-                    product.currency || "RWF"
+                    product.currency || "RWF",
                   )}
                 </p>
               )}

@@ -11,13 +11,13 @@ export const getPurchaseOrdersPaginated = createProtectedAction(
     const orders = await purchaseOrderRepo.get_all_paginated(
       user.businessId ?? "",
       page,
-      pageSize
+      pageSize,
     );
     if (orders.error) {
       return { data: null, error: orders.error };
     }
     return { data: orders.data, error: null };
-  }
+  },
 );
 
 export const getPurchaseOrderById = createProtectedAction(
@@ -31,5 +31,5 @@ export const getPurchaseOrderById = createProtectedAction(
       return { data: null, error: order.error };
     }
     return { data: order.data, error: null };
-  }
+  },
 );

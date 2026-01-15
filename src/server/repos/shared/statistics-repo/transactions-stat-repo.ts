@@ -13,7 +13,7 @@ import { ERROR_CODE } from "@/server/constants/errors";
 export const get_transaction_metrics_for_interval = async (
   businessId: string,
   dateFrom: Date,
-  dateTo: Date
+  dateTo: Date,
 ) => {
   try {
     const result = await db
@@ -27,12 +27,12 @@ export const get_transaction_metrics_for_interval = async (
         and(
           eq(transactionsTable.businessId, businessId),
           gte(transactionsTable.createdAt, dateFrom),
-          lte(transactionsTable.createdAt, dateTo)
-        )
+          lte(transactionsTable.createdAt, dateTo),
+        ),
       )
       .innerJoin(
         productsTable,
-        eq(transactionsTable.productId, productsTable.id)
+        eq(transactionsTable.productId, productsTable.id),
       );
     const expenseReq = await db
       .select({
@@ -44,8 +44,8 @@ export const get_transaction_metrics_for_interval = async (
         and(
           eq(expensesTable.businessId, businessId),
           gte(expensesTable.createdAt, dateFrom),
-          lte(expensesTable.createdAt, dateTo)
-        )
+          lte(expensesTable.createdAt, dateTo),
+        ),
       );
 
     let totalSales = 0;
@@ -91,7 +91,7 @@ export const get_filtered_transactions = async (
   sortOrder: "asc" | "desc",
   typeFilter?: TransactionType,
   dateFrom?: Date,
-  dateTo?: Date
+  dateTo?: Date,
 ) => {
   try {
     const filters: SQL[] = [eq(transactionsTable.businessId, businessId)];
@@ -122,7 +122,7 @@ export const get_filtered_transactions = async (
       .from(transactionsTable)
       .innerJoin(
         productsTable,
-        eq(transactionsTable.productId, productsTable.id)
+        eq(transactionsTable.productId, productsTable.id),
       )
       //   .innerJoin(
       //     warehousesTable,

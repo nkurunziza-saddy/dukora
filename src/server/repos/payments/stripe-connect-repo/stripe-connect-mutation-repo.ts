@@ -9,7 +9,7 @@ import { ERROR_CODE } from "@/server/constants/errors";
 
 export async function create_connected_account(
   userId: string,
-  businessId: string
+  businessId: string,
 ) {
   if (!userId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -58,7 +58,7 @@ export async function create_connected_account(
 export async function create_account_link(
   stripeAccountId: string,
   refreshUrl: string,
-  returnUrl: string
+  returnUrl: string,
 ) {
   if (!stripeAccountId || !refreshUrl || !returnUrl) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };

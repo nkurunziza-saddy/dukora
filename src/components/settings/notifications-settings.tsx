@@ -54,7 +54,7 @@ export function NotificationsSettings() {
   const updateSetting = (
     category: keyof NotificationSettings,
     key: string,
-    value: boolean,
+    value: boolean
   ) => {
     setSettings((prev) => ({
       ...prev,
@@ -66,13 +66,11 @@ export function NotificationsSettings() {
   };
 
   const handleSave = () => {
-    // TODO: Implement save functionality
-    console.log("Saving notification settings:", settings);
+    // TODO: Implement save functionality with API call
   };
 
   const handleSendTestNotification = () => {
-    // TODO: Implement test notification sending
-    console.log("Sending test notification...");
+    // TODO: Implement test notification sending with API call
   };
 
   return (

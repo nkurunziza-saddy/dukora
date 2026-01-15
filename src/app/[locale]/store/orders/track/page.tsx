@@ -115,7 +115,7 @@ async function TrackOrderContent({
                   <TableCell className="text-right">
                     {formatCurrencyWithCode(
                       parseFloat(order.totalAmount),
-                      order.currency || "RWF"
+                      order.currency || "RWF",
                     )}
                   </TableCell>
                   <TableCell className="text-right">

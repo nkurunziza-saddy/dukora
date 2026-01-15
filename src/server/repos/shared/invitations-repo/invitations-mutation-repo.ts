@@ -14,7 +14,7 @@ import { ERROR_CODE } from "@/server/constants/errors";
 
 export async function accept_invitation(
   code: string,
-  action: "accept" | "decline"
+  action: "accept" | "decline",
 ) {
   if (!code) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -26,7 +26,7 @@ export async function accept_invitation(
     where: and(
       eq(invitationsTable.code, code),
       eq(invitationsTable.isAccepted, false),
-      isNull(invitationsTable.deletedAt)
+      isNull(invitationsTable.deletedAt),
     ),
   });
 
@@ -83,7 +83,7 @@ export async function create(
   invitation: Omit<
     InsertInvitation,
     "code" | "expiresAt" | "isAccepted" | "invitedBy" | "businessId"
-  >
+  >,
 ) {
   if (!invitation.email) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -93,7 +93,7 @@ export async function create(
     const existingUser = await db.query.usersTable.findFirst({
       where: and(
         eq(usersTable.email, invitation.email),
-        eq(usersTable.businessId, businessId)
+        eq(usersTable.businessId, businessId),
       ),
     });
 
@@ -144,7 +144,7 @@ export async function update(
   invitationId: string,
   businessId: string,
   userId: string,
-  updates: Partial<InsertInvitation>
+  updates: Partial<InsertInvitation>,
 ) {
   if (!invitationId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -159,8 +159,8 @@ export async function update(
           and(
             eq(invitationsTable.id, invitationId),
             eq(invitationsTable.businessId, businessId),
-            isNull(invitationsTable.deletedAt)
-          )
+            isNull(invitationsTable.deletedAt),
+          ),
         )
         .returning();
 
@@ -195,7 +195,7 @@ export async function update(
 export async function remove(
   invitationId: string,
   businessId: string,
-  userId: string
+  userId: string,
 ) {
   if (!invitationId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -214,8 +214,8 @@ export async function remove(
         .where(
           and(
             eq(invitationsTable.id, invitationId),
-            eq(invitationsTable.businessId, businessId)
-          )
+            eq(invitationsTable.businessId, businessId),
+          ),
         )
         .returning();
 
@@ -251,7 +251,7 @@ export async function create_many(
   invitations: Omit<
     InsertInvitation,
     "id" | "code" | "expiresAt" | "isAccepted" | "invitedBy"
-  >[]
+  >[],
 ) {
   if (!invitations || invitations.length === 0) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -267,7 +267,7 @@ export async function create_many(
     const existingUsers = await db.query.usersTable.findMany({
       where: and(
         inArray(usersTable.email, emails),
-        eq(usersTable.businessId, businessId)
+        eq(usersTable.businessId, businessId),
       ),
     });
 
@@ -316,7 +316,7 @@ export async function create_many(
 export async function set_password_for_invitation(
   email: string,
   invitationCode: string,
-  password: string
+  password: string,
 ) {
   if (!email || !invitationCode || !password) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -327,7 +327,7 @@ export async function set_password_for_invitation(
       where: and(
         eq(invitationsTable.code, invitationCode),
         eq(invitationsTable.email, email),
-        eq(invitationsTable.isAccepted, false)
+        eq(invitationsTable.isAccepted, false),
       ),
     });
 

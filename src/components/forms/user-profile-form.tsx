@@ -49,7 +49,7 @@ export default function UserProfileForm({
           description: "Something went wrong",
         });
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error(tCommon("error"), {
         description: "Something went wrong",
       });
@@ -76,7 +76,7 @@ export default function UserProfileForm({
           description: "Something went wrong",
         });
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error(tCommon("error"), {
         description: "Something went wrong",
       });

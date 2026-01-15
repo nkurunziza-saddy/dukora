@@ -15,7 +15,7 @@ export const getLogs = createProtectedAction(
       return { data: null, error: logs.error };
     }
     return { data: logs.data, error: null };
-  }
+  },
 );
 export const getLogsPaginated = createProtectedAction(
   PERMISSION.LOG_VIEW,
@@ -24,13 +24,13 @@ export const getLogsPaginated = createProtectedAction(
       user.businessId ?? "",
       user.id,
       page,
-      pageSize
+      pageSize,
     );
     if (logs.error) {
       return { data: null, error: logs.error };
     }
     return { data: logs.data, error: null };
-  }
+  },
 );
 
 export const getLogsOverview = createProtectedAction(
@@ -39,13 +39,13 @@ export const getLogsOverview = createProtectedAction(
     const logs = await logsRepo.get_overview(
       user.businessId ?? "",
       user.id,
-      limit
+      limit,
     );
     if (logs.error) {
       return { data: null, error: logs.error };
     }
     return { data: logs.data, error: null };
-  }
+  },
 );
 
 export const getLogById = createProtectedAction(
@@ -59,7 +59,7 @@ export const getLogById = createProtectedAction(
       return { data: null, error: log.error };
     }
     return { data: log.data, error: null };
-  }
+  },
 );
 
 export const createLog = createProtectedAction(
@@ -77,7 +77,7 @@ export const createLog = createProtectedAction(
     revalidateTag(`logs-${user.businessId}`, "max");
     revalidateTag("logs", "max");
     return { data: res.data, error: null };
-  }
+  },
 );
 
 export const deleteLog = createProtectedAction(
@@ -93,5 +93,5 @@ export const deleteLog = createProtectedAction(
     revalidateTag(`logs-${user.businessId}`, "max");
     revalidateTag("logs", "max");
     return { data: res.data, error: null };
-  }
+  },
 );

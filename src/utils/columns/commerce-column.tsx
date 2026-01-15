@@ -10,7 +10,7 @@ import { useCurrency } from "@/lib/hooks/use-currency";
 import { ProductStatus, type SelectProduct } from "@/lib/schema/schema.types";
 
 export function CommerceColumn(
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<SelectProduct>[] {
   const { formatWithCode } = useCurrency();
   return [
@@ -21,7 +21,7 @@ export function CommerceColumn(
       ),
       cell: ({ row }) => {
         const status = productStatuses.find(
-          (s) => s.value === row.original.status.toLowerCase()
+          (s) => s.value === row.original.status.toLowerCase(),
         );
         if (!status) {
           return (

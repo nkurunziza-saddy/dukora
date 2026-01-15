@@ -47,7 +47,7 @@ export async function create(userId: string, business: InsertBusiness) {
 export async function update(
   businessId: string,
   userId: string,
-  updates: Partial<InsertBusiness>
+  updates: Partial<InsertBusiness>,
 ) {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };

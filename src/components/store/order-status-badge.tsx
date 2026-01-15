@@ -1,15 +1,18 @@
-import { Badge } from "@/components/ui/badge";
+import type { VariantProps } from "class-variance-authority";
+import { Badge, type badgeVariants } from "@/components/ui/badge";
 
 interface OrderStatusBadgeProps {
   status: string;
 }
+
+type BadgeVariant = VariantProps<typeof badgeVariants>["variant"];
 
 export function OrderStatusBadge({ status }: OrderStatusBadgeProps) {
   const statusConfig: Record<
     string,
     {
       label: string;
-      variant: any;
+      variant: BadgeVariant;
     }
   > = {
     DRAFT: { label: "Draft", variant: "outline" },
@@ -18,8 +21,8 @@ export function OrderStatusBadge({ status }: OrderStatusBadgeProps) {
     CONFIRMED: { label: "Confirmed", variant: "success" },
     SHIPPED: { label: "Shipped", variant: "success" },
     DELIVERED: { label: "Delivered", variant: "success" },
-    CANCELLED: { label: "Cancelled", variant: "destructive" },
-    REFUNDED: { label: "Refunded", variant: "destructive" },
+    CANCELLED: { label: "Cancelled", variant: "error" },
+    REFUNDED: { label: "Refunded", variant: "error" },
   };
 
   const config = statusConfig[status] || { label: status, variant: "outline" };

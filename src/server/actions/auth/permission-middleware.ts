@@ -4,7 +4,7 @@ import { roleHasPermission } from "@/server/helpers/role-permissions";
 
 export async function getUserIfHasPermission(
   permission: PERMISSION,
-  bypass?: string
+  bypass?: string,
 ) {
   const session = await getCurrentSession();
   if (!session) return null;

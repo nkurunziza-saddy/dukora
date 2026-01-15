@@ -53,7 +53,7 @@ export function EditBusinessSettings({
         (settings.find((s) => s.key === "timezone")?.value as string) || "",
       fiscalStartMonth:
         String(
-          settings.find((s) => s.key === "fiscalStartMonth")?.value || ""
+          settings.find((s) => s.key === "fiscalStartMonth")?.value || "",
         ) || "",
       pricesIncludeTax:
         (settings.find((s) => s.key === "pricesIncludeTax")
@@ -152,7 +152,9 @@ export function EditBusinessSettings({
                   </Label>
                   <Select
                     items={getCurrencies()}
-                    onValueChange={field.handleChange}
+                    onValueChange={(value) =>
+                      value && field.handleChange(value)
+                    }
                     value={field.state.value}
                   >
                     <SelectTrigger>
@@ -179,9 +181,10 @@ export function EditBusinessSettings({
                   </Label>
                   <Select
                     onValueChange={(value) => {
+                      if (!value) return;
                       field.handleChange(value);
                       const country = getCountries(t).find(
-                        (c) => c.value === value
+                        (c) => c.value === value,
                       );
                       if (country) {
                         form.setFieldValue("timezone", country.timezone);
@@ -232,7 +235,9 @@ export function EditBusinessSettings({
                     </Label>
                     <Select
                       items={getMonths(t)}
-                      onValueChange={field.handleChange}
+                      onValueChange={(value) =>
+                        value && field.handleChange(value)
+                      }
                       value={field.state.value}
                     >
                       <SelectTrigger id={field.name}>

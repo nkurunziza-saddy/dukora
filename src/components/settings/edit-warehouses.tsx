@@ -41,7 +41,7 @@ export function EditWarehouses({
       const expectedNames = new Set(value.warehouses.map((w) => w.name));
 
       const created = value.warehouses.filter(
-        (w) => !existingNames.has(w.name)
+        (w) => !existingNames.has(w.name),
       );
 
       const deleted = warehouses.filter((w) => !expectedNames.has(w.name));

@@ -1,6 +1,6 @@
 "use cache";
 
-import { and, between, desc, eq, gte, lte, sql } from "drizzle-orm";
+import { and, between, desc, eq, gte, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { storeMetricsTable, storeProductsTable } from "@/lib/schema";
 import { ERROR_CODE } from "@/server/constants/errors";
@@ -11,7 +11,7 @@ import { ERROR_CODE } from "@/server/constants/errors";
 export const get_store_performance_metrics = async (
   businessId: string,
   startDate: Date,
-  endDate: Date
+  endDate: Date,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -31,8 +31,8 @@ export const get_store_performance_metrics = async (
         and(
           eq(storeMetricsTable.businessId, businessId),
           sql`${storeMetricsTable.storeProductId} IS NULL`, // Store-level only
-          between(storeMetricsTable.metricDate, startDate, endDate)
-        )
+          between(storeMetricsTable.metricDate, startDate, endDate),
+        ),
       )
       .groupBy(storeMetricsTable.metricDate)
       .orderBy(storeMetricsTable.metricDate);
@@ -45,7 +45,7 @@ export const get_store_performance_metrics = async (
         totalOrders: acc.totalOrders + Number(m.orders),
         totalRevenue: acc.totalRevenue + Number(m.revenue),
       }),
-      { totalViews: 0, totalAddedToCart: 0, totalOrders: 0, totalRevenue: 0 }
+      { totalViews: 0, totalAddedToCart: 0, totalOrders: 0, totalRevenue: 0 },
     );
 
     const conversionRate =
@@ -77,7 +77,7 @@ export const get_store_performance_metrics = async (
 export const get_product_performance_metrics = async (
   storeProductId: string,
   startDate: Date,
-  endDate: Date
+  endDate: Date,
 ) => {
   if (!storeProductId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -90,8 +90,8 @@ export const get_product_performance_metrics = async (
       .where(
         and(
           eq(storeMetricsTable.storeProductId, storeProductId),
-          between(storeMetricsTable.metricDate, startDate, endDate)
-        )
+          between(storeMetricsTable.metricDate, startDate, endDate),
+        ),
       )
       .orderBy(storeMetricsTable.metricDate);
 
@@ -103,7 +103,7 @@ export const get_product_performance_metrics = async (
         totalOrders: acc.totalOrders + m.orders,
         totalRevenue: acc.totalRevenue + Number(m.revenue),
       }),
-      { totalViews: 0, totalAddedToCart: 0, totalOrders: 0, totalRevenue: 0 }
+      { totalViews: 0, totalAddedToCart: 0, totalOrders: 0, totalRevenue: 0 },
     );
 
     const conversionRate =
@@ -133,7 +133,7 @@ export const get_top_performing_products = async (
   startDate: Date,
   endDate: Date,
   limit: number = 10,
-  sortBy: "revenue" | "orders" | "views" = "revenue"
+  sortBy: "revenue" | "orders" | "views" = "revenue",
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -159,14 +159,14 @@ export const get_top_performing_products = async (
       .from(storeMetricsTable)
       .innerJoin(
         storeProductsTable,
-        eq(storeMetricsTable.storeProductId, storeProductsTable.id)
+        eq(storeMetricsTable.storeProductId, storeProductsTable.id),
       )
       .where(
         and(
           eq(storeMetricsTable.businessId, businessId),
           sql`${storeMetricsTable.storeProductId} IS NOT NULL`,
-          between(storeMetricsTable.metricDate, startDate, endDate)
-        )
+          between(storeMetricsTable.metricDate, startDate, endDate),
+        ),
       )
       .groupBy(storeMetricsTable.storeProductId, storeProductsTable.storeTitle)
       .orderBy(desc(sortColumn))
@@ -186,7 +186,7 @@ export const get_revenue_trends = async (
   businessId: string,
   startDate: Date,
   endDate: Date,
-  groupBy: "day" | "week" | "month" = "day"
+  groupBy: "day" | "week" | "month" = "day",
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -217,8 +217,8 @@ export const get_revenue_trends = async (
         and(
           eq(storeMetricsTable.businessId, businessId),
           sql`${storeMetricsTable.storeProductId} IS NULL`, // Store-level
-          between(storeMetricsTable.metricDate, startDate, endDate)
-        )
+          between(storeMetricsTable.metricDate, startDate, endDate),
+        ),
       )
       .groupBy(dateFormat)
       .orderBy(dateFormat);
@@ -254,8 +254,8 @@ export const get_todays_metrics = async (businessId: string) => {
         and(
           eq(storeMetricsTable.businessId, businessId),
           sql`${storeMetricsTable.storeProductId} IS NULL`,
-          gte(storeMetricsTable.metricDate, today)
-        )
+          gte(storeMetricsTable.metricDate, today),
+        ),
       );
 
     return {

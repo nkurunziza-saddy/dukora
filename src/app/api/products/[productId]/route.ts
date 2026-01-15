@@ -4,7 +4,7 @@ import { ERROR_CODE } from "@/server/constants/errors";
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: Promise<{ productId: string }> }
+  { params }: { params: Promise<{ productId: string }> },
 ) {
   try {
     const productDetails = await getProductById((await params).productId);

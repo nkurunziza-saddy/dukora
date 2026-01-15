@@ -14,7 +14,7 @@ export const getCategories = createProtectedAction(
       return { data: null, error: categories.error };
     }
     return { data: categories.data, error: null };
-  }
+  },
 );
 
 export const getCategoryById = createProtectedAction(
@@ -25,13 +25,13 @@ export const getCategoryById = createProtectedAction(
     }
     const category = await categoryRepo.get_by_id(
       categoryId,
-      user.businessId ?? ""
+      user.businessId ?? "",
     );
     if (category.error) {
       return { data: null, error: category.error };
     }
     return { data: category.data, error: null };
-  }
+  },
 );
 
 export const upsertCategory = createProtectedAction(
@@ -46,7 +46,7 @@ export const upsertCategory = createProtectedAction(
     };
     const { data: resData, error: resError } = await categoryRepo.create(
       category,
-      user.id
+      user.id,
     );
     if (resError) {
       return { data: null, error: resError };
@@ -54,7 +54,7 @@ export const upsertCategory = createProtectedAction(
     revalidateTag(`categories-${user.businessId}`, "max");
     revalidateTag("categories", "max");
     return { data: resData, error: null };
-  }
+  },
 );
 
 export const updateCategory = createProtectedAction(
@@ -67,7 +67,7 @@ export const updateCategory = createProtectedAction(
     }: {
       categoryId: string;
       updates: Partial<Omit<InsertCategory, "id" | "businessId">>;
-    }
+    },
   ) => {
     if (!categoryId?.trim()) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -76,7 +76,7 @@ export const updateCategory = createProtectedAction(
       categoryId,
       user.businessId ?? "",
       user.id,
-      updates
+      updates,
     );
     if (updatedCategory.error) {
       return { data: null, error: updatedCategory.error };
@@ -84,7 +84,7 @@ export const updateCategory = createProtectedAction(
     revalidateTag(`categories-${user.businessId}`, "max");
     revalidateTag(`category-${categoryId}`, "max");
     return { data: updatedCategory.data, error: null };
-  }
+  },
 );
 
 export const deleteCategory = createProtectedAction(
@@ -96,7 +96,7 @@ export const deleteCategory = createProtectedAction(
     const res = await categoryRepo.remove(
       categoryId,
       user.businessId ?? "",
-      user.id
+      user.id,
     );
     if (res.error) {
       return { data: null, error: ERROR_CODE.DATABASE_ERROR };
@@ -104,7 +104,7 @@ export const deleteCategory = createProtectedAction(
     revalidateTag(`categories-${user.businessId}`, "max");
     revalidateTag(`category-${categoryId}`, "max");
     return { data: { success: true }, error: null };
-  }
+  },
 );
 
 export const upsertManyCategories = createProtectedAction(
@@ -123,10 +123,10 @@ export const upsertManyCategories = createProtectedAction(
     }));
     const createdCategories = await categoryRepo.upsert_many(
       categories,
-      user.id
+      user.id,
     );
     revalidateTag(`categories-${user.businessId}`, "max");
     revalidateTag("categories", "max");
     return { data: createdCategories, error: null };
-  }
+  },
 );

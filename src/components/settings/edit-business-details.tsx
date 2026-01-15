@@ -165,7 +165,9 @@ export function EditBusinessDetails({
                   </label>
                   <Select
                     items={businessTypes}
-                    onValueChange={field.handleChange}
+                    onValueChange={(value) =>
+                      value && field.handleChange(value)
+                    }
                     value={field.state.value || ""}
                   >
                     <SelectTrigger>

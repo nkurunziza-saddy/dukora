@@ -17,7 +17,7 @@ export const getTotalSKUCount = createProtectedAction(
       return { data: null, error: count.error };
     }
     return { data: count.data, error: null };
-  }
+  },
 );
 
 export const getTotalWarehousesCount = createProtectedAction(
@@ -28,7 +28,7 @@ export const getTotalWarehousesCount = createProtectedAction(
       return { data: null, error: count.error };
     }
     return { data: count.data, error: null };
-  }
+  },
 );
 
 export const getLowStockProductsCount = createProtectedAction(
@@ -39,7 +39,7 @@ export const getLowStockProductsCount = createProtectedAction(
       return { data: null, error: count.error };
     }
     return { data: count.data.length, error: null };
-  }
+  },
 );
 
 export const getCurrentInventoryValue = createProtectedAction(
@@ -50,7 +50,7 @@ export const getCurrentInventoryValue = createProtectedAction(
       return { data: null, error: count.error };
     }
     return { data: count.data, error: null };
-  }
+  },
 );
 
 export const getTodayTransactions = createProtectedAction(
@@ -63,17 +63,17 @@ export const getTodayTransactions = createProtectedAction(
       transactionRepo.get_transaction_metrics_for_interval(
         user.businessId ?? "",
         today,
-        tomorrow
+        tomorrow,
       ),
       transactionRepo.get_transaction_metrics_for_interval(
         user.businessId ?? "",
         yesterday,
-        today
+        today,
       ),
     ]);
     return {
       data: { current: resToday.data, prev: resYesterday.data },
       error: null,
     };
-  }
+  },
 );

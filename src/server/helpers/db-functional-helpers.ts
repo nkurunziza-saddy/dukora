@@ -5,7 +5,7 @@ import * as metricsRepo from "@/server/repos/shared/metrics-repo";
 export async function syncMetricsToDatabase(
   businessId: string,
   date: Date,
-  metrics: ReturnType<typeof calculateAllMetrics>
+  metrics: ReturnType<typeof calculateAllMetrics>,
 ) {
   if (!businessId || !date || !metrics) {
     console.error("Invalid parameters provided for metrics sync");
@@ -17,7 +17,7 @@ export async function syncMetricsToDatabase(
     const errors = [];
 
     const metricsToSync = Object.entries(metrics).filter(
-      ([key]) => key !== "dataQuality"
+      ([key]) => key !== "dataQuality",
     );
 
     for (const [metricName, value] of metricsToSync) {

@@ -17,8 +17,8 @@ export async function get_all(businessId: string, userId: string) {
       .where(
         and(
           eq(schedulesTable.businessId, businessId),
-          eq(schedulesTable.userId, userId)
-        )
+          eq(schedulesTable.userId, userId),
+        ),
       )
       .orderBy(desc(schedulesTable.created_at));
     return { data: schedules, error: null };
@@ -32,7 +32,7 @@ export async function get_all_paginated(
   businessId: string,
   userId: string,
   page: number,
-  pageSize: number
+  pageSize: number,
 ) {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -46,8 +46,8 @@ export async function get_all_paginated(
       .where(
         and(
           eq(schedulesTable.businessId, businessId),
-          eq(schedulesTable.userId, userId)
-        )
+          eq(schedulesTable.userId, userId),
+        ),
       )
       .orderBy(desc(schedulesTable.created_at))
       .limit(pageSize)
@@ -58,8 +58,8 @@ export async function get_all_paginated(
       .where(
         and(
           eq(schedulesTable.businessId, businessId),
-          eq(schedulesTable.userId, userId)
-        )
+          eq(schedulesTable.userId, userId),
+        ),
       );
     return {
       data: { schedules, totalCount: totalCount.count || 0 },
@@ -74,7 +74,7 @@ export async function get_all_paginated(
 export const get_overview = async (
   businessId: string,
   userId: string,
-  limit?: number
+  limit?: number,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -87,8 +87,8 @@ export const get_overview = async (
       .where(
         and(
           eq(schedulesTable.businessId, businessId),
-          eq(schedulesTable.userId, userId)
-        )
+          eq(schedulesTable.userId, userId),
+        ),
       )
       .orderBy(desc(schedulesTable.created_at))
       .limit(limit ?? 5);
@@ -108,7 +108,7 @@ export const get_by_id = async (scheduleId: string, businessId: string) => {
     const schedule = await db.query.schedulesTable.findFirst({
       where: and(
         eq(schedulesTable.id, scheduleId),
-        eq(schedulesTable.businessId, businessId)
+        eq(schedulesTable.businessId, businessId),
       ),
     });
 

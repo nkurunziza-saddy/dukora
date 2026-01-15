@@ -1,6 +1,6 @@
 export function generateCSVReport(
   metrics: Record<string, unknown>,
-  currency: string = "RWF"
+  currency: string = "RWF",
 ) {
   const csvData = [
     ["Metric", "Value"],

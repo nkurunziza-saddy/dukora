@@ -15,11 +15,23 @@ export async function generateMetadata(): Promise<Metadata> {
 async function ProductsTable({
   page,
   pageSize,
+  sorting,
+  filters,
+  search,
 }: {
   page: number;
   pageSize: number;
+  sorting?: { id: string; desc: boolean }[];
+  filters?: { id: string; value: unknown }[];
+  search?: string;
 }) {
-  const products = await getProductsPaginated({ page, pageSize });
+  const products = await getProductsPaginated({
+    page,
+    pageSize,
+    sorting,
+    filters,
+    search,
+  });
 
   if (!products.data) {
     return (
@@ -37,6 +49,8 @@ async function ProductsTable({
       pageSize={pageSize}
       tag="products"
       totalCount={products.data.totalCount}
+      sorting={sorting}
+      search={search}
     />
   );
 }
@@ -48,10 +62,30 @@ export default async function ProductsPage(
   const page = Number(query.page) || 1;
   const pageSize = Number(query.pageSize) || 10;
 
+  let sorting: { id: string; desc: boolean }[] | undefined;
+  if (query.sort) {
+    const sortParam = String(query.sort);
+    const [id, desc] = sortParam.split(".");
+    sorting = [{ id, desc: desc === "desc" }];
+  }
+
+  let filters: { id: string; value: unknown }[] | undefined;
+  if (query.status) {
+    filters = [{ id: "status", value: query.status }];
+  }
+
+  const search = typeof query.search === "string" ? query.search : undefined;
+
   return (
     <div className="space-y-6">
       <Suspense fallback={<TableSkeleton />}>
-        <ProductsTable page={page} pageSize={pageSize} />
+        <ProductsTable
+          page={page}
+          pageSize={pageSize}
+          sorting={sorting}
+          filters={filters}
+          search={search}
+        />
       </Suspense>
     </div>
   );

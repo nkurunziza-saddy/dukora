@@ -3,10 +3,8 @@
 import { type InputHTMLAttributes, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
-interface DebouncedInputProps extends Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  "onChange"
-> {
+interface DebouncedInputProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange"> {
   value: string | number;
   onChange: (value: string | number) => void;
   debounce?: number;
@@ -49,7 +47,7 @@ export function DebouncedInput({
         "outline-none placeholder:text-muted-foreground/64",
         "sm:text-sm dark:bg-input/32 outline-0 shadow-none",
         "sm:w-[150px] lg:w-[250px]",
-        className
+        className,
       )}
       value={value ?? ""}
       onChange={(e) => {

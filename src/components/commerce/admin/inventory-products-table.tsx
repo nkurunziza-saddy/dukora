@@ -41,7 +41,7 @@ export function InventoryProductsTable({
 }: InventoryProductsTableProps) {
   const [publishDialogOpen, setPublishDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<SelectProduct | null>(
-    null
+    null,
   );
 
   const handlePublish = (product: SelectProduct) => {
@@ -117,7 +117,7 @@ export function InventoryProductsTable({
                     <span className="font-medium">
                       {formatCurrencyWithCode(
                         Number(product.price),
-                        product.currency
+                        product.currency,
                       )}
                     </span>
                   </TableCell>

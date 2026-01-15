@@ -18,7 +18,7 @@ export const get_admin_store_products = async (
     isPublished?: boolean;
     featured?: boolean;
     search?: string;
-  }
+  },
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -33,7 +33,7 @@ export const get_admin_store_products = async (
 
     if (filters?.isPublished !== undefined) {
       whereConditions.push(
-        eq(storeProductsTable.isPublished, filters.isPublished)
+        eq(storeProductsTable.isPublished, filters.isPublished),
       );
     }
 
@@ -47,8 +47,8 @@ export const get_admin_store_products = async (
           like(storeProductsTable.storeTitle, `%${filters.search}%`),
           like(productsTable.name, `%${filters.search}%`),
           like(productsTable.sku, `%${filters.search}%`),
-          like(storeProductsTable.slug, `%${filters.search}%`)
-        )!
+          like(storeProductsTable.slug, `%${filters.search}%`),
+        )!,
       );
     }
 
@@ -62,11 +62,11 @@ export const get_admin_store_products = async (
       .from(storeProductsTable)
       .innerJoin(
         productsTable,
-        eq(storeProductsTable.productId, productsTable.id)
+        eq(storeProductsTable.productId, productsTable.id),
       )
       .leftJoin(
         warehouseItemsTable,
-        eq(productsTable.id, warehouseItemsTable.productId)
+        eq(productsTable.id, warehouseItemsTable.productId),
       )
       .where(and(...whereConditions))
       .groupBy(storeProductsTable.id, productsTable.id)
@@ -79,7 +79,7 @@ export const get_admin_store_products = async (
       .from(storeProductsTable)
       .innerJoin(
         productsTable,
-        eq(storeProductsTable.productId, productsTable.id)
+        eq(storeProductsTable.productId, productsTable.id),
       )
       .where(and(...whereConditions));
 
@@ -108,7 +108,7 @@ export const get_store_products_paginated = async (
     featured?: boolean;
     sortBy?: "viewCount" | "soldCount" | "storePrice" | "createdAt";
     sortOrder?: "asc" | "desc";
-  }
+  },
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -128,8 +128,8 @@ export const get_store_products_paginated = async (
         or(
           like(storeProductsTable.storeTitle, `%${filters.search}%`),
           like(storeProductsTable.storeDescription, `%${filters.search}%`),
-          like(productsTable.name, `%${filters.search}%`)
-        )!
+          like(productsTable.name, `%${filters.search}%`),
+        )!,
       );
     }
 
@@ -193,7 +193,7 @@ export const get_store_products_paginated = async (
       .from(storeProductsTable)
       .innerJoin(
         productsTable,
-        eq(storeProductsTable.productId, productsTable.id)
+        eq(storeProductsTable.productId, productsTable.id),
       )
       .where(and(...whereConditions))
       .orderBy(orderByClause)
@@ -205,7 +205,7 @@ export const get_store_products_paginated = async (
       .from(storeProductsTable)
       .innerJoin(
         productsTable,
-        eq(storeProductsTable.productId, productsTable.id)
+        eq(storeProductsTable.productId, productsTable.id),
       )
       .where(and(...whereConditions));
 
@@ -229,7 +229,7 @@ export const get_store_products_paginated = async (
  */
 export const get_featured_products = async (
   businessId: string,
-  limit: number = 8
+  limit: number = 8,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -257,7 +257,7 @@ export const get_featured_products = async (
       .from(storeProductsTable)
       .innerJoin(
         productsTable,
-        eq(storeProductsTable.productId, productsTable.id)
+        eq(storeProductsTable.productId, productsTable.id),
       )
       .where(
         and(
@@ -265,12 +265,12 @@ export const get_featured_products = async (
           eq(storeProductsTable.isPublished, true),
           eq(storeProductsTable.featured, true),
           isNull(storeProductsTable.deletedAt),
-          isNull(productsTable.deletedAt)
-        )
+          isNull(productsTable.deletedAt),
+        ),
       )
       .orderBy(
         storeProductsTable.featuredOrder,
-        desc(storeProductsTable.createdAt)
+        desc(storeProductsTable.createdAt),
       )
       .limit(limit);
 
@@ -286,7 +286,7 @@ export const get_featured_products = async (
  */
 export const get_store_product_by_id = async (
   storeProductId: string,
-  businessId: string
+  businessId: string,
 ) => {
   if (!storeProductId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -309,21 +309,21 @@ export const get_store_product_by_id = async (
       .from(storeProductsTable)
       .innerJoin(
         productsTable,
-        eq(storeProductsTable.productId, productsTable.id)
+        eq(storeProductsTable.productId, productsTable.id),
       )
       .leftJoin(
         warehouseItemsTable,
-        eq(productsTable.id, warehouseItemsTable.productId)
+        eq(productsTable.id, warehouseItemsTable.productId),
       )
       .leftJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .where(
         and(
           eq(storeProductsTable.id, storeProductId),
-          eq(storeProductsTable.businessId, businessId)
-        )
+          eq(storeProductsTable.businessId, businessId),
+        ),
       )
       .groupBy(storeProductsTable.id, productsTable.id);
 
@@ -343,7 +343,7 @@ export const get_store_product_by_id = async (
  */
 export const get_store_product_by_slug = async (
   slug: string,
-  businessId: string
+  businessId: string,
 ) => {
   if (!slug || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -378,11 +378,11 @@ export const get_store_product_by_slug = async (
       .from(storeProductsTable)
       .innerJoin(
         productsTable,
-        eq(storeProductsTable.productId, productsTable.id)
+        eq(storeProductsTable.productId, productsTable.id),
       )
       .leftJoin(
         warehouseItemsTable,
-        eq(productsTable.id, warehouseItemsTable.productId)
+        eq(productsTable.id, warehouseItemsTable.productId),
       )
       .where(
         and(
@@ -390,8 +390,8 @@ export const get_store_product_by_slug = async (
           eq(storeProductsTable.businessId, businessId),
           eq(storeProductsTable.isPublished, true),
           isNull(storeProductsTable.deletedAt),
-          isNull(productsTable.deletedAt)
-        )
+          isNull(productsTable.deletedAt),
+        ),
       )
       .groupBy(storeProductsTable.id, productsTable.id);
 
@@ -409,7 +409,7 @@ export const get_store_product_by_slug = async (
 export const get_available_inventory_products = async (
   businessId: string,
   page: number,
-  pageSize: number
+  pageSize: number,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -427,18 +427,18 @@ export const get_available_inventory_products = async (
       .from(productsTable)
       .leftJoin(
         storeProductsTable,
-        eq(productsTable.id, storeProductsTable.productId)
+        eq(productsTable.id, storeProductsTable.productId),
       )
       .leftJoin(
         warehouseItemsTable,
-        eq(productsTable.id, warehouseItemsTable.productId)
+        eq(productsTable.id, warehouseItemsTable.productId),
       )
       .where(
         and(
           eq(productsTable.businessId, businessId),
           isNull(productsTable.deletedAt),
-          isNull(storeProductsTable.id)
-        )
+          isNull(storeProductsTable.id),
+        ),
       )
       .groupBy(productsTable.id)
       .orderBy(desc(productsTable.createdAt))
@@ -450,14 +450,14 @@ export const get_available_inventory_products = async (
       .from(productsTable)
       .leftJoin(
         storeProductsTable,
-        eq(productsTable.id, storeProductsTable.productId)
+        eq(productsTable.id, storeProductsTable.productId),
       )
       .where(
         and(
           eq(productsTable.businessId, businessId),
           isNull(productsTable.deletedAt),
-          isNull(storeProductsTable.id)
-        )
+          isNull(storeProductsTable.id),
+        ),
       );
 
     return {
@@ -477,7 +477,7 @@ export const get_available_inventory_products = async (
 
 export const check_product_availability = async (
   storeProductId: string,
-  quantity: number
+  quantity: number,
 ) => {
   if (!storeProductId || quantity <= 0) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -495,11 +495,11 @@ export const check_product_availability = async (
       .from(storeProductsTable)
       .innerJoin(
         productsTable,
-        eq(storeProductsTable.productId, productsTable.id)
+        eq(storeProductsTable.productId, productsTable.id),
       )
       .leftJoin(
         warehouseItemsTable,
-        eq(productsTable.id, warehouseItemsTable.productId)
+        eq(productsTable.id, warehouseItemsTable.productId),
       )
       .where(eq(storeProductsTable.id, storeProductId))
       .groupBy(storeProductsTable.id, productsTable.id);

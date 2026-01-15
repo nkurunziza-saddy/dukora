@@ -9,7 +9,7 @@ import { ERROR_CODE } from "@/server/constants/errors";
 export async function create(
   _businessId: string,
   _userId: string,
-  auditLog: InsertAuditLog
+  auditLog: InsertAuditLog,
 ) {
   try {
     const [newAuditLog] = await db
@@ -41,8 +41,8 @@ export async function remove(auditLogId: string, businessId: string) {
       .where(
         and(
           eq(auditLogsTable.id, auditLogId),
-          eq(auditLogsTable.businessId, businessId)
-        )
+          eq(auditLogsTable.businessId, businessId),
+        ),
       )
       .returning();
 

@@ -33,7 +33,7 @@ export interface ForecastPoint {
 export async function getForecastedMetrics(
   historicalData: Record<string, Record<string, number>>,
   metricName: string,
-  forecastPeriods = 3
+  forecastPeriods = 3,
 ) {
   const currentUser = await getUserIfHasPermission(PERMISSION.FINANCIAL_VIEW);
   if (!currentUser) return { data: null, error: ERROR_CODE.UNAUTHORIZED };
@@ -45,7 +45,7 @@ export async function getForecastedMetrics(
           x: index,
           y: metrics[metricName] || 0,
           name: new Date(period).toLocaleString("default", { month: "short" }),
-        }) as ForecastPoint
+        }) as ForecastPoint,
     );
 
     if (formattedData.length < 2) {

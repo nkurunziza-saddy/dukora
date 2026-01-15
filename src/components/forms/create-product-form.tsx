@@ -130,7 +130,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
             : `${t("productName")} ${tCommon("add")} ${tCommon("confirm")}`,
           {
             description: format(new Date(), "MMM dd, yyyy"),
-          }
+          },
         );
       } else {
         toast.error(tCommon("error"), {
@@ -434,7 +434,7 @@ export default function ProductForm({ product }: { product?: SelectProduct }) {
               </>
             ) : (
               `${product ? tCommon("edit") : tCommon("add")} ${t(
-                "productName"
+                "productName",
               )}`
             )}
           </Button>

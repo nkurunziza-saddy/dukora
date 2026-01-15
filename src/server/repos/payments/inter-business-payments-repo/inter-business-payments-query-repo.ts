@@ -44,11 +44,11 @@ export const get_all_paginated = cache(
     } catch (error) {
       console.error(
         "Failed to get inter-business payments for business:",
-        error
+        error,
       );
       return { data: null, error: ERROR_CODE.FAILED_REQUEST };
     }
-  }
+  },
 );
 
 export async function get_by_id(paymentId: string) {

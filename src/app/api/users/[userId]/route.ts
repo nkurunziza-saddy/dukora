@@ -4,7 +4,7 @@ import { ERROR_CODE } from "@/server/constants/errors";
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: Promise<{ userId: string }> }
+  { params }: { params: Promise<{ userId: string }> },
 ) {
   try {
     const userDetails = await getUserById((await params).userId);

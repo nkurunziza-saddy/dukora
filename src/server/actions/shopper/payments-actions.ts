@@ -20,7 +20,7 @@ export const createCustomerPaymentLink = createProtectedAction(
       currency: string;
       description: string;
       customerEmail?: string;
-    }
+    },
   ) => {
     if (!user.businessId) {
       return { data: null, error: ERROR_CODE.BUSINESS_NOT_FOUND };
@@ -66,7 +66,7 @@ export const createCustomerPaymentLink = createProtectedAction(
         error: ERROR_CODE.FAILED_REQUEST,
       };
     }
-  }
+  },
 );
 
 export const getCustomerPayments = createProtectedAction(
@@ -90,7 +90,7 @@ export const getCustomerPayments = createProtectedAction(
 
       // Filter payment intents that belong to this business
       const businessPayments = paymentIntents.data.filter(
-        (pi) => pi.metadata?.businessId === user.businessId
+        (pi) => pi.metadata?.businessId === user.businessId,
       );
 
       return {
@@ -106,5 +106,5 @@ export const getCustomerPayments = createProtectedAction(
       console.error("Failed to get customer payments:", error);
       return { data: null, error: ERROR_CODE.FAILED_REQUEST };
     }
-  }
+  },
 );

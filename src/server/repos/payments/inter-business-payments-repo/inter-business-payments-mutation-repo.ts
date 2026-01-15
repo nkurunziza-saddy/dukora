@@ -13,7 +13,7 @@ import * as notificationRepo from "@/server/repos/shared/notification-repo";
 
 export async function create(
   payment: InsertInterBusinessPayment,
-  userId: string
+  userId: string,
 ) {
   if (!payment || !userId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -61,7 +61,7 @@ export async function create(
 export async function update_status(
   paymentId: string,
   status: string,
-  userId: string
+  userId: string,
 ) {
   if (!paymentId || !status || !userId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };

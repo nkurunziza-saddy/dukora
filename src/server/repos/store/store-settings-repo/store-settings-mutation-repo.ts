@@ -15,7 +15,7 @@ import { ERROR_CODE } from "@/server/constants/errors";
 export async function initialize_store_settings(
   businessId: string,
   userId: string,
-  settings?: Partial<InsertStoreSetting>
+  settings?: Partial<InsertStoreSetting>,
 ) {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -78,7 +78,7 @@ export async function initialize_store_settings(
 export async function update_store_settings(
   businessId: string,
   userId: string,
-  updates: Partial<InsertStoreSetting>
+  updates: Partial<InsertStoreSetting>,
 ) {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -134,7 +134,7 @@ export async function update_store_settings(
 export async function toggle_store_enabled(
   businessId: string,
   userId: string,
-  enabled: boolean
+  enabled: boolean,
 ) {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -158,7 +158,7 @@ export async function toggle_store_enabled(
 export async function update_default_warehouse(
   businessId: string,
   userId: string,
-  warehouseId: string | null
+  warehouseId: string | null,
 ) {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };

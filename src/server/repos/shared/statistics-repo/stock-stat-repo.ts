@@ -19,7 +19,7 @@ export const get_products_with_most_quantity = async (businessId: string) => {
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .where(eq(warehousesTable.businessId, businessId))
       .orderBy(desc(warehouseItemsTable.quantity))
@@ -42,7 +42,7 @@ export const get_products_with_lowest_quantity = async (businessId: string) => {
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .where(eq(warehousesTable.businessId, businessId))
       .orderBy(asc(warehouseItemsTable.quantity))
@@ -65,17 +65,17 @@ export const get_products_with_stock_alert = async (businessId: string) => {
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .innerJoin(
         productsTable,
-        eq(warehouseItemsTable.productId, productsTable.id)
+        eq(warehouseItemsTable.productId, productsTable.id),
       )
       .where(
         and(
           eq(productsTable.businessId, businessId),
-          lte(warehouseItemsTable.quantity, productsTable.reorderPoint)
-        )
+          lte(warehouseItemsTable.quantity, productsTable.reorderPoint),
+        ),
       )
       .orderBy(asc(warehouseItemsTable.quantity))
       .limit(5);
@@ -89,7 +89,7 @@ export const get_products_with_stock_alert = async (businessId: string) => {
 export const get_by_quantity = async (
   businessId: string,
   threshold: number = 5,
-  fn?: string
+  fn?: string,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -100,15 +100,15 @@ export const get_by_quantity = async (
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .where(
         and(
           eq(warehousesTable.businessId, businessId),
           fn === "equal"
             ? eq(warehouseItemsTable.quantity, threshold)
-            : lte(warehouseItemsTable.quantity, threshold)
-        )
+            : lte(warehouseItemsTable.quantity, threshold),
+        ),
       );
     return { data: items, error: null };
   } catch (error) {
@@ -127,13 +127,13 @@ export const get_negative_item = async (businessId: string) => {
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .where(
         and(
           eq(warehousesTable.businessId, businessId),
-          lt(warehouseItemsTable.quantity, 0)
-        )
+          lt(warehouseItemsTable.quantity, 0),
+        ),
       );
     return { data: items, error: null };
   } catch (error) {
@@ -155,11 +155,11 @@ export const get_inventory_value = async (businessId: string) => {
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .innerJoin(
         productsTable,
-        eq(warehouseItemsTable.productId, productsTable.id)
+        eq(warehouseItemsTable.productId, productsTable.id),
       )
       .where(eq(warehousesTable.businessId, businessId));
 
@@ -171,7 +171,7 @@ export const get_inventory_value = async (businessId: string) => {
 };
 
 export const get_inventory_value_by_warehouse_and_product = async (
-  businessId: string
+  businessId: string,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -187,11 +187,11 @@ export const get_inventory_value_by_warehouse_and_product = async (
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .innerJoin(
         productsTable,
-        eq(warehouseItemsTable.productId, productsTable.id)
+        eq(warehouseItemsTable.productId, productsTable.id),
       )
       .where(eq(warehousesTable.businessId, businessId))
       .groupBy(warehouseItemsTable.productId, warehouseItemsTable.warehouseId);

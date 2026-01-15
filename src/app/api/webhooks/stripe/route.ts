@@ -2,8 +2,8 @@ import { headers } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
-import { confirmCustomerOrder } from "@/server/actions/shopper/orders-actions";
 import { syncInventoryAfterOrder } from "@/server/actions/inventory/sync-actions";
+import { confirmCustomerOrder } from "@/server/actions/shopper/orders-actions";
 
 export async function POST(req: NextRequest) {
   const body = await req.text();

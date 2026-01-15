@@ -147,7 +147,10 @@ export default async function StoreOrdersPage({
         fallback={
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {[...Array(4)].map((_, i) => (
-              <div className="h-32 bg-muted animate-pulse rounded-lg" key={i} />
+              <div
+                className="h-32 bg-muted animate-pulse rounded-lg"
+                key={`order-stat-skeleton-${i}`}
+              />
             ))}
           </div>
         }

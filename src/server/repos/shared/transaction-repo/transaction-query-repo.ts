@@ -37,7 +37,7 @@ export const get_all = async (businessId: string) => {
       .where(eq(transactionsTable.businessId, businessId))
       .innerJoin(
         productsTable,
-        eq(productsTable.id, transactionsTable.productId)
+        eq(productsTable.id, transactionsTable.productId),
       )
       .innerJoin(usersTable, eq(usersTable.id, transactionsTable.createdBy))
       .orderBy(desc(transactionsTable.createdAt));
@@ -55,7 +55,7 @@ export const get_all_paginated = async (
   pageSize: number,
   sorting?: { id: string; desc: boolean }[],
   filters?: { id: string; value: unknown }[],
-  search?: string
+  search?: string,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -64,7 +64,6 @@ export const get_all_paginated = async (
   try {
     const offset = (page - 1) * pageSize;
 
-    // Build where clause
     const whereConditions = [eq(transactionsTable.businessId, businessId)];
 
     if (filters) {
@@ -74,9 +73,8 @@ export const get_all_paginated = async (
             ? filter.value
             : (filter.value as string).split(",");
 
-          // Cast to TransactionType[]
           const validTypes = types.filter((t: any) =>
-            Object.values(TransactionType).includes(t as TransactionType)
+            Object.values(TransactionType).includes(t as TransactionType),
           ) as TransactionType[];
 
           if (validTypes.length > 0) {
@@ -92,25 +90,22 @@ export const get_all_paginated = async (
           ilike(transactionsTable.reference, `%${search}%`),
           ilike(transactionsTable.note, `%${search}%`),
           ilike(productsTable.name, `%${search}%`),
-          ilike(usersTable.name, `%${search}%`)
-        )
+          ilike(usersTable.name, `%${search}%`),
+        )!,
       );
     }
 
-    // Build order by
     let orderBy: any = desc(transactionsTable.createdAt);
     if (sorting && sorting.length > 0) {
       const sort = sorting[0];
-      // Map sort.id to table columns
       const columnMap: Record<string, any> = {
         createdAt: transactionsTable.createdAt,
         quantity: transactionsTable.quantity,
-        // Add other sortable columns
       };
 
       const column = columnMap[sort.id];
       if (column) {
-        orderBy = sort.desc ? desc(column) : asc(column); // Need to import asc
+        orderBy = sort.desc ? desc(column) : asc(column);
       }
     }
 
@@ -125,10 +120,10 @@ export const get_all_paginated = async (
         createdBy: usersTable.name,
       })
       .from(transactionsTable)
-      .where(and(...whereConditions)) // Need to spread conditions
+      .where(and(...whereConditions))
       .innerJoin(
         productsTable,
-        eq(productsTable.id, transactionsTable.productId)
+        eq(productsTable.id, transactionsTable.productId),
       )
       .innerJoin(usersTable, eq(usersTable.id, transactionsTable.createdBy))
       .orderBy(orderBy)
@@ -141,7 +136,7 @@ export const get_all_paginated = async (
       .where(and(...whereConditions))
       .innerJoin(
         productsTable,
-        eq(productsTable.id, transactionsTable.productId)
+        eq(productsTable.id, transactionsTable.productId),
       )
       .innerJoin(usersTable, eq(usersTable.id, transactionsTable.createdBy));
 
@@ -158,7 +153,7 @@ export const get_all_paginated = async (
 export async function get_by_time_interval(
   businessId: string,
   dateFrom: Date,
-  dateTo: Date
+  dateTo: Date,
 ) {
   try {
     const result = await db
@@ -168,12 +163,12 @@ export async function get_by_time_interval(
         and(
           eq(transactionsTable.businessId, businessId),
           gte(transactionsTable.createdAt, dateFrom),
-          lte(transactionsTable.createdAt, dateTo)
-        )
+          lte(transactionsTable.createdAt, dateTo),
+        ),
       )
       .innerJoin(
         productsTable,
-        eq(transactionsTable.productId, productsTable.id)
+        eq(transactionsTable.productId, productsTable.id),
       );
     return {
       data: result,
@@ -187,7 +182,7 @@ export async function get_by_time_interval(
 export async function get_time_interval_with_with(
   businessId: string,
   dateFrom: Date,
-  dateTo: Date
+  dateTo: Date,
 ) {
   try {
     const result = await db
@@ -205,12 +200,12 @@ export async function get_time_interval_with_with(
         and(
           eq(transactionsTable.businessId, businessId),
           gte(transactionsTable.createdAt, dateFrom),
-          lte(transactionsTable.createdAt, dateTo)
-        )
+          lte(transactionsTable.createdAt, dateTo),
+        ),
       )
       .innerJoin(
         productsTable,
-        eq(productsTable.id, transactionsTable.productId)
+        eq(productsTable.id, transactionsTable.productId),
       )
       .innerJoin(usersTable, eq(usersTable.id, transactionsTable.createdBy))
       .orderBy(desc(transactionsTable.createdAt));
@@ -230,7 +225,7 @@ export async function get_time_interval_with_with_paginated(
   dateFrom: Date,
   dateTo: Date,
   page: number,
-  pageSize: number
+  pageSize: number,
 ) {
   try {
     const offset = (page - 1) * pageSize;
@@ -249,12 +244,12 @@ export async function get_time_interval_with_with_paginated(
         and(
           eq(transactionsTable.businessId, businessId),
           gte(transactionsTable.createdAt, dateFrom),
-          lte(transactionsTable.createdAt, dateTo)
-        )
+          lte(transactionsTable.createdAt, dateTo),
+        ),
       )
       .innerJoin(
         productsTable,
-        eq(productsTable.id, transactionsTable.productId)
+        eq(productsTable.id, transactionsTable.productId),
       )
       .innerJoin(usersTable, eq(usersTable.id, transactionsTable.createdBy))
       .orderBy(desc(transactionsTable.createdAt))
@@ -269,12 +264,12 @@ export async function get_time_interval_with_with_paginated(
         and(
           eq(transactionsTable.businessId, businessId),
           gte(transactionsTable.createdAt, dateFrom),
-          lte(transactionsTable.createdAt, dateTo)
-        )
+          lte(transactionsTable.createdAt, dateTo),
+        ),
       )
       .innerJoin(
         productsTable,
-        eq(productsTable.id, transactionsTable.productId)
+        eq(productsTable.id, transactionsTable.productId),
       )
       .innerJoin(usersTable, eq(usersTable.id, transactionsTable.createdBy));
     return {
@@ -296,7 +291,7 @@ export async function get_by_id(transactionId: string, businessId: string) {
     const transaction = await db.query.transactionsTable.findFirst({
       where: and(
         eq(transactionsTable.id, transactionId),
-        eq(transactionsTable.businessId, businessId)
+        eq(transactionsTable.businessId, businessId),
       ),
       with: {
         product: true,
@@ -328,8 +323,8 @@ export async function get_by_type(businessId: string, type: TransactionType) {
       .where(
         and(
           eq(transactionsTable.businessId, businessId),
-          eq(transactionsTable.type, type)
-        )
+          eq(transactionsTable.type, type),
+        ),
       )
       .orderBy(desc(transactionsTable.createdAt));
 

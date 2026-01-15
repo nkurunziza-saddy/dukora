@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, useEffect, useState } from "react";
+import { type InputHTMLAttributes, useEffect, useState } from "react";
 
 export function DebouncedInput({
   value: initialValue,
@@ -23,7 +23,7 @@ export function DebouncedInput({
 
     return () => clearTimeout(timeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  }, [value, debounce, onChange]);
 
   return (
     <input

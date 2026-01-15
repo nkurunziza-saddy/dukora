@@ -15,7 +15,7 @@ export const getExpenses = createProtectedAction(
       return { data: null, error: expenses.error };
     }
     return { data: expenses.data, error: null };
-  }
+  },
 );
 
 export const getExpensesPaginated = createProtectedAction(
@@ -24,13 +24,13 @@ export const getExpensesPaginated = createProtectedAction(
     const expenses = await expenseRepo.get_all_paginated(
       user.businessId ?? "",
       page,
-      pageSize
+      pageSize,
     );
     if (expenses.error) {
       return { data: null, error: expenses.error };
     }
     return { data: expenses.data, error: null };
-  }
+  },
 );
 
 export const getExpensesByTimeInterval = createProtectedAction(
@@ -39,13 +39,13 @@ export const getExpensesByTimeInterval = createProtectedAction(
     const expenses = await expenseRepo.get_by_time_interval(
       user.businessId ?? "",
       startDate,
-      endDate
+      endDate,
     );
     if (expenses.error) {
       return { data: null, error: expenses.error };
     }
     return { data: expenses.data, error: null };
-  }
+  },
 );
 
 export const getExpenseById = createProtectedAction(
@@ -56,20 +56,20 @@ export const getExpenseById = createProtectedAction(
     }
     const expense = await expenseRepo.get_by_id(
       expenseId,
-      user.businessId ?? ""
+      user.businessId ?? "",
     );
     if (expense.error) {
       return { data: null, error: expense.error };
     }
     return { data: expense.data, error: null };
-  }
+  },
 );
 
 export const createExpense = createProtectedAction(
   PERMISSION.FINANCIAL_VIEW,
   async (
     user,
-    expenseData: Omit<InsertExpense, "businessId" | "id" | "createdBy">
+    expenseData: Omit<InsertExpense, "businessId" | "id" | "createdBy">,
   ) => {
     if (!expenseData.amount) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -89,5 +89,5 @@ export const createExpense = createProtectedAction(
     revalidateTag("expenses", "max");
     revalidateTag(`transactions-${user.businessId}`, "max");
     return { data: resData, error: null };
-  }
+  },
 );

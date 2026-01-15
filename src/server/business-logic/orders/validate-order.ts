@@ -59,7 +59,7 @@ export function validateOrderItems(items: OrderItem[]): ValidationResult {
 export function validateCustomerInfo(
   email: string,
   name: string,
-  phone?: string
+  phone?: string,
 ): ValidationResult {
   if (!email || !email.trim()) {
     return { valid: false, error: ERROR_CODE.MISSING_INPUT };
@@ -74,7 +74,7 @@ export function validateCustomerInfo(
     return { valid: false, error: ERROR_CODE.MISSING_INPUT };
   }
 
-  if (phone && phone.trim()) {
+  if (phone?.trim()) {
     const digitsOnly = phone.replace(/\D/g, "");
     if (digitsOnly.length < 10) {
       return { valid: false, error: ERROR_CODE.MISSING_INPUT };

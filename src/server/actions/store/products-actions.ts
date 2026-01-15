@@ -15,7 +15,7 @@ async function getCachedAdminProducts(
     isPublished?: boolean;
     featured?: boolean;
     search?: string;
-  }
+  },
 ) {
   "use cache";
   cacheTag(`admin-products-${businessId}`);
@@ -23,7 +23,7 @@ async function getCachedAdminProducts(
     businessId,
     page,
     pageSize,
-    filters
+    filters,
   );
 }
 
@@ -43,24 +43,24 @@ export const getAdminStoreProducts = createProtectedAction(
         featured?: boolean;
         search?: string;
       };
-    }
+    },
   ) => {
     const result = await getCachedAdminProducts(
       user.businessId ?? "",
       page,
       pageSize,
-      filters
+      filters,
     );
     if (result.error) {
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 async function getCachedAdminProduct(
   businessId: string,
-  storeProductId: string
+  storeProductId: string,
 ) {
   "use cache";
   cacheTag(`admin-product-${storeProductId}`);
@@ -75,26 +75,26 @@ export const getStoreProductById = createProtectedAction(
     }
     const result = await getCachedAdminProduct(
       storeProductId,
-      user.businessId ?? ""
+      user.businessId ?? "",
     );
     if (result.error) {
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 async function getCachedAvailableInventory(
   businessId: string,
   page: number,
-  pageSize: number
+  pageSize: number,
 ) {
   "use cache";
   cacheTag(`available-inventory-${businessId}`);
   return storeProductRepo.get_available_inventory_products(
     businessId,
     page,
-    pageSize
+    pageSize,
   );
 }
 
@@ -104,13 +104,13 @@ export const getAvailableInventoryProducts = createProtectedAction(
     const result = await getCachedAvailableInventory(
       user.businessId ?? "",
       page,
-      pageSize
+      pageSize,
     );
     if (result.error) {
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 // admin mutations
@@ -135,7 +135,7 @@ export const publishProductToStore = createProtectedAction(
         featured?: boolean;
         featuredOrder?: number;
       };
-    }
+    },
   ) => {
     if (!productId?.trim()) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -144,7 +144,7 @@ export const publishProductToStore = createProtectedAction(
       productId,
       user.businessId ?? "",
       user.id,
-      options
+      options,
     );
     if (result.error) {
       return { data: null, error: result.error };
@@ -155,7 +155,7 @@ export const publishProductToStore = createProtectedAction(
       revalidateTag(`featured-products-${user.businessId}`, "max");
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const unpublishProduct = createProtectedAction(
@@ -167,7 +167,7 @@ export const unpublishProduct = createProtectedAction(
     const result = await storeProductRepo.unpublish_product(
       storeProductId,
       user.businessId ?? "",
-      user.id
+      user.id,
     );
     if (result.error) {
       return { data: null, error: result.error };
@@ -177,7 +177,7 @@ export const unpublishProduct = createProtectedAction(
     revalidateTag(`featured-products-${user.businessId}`, "max");
     revalidateTag(`admin-product-${storeProductId}`, "max");
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const updateStoreProduct = createProtectedAction(
@@ -190,7 +190,7 @@ export const updateStoreProduct = createProtectedAction(
     }: {
       storeProductId: string;
       updates: Partial<InsertStoreProduct>;
-    }
+    },
   ) => {
     if (!storeProductId?.trim()) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -199,7 +199,7 @@ export const updateStoreProduct = createProtectedAction(
       storeProductId,
       user.businessId ?? "",
       user.id,
-      updates
+      updates,
     );
     if (result.error) {
       return { data: null, error: result.error };
@@ -211,7 +211,7 @@ export const updateStoreProduct = createProtectedAction(
       revalidateTag(`featured-products-${user.businessId}`, "max");
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const bulkPublishProducts = createProtectedAction(
@@ -224,7 +224,7 @@ export const bulkPublishProducts = createProtectedAction(
     }: {
       productIds: string[];
       options?: { featured?: boolean };
-    }
+    },
   ) => {
     if (!productIds?.length) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -233,7 +233,7 @@ export const bulkPublishProducts = createProtectedAction(
       productIds,
       user.businessId ?? "",
       user.id,
-      options
+      options,
     );
     if (result.error) {
       return { data: null, error: result.error };
@@ -244,14 +244,14 @@ export const bulkPublishProducts = createProtectedAction(
       revalidateTag(`featured-products-${user.businessId}`, "max");
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const updateProductImages = createProtectedAction(
   PERMISSION.PRODUCT_UPDATE,
   async (
     user,
-    { storeProductId, images }: { storeProductId: string; images: string[] }
+    { storeProductId, images }: { storeProductId: string; images: string[] },
   ) => {
     if (!storeProductId?.trim()) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -259,7 +259,7 @@ export const updateProductImages = createProtectedAction(
     const result = await storeProductRepo.update_product_images(
       storeProductId,
       user.businessId ?? "",
-      images
+      images,
     );
     if (result.error) {
       return { data: null, error: result.error };
@@ -267,7 +267,7 @@ export const updateProductImages = createProtectedAction(
     revalidateTag(`admin-product-${storeProductId}`, "max");
     revalidateTag(`public-product-slug-${storeProductId}`, "max");
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const syncProductStock = createProtectedAction(
@@ -278,7 +278,7 @@ export const syncProductStock = createProtectedAction(
     }
     const result = await storeProductRepo.update_cached_stock(
       storeProductId,
-      user.businessId ?? ""
+      user.businessId ?? "",
     );
     if (result.error) {
       return { data: null, error: result.error };
@@ -287,7 +287,7 @@ export const syncProductStock = createProtectedAction(
     revalidateTag(`available-inventory-${user.businessId}`, "max");
     revalidateTag(`product-availability-${storeProductId}`, "max");
     return { data: result.data, error: null };
-  }
+  },
 );
 
 // public
@@ -302,7 +302,7 @@ async function getCachedStoreProducts(
     featured?: boolean;
     sortBy?: "viewCount" | "soldCount" | "storePrice" | "createdAt";
     sortOrder?: "asc" | "desc";
-  }
+  },
 ) {
   "use cache";
   cacheTag(`public-products-${businessId}`);
@@ -310,7 +310,7 @@ async function getCachedStoreProducts(
     businessId,
     page,
     pageSize,
-    filters
+    filters,
   );
 }
 
@@ -324,7 +324,7 @@ export const getStoreProducts = async (
     featured?: boolean;
     sortBy?: "viewCount" | "soldCount" | "storePrice" | "createdAt";
     sortOrder?: "asc" | "desc";
-  }
+  },
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -333,7 +333,7 @@ export const getStoreProducts = async (
     businessId,
     page,
     pageSize,
-    filters
+    filters,
   );
   if (result.error) {
     return { data: null, error: result.error };
@@ -367,7 +367,7 @@ async function getCachedProductBySlug(slug: string, businessId: string) {
 
 export const getStoreProductBySlug = async (
   slug: string,
-  businessId: string
+  businessId: string,
 ) => {
   if (!slug || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -387,7 +387,7 @@ export const getStoreProductBySlug = async (
 
 export const checkProductAvailability = async (
   storeProductId: string,
-  quantity: number
+  quantity: number,
 ) => {
   if (!storeProductId || quantity <= 0) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -395,7 +395,7 @@ export const checkProductAvailability = async (
 
   const result = await storeProductRepo.check_product_availability(
     storeProductId,
-    quantity
+    quantity,
   );
   if (result.error) {
     return { data: null, error: result.error };

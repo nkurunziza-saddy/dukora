@@ -21,7 +21,7 @@ export const initiateInterBusinessPayment = createProtectedAction(
       amount: number;
       currency: string;
       applicationFeeAmount?: number;
-    }
+    },
   ) => {
     if (!user.businessId) {
       return { data: null, error: ERROR_CODE.BUSINESS_NOT_FOUND };
@@ -63,7 +63,7 @@ export const initiateInterBusinessPayment = createProtectedAction(
           applicationFeeAmount: String(applicationFeeAmount),
           initiatedByUserId: user.id,
         },
-        user.id
+        user.id,
       );
 
       if (paymentRecord.error) {
@@ -78,7 +78,7 @@ export const initiateInterBusinessPayment = createProtectedAction(
         error: ERROR_CODE.FAILED_REQUEST,
       };
     }
-  }
+  },
 );
 
 export const getInterBusinessPayments = createProtectedAction(
@@ -90,11 +90,11 @@ export const getInterBusinessPayments = createProtectedAction(
     const payments = await interBusinessPaymentsRepo.get_all_paginated(
       user.businessId,
       page,
-      pageSize
+      pageSize,
     );
     if (payments.error) {
       return { data: null, error: payments.error };
     }
     return { data: payments.data, error: null };
-  }
+  },
 );

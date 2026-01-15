@@ -18,10 +18,7 @@ import { warehouseItemsTable } from "./warehouses";
 export const customerOrdersTable = pgTable(
   "customer_orders",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     orderNumber: text("order_number").notNull(),
     status: orderStatusEnum("status").notNull().default("DRAFT"),
     businessId: text("business_id")
@@ -75,31 +72,28 @@ export const customerOrdersTable = pgTable(
   (table) => [
     uniqueIndex("customer_orders_business_id_order_number").on(
       table.businessId,
-      table.orderNumber
+      table.orderNumber,
     ),
     index("customer_orders_business_id").on(table.businessId),
     index("customer_orders_customer_email").on(table.customerEmail),
     index("customer_orders_status").on(table.status),
     index("customer_orders_created_at").on(table.createdAt),
     index("customer_orders_stripe_payment_intent_id").on(
-      table.stripePaymentIntentId
+      table.stripePaymentIntentId,
     ),
     index("customer_orders_fulfillment_warehouse_id").on(
-      table.fulfillmentWarehouseId
+      table.fulfillmentWarehouseId,
     ),
     index("customer_orders_fulfillment_status").on(table.fulfillmentStatus),
     index("customer_orders_is_store_order").on(table.isStoreOrder),
     index("customer_orders_currency").on(table.currency),
-  ]
+  ],
 );
 
 export const customerOrderItemsTable = pgTable(
   "customer_order_items",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     customerOrderId: text("customer_order_id")
       .notNull()
       .references(() => customerOrdersTable.id, { onDelete: "cascade" }),
@@ -116,5 +110,5 @@ export const customerOrderItemsTable = pgTable(
   (table) => [
     index("customer_order_items_customer_order_id").on(table.customerOrderId),
     index("customer_order_items_product_id").on(table.warehouseItemId),
-  ]
+  ],
 );

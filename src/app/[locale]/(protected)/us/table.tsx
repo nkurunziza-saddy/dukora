@@ -1,15 +1,15 @@
 import {
-  ColumnDef,
+  type ColumnDef,
   flexRender,
   getCoreRowModel,
-  OnChangeFn,
-  PaginationOptions,
-  PaginationState,
-  SortingState,
+  type OnChangeFn,
+  type PaginationOptions,
+  type PaginationState,
+  type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { Filters } from "./types";
 import { DebouncedInput } from "./debounced-input";
+import type { Filters } from "./types";
 
 export const DEFAULT_PAGE_INDEX = 0;
 export const DEFAULT_PAGE_SIZE = 10;
@@ -69,7 +69,7 @@ export default function Table<T extends Record<string, string | number>>({
                         >
                           {flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                           {{
                             asc: " 🔼",
@@ -112,7 +112,7 @@ export default function Table<T extends Record<string, string | number>>({
                     <td key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </td>
                   );

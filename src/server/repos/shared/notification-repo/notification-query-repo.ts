@@ -8,7 +8,7 @@ import { ERROR_CODE } from "@/server/constants/errors";
 export const get_all_paginated = async (
   businessId: string,
   page: number,
-  pageSize: number
+  pageSize: number,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };

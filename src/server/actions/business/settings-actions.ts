@@ -15,14 +15,14 @@ export const getBusinessSettings = createProtectedAction(
       return { data: null, error: settings.error };
     }
     return { data: settings.data, error: null };
-  }
+  },
 );
 
 export const upsertBusinessSettings = createProtectedAction(
   PERMISSION.BUSINESS_SETTINGS_UPDATE,
   async (
     user,
-    settingsData: Partial<Omit<InsertBusinessSetting, "id" | "businessId">>[]
+    settingsData: Partial<Omit<InsertBusinessSetting, "id" | "businessId">>[],
   ) => {
     if (!settingsData?.length) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -38,7 +38,7 @@ export const upsertBusinessSettings = createProtectedAction(
       return businessSettingsRepo.upsert(
         user.businessId ?? "",
         user.id,
-        newSetting
+        newSetting,
       );
     });
 
@@ -51,14 +51,14 @@ export const upsertBusinessSettings = createProtectedAction(
     revalidateTag(`business-settings-${user.businessId}`, "max");
     revalidateTag(`business-settings`, "max");
     return { data: { success: true }, error: null };
-  }
+  },
 );
 
 export const upsertManyBusinessSettings = createProtectedAction(
   PERMISSION.BUSINESS_SETTINGS_CREATE,
   async (
     user,
-    settingsData: Omit<InsertBusinessSetting, "businessId" | "id">[]
+    settingsData: Omit<InsertBusinessSetting, "businessId" | "id">[],
   ) => {
     if (settingsData === null) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -69,7 +69,7 @@ export const upsertManyBusinessSettings = createProtectedAction(
     }));
     const createdSettings = await businessSettingsRepo.upsert_many(
       user.id,
-      settings
+      settings,
     );
     if (createdSettings.error) {
       return { data: null, error: createdSettings.error };
@@ -77,5 +77,5 @@ export const upsertManyBusinessSettings = createProtectedAction(
     revalidateTag(`business-settings-${user.businessId}`, "max");
     revalidateTag(`business-settings`, "max");
     return { data: createdSettings.data, error: null };
-  }
+  },
 );

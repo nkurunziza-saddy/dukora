@@ -38,7 +38,7 @@ function assert(
   condition: boolean,
   testName: string,
   expected?: any,
-  actual?: any
+  actual?: any,
 ) {
   if (condition) {
     console.log(`${colors.green}✓${colors.reset} ${testName}`);
@@ -47,10 +47,10 @@ function assert(
     console.log(`${colors.red}✗${colors.reset} ${testName}`);
     if (expected !== undefined && actual !== undefined) {
       console.log(
-        `  Expected: ${colors.yellow}${JSON.stringify(expected)}${colors.reset}`
+        `  Expected: ${colors.yellow}${JSON.stringify(expected)}${colors.reset}`,
       );
       console.log(
-        `  Actual:   ${colors.red}${JSON.stringify(actual)}${colors.reset}`
+        `  Actual:   ${colors.red}${JSON.stringify(actual)}${colors.reset}`,
       );
     }
     testsFailed++;
@@ -100,7 +100,7 @@ function testCalculateCOGS() {
     result1 === 700,
     "should calculate COGS correctly (1000 + 500 - 800 = 700)",
     700,
-    result1
+    result1,
   );
 
   // Test 2: Should not return negative COGS
@@ -109,7 +109,7 @@ function testCalculateCOGS() {
     result2 === 0,
     "should not return negative COGS (max(0, 100 + 50 - 200) = 0)",
     0,
-    result2
+    result2,
   );
 
   // Test 3: Zero values
@@ -148,7 +148,7 @@ function testCalculateClosingStock() {
     result1 === 600,
     "should calculate closing stock for single item (10 * 60 = 600)",
     600,
-    result1
+    result1,
   );
 
   // Test 2: Multiple warehouse items
@@ -180,7 +180,7 @@ function testCalculateClosingStock() {
     result2 === 1000,
     "should calculate closing stock for multiple items (10*60 + 5*80 = 1000)",
     1000,
-    result2
+    result2,
   );
 
   // Test 3: Empty array
@@ -248,13 +248,13 @@ function testCalculateAllMetrics() {
     result.grossRevenue === 1000,
     "grossRevenue should be 1000 (10 * 100)",
     1000,
-    result.grossRevenue
+    result.grossRevenue,
   );
   assert(
     result.netRevenue === 1000,
     "netRevenue should be 1000 (no returns)",
     1000,
-    result.netRevenue
+    result.netRevenue,
   );
 
   // Purchase metrics
@@ -262,7 +262,7 @@ function testCalculateAllMetrics() {
     result.purchases === 1200,
     "purchases should be 1200 (20 * 60)",
     1200,
-    result.purchases
+    result.purchases,
   );
 
   // Cost and profit metrics
@@ -270,31 +270,31 @@ function testCalculateAllMetrics() {
     result.costOfGoodsSold === 600,
     "COGS should be 600 (10 * 60)",
     600,
-    result.costOfGoodsSold
+    result.costOfGoodsSold,
   );
   assert(
     result.grossProfit === 400,
     "grossProfit should be 400 (1000 - 600)",
     400,
-    result.grossProfit
+    result.grossProfit,
   );
   assert(
     result.operatingExpenses === 500,
     "operatingExpenses should be 500",
     500,
-    result.operatingExpenses
+    result.operatingExpenses,
   );
   assert(
     result.operatingIncome === -100,
     "operatingIncome should be -100 (400 - 500)",
     -100,
-    result.operatingIncome
+    result.operatingIncome,
   );
   assert(
     result.netIncome === -100,
     "netIncome should be -100",
     -100,
-    result.netIncome
+    result.netIncome,
   );
 
   // Margin metrics
@@ -302,19 +302,19 @@ function testCalculateAllMetrics() {
     result.grossMargin === 40,
     "grossMargin should be 40% ((400/1000)*100)",
     40,
-    result.grossMargin
+    result.grossMargin,
   );
   assert(
     result.netMargin === -10,
     "netMargin should be -10% ((-100/1000)*100)",
     -10,
-    result.netMargin
+    result.netMargin,
   );
   assert(
     result.operatingMargin === -10,
     "operatingMargin should be -10%",
     -10,
-    result.operatingMargin
+    result.operatingMargin,
   );
 
   // Transaction metrics
@@ -322,19 +322,19 @@ function testCalculateAllMetrics() {
     result.transactionCount === 1,
     "transactionCount should be 1 (only sales)",
     1,
-    result.transactionCount
+    result.transactionCount,
   );
   assert(
     result.averageOrderValue === 1000,
     "averageOrderValue should be 1000",
     1000,
-    result.averageOrderValue
+    result.averageOrderValue,
   );
   assert(
     result.averageQuantityPerTransaction === 10,
     "averageQuantityPerTransaction should be 10",
     10,
-    result.averageQuantityPerTransaction
+    result.averageQuantityPerTransaction,
   );
 
   // Data quality
@@ -342,25 +342,25 @@ function testCalculateAllMetrics() {
     result.dataQuality.totalTransactions === 2,
     "totalTransactions should be 2",
     2,
-    result.dataQuality.totalTransactions
+    result.dataQuality.totalTransactions,
   );
   assert(
     result.dataQuality.validTransactions === 2,
     "validTransactions should be 2",
     2,
-    result.dataQuality.validTransactions
+    result.dataQuality.validTransactions,
   );
   assert(
     result.dataQuality.hasInventoryData === true,
     "hasInventoryData should be true",
     true,
-    result.dataQuality.hasInventoryData
+    result.dataQuality.hasInventoryData,
   );
   assert(
     result.dataQuality.hasExpenseData === true,
     "hasExpenseData should be true",
     true,
-    result.dataQuality.hasExpenseData
+    result.dataQuality.hasExpenseData,
   );
 }
 
@@ -408,25 +408,25 @@ function testCalculateAllMetricsReturns() {
     result.grossRevenue === 1000,
     "grossRevenue should be 1000",
     1000,
-    result.grossRevenue
+    result.grossRevenue,
   );
   assert(
     result.returns === 200,
     "returns should be 200 (2 * 100)",
     200,
-    result.returns
+    result.returns,
   );
   assert(
     result.netRevenue === 800,
     "netRevenue should be 800 (1000 - 200)",
     800,
-    result.netRevenue
+    result.netRevenue,
   );
   assert(
     result.returnRate === 20,
     "returnRate should be 20% ((200/1000)*100)",
     20,
-    result.returnRate
+    result.returnRate,
   );
 }
 
@@ -459,31 +459,31 @@ function testCalculateAllMetricsInventory() {
     result.openingStock === 1000,
     "openingStock should be 1000",
     1000,
-    result.openingStock
+    result.openingStock,
   );
   assert(
     result.closingStock === 800,
     "closingStock should be 800",
     800,
-    result.closingStock
+    result.closingStock,
   );
   assert(
     result.averageInventory === 900,
     "averageInventory should be 900 ((1000+800)/2)",
     900,
-    result.averageInventory
+    result.averageInventory,
   );
   assert(
     result.inventoryTurnover === 0.67,
     "inventoryTurnover should be 0.67 (600/900)",
     0.67,
-    result.inventoryTurnover
+    result.inventoryTurnover,
   );
   assert(
     result.inventoryGrowth === -20,
     "inventoryGrowth should be -20% (((800-1000)/1000)*100)",
     -20,
-    result.inventoryGrowth
+    result.inventoryGrowth,
   );
 }
 
@@ -541,38 +541,38 @@ function testCalculateAllMetricsMultipleProducts() {
     multiProductTransactions,
     mockExpenses,
     1000,
-    800
+    800,
   );
 
   assert(
     result.uniqueProductsSold === 2,
     "uniqueProductsSold should be 2",
     2,
-    result.uniqueProductsSold
+    result.uniqueProductsSold,
   );
   assert(
     result.averageQuantityPerTransaction === 10,
     "averageQuantityPerTransaction should be 10",
     10,
-    result.averageQuantityPerTransaction
+    result.averageQuantityPerTransaction,
   );
   assert(
     result.grossRevenue === 2000,
     "grossRevenue should be 2000 (1000 + 1000)",
     2000,
-    result.grossRevenue
+    result.grossRevenue,
   );
   assert(
     result.netRevenue === 2000,
     "netRevenue should be 2000",
     2000,
-    result.netRevenue
+    result.netRevenue,
   );
   assert(
     result.expenseRatio === 25,
     "expenseRatio should be 25% ((500/2000)*100)",
     25,
-    result.expenseRatio
+    result.expenseRatio,
   );
 }
 
@@ -585,25 +585,25 @@ function testCalculateAllMetricsEdgeCases() {
     result1.grossRevenue === 0,
     "grossRevenue should be 0 with empty data",
     0,
-    result1.grossRevenue
+    result1.grossRevenue,
   );
   assert(
     result1.netRevenue === 0,
     "netRevenue should be 0 with empty data",
     0,
-    result1.netRevenue
+    result1.netRevenue,
   );
   assert(
     result1.costOfGoodsSold === 0,
     "costOfGoodsSold should be 0 with empty data",
     0,
-    result1.costOfGoodsSold
+    result1.costOfGoodsSold,
   );
   assert(
     result1.operatingExpenses === 0,
     "operatingExpenses should be 0 with empty data",
     0,
-    result1.operatingExpenses
+    result1.operatingExpenses,
   );
 
   // Test 2: Invalid inputs (null)
@@ -613,13 +613,13 @@ function testCalculateAllMetricsEdgeCases() {
     result2.grossRevenue === 0,
     "should handle null transactions",
     0,
-    result2.grossRevenue
+    result2.grossRevenue,
   );
   assert(
     result2.dataQuality.totalTransactions === 0,
     "totalTransactions should be 0 with null input",
     0,
-    result2.dataQuality.totalTransactions
+    result2.dataQuality.totalTransactions,
   );
 
   // Test 3: Invalid expenses
@@ -648,13 +648,13 @@ function testCalculateAllMetricsEdgeCases() {
     result3.operatingExpenses === 0,
     "should handle null expenses",
     0,
-    result3.operatingExpenses
+    result3.operatingExpenses,
   );
   assert(
     result3.dataQuality.hasExpenseData === false,
     "hasExpenseData should be false with null expenses",
     false,
-    result3.dataQuality.hasExpenseData
+    result3.dataQuality.hasExpenseData,
   );
 
   // Test 4: Negative stock values
@@ -663,13 +663,13 @@ function testCalculateAllMetricsEdgeCases() {
     result4.openingStock === 0,
     "should correct negative opening stock to 0",
     0,
-    result4.openingStock
+    result4.openingStock,
   );
   assert(
     result4.closingStock === 0,
     "should correct negative closing stock to 0",
     0,
-    result4.closingStock
+    result4.closingStock,
   );
 }
 
@@ -678,13 +678,13 @@ function testCalculateAllMetricsEdgeCases() {
 // ============================================================================
 function runAllTests() {
   console.log(
-    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`,
   );
   console.log(
-    `${colors.blue}║  Accounting Formulas Test Suite                           ║${colors.reset}`
+    `${colors.blue}║  Accounting Formulas Test Suite                           ║${colors.reset}`,
   );
   console.log(
-    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`,
   );
 
   testCalculateCOGS();
@@ -697,7 +697,7 @@ function runAllTests() {
 
   // Summary
   console.log(
-    `\n${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`
+    `\n${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`,
   );
   console.log(`${colors.cyan}Test Summary:${colors.reset}`);
   console.log(`  ${colors.green}Passed: ${testsPassed}${colors.reset}`);

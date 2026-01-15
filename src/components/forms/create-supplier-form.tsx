@@ -67,7 +67,7 @@ export default function SupplierForm({
             : `${t("supplier")} ${tCommon("add")} ${tCommon("confirm")}`,
           {
             description: format(new Date(), "MMM dd, yyyy"),
-          }
+          },
         );
       } else {
         toast.error(tCommon("error"), {

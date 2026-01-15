@@ -5,7 +5,6 @@ import {
   ChevronsLeftIcon,
   ChevronsRightIcon,
 } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
@@ -19,37 +18,25 @@ import {
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
+  pagination?: { pageIndex: number; pageSize: number };
 }
 
 export function DataTablePagination<TData>({
   table,
+  pagination: controlledPagination,
 }: DataTablePaginationProps<TData>) {
   const t = useTranslations("table");
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
 
-  const handlePageChange = (page: number) => {
-    const params = new URLSearchParams(searchParams);
-    params.set("page", page.toString());
-    router.push(`${pathname}?${params.toString()}`);
-  };
-
-  const handlePageSizeChange = (pageSize: number) => {
-    const params = new URLSearchParams(searchParams);
-    params.set("pageSize", pageSize.toString());
-    params.set("page", "1");
-    router.push(`${pathname}?${params.toString()}`);
-  };
+  const pagination = controlledPagination ?? table.getState().pagination;
 
   return (
     <div className="flex items-center justify-between gap-2 sm:gap-4">
       <div className="flex items-center space-x-2">
         <Select
           onValueChange={(value) => {
-            handlePageSizeChange(Number(value));
+            table.setPageSize(Number(value));
           }}
-          value={`${table.getState().pagination.pageSize}`}
+          value={`${pagination.pageSize}`}
         >
           <SelectTrigger className="w-16 sm:w-20" size="sm">
             <SelectValue />
@@ -69,11 +56,10 @@ export function DataTablePagination<TData>({
 
       <div className="flex items-center text-foreground/85 justify-center text-xs sm:text-sm">
         <span className="hidden sm:inline">
-          {table.getState().pagination.pageIndex + 1} {t("of")}{" "}
-          {table.getPageCount()}
+          {pagination.pageIndex + 1} {t("of")} {table.getPageCount()}
         </span>
         <span className="sm:hidden">
-          {table.getState().pagination.pageIndex + 1}/{table.getPageCount()}
+          {pagination.pageIndex + 1}/{table.getPageCount()}
         </span>
       </div>
 
@@ -81,7 +67,7 @@ export function DataTablePagination<TData>({
         <Button
           className="hidden lg:flex"
           disabled={!table.getCanPreviousPage()}
-          onClick={() => handlePageChange(1)}
+          onClick={() => table.setPageIndex(0)}
           size="icon-sm"
           variant="outline"
         >
@@ -90,9 +76,7 @@ export function DataTablePagination<TData>({
         </Button>
         <Button
           disabled={!table.getCanPreviousPage()}
-          onClick={() =>
-            handlePageChange(table.getState().pagination.pageIndex)
-          }
+          onClick={() => table.previousPage()}
           size="icon-sm"
           variant="outline"
         >
@@ -101,9 +85,7 @@ export function DataTablePagination<TData>({
         </Button>
         <Button
           disabled={!table.getCanNextPage()}
-          onClick={() =>
-            handlePageChange(table.getState().pagination.pageIndex + 2)
-          }
+          onClick={() => table.nextPage()}
           size="icon-sm"
           variant="outline"
         >
@@ -113,7 +95,7 @@ export function DataTablePagination<TData>({
         <Button
           className="hidden lg:flex"
           disabled={!table.getCanNextPage()}
-          onClick={() => handlePageChange(table.getPageCount())}
+          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
           size="icon-sm"
           variant="outline"
         >

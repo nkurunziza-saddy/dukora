@@ -22,8 +22,8 @@ export const get_all = async (businessId: string) => {
       .where(
         and(
           eq(invitationsTable.businessId, businessId),
-          isNull(invitationsTable.deletedAt)
-        )
+          isNull(invitationsTable.deletedAt),
+        ),
       );
     return { data: invitations, error: null };
   } catch (error) {
@@ -35,7 +35,7 @@ export const get_all = async (businessId: string) => {
 export const get_all_paginated = async (
   businessId: string,
   page: number,
-  pageSize: number
+  pageSize: number,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -54,8 +54,8 @@ export const get_all_paginated = async (
       .where(
         and(
           eq(invitationsTable.businessId, businessId),
-          isNull(invitationsTable.deletedAt)
-        )
+          isNull(invitationsTable.deletedAt),
+        ),
       )
       .limit(pageSize)
       .offset(offset);
@@ -68,8 +68,8 @@ export const get_all_paginated = async (
       .where(
         and(
           eq(invitationsTable.businessId, businessId),
-          isNull(invitationsTable.deletedAt)
-        )
+          isNull(invitationsTable.deletedAt),
+        ),
       );
     return {
       data: { invitations, totalCount: totalCount.count || 0 },
@@ -90,7 +90,7 @@ export async function get_by_id(invitationId: string, businessId: string) {
     const invitation = await db.query.invitationsTable.findFirst({
       where: and(
         eq(invitationsTable.id, invitationId),
-        eq(invitationsTable.businessId, businessId)
+        eq(invitationsTable.businessId, businessId),
       ),
     });
 

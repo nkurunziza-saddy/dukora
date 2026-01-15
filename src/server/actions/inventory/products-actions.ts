@@ -16,22 +16,40 @@ export const getProducts = createProtectedAction(
       return { data: null, error: products.error };
     }
     return { data: products.data, error: null };
-  }
+  },
 );
 
 export const getProductsPaginated = createProtectedAction(
   PERMISSION.PRODUCT_VIEW,
-  async (user, { page, pageSize }: { page: number; pageSize: number }) => {
+  async (
+    user,
+    {
+      page,
+      pageSize,
+      sorting,
+      filters,
+      search,
+    }: {
+      page: number;
+      pageSize: number;
+      sorting?: { id: string; desc: boolean }[];
+      filters?: { id: string; value: unknown }[];
+      search?: string;
+    },
+  ) => {
     const products = await productRepo.get_all_paginated(
       user.businessId ?? "",
       page,
-      pageSize
+      pageSize,
+      sorting,
+      filters,
+      search,
     );
     if (products.error) {
       return { data: null, error: products.error };
     }
     return { data: products.data, error: null };
-  }
+  },
 );
 
 export const getOverviewProducts = createProtectedAction(
@@ -39,13 +57,13 @@ export const getOverviewProducts = createProtectedAction(
   async (user, limit: number) => {
     const products = await productRepo.get_overview(
       user.businessId ?? "",
-      limit
+      limit,
     );
     if (products.error) {
       return { data: null, error: products.error };
     }
     return { data: products.data, error: null };
-  }
+  },
 );
 
 export const getProductById = createProtectedAction(
@@ -56,13 +74,13 @@ export const getProductById = createProtectedAction(
     }
     const product = await productRepo.get_by_id(
       productId,
-      user.businessId ?? ""
+      user.businessId ?? "",
     );
     if (product.error) {
       return { data: null, error: product.error };
     }
     return { data: product.data, error: null };
-  }
+  },
 );
 
 export const createProduct = createProtectedAction(
@@ -82,7 +100,7 @@ export const createProduct = createProtectedAction(
     revalidateTag(`products-${user.businessId}`, "max");
     revalidateTag("products", "max");
     return { data: res.data, error: null };
-  }
+  },
 );
 
 export const updateProduct = createProtectedAction(
@@ -95,7 +113,7 @@ export const updateProduct = createProtectedAction(
     }: {
       productId: string;
       updates: Partial<Omit<InsertProduct, "id" | "businessId">>;
-    }
+    },
   ) => {
     if (!productId?.trim()) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -104,7 +122,7 @@ export const updateProduct = createProtectedAction(
       productId,
       user.businessId ?? "",
       user.id,
-      updates
+      updates,
     );
     if (updatedProduct.error) {
       return { data: null, error: updatedProduct.error };
@@ -112,7 +130,7 @@ export const updateProduct = createProtectedAction(
     revalidateTag(`products-${user.businessId}`, "max");
     revalidateTag(`product-${productId}`, "max");
     return { data: updatedProduct.data, error: null };
-  }
+  },
 );
 
 export const deleteProduct = createProtectedAction(
@@ -124,7 +142,7 @@ export const deleteProduct = createProtectedAction(
     const res = await productRepo.remove(
       productId,
       user.businessId ?? "",
-      user.id
+      user.id,
     );
     if (res.error) {
       return { data: null, error: res.error };
@@ -132,7 +150,7 @@ export const deleteProduct = createProtectedAction(
     revalidateTag(`products-${user.businessId}`, "max");
     revalidateTag(`product-${productId}`, "max");
     return { data: { success: true }, error: null };
-  }
+  },
 );
 
 export const createManyProducts = createProtectedAction(
@@ -152,7 +170,7 @@ export const createManyProducts = createProtectedAction(
     revalidateTag(`products-${user.businessId}`, "max");
     revalidateTag("products", "max");
     return { data: createdProducts.data, error: null };
-  }
+  },
 );
 
 export const getProductsForStore = async ({
@@ -170,7 +188,7 @@ export const getProductsForStore = async ({
     businessId,
     filters,
     featured,
-    isPublished
+    isPublished,
   );
   if (result.error) {
     return { data: null, error: result.error };
@@ -180,11 +198,11 @@ export const getProductsForStore = async ({
 
 export const getProductByIdForStore = async (
   businessId: string,
-  productId: string
+  productId: string,
 ) => {
   const result = await productRepo.get_product_by_id_for_store(
     businessId,
-    productId
+    productId,
   );
   if (result.error) {
     return { data: null, error: result.error };
@@ -202,7 +220,7 @@ export const getCategoriesForStore = async (businessId: string) => {
 
 export const searchProductsGlobally = async (
   query: string,
-  limit: number = 5
+  limit: number = 5,
 ) => {
   const result = await productRepo.search_products_globally(query, limit);
   if (result.error) {

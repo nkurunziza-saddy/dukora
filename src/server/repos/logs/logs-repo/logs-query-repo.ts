@@ -17,8 +17,8 @@ export const get_all = async (businessId: string, userId: string) => {
       .where(
         and(
           eq(auditLogsTable.businessId, businessId),
-          eq(auditLogsTable.performedBy, userId)
-        )
+          eq(auditLogsTable.performedBy, userId),
+        ),
       )
       .orderBy(desc(auditLogsTable.performedAt));
     return { data: auditLogs, error: null };
@@ -32,7 +32,7 @@ export const get_all_paginated = async (
   businessId: string,
   userId: string,
   page: number,
-  pageSize: number
+  pageSize: number,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -46,8 +46,8 @@ export const get_all_paginated = async (
       .where(
         and(
           eq(auditLogsTable.businessId, businessId),
-          eq(auditLogsTable.performedBy, userId)
-        )
+          eq(auditLogsTable.performedBy, userId),
+        ),
       )
       .orderBy(desc(auditLogsTable.performedAt))
       .limit(pageSize)
@@ -58,8 +58,8 @@ export const get_all_paginated = async (
       .where(
         and(
           eq(auditLogsTable.businessId, businessId),
-          eq(auditLogsTable.performedBy, userId)
-        )
+          eq(auditLogsTable.performedBy, userId),
+        ),
       );
     return {
       data: { auditLogs, totalCount: totalCount.count || 0 },
@@ -74,7 +74,7 @@ export const get_all_paginated = async (
 export const get_overview = async (
   businessId: string,
   userId: string,
-  limit?: number
+  limit?: number,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -87,8 +87,8 @@ export const get_overview = async (
       .where(
         and(
           eq(auditLogsTable.businessId, businessId),
-          eq(auditLogsTable.performedBy, userId)
-        )
+          eq(auditLogsTable.performedBy, userId),
+        ),
       )
       .innerJoin(usersTable, eq(auditLogsTable.performedBy, usersTable.id))
       .limit(limit ?? 5)
@@ -109,7 +109,7 @@ export async function get_by_id(auditLogId: string, businessId: string) {
     const auditLog = await db.query.auditLogsTable.findFirst({
       where: and(
         eq(auditLogsTable.id, auditLogId),
-        eq(auditLogsTable.businessId, businessId)
+        eq(auditLogsTable.businessId, businessId),
       ),
     });
 

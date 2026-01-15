@@ -17,7 +17,7 @@ export default async function StoreProductDetails({
   const t = await getTranslations("store");
   const { data: product, error } = await getProductByIdForStore(
     businessId,
-    productId
+    productId,
   );
 
   if (error || !product) {

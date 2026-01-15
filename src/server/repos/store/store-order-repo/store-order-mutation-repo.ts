@@ -16,7 +16,7 @@ import { ERROR_CODE } from "@/server/constants/errors";
 /**
  * Generate unique order number
  */
-async function generateOrderNumber(businessId: string): Promise<string> {
+async function generateOrderNumber(_businessId: string): Promise<string> {
   const today = new Date();
   const prefix = `ORD-${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, "0")}${String(today.getDate()).padStart(2, "0")}`;
 
@@ -24,7 +24,7 @@ async function generateOrderNumber(businessId: string): Promise<string> {
   const [result] = await db
     .select({ count: sql<number>`count(*)` })
     .from(customerOrdersTable)
-    .where(sql`${customerOrdersTable.orderNumber} LIKE ${prefix + "%"}`);
+    .where(sql`${customerOrdersTable.orderNumber} LIKE ${`${prefix}%`}`);
 
   const sequence = (result?.count || 0) + 1;
   return `${prefix}-${String(sequence).padStart(4, "0")}`;
@@ -57,7 +57,7 @@ export async function create_store_order(
     stripePaymentIntentId?: string;
     paymentStatus?: string;
   },
-  userId: string // Staff user creating the order
+  userId: string, // Staff user creating the order
 ) {
   if (!orderData.businessId || !orderData.items.length) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -133,7 +133,7 @@ export async function update_order_status(
   orderId: string,
   businessId: string,
   status: string,
-  userId: string
+  userId: string,
 ) {
   if (!orderId || !businessId || !status) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -192,7 +192,7 @@ export async function update_fulfillment_status(
     trackingUrl?: string;
     estimatedDeliveryDate?: Date;
     actualDeliveryDate?: Date;
-  }
+  },
 ) {
   if (!orderId || !businessId || !fulfillmentStatus) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -251,7 +251,7 @@ export async function add_tracking_info(
   trackingNumber: string,
   trackingUrl?: string,
   estimatedDeliveryDate?: Date,
-  userId?: string
+  _userId?: string,
 ) {
   if (!orderId || !businessId || !trackingNumber) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -288,7 +288,7 @@ export async function cancel_order(
   orderId: string,
   businessId: string,
   userId: string,
-  cancellationReason: string
+  cancellationReason: string,
 ) {
   if (!orderId || !businessId || !cancellationReason) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -343,7 +343,7 @@ export async function process_refund(
   businessId: string,
   refundAmount: number,
   refundStatus: "PARTIAL" | "FULL",
-  userId: string
+  userId: string,
 ) {
   if (!orderId || !businessId || refundAmount <= 0) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };

@@ -48,7 +48,7 @@ export async function update(
   categoryId: string,
   businessId: string,
   userId: string,
-  updates: Partial<InsertCategory>
+  updates: Partial<InsertCategory>,
 ) {
   if (!categoryId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -61,8 +61,8 @@ export async function update(
         .where(
           and(
             eq(categoriesTable.id, categoryId),
-            eq(categoriesTable.businessId, businessId)
-          )
+            eq(categoriesTable.businessId, businessId),
+          ),
         )
         .returning();
 
@@ -98,7 +98,7 @@ export async function update(
 export async function remove(
   categoryId: string,
   businessId: string,
-  userId: string
+  userId: string,
 ) {
   if (!categoryId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -116,8 +116,8 @@ export async function remove(
         .where(
           and(
             eq(categoriesTable.id, categoryId),
-            eq(categoriesTable.businessId, businessId)
-          )
+            eq(categoriesTable.businessId, businessId),
+          ),
         )
         .returning();
 
@@ -152,7 +152,7 @@ export async function remove(
 
 export async function upsert_many(
   categories: InsertCategory[],
-  userId: string
+  userId: string,
 ) {
   if (!categories) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };

@@ -81,12 +81,10 @@ function CheckoutFormContent({ cartProducts }: CheckoutFormProps) {
       };
 
       const result = await createCustomerOrder(orderData);
-      console.log(result);
       if (result.error || !result.data) {
         toast.error("Failed to create order. Please try again.");
         return;
       }
-      console.log(orderData);
       setClientSecret(result.data.clientSecret);
 
       const { error } = await stripe.confirmPayment({

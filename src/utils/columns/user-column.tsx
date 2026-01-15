@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import type { SelectUser } from "@/lib/schema/schema.types";
 
 export function UserColumn(
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<SelectUser>[] {
   return [
     {
@@ -19,7 +19,7 @@ export function UserColumn(
       ),
       cell: ({ row }) => {
         const role = userStatuses.find(
-          (s) => s.value === row.original.role.toLowerCase()
+          (s) => s.value === row.original.role.toLowerCase(),
         );
         if (!role) {
           return (

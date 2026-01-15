@@ -97,7 +97,7 @@ export function getCurrenciesByRegion(region: string): Currency[] {
 
 export function formatCurrencyWithCode(
   value: number | string | null | undefined,
-  currencyCode: string = "RWF"
+  currencyCode: string = "RWF",
 ): string {
   if (!value) {
     return `${currencyCode} 0`;

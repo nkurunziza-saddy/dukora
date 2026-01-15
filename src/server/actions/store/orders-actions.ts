@@ -28,19 +28,19 @@ export const getStoreOrders = createProtectedAction(
         status?: string;
         fulfillmentStatus?: string;
       };
-    }
+    },
   ) => {
     const result = await storeOrderRepo.get_store_orders_paginated(
       user.businessId ?? "",
       page,
       pageSize,
-      filters
+      filters,
     );
     if (result.error) {
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const getOrderById = createProtectedAction(
@@ -51,13 +51,13 @@ export const getOrderById = createProtectedAction(
     }
     const result = await storeOrderRepo.get_order_by_id(
       orderId,
-      user.businessId ?? ""
+      user.businessId ?? "",
     );
     if (result.error) {
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const getPendingFulfillmentOrders = createProtectedAction(
@@ -65,13 +65,13 @@ export const getPendingFulfillmentOrders = createProtectedAction(
   async (user, warehouseId?: string) => {
     const result = await storeOrderRepo.get_pending_fulfillment_orders(
       user.businessId ?? "",
-      warehouseId
+      warehouseId,
     );
     if (result.error) {
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const updateOrderStatus = createProtectedAction(
@@ -84,7 +84,7 @@ export const updateOrderStatus = createProtectedAction(
       orderId,
       user.businessId ?? "",
       status,
-      user.id
+      user.id,
     );
     if (result.error) {
       return { data: null, error: result.error };
@@ -92,7 +92,7 @@ export const updateOrderStatus = createProtectedAction(
     revalidateTag(`store-orders-${user.businessId}`, "max");
     revalidateTag(`store-order-${orderId}`, "max");
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const updateFulfillmentStatus = createProtectedAction(
@@ -112,7 +112,7 @@ export const updateFulfillmentStatus = createProtectedAction(
         estimatedDeliveryDate?: Date;
         actualDeliveryDate?: Date;
       };
-    }
+    },
   ) => {
     if (!orderId?.trim() || !fulfillmentStatus) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -122,7 +122,7 @@ export const updateFulfillmentStatus = createProtectedAction(
       user.businessId ?? "",
       fulfillmentStatus,
       user.id,
-      updates
+      updates,
     );
     if (result.error) {
       return { data: null, error: result.error };
@@ -130,7 +130,7 @@ export const updateFulfillmentStatus = createProtectedAction(
     revalidateTag(`store-orders-${user.businessId}`, "max");
     revalidateTag(`store-order-${orderId}`, "max");
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const cancelOrder = createProtectedAction(
@@ -143,7 +143,7 @@ export const cancelOrder = createProtectedAction(
       orderId,
       user.businessId ?? "",
       user.id,
-      reason
+      reason,
     );
     if (result.error) {
       return { data: null, error: result.error };
@@ -151,7 +151,7 @@ export const cancelOrder = createProtectedAction(
     revalidateTag(`store-orders-${user.businessId}`, "max");
     revalidateTag(`store-order-${orderId}`, "max");
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const processRefund = createProtectedAction(
@@ -166,7 +166,7 @@ export const processRefund = createProtectedAction(
       orderId: string;
       refundAmount: number;
       refundStatus: "PARTIAL" | "FULL";
-    }
+    },
   ) => {
     if (!orderId?.trim() || refundAmount <= 0) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -176,7 +176,7 @@ export const processRefund = createProtectedAction(
       user.businessId ?? "",
       refundAmount,
       refundStatus,
-      user.id
+      user.id,
     );
     if (result.error) {
       return { data: null, error: result.error };
@@ -184,7 +184,7 @@ export const processRefund = createProtectedAction(
     revalidateTag(`store-orders-${user.businessId}`, "max");
     revalidateTag(`store-order-${orderId}`, "max");
     return { data: result.data, error: null };
-  }
+  },
 );
 
 /**
@@ -221,7 +221,7 @@ export const createOrderFromCart = async (orderData: {
   // Create order
   const result = await storeOrderRepo.create_store_order(
     orderData,
-    orderData.userId || "system"
+    orderData.userId || "system",
   );
 
   if (result.error) {
@@ -234,7 +234,7 @@ export const createOrderFromCart = async (orderData: {
       result.data.id,
       orderData.items,
       orderData.businessId,
-      orderData.userId || "system"
+      orderData.userId || "system",
     );
 
     // Update sold count for products
@@ -251,7 +251,7 @@ export const getCustomerOrders = async (
   userId: string,
   businessId: string,
   page: number = 1,
-  pageSize: number = 10
+  pageSize: number = 10,
 ) => {
   if (!userId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -260,7 +260,7 @@ export const getCustomerOrders = async (
     userId,
     businessId,
     page,
-    pageSize
+    pageSize,
   );
   if (result.error) {
     return { data: null, error: result.error };
@@ -270,14 +270,14 @@ export const getCustomerOrders = async (
 
 export const trackOrder = async (
   trackingNumber: string,
-  businessId: string
+  businessId: string,
 ) => {
   if (!trackingNumber || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
   }
   const result = await storeOrderRepo.get_order_by_tracking_number(
     trackingNumber,
-    businessId
+    businessId,
   );
   if (result.error) {
     return { data: null, error: result.error };

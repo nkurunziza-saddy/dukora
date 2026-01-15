@@ -20,7 +20,7 @@ import { ERROR_CODE } from "@/server/constants/errors";
  */
 export async function sync_cached_stock(
   storeProductId: string,
-  businessId: string
+  businessId: string,
 ) {
   if (!storeProductId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -36,17 +36,17 @@ export async function sync_cached_stock(
       .from(storeProductsTable)
       .innerJoin(
         productsTable,
-        eq(storeProductsTable.productId, productsTable.id)
+        eq(storeProductsTable.productId, productsTable.id),
       )
       .leftJoin(
         warehouseItemsTable,
-        eq(productsTable.id, warehouseItemsTable.productId)
+        eq(productsTable.id, warehouseItemsTable.productId),
       )
       .where(
         and(
           eq(storeProductsTable.id, storeProductId),
-          eq(storeProductsTable.businessId, businessId)
-        )
+          eq(storeProductsTable.businessId, businessId),
+        ),
       )
       .groupBy(storeProductsTable.productId);
 
@@ -87,18 +87,18 @@ export async function bulk_sync_inventory(businessId: string, userId: string) {
         .from(storeProductsTable)
         .innerJoin(
           productsTable,
-          eq(storeProductsTable.productId, productsTable.id)
+          eq(storeProductsTable.productId, productsTable.id),
         )
         .leftJoin(
           warehouseItemsTable,
-          eq(productsTable.id, warehouseItemsTable.productId)
+          eq(productsTable.id, warehouseItemsTable.productId),
         )
         .where(
           and(
             eq(storeProductsTable.businessId, businessId),
             eq(storeProductsTable.isPublished, true),
-            isNull(storeProductsTable.deletedAt)
-          )
+            isNull(storeProductsTable.deletedAt),
+          ),
         )
         .groupBy(storeProductsTable.id, storeProductsTable.productId);
 
@@ -111,8 +111,8 @@ export async function bulk_sync_inventory(businessId: string, userId: string) {
               updatedAt: new Date(),
             })
             .where(eq(storeProductsTable.id, p.storeProductId))
-            .returning()
-        )
+            .returning(),
+        ),
       );
 
       const auditData: InsertAuditLog = {
@@ -145,7 +145,7 @@ export async function reserve_inventory(
   }[],
   businessId: string,
   userId: string,
-  referenceId: string
+  referenceId: string,
 ) {
   if (!items.length || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -159,7 +159,7 @@ export async function reserve_inventory(
         const storeProduct = await tx.query.storeProductsTable.findFirst({
           where: and(
             eq(storeProductsTable.id, item.storeProductId),
-            eq(storeProductsTable.businessId, businessId)
+            eq(storeProductsTable.businessId, businessId),
           ),
         });
 
@@ -175,8 +175,8 @@ export async function reserve_inventory(
               eq(warehouseItemsTable.warehouseId, item.warehouseId),
               gte(
                 sql`${warehouseItemsTable.quantity} - ${warehouseItemsTable.reservedQty}`,
-                item.quantity
-              )
+                item.quantity,
+              ),
             ),
           });
         } else {
@@ -189,12 +189,12 @@ export async function reserve_inventory(
                 eq(warehouseItemsTable.productId, storeProduct.productId),
                 gte(
                   sql`${warehouseItemsTable.quantity} - ${warehouseItemsTable.reservedQty}`,
-                  item.quantity
-                )
-              )
+                  item.quantity,
+                ),
+              ),
             )
             .orderBy(
-              sql`${warehouseItemsTable.quantity} - ${warehouseItemsTable.reservedQty} DESC`
+              sql`${warehouseItemsTable.quantity} - ${warehouseItemsTable.reservedQty} DESC`,
             )
             .limit(1);
 
@@ -203,12 +203,12 @@ export async function reserve_inventory(
 
         if (!warehouseItem) {
           throw new Error(
-            `Insufficient inventory for product ${item.storeProductId}`
+            `Insufficient inventory for product ${item.storeProductId}`,
           );
         }
 
         // Reserve the inventory
-        const [reserved] = await tx
+        const [_reserved] = await tx
           .update(warehouseItemsTable)
           .set({
             reservedQty: sql`${warehouseItemsTable.reservedQty} + ${item.quantity}`,
@@ -261,7 +261,7 @@ export async function release_inventory(
   }[],
   businessId: string,
   userId: string,
-  referenceId: string
+  referenceId: string,
 ) {
   if (!reservations.length || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -325,7 +325,7 @@ export async function allocate_inventory_to_order(
     quantity: number;
   }[],
   businessId: string,
-  userId: string
+  userId: string,
 ) {
   if (!items.length || !businessId || !orderId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };

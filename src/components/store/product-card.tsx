@@ -42,7 +42,7 @@ const ProductCard = ({ product, view = "grid" }: ProductCardProps) => {
             <span className="text-base text-secondary-foreground font-medium">
               {formatCurrencyWithCode(
                 parseFloat(product.price || "0"),
-                product.currency || "RWF"
+                product.currency || "RWF",
               )}
             </span>
             <AddToCartButton product={product} size="sm" variant="outline" />
@@ -74,7 +74,7 @@ const ProductCard = ({ product, view = "grid" }: ProductCardProps) => {
           <span className="text-sm text-secondary-foreground font-medium">
             {formatCurrencyWithCode(
               parseFloat(product.price || "0"),
-              product.currency || "RWF"
+              product.currency || "RWF",
             )}
           </span>
           <span className="text-xs border py-0.5 px-1 text-muted-foreground">

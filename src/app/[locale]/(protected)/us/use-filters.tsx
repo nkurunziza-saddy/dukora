@@ -1,5 +1,5 @@
 import { useRouter, useSearchParams } from "next/navigation";
-import { PaginationParams, SortParams } from "./types";
+import type { PaginationParams, SortParams } from "./types";
 import { cleanEmptyParams } from "./utils/clean-empy-params";
 
 export function useFilters<T extends Record<string, any>>() {
@@ -19,7 +19,7 @@ export function useFilters<T extends Record<string, any>>() {
   };
 
   const setFilters = (
-    partialFilters: Partial<T & PaginationParams & SortParams>
+    partialFilters: Partial<T & PaginationParams & SortParams>,
   ) => {
     const mergedFilters = { ...filters, ...partialFilters };
     const newFilters = cleanEmptyParams(mergedFilters);

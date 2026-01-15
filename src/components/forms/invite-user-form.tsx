@@ -139,7 +139,10 @@ export function InviteUserForm() {
                   <Select
                     items={userRolesObject}
                     name={field.name}
-                    onValueChange={field.handleChange}
+                    onValueChange={(value) =>
+                      value &&
+                      field.handleChange(value as typeof field.state.value)
+                    }
                     value={field.state.value}
                   >
                     <SelectTrigger className="w-full">

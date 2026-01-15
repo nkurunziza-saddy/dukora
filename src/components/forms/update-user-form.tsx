@@ -129,7 +129,10 @@ export function UpdateUserForm({ user }: { user: SelectUser }) {
               <Field data-invalid={isInvalid}>
                 <FieldLabel>{tCommon("role")}</FieldLabel>
                 <Select
-                  onValueChange={field.handleChange}
+                  onValueChange={(value) =>
+                    value &&
+                    field.handleChange(value as typeof field.state.value)
+                  }
                   value={field.state.value}
                 >
                   <SelectTrigger className="w-full">

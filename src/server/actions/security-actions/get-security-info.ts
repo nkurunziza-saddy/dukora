@@ -12,7 +12,7 @@ export const getSecurityInfo = createProtectedAction(
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const getUserSessions = createProtectedAction(
@@ -23,5 +23,5 @@ export const getUserSessions = createProtectedAction(
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );

@@ -7,7 +7,7 @@ import { ERROR_CODE } from "@/server/constants/errors";
 export async function change_password(
   currentPassword: string,
   newPassword: string,
-  revokeOtherSessions: boolean = false
+  revokeOtherSessions: boolean = false,
 ) {
   if (!currentPassword || !newPassword) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };

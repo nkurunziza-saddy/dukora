@@ -10,7 +10,7 @@ export const get_all_paginated = async (
   page: number,
   pageSize: number,
   search?: string,
-  status?: string
+  status?: string,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -23,7 +23,7 @@ export const get_all_paginated = async (
 
     if (search) {
       whereConditions.push(
-        or(like(purchaseOrdersTable.orderNumber, `%${search}%`))!
+        or(like(purchaseOrdersTable.orderNumber, `%${search}%`))!,
       );
     }
 

@@ -24,7 +24,7 @@ export const get_all = async (warehouseId: string) => {
 export const get_all_paginated = async (
   warehouseId: string,
   page: number,
-  pageSize: number
+  pageSize: number,
 ) => {
   try {
     const offset = (page - 1) * pageSize;
@@ -59,11 +59,11 @@ export async function get_all_by_business_id(businessId: string) {
       .from(warehousesTable)
       .innerJoin(
         warehouseItemsTable,
-        eq(warehousesTable.id, warehouseItemsTable.warehouseId)
+        eq(warehousesTable.id, warehouseItemsTable.warehouseId),
       )
       .innerJoin(
         productsTable,
-        eq(warehouseItemsTable.productId, productsTable.id)
+        eq(warehouseItemsTable.productId, productsTable.id),
       )
       .where(eq(warehousesTable.businessId, businessId));
     return { data: items, error: null };

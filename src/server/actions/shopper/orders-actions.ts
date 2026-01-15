@@ -19,7 +19,7 @@ export const getCustomerOrders = createProtectedAction(
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 const createCustomerOrderSchema = z.object({
@@ -46,7 +46,7 @@ const createCustomerOrderSchema = z.object({
       quantity: z.number().min(1),
       unitPrice: z.string(),
       discount: z.string().optional(),
-    })
+    }),
   ),
   guestCheckout: z.boolean(),
   userId: z.string().optional(),
@@ -75,14 +75,14 @@ export const createCustomerOrder = createProtectedAction(
 
       if (settingsResult.data) {
         const taxRateSetting = settingsResult.data.find(
-          (s) => s.key === "defaultVatRate"
+          (s) => s.key === "defaultVatRate",
         );
         if (taxRateSetting) {
           taxRate = Number(taxRateSetting.value) || 0;
         }
 
         const pricesIncludeTaxSetting = settingsResult.data.find(
-          (s) => s.key === "pricesIncludeTax"
+          (s) => s.key === "pricesIncludeTax",
         );
 
         currency = settingsResult.data?.find((s) => s.key === "currency")
@@ -96,7 +96,7 @@ export const createCustomerOrder = createProtectedAction(
         input.items,
         taxRate,
         0, // TODO: calculate shipping rate
-        pricesIncludeTax
+        pricesIncludeTax,
       );
 
       if (calculations.error) {
@@ -141,7 +141,7 @@ export const createCustomerOrder = createProtectedAction(
       await shopperOrderRepo.update_customer_order_payment(
         orderResult.data.id,
         paymentIntent.id,
-        paymentIntent.status
+        paymentIntent.status,
       );
 
       return {
@@ -156,7 +156,7 @@ export const createCustomerOrder = createProtectedAction(
       console.error("Failed to create customer order:", error);
       return { data: null, error: ERROR_CODE.FAILED_REQUEST };
     }
-  }
+  },
 );
 
 export const confirmCustomerOrder = async (paymentIntentId: string) => {
@@ -176,7 +176,7 @@ export const confirmCustomerOrder = async (paymentIntentId: string) => {
     const updateResult = await shopperOrderRepo.update_customer_order_status(
       orderResult.data.id,
       "CONFIRMED",
-      "succeeded"
+      "succeeded",
     );
 
     if (updateResult.error) {
@@ -237,7 +237,7 @@ export const getCustomerOrderByOrderNumber = async (orderNumber: string) => {
     }
 
     const itemsResult = await shopperOrderRepo.get_items_by_order_id(
-      orderResult.data.id
+      orderResult.data.id,
     );
     if (itemsResult.error) {
       return { data: null, error: itemsResult.error };
@@ -270,7 +270,7 @@ export const getCustomerOrdersByBusiness = createProtectedAction(
       pageSize: number;
       search?: string;
       status?: string;
-    }
+    },
   ) => {
     if (!user.businessId) {
       return { data: null, error: ERROR_CODE.BUSINESS_NOT_FOUND };
@@ -282,7 +282,7 @@ export const getCustomerOrdersByBusiness = createProtectedAction(
         page,
         pageSize,
         search,
-        status
+        status,
       );
 
       return result;
@@ -290,7 +290,7 @@ export const getCustomerOrdersByBusiness = createProtectedAction(
       console.error("Failed to get customer orders by business:", error);
       return { data: null, error: ERROR_CODE.FAILED_REQUEST };
     }
-  }
+  },
 );
 
 export const updateOrderStatus = createProtectedAction(
@@ -303,7 +303,7 @@ export const updateOrderStatus = createProtectedAction(
     }: {
       orderId: string;
       status: string;
-    }
+    },
   ) => {
     if (!user.businessId) {
       return { data: null, error: ERROR_CODE.BUSINESS_NOT_FOUND };
@@ -321,7 +321,7 @@ export const updateOrderStatus = createProtectedAction(
 
       const result = await shopperOrderRepo.update_customer_order_status(
         orderId,
-        status
+        status,
       );
 
       return result;
@@ -329,7 +329,7 @@ export const updateOrderStatus = createProtectedAction(
       console.error("Failed to update order status:", error);
       return { data: null, error: ERROR_CODE.FAILED_REQUEST };
     }
-  }
+  },
 );
 
 export const getUserOrders = createProtectedAction(
@@ -344,7 +344,7 @@ export const getUserOrders = createProtectedAction(
       page?: number;
       pageSize?: number;
       status?: string;
-    } = {}
+    } = {},
   ) => {
     try {
       const result = await shopperOrderRepo.get_user_orders({
@@ -359,7 +359,7 @@ export const getUserOrders = createProtectedAction(
       console.error("Failed to get user orders:", error);
       return { data: null, error: ERROR_CODE.FAILED_REQUEST };
     }
-  }
+  },
 );
 
 export const getOrderWithItems = createProtectedAction(
@@ -372,14 +372,14 @@ export const getOrderWithItems = createProtectedAction(
     try {
       const result = await shopperOrderRepo.get_order_with_items(
         orderId,
-        user.id
+        user.id,
       );
       return result;
     } catch (error) {
       console.error("Failed to get order with items:", error);
       return { data: null, error: ERROR_CODE.FAILED_REQUEST };
     }
-  }
+  },
 );
 
 export const getOrderStats = createProtectedAction(
@@ -392,5 +392,5 @@ export const getOrderStats = createProtectedAction(
       console.error("Failed to get order stats:", error);
       return { data: null, error: ERROR_CODE.FAILED_REQUEST };
     }
-  }
+  },
 );

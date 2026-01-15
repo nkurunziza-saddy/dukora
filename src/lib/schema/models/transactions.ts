@@ -18,10 +18,7 @@ import { warehouseItemsTable, warehousesTable } from "./warehouses";
 export const transactionsTable = pgTable(
   "transactions",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     productId: text("product_id")
       .notNull()
       .references(() => productsTable.id),
@@ -63,16 +60,13 @@ export const transactionsTable = pgTable(
     index("transactions_type").on(table.type),
     index("transactions_customer_order_id").on(table.customerOrderId),
     index("transactions_source").on(table.source),
-  ]
+  ],
 );
 
 export const expensesTable = pgTable(
   "expenses",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
     reference: text("reference"),
     businessId: text("business_id")
@@ -90,5 +84,5 @@ export const expensesTable = pgTable(
     check("quantity_not_zero", sql`${table.amount} != 0`),
     index("expenses_business_id").on(table.businessId),
     index("expenses_created_at").on(table.createdAt),
-  ]
+  ],
 );

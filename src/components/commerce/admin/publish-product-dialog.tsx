@@ -75,7 +75,7 @@ export function PublishProductDialog({
         description: "Product is now live on your store",
       });
       onOpenChange(false);
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to publish product");
     } finally {
       setLoading(false);

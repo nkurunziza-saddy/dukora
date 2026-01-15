@@ -18,10 +18,7 @@ import { warehousesTable } from "./warehouses";
 export const storeProductsTable = pgTable(
   "store_products",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     productId: text("product_id")
       .notNull()
       .references(() => productsTable.id, { onDelete: "cascade" }),
@@ -62,11 +59,11 @@ export const storeProductsTable = pgTable(
   (table) => [
     uniqueIndex("store_products_business_id_product_id").on(
       table.businessId,
-      table.productId
+      table.productId,
     ),
     uniqueIndex("store_products_business_id_slug").on(
       table.businessId,
-      table.slug
+      table.slug,
     ),
     index("store_products_business_id").on(table.businessId),
     index("store_products_product_id").on(table.productId),
@@ -74,23 +71,20 @@ export const storeProductsTable = pgTable(
     index("store_products_featured").on(table.featured),
     check(
       "store_price_positive",
-      sql`${table.storePrice} IS NULL OR ${table.storePrice} >= 0`
+      sql`${table.storePrice} IS NULL OR ${table.storePrice} >= 0`,
     ),
     check(
       "compare_at_price_positive",
-      sql`${table.compareAtPrice} IS NULL OR ${table.compareAtPrice} >= 0`
+      sql`${table.compareAtPrice} IS NULL OR ${table.compareAtPrice} >= 0`,
     ),
-  ]
+  ],
 );
 
 // Store Settings Table - Simple store configuration
 export const storeSettingsTable = pgTable(
   "store_settings",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     businessId: text("business_id")
       .notNull()
       .unique()
@@ -104,7 +98,7 @@ export const storeSettingsTable = pgTable(
 
     defaultWarehouseId: text("default_warehouse_id").references(
       () => warehousesTable.id,
-      { onDelete: "set null" }
+      { onDelete: "set null" },
     ),
 
     autoPublishNewProducts: boolean("auto_publish_new_products")
@@ -122,17 +116,14 @@ export const storeSettingsTable = pgTable(
       .notNull()
       .defaultNow(),
   },
-  (table) => [index("store_settings_business_id").on(table.businessId)]
+  (table) => [index("store_settings_business_id").on(table.businessId)],
 );
 
 // Store Metrics Table - Basic performance tracking
 export const storeMetricsTable = pgTable(
   "store_metrics",
   {
-    id: text("id")
-      .primaryKey()
-      .notNull()
-      .default(sql`gen_random_uuid()`),
+    id: text("id").primaryKey().notNull().default(sql`gen_random_uuid()`),
     businessId: text("business_id")
       .notNull()
       .references(() => businessesTable.id, { onDelete: "cascade" }),
@@ -158,10 +149,10 @@ export const storeMetricsTable = pgTable(
     uniqueIndex("store_metrics_business_product_date").on(
       table.businessId,
       table.storeProductId,
-      table.metricDate
+      table.metricDate,
     ),
     check("views_non_negative", sql`${table.views} >= 0`),
     check("orders_non_negative", sql`${table.orders} >= 0`),
     check("revenue_non_negative", sql`${table.revenue} >= 0`),
-  ]
+  ],
 );

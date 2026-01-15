@@ -36,7 +36,7 @@ export async function get_total_quantity(businessId: string) {
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .where(eq(warehousesTable.businessId, businessId));
 
@@ -60,7 +60,7 @@ export async function get_quantity_by_product(businessId: string) {
       .from(warehouseItemsTable)
       .innerJoin(
         productsTable,
-        eq(warehouseItemsTable.productId, productsTable.id)
+        eq(warehouseItemsTable.productId, productsTable.id),
       )
       .where(eq(productsTable.businessId, businessId))
       .groupBy(warehouseItemsTable.productId);
@@ -85,7 +85,7 @@ export async function get_quantity_by_warehouse(businessId: string) {
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .where(eq(warehousesTable.businessId, businessId))
       .groupBy(warehouseItemsTable.warehouseId);
@@ -98,7 +98,7 @@ export async function get_quantity_by_warehouse(businessId: string) {
 }
 
 export async function get_quantity_by_product_and_warehouse(
-  businessId: string
+  businessId: string,
 ) {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -113,11 +113,11 @@ export async function get_quantity_by_product_and_warehouse(
       .from(warehouseItemsTable)
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       )
       .innerJoin(
         productsTable,
-        eq(warehouseItemsTable.productId, productsTable.id)
+        eq(warehouseItemsTable.productId, productsTable.id),
       )
       .where(eq(warehousesTable.businessId, businessId))
       .groupBy(warehouseItemsTable.productId, warehouseItemsTable.warehouseId);

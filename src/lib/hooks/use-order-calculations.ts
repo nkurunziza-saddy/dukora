@@ -26,7 +26,7 @@ export function useOrderCalculations({
         unitPrice: (product.price || 0).toString(),
         discount: "0",
       })),
-    [cartProducts]
+    [cartProducts],
   );
 
   const calculations = useMemo(() => {
@@ -36,7 +36,7 @@ export function useOrderCalculations({
 
     const taxRateSetting = settings.find((s) => s.key === "defaultVatRate");
     const pricesIncludeTaxSetting = settings.find(
-      (s) => s.key === "pricesIncludeTax"
+      (s) => s.key === "pricesIncludeTax",
     );
 
     const taxRate = taxRateSetting ? Number(taxRateSetting.value) || 0 : 0;
@@ -48,7 +48,7 @@ export function useOrderCalculations({
       orderItems,
       taxRate,
       0, // shipping - TODO: calculate from shipping settings
-      pricesIncludeTax
+      pricesIncludeTax,
     );
   }, [settings, orderItems, enabled]);
 

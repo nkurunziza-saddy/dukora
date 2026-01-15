@@ -46,7 +46,7 @@ export const get_security_info = async (userId: string) => {
     const account = await db.query.accountsTable.findFirst({
       where: and(
         eq(accountsTable.userId, userId),
-        eq(accountsTable.providerId, "credential")
+        eq(accountsTable.providerId, "credential"),
       ),
       orderBy: desc(accountsTable.updatedAt),
     });
@@ -74,7 +74,7 @@ export const get_session_by_id = async (sessionId: string, userId: string) => {
     const session = await db.query.sessionsTable.findFirst({
       where: and(
         eq(sessionsTable.id, sessionId),
-        eq(sessionsTable.userId, userId)
+        eq(sessionsTable.userId, userId),
       ),
     });
 

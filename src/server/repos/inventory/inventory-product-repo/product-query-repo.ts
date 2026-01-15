@@ -1,6 +1,18 @@
 "use cache";
 
-import { and, count, desc, eq, isNull, like, or, sql } from "drizzle-orm";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  isNull,
+  like,
+  or,
+  sql,
+} from "drizzle-orm";
 import { db } from "@/lib/db";
 import {
   categoriesTable,
@@ -9,6 +21,7 @@ import {
   warehouseItemsTable,
   warehousesTable,
 } from "@/lib/schema";
+import { ProductStatus } from "@/lib/schema/schema.types";
 import { ERROR_CODE } from "@/server/constants/errors";
 
 export const get_all = async (businessId: string) => {
@@ -23,8 +36,8 @@ export const get_all = async (businessId: string) => {
       .where(
         and(
           eq(productsTable.businessId, businessId),
-          isNull(productsTable.deletedAt)
-        )
+          isNull(productsTable.deletedAt),
+        ),
       )
       .orderBy(desc(productsTable.createdAt));
 
@@ -38,7 +51,10 @@ export const get_all = async (businessId: string) => {
 export const get_all_paginated = async (
   businessId: string,
   page: number,
-  pageSize: number
+  pageSize: number,
+  sorting?: { id: string; desc: boolean }[],
+  filters?: { id: string; value: unknown }[],
+  search?: string,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -46,27 +62,69 @@ export const get_all_paginated = async (
 
   try {
     const offset = (page - 1) * pageSize;
+
+    const whereConditions: any[] = [
+      eq(productsTable.businessId, businessId),
+      isNull(productsTable.deletedAt),
+    ];
+
+    if (filters) {
+      filters.forEach((filter) => {
+        if (filter.id === "status" && filter.value) {
+          const statuses = Array.isArray(filter.value)
+            ? filter.value
+            : (filter.value as string).split(",");
+
+          const validStatuses = statuses.filter((s: any) =>
+            Object.values(ProductStatus).includes(s as ProductStatus),
+          ) as ProductStatus[];
+
+          if (validStatuses.length > 0) {
+            whereConditions.push(inArray(productsTable.status, validStatuses));
+          }
+        }
+      });
+    }
+
+    if (search) {
+      whereConditions.push(
+        or(
+          ilike(productsTable.name, `%${search}%`),
+          ilike(productsTable.sku, `%${search}%`),
+          ilike(productsTable.description, `%${search}%`),
+        ),
+      );
+    }
+
+    let orderBy: any = desc(productsTable.createdAt);
+    if (sorting && sorting.length > 0) {
+      const sort = sorting[0];
+      const columnMap: Record<string, any> = {
+        name: productsTable.name,
+        price: productsTable.price,
+        createdAt: productsTable.createdAt,
+        status: productsTable.status,
+        sku: productsTable.sku,
+      };
+
+      const column = columnMap[sort.id];
+      if (column) {
+        orderBy = sort.desc ? desc(column) : asc(column);
+      }
+    }
+
     const products = await db
       .select()
       .from(productsTable)
-      .where(
-        and(
-          eq(productsTable.businessId, businessId),
-          isNull(productsTable.deletedAt)
-        )
-      )
-      .orderBy(desc(productsTable.createdAt))
+      .where(and(...whereConditions))
+      .orderBy(orderBy)
       .limit(pageSize)
       .offset(offset);
+
     const [totalCount] = await db
       .select({ count: count() })
       .from(productsTable)
-      .where(
-        and(
-          eq(productsTable.businessId, businessId),
-          isNull(productsTable.deletedAt)
-        )
-      );
+      .where(and(...whereConditions));
 
     return {
       data: { products, totalCount: totalCount.count || 0 },
@@ -90,21 +148,21 @@ export const get_overview = async (businessId: string, limit?: number) => {
       .where(
         and(
           eq(productsTable.businessId, businessId),
-          isNull(productsTable.deletedAt)
-        )
+          isNull(productsTable.deletedAt),
+        ),
       )
       .orderBy(desc(productsTable.createdAt))
       .innerJoin(
         warehouseItemsTable,
-        eq(productsTable.id, warehouseItemsTable.productId)
+        eq(productsTable.id, warehouseItemsTable.productId),
       )
       .innerJoin(
         categoriesTable,
-        eq(productsTable.categoryId, categoriesTable.id)
+        eq(productsTable.categoryId, categoriesTable.id),
       )
       .innerJoin(
         warehousesTable,
-        eq(warehouseItemsTable.warehouseId, warehousesTable.id)
+        eq(warehouseItemsTable.warehouseId, warehousesTable.id),
       );
 
     const products = await (limit ? query.limit(limit) : query);
@@ -124,7 +182,7 @@ export async function get_by_id(productId: string, businessId: string) {
     const product = await db.query.productsTable.findFirst({
       where: and(
         eq(productsTable.id, productId),
-        eq(productsTable.businessId, businessId)
+        eq(productsTable.businessId, businessId),
       ),
       with: {
         category: true,
@@ -150,7 +208,6 @@ export async function get_by_id(productId: string, businessId: string) {
   }
 }
 
-// store (public, no auth required)
 export interface StoreProductFilters {
   page: number;
   pageSize: number;
@@ -164,7 +221,7 @@ export const get_products_for_store = async (
   businessId: string,
   filters: StoreProductFilters,
   featured?: boolean,
-  isPublished?: boolean
+  isPublished?: boolean,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -202,8 +259,8 @@ export const get_products_for_store = async (
           like(storeProductsTable.slug, `%${search}%`),
           like(productsTable.name, `%${search}%`),
           like(productsTable.description, `%${search}%`),
-          like(productsTable.sku, `%${search}%`)
-        )!
+          like(productsTable.sku, `%${search}%`),
+        )!,
       );
     }
 
@@ -236,6 +293,7 @@ export const get_products_for_store = async (
         sku: productsTable.sku,
         price: productsTable.price,
         costPrice: productsTable.costPrice,
+        currency: productsTable.currency,
         imageUrl: productsTable.imageUrl,
         status: productsTable.status,
         createdAt: productsTable.createdAt,
@@ -248,15 +306,15 @@ export const get_products_for_store = async (
       .from(productsTable)
       .leftJoin(
         warehouseItemsTable,
-        eq(productsTable.id, warehouseItemsTable.productId)
+        eq(productsTable.id, warehouseItemsTable.productId),
       )
       .leftJoin(
         storeProductsTable,
-        eq(productsTable.id, storeProductsTable.productId)
+        eq(productsTable.id, storeProductsTable.productId),
       )
       .leftJoin(
         categoriesTable,
-        eq(productsTable.categoryId, categoriesTable.id)
+        eq(productsTable.categoryId, categoriesTable.id),
       )
       .where(and(...whereConditions))
       .groupBy(
@@ -266,12 +324,13 @@ export const get_products_for_store = async (
         productsTable.sku,
         productsTable.price,
         productsTable.costPrice,
+        productsTable.currency,
         productsTable.imageUrl,
         productsTable.status,
         productsTable.createdAt,
         productsTable.updatedAt,
         categoriesTable.value,
-        categoriesTable.description
+        categoriesTable.description,
       )
       .orderBy(orderBy)
       .limit(pageSize)
@@ -282,11 +341,11 @@ export const get_products_for_store = async (
       .from(productsTable)
       .leftJoin(
         storeProductsTable,
-        eq(productsTable.id, storeProductsTable.productId)
+        eq(productsTable.id, storeProductsTable.productId),
       )
       .leftJoin(
         categoriesTable,
-        eq(productsTable.categoryId, categoriesTable.id)
+        eq(productsTable.categoryId, categoriesTable.id),
       )
       .where(and(...whereConditions));
 
@@ -310,7 +369,7 @@ export const get_products_for_store = async (
 
 export const get_product_by_id_for_store = async (
   businessId: string,
-  productId: string
+  productId: string,
 ) => {
   if (!productId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -325,6 +384,7 @@ export const get_product_by_id_for_store = async (
         sku: productsTable.sku,
         price: productsTable.price,
         costPrice: productsTable.costPrice,
+        currency: productsTable.currency,
         imageUrl: productsTable.imageUrl,
         status: productsTable.status,
         unit: productsTable.unit,
@@ -342,19 +402,19 @@ export const get_product_by_id_for_store = async (
       .from(productsTable)
       .leftJoin(
         warehouseItemsTable,
-        eq(productsTable.id, warehouseItemsTable.productId)
+        eq(productsTable.id, warehouseItemsTable.productId),
       )
       .leftJoin(
         categoriesTable,
-        eq(productsTable.categoryId, categoriesTable.id)
+        eq(productsTable.categoryId, categoriesTable.id),
       )
       .where(
         and(
           eq(productsTable.id, productId),
           eq(productsTable.businessId, businessId),
           eq(productsTable.status, "ACTIVE"),
-          isNull(productsTable.deletedAt)
-        )
+          isNull(productsTable.deletedAt),
+        ),
       )
       .groupBy(
         productsTable.id,
@@ -363,6 +423,7 @@ export const get_product_by_id_for_store = async (
         productsTable.sku,
         productsTable.price,
         productsTable.costPrice,
+        productsTable.currency,
         productsTable.imageUrl,
         productsTable.status,
         productsTable.unit,
@@ -373,7 +434,7 @@ export const get_product_by_id_for_store = async (
         productsTable.createdAt,
         productsTable.updatedAt,
         categoriesTable.value,
-        categoriesTable.description
+        categoriesTable.description,
       );
 
     if (!product) {
@@ -407,21 +468,21 @@ export const get_categories_for_store = async ({
         and(
           eq(productsTable.id, storeProductsTable.productId),
           eq(storeProductsTable.businessId, businessId),
-          eq(storeProductsTable.isPublished, true)
-        )
+          eq(storeProductsTable.isPublished, true),
+        ),
       )
       .where(
         and(
           eq(categoriesTable.isActive, true),
           eq(categoriesTable.businessId, businessId),
           eq(productsTable.status, "ACTIVE"),
-          isNull(productsTable.deletedAt)
-        )
+          isNull(productsTable.deletedAt),
+        ),
       )
       .groupBy(
         categoriesTable.id,
         categoriesTable.value,
-        categoriesTable.description
+        categoriesTable.description,
       )
       .orderBy(categoriesTable.value);
 
@@ -434,7 +495,7 @@ export const get_categories_for_store = async ({
 
 export const search_products_globally = async (
   query: string,
-  limit: number = 5
+  limit: number = 5,
 ) => {
   if (!query || query.trim().length === 0) {
     return { data: [], error: null };
@@ -458,11 +519,11 @@ export const search_products_globally = async (
       .from(storeProductsTable)
       .innerJoin(
         productsTable,
-        eq(storeProductsTable.productId, productsTable.id)
+        eq(storeProductsTable.productId, productsTable.id),
       )
       .innerJoin(
         sql`businesses`,
-        sql`businesses.id = ${storeProductsTable.businessId}`
+        sql`businesses.id = ${storeProductsTable.businessId}`,
       )
       .where(
         and(
@@ -472,14 +533,14 @@ export const search_products_globally = async (
           or(
             like(
               sql`COALESCE(${storeProductsTable.storeTitle}, ${productsTable.name})`,
-              searchTerm
+              searchTerm,
             ),
             like(
               sql`COALESCE(${storeProductsTable.storeDescription}, ${productsTable.description})`,
-              searchTerm
-            )
-          )
-        )
+              searchTerm,
+            ),
+          ),
+        ),
       )
       .limit(limit);
 

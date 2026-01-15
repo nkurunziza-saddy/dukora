@@ -66,7 +66,7 @@ export function CartSidebar() {
                     <p className="text-sm text-muted-foreground">
                       {formatCurrencyWithCode(
                         parseFloat(item.price || "0"),
-                        item.currency || "RWF"
+                        item.currency || "RWF",
                       )}
                     </p>
 
@@ -117,7 +117,7 @@ export function CartSidebar() {
               <span className="font-semibold">
                 {formatCurrencyWithCode(
                   state.totalPrice,
-                  businessCurrency || "RWF"
+                  businessCurrency || "RWF",
                 )}
               </span>
             </div>

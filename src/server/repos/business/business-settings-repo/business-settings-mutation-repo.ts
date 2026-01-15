@@ -11,7 +11,7 @@ import { ERROR_CODE } from "@/server/constants/errors";
 export async function upsert(
   businessId: string,
   userId: string,
-  setting: InsertBusinessSetting
+  setting: InsertBusinessSetting,
 ) {
   if (!setting.key) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -51,7 +51,7 @@ export async function upsert(
 
 export async function upsert_many(
   userId: string,
-  settings: InsertBusinessSetting[]
+  settings: InsertBusinessSetting[],
 ) {
   if (!Array.isArray(settings) || settings.length === 0) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };

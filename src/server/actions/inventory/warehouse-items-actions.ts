@@ -15,13 +15,13 @@ export const getWarehouseItems = createProtectedAction(
   PERMISSION.WAREHOUSE_ITEM_VIEW,
   async (user) => {
     const warehouseItems = await warehouseItemsRepo.get_all(
-      user.businessId ?? ""
+      user.businessId ?? "",
     );
     if (warehouseItems.error) {
       return { data: null, error: warehouseItems.error };
     }
     return { data: warehouseItems.data, error: null };
-  }
+  },
 );
 export const getWarehouseItemsPaginated = createProtectedAction(
   PERMISSION.WAREHOUSE_ITEM_VIEW,
@@ -29,13 +29,13 @@ export const getWarehouseItemsPaginated = createProtectedAction(
     const warehouseItems = await warehouseItemsRepo.get_all_paginated(
       user.businessId ?? "",
       page,
-      pageSize
+      pageSize,
     );
     if (warehouseItems.error) {
       return { data: null, error: warehouseItems.error };
     }
     return { data: warehouseItems.data, error: null };
-  }
+  },
 );
 
 export const getWarehouseItemsByBusiness = createProtectedAction(
@@ -53,10 +53,10 @@ export const getWarehouseItemsByBusiness = createProtectedAction(
       }) => ({
         ...item.warehouseItem,
         product: item.product,
-      })
+      }),
     );
     return { data: warehouseItems, error: null };
-  }
+  },
 );
 
 export const getWarehouseItemById = createProtectedAction(
@@ -70,14 +70,14 @@ export const getWarehouseItemById = createProtectedAction(
       return { data: null, error: warehouseItem.error };
     }
     return { data: warehouseItem, error: null };
-  }
+  },
 );
 
 export const createWarehouseItem = createProtectedAction(
   PERMISSION.WAREHOUSE_ITEM_CREATE,
   async (
     user,
-    warehouseItemData: Omit<InsertWarehouseItem, "businessId" | "id">
+    warehouseItemData: Omit<InsertWarehouseItem, "businessId" | "id">,
   ) => {
     const warehouseItem: InsertWarehouseItem = {
       ...warehouseItemData,
@@ -85,7 +85,7 @@ export const createWarehouseItem = createProtectedAction(
     const res = await warehouseItemsRepo.create(
       user.businessId ?? "",
       user.id,
-      warehouseItem
+      warehouseItem,
     );
     if (res.error) {
       return { data: null, error: res.error };
@@ -93,7 +93,7 @@ export const createWarehouseItem = createProtectedAction(
     revalidateTag(`warehouse-item-${user.businessId}`, "max");
     revalidateTag("warehouse-items", "max");
     return { data: res.data, error: null };
-  }
+  },
 );
 
 export const updateWarehouseItem = createProtectedAction(
@@ -106,7 +106,7 @@ export const updateWarehouseItem = createProtectedAction(
     }: {
       warehouseItemId: string;
       updates: Partial<Omit<InsertWarehouseItem, "id" | "businessId">>;
-    }
+    },
   ) => {
     if (!warehouseItemId?.trim()) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -115,7 +115,7 @@ export const updateWarehouseItem = createProtectedAction(
       user.businessId ?? "",
       warehouseItemId,
       user.id,
-      updates
+      updates,
     );
     if (updatedWarehouseItem.error) {
       return { data: null, error: updatedWarehouseItem.error };
@@ -123,7 +123,7 @@ export const updateWarehouseItem = createProtectedAction(
     revalidateTag(`warehouse-item-${updatedWarehouseItem.data.id}`, "max");
     revalidateTag(`warehouse-items-${user.businessId}`, "max");
     return { data: updatedWarehouseItem.data, error: null };
-  }
+  },
 );
 
 export const deleteWarehouseItem = createProtectedAction(
@@ -135,7 +135,7 @@ export const deleteWarehouseItem = createProtectedAction(
     const res = await warehouseItemsRepo.remove(
       warehouseItemId,
       user.businessId ?? "",
-      user.id
+      user.id,
     );
     if (res.error) {
       return { data: null, error: res.error };
@@ -143,14 +143,14 @@ export const deleteWarehouseItem = createProtectedAction(
     revalidateTag(`warehouse-item-${warehouseItemId}`, "max");
     revalidateTag(`warehouse-items-${user.businessId}`, "max");
     return { data: { success: true }, error: null };
-  }
+  },
 );
 
 export const createManyWarehouseItems = createProtectedAction(
   PERMISSION.WAREHOUSE_ITEM_CREATE,
   async (
     user,
-    warehouseItemsData: Omit<InsertWarehouseItem, "businessId" | "id">[]
+    warehouseItemsData: Omit<InsertWarehouseItem, "businessId" | "id">[],
   ) => {
     if (!warehouseItemsData?.length) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -159,7 +159,7 @@ export const createManyWarehouseItems = createProtectedAction(
       (warehouseItem) => ({
         ...warehouseItem,
         businessId: user.businessId ?? "",
-      })
+      }),
     );
     const createdWarehouseItems =
       await warehouseItemsRepo.create_many(warehouseItems);
@@ -169,5 +169,5 @@ export const createManyWarehouseItems = createProtectedAction(
     revalidateTag(`warehouse-items-${user.businessId}`, "max");
     revalidateTag("warehouse-items", "max");
     return { data: createdWarehouseItems.data, error: null };
-  }
+  },
 );

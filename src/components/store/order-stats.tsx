@@ -38,10 +38,10 @@ export function OrderStats({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border/2">
-      {stats.map((stat, index) => {
-        const Icon = stat.icon;
+      {stats.map((stat) => {
+        const _Icon = stat.icon;
         return (
-          <div className="bg-background p-6" key={index}>
+          <div className="bg-background p-6" key={stat.label}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground">{stat.label}</p>

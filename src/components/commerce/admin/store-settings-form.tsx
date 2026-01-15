@@ -27,8 +27,20 @@ import {
   updateStoreSettings,
 } from "@/server/actions/store/settings-actions";
 
+interface StoreSettings {
+  isStoreEnabled?: boolean;
+  storeName?: string;
+  storeDescription?: string;
+  storeLogo?: string;
+  defaultWarehouseId?: string;
+  autoPublishNewProducts?: boolean;
+  requireInventory?: boolean;
+  lowStockThreshold?: number;
+  syncMode?: "AUTO" | "MANUAL";
+}
+
 interface StoreSettingsFormProps {
-  settings: any;
+  settings: StoreSettings | null;
   warehouses: Array<{ id: string; name: string }>;
 }
 
@@ -62,7 +74,7 @@ export function StoreSettingsForm({
         autoPublishNewProducts: formData.autoPublishNewProducts,
         requireInventory: formData.requireInventory,
         lowStockThreshold: formData.lowStockThreshold,
-        syncMode: formData.syncMode as any,
+        syncMode: formData.syncMode as InsertStoreSetting["syncMode"],
       };
 
       const result = await updateStoreSettings(updates);
@@ -75,7 +87,7 @@ export function StoreSettingsForm({
       }
 
       toast.success("Settings updated successfully");
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to update settings");
     } finally {
       setLoading(false);
@@ -91,7 +103,7 @@ export function StoreSettingsForm({
       }
       setFormData({ ...formData, isStoreEnabled: enabled });
       toast.success(enabled ? "Store enabled" : "Store disabled");
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to toggle store");
     }
   };

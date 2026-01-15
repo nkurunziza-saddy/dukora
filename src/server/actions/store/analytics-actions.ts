@@ -11,13 +11,13 @@ export const getStorePerformance = createProtectedAction(
     const result = await storeMetricsRepo.get_store_performance_metrics(
       user.businessId ?? "",
       startDate,
-      endDate
+      endDate,
     );
     if (result.error) {
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const getProductPerformance = createProtectedAction(
@@ -32,7 +32,7 @@ export const getProductPerformance = createProtectedAction(
       storeProductId: string;
       startDate: Date;
       endDate: Date;
-    }
+    },
   ) => {
     if (!storeProductId?.trim()) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -40,13 +40,13 @@ export const getProductPerformance = createProtectedAction(
     const result = await storeMetricsRepo.get_product_performance_metrics(
       storeProductId,
       startDate,
-      endDate
+      endDate,
     );
     if (result.error) {
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const getTopProducts = createProtectedAction(
@@ -63,20 +63,20 @@ export const getTopProducts = createProtectedAction(
       endDate: Date;
       limit?: number;
       sortBy?: "revenue" | "orders" | "views";
-    }
+    },
   ) => {
     const result = await storeMetricsRepo.get_top_performing_products(
       user.businessId ?? "",
       startDate,
       endDate,
       limit,
-      sortBy
+      sortBy,
     );
     if (result.error) {
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const getRevenueTrends = createProtectedAction(
@@ -91,44 +91,44 @@ export const getRevenueTrends = createProtectedAction(
       startDate: Date;
       endDate: Date;
       groupBy?: "day" | "week" | "month";
-    }
+    },
   ) => {
     const result = await storeMetricsRepo.get_revenue_trends(
       user.businessId ?? "",
       startDate,
       endDate,
-      groupBy
+      groupBy,
     );
     if (result.error) {
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const getTodaysMetrics = createProtectedAction(
   PERMISSION.PRODUCT_VIEW,
   async (user) => {
     const result = await storeMetricsRepo.get_todays_metrics(
-      user.businessId ?? ""
+      user.businessId ?? "",
     );
     if (result.error) {
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const trackProductView = async (
   businessId: string,
-  storeProductId: string
+  storeProductId: string,
 ) => {
   if (!businessId || !storeProductId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
   }
   const result = await storeMetricsRepo.record_product_view(
     businessId,
-    storeProductId
+    storeProductId,
   );
   if (result.error) {
     return { data: null, error: result.error };
@@ -138,14 +138,14 @@ export const trackProductView = async (
 
 export const trackAddToCart = async (
   businessId: string,
-  storeProductId: string
+  storeProductId: string,
 ) => {
   if (!businessId || !storeProductId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
   }
   const result = await storeMetricsRepo.record_add_to_cart(
     businessId,
-    storeProductId
+    storeProductId,
   );
   if (result.error) {
     return { data: null, error: result.error };

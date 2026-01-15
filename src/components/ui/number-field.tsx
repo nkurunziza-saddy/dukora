@@ -42,7 +42,7 @@ function NumberFieldGroup({
     <NumberFieldPrimitive.Group
       className={cn(
         "relative flex w-full justify-between rounded-lg border border-input bg-background text-sm ring-ring/24 transition-[color,background-color,box-shadow,border-color] focus-within:border-ring focus-within:ring-[3px] has-aria-invalid:border-destructive/36 focus-within:has-aria-invalid:border-destructive/64 focus-within:has-aria-invalid:ring-destructive/48 data-disabled:pointer-events-none data-disabled:opacity-64 dark:bg-input/32 dark:has-aria-invalid:ring-destructive/24 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        className
+        className,
       )}
       data-slot="number-field-group"
       {...props}
@@ -58,7 +58,7 @@ function NumberFieldDecrement({
     <NumberFieldPrimitive.Decrement
       className={cn(
         "relative flex shrink-0 cursor-pointer items-center justify-center rounded-s-[calc(var(--radius-lg)-1px)] px-[calc(--spacing(3)-1px)] transition-colors hover:bg-accent in-data-[size=sm]:px-[calc(--spacing(2.5)-1px)] pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11",
-        className
+        className,
       )}
       data-slot="number-field-decrement"
       {...props}
@@ -76,7 +76,7 @@ function NumberFieldIncrement({
     <NumberFieldPrimitive.Increment
       className={cn(
         "relative flex shrink-0 cursor-pointer items-center justify-center rounded-e-[calc(var(--radius-lg)-1px)] px-[calc(--spacing(3)-1px)] transition-colors hover:bg-accent in-data-[size=sm]:px-[calc(--spacing(2.5)-1px)] pointer-coarse:after:absolute pointer-coarse:after:size-full pointer-coarse:after:min-h-11 pointer-coarse:after:min-w-11",
-        className
+        className,
       )}
       data-slot="number-field-increment"
       {...props}
@@ -94,7 +94,7 @@ function NumberFieldInput({
     <NumberFieldPrimitive.Input
       className={cn(
         "min-w-0 flex-1 bg-transparent px-[calc(--spacing(3)-1px)] py-[calc(--spacing(1.5)-1px)] text-center tabular-nums outline-none in-data-[size=lg]:py-[calc(--spacing(2)-1px)] in-data-[size=sm]:px-[calc(--spacing(2.5)-1px)] in-data-[size=sm]:py-[calc(--spacing(1)-1px)]",
-        className
+        className,
       )}
       data-slot="number-field-input"
       {...props}
@@ -113,7 +113,7 @@ function NumberFieldScrubArea({
 
   if (!context) {
     throw new Error(
-      "NumberFieldScrubArea must be used within a NumberField component for accessibility."
+      "NumberFieldScrubArea must be used within a NumberField component for accessibility.",
     );
   }
 

@@ -7,7 +7,7 @@ import type { SelectProductSupplier } from "@/lib/schema/schema.types";
 import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 
 export function ProductSupplierColumn(
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<SelectProductSupplier>[] {
   return [
     {

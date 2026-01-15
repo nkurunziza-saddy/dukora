@@ -58,7 +58,7 @@ export default function AIChat() {
     setMessages,
     status,
     stop,
-    error,
+    error: _error,
     regenerate,
     clearMessages,
   } = usePersistedMessages({
@@ -115,7 +115,6 @@ export default function AIChat() {
   };
 
   const isLoading = status === "submitted" || status === "streaming";
-  console.log(messages);
   return (
     <div className="flex flex-col h-screen bg-background">
       <Conversation className="flex-1">
@@ -133,10 +132,10 @@ export default function AIChat() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl mb-8">
-                  {suggestions.map((suggestion, index) => (
+                  {suggestions.map((suggestion) => (
                     <SuggestionCard
                       description={suggestion.description}
-                      key={index}
+                      key={suggestion.title}
                       onClick={() =>
                         handleSuggestionClick(suggestion.description)
                       }

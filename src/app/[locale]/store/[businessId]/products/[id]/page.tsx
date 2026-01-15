@@ -35,7 +35,7 @@ function ProductLoading() {
 }
 
 export default async function ProductPage(
-  props: PageProps<"/[locale]/store/[businessId]/products/[id]">
+  props: PageProps<"/[locale]/store/[businessId]/products/[id]">,
 ) {
   return (
     <Suspense fallback={<ProductLoading />}>

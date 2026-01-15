@@ -4,10 +4,10 @@ import { getTranslations } from "next-intl/server";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@/components/ui/tabs";
 import { db } from "@/lib/db";
 import { getProductById } from "@/server/actions/inventory/products-actions";
-import ProductSummaryCard from "./_components/product-summary-card";
 import ProductStockLevels from "./_components/product-stock-levels";
-import ProductTransactions from "./_components/product-transactions";
+import ProductSummaryCard from "./_components/product-summary-card";
 import ProductSuppliers from "./_components/product-suppliers";
+import ProductTransactions from "./_components/product-transactions";
 
 type Props = {
   params: Promise<{ id: string }>;

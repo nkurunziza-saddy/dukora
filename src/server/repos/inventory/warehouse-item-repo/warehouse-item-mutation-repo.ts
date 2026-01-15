@@ -11,7 +11,7 @@ import { ERROR_CODE } from "@/server/constants/errors";
 export async function create(
   businessId: string,
   userId: string,
-  warehouseItem: InsertWarehouseItem
+  warehouseItem: InsertWarehouseItem,
 ) {
   try {
     const result = await db.transaction(async (tx) => {
@@ -45,7 +45,7 @@ export async function update(
   businessId: string,
   warehouseItemId: string,
   userId: string,
-  updates: Partial<InsertWarehouseItem>
+  updates: Partial<InsertWarehouseItem>,
 ) {
   try {
     const result = await db.transaction(async (tx) => {
@@ -95,7 +95,7 @@ export async function update(
 export async function remove(
   warehouseItemId: string,
   businessId: string,
-  userId: string
+  userId: string,
 ) {
   try {
     const item = await db.query.warehouseItemsTable.findFirst({

@@ -26,7 +26,7 @@ export const getTransactions = createProtectedAction(
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  }
+  },
 );
 
 export const getTransactionsPaginated = createProtectedAction(
@@ -45,7 +45,7 @@ export const getTransactionsPaginated = createProtectedAction(
       sorting?: { id: string; desc: boolean }[];
       filters?: { id: string; value: unknown }[];
       search?: string;
-    }
+    },
   ) => {
     const transactions = await transactionRepo.get_all_paginated(
       user.businessId ?? "",
@@ -53,13 +53,13 @@ export const getTransactionsPaginated = createProtectedAction(
       pageSize,
       sorting,
       filters,
-      search
+      search,
     );
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  }
+  },
 );
 
 export const getTransactionsByTimeInterval = createProtectedAction(
@@ -68,13 +68,13 @@ export const getTransactionsByTimeInterval = createProtectedAction(
     const transactions = await transactionRepo.get_time_interval_with_with(
       user.businessId ?? "",
       startDate,
-      endDate
+      endDate,
     );
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  }
+  },
 );
 
 export const getTransactionsByTimeIntervalPaginated = createProtectedAction(
@@ -86,7 +86,7 @@ export const getTransactionsByTimeIntervalPaginated = createProtectedAction(
       endDate,
       page,
       pageSize,
-    }: { startDate: Date; endDate: Date; page: number; pageSize: number }
+    }: { startDate: Date; endDate: Date; page: number; pageSize: number },
   ) => {
     const transactions =
       await transactionRepo.get_time_interval_with_with_paginated(
@@ -94,13 +94,13 @@ export const getTransactionsByTimeIntervalPaginated = createProtectedAction(
         startDate,
         endDate,
         page,
-        pageSize
+        pageSize,
       );
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  }
+  },
 );
 
 export const getTransactionById = createProtectedAction(
@@ -113,20 +113,20 @@ export const getTransactionById = createProtectedAction(
 
     const transaction = await transactionRepo.get_by_id(
       transactionId,
-      user.businessId ?? ""
+      user.businessId ?? "",
     );
     if (transaction.error) {
       return { data: null, error: transaction.error };
     }
     return { data: transaction.data, error: null };
-  }
+  },
 );
 
 export const createTransaction = createProtectedAction(
   PERMISSION.TRANSACTION_PURCHASE_CREATE,
   async (
     user,
-    transactionData: Omit<InsertTransaction, "businessId" | "id" | "createdBy">
+    transactionData: Omit<InsertTransaction, "businessId" | "id" | "createdBy">,
   ) => {
     const validation = validateTransactionData(transactionData);
     if (!validation.valid) {
@@ -141,10 +141,10 @@ export const createTransaction = createProtectedAction(
 
     const productRes = await inventoryProductRepo.get_by_id(
       transaction.productId,
-      user.businessId ?? ""
+      user.businessId ?? "",
     );
     const settingsRes = await businessSettingsRepo.get_all(
-      user.businessId ?? ""
+      user.businessId ?? "",
     );
 
     let notificationPayload: any;
@@ -162,7 +162,7 @@ export const createTransaction = createProtectedAction(
       }
 
       const pricesIncludeTaxSetting = settings.find(
-        (s) => s.key === "pricesIncludeTax"
+        (s) => s.key === "pricesIncludeTax",
       );
       if (pricesIncludeTaxSetting) {
         pricesIncludeTax = Boolean(pricesIncludeTaxSetting.value);
@@ -216,7 +216,7 @@ export const createTransaction = createProtectedAction(
 
     const { data: resData, error: resError } = await transactionRepo.create(
       transaction,
-      notificationPayload
+      notificationPayload,
     );
     if (resError) {
       return { data: null, error: resError };
@@ -225,7 +225,7 @@ export const createTransaction = createProtectedAction(
     revalidateTag(`transactions-${user.businessId}`, "max");
     revalidateTag("transactions", "max");
     return { data: resData, error: null };
-  }
+  },
 );
 
 export const createTransactionAndWarehouseItem = createProtectedAction(
@@ -235,7 +235,7 @@ export const createTransactionAndWarehouseItem = createProtectedAction(
     transactionData: Omit<
       InsertTransaction,
       "businessId" | "id" | "createdBy" | "warehouseItemId"
-    >
+    >,
   ) => {
     const validation = validateTransactionDataWithoutWarehouse(transactionData);
     if (!validation.valid) {
@@ -250,10 +250,10 @@ export const createTransactionAndWarehouseItem = createProtectedAction(
 
     const productRes = await inventoryProductRepo.get_by_id(
       transaction.productId,
-      user.businessId ?? ""
+      user.businessId ?? "",
     );
     const settingsRes = await businessSettingsRepo.get_all(
-      user.businessId ?? ""
+      user.businessId ?? "",
     );
 
     let notificationPayload: any;
@@ -271,7 +271,7 @@ export const createTransactionAndWarehouseItem = createProtectedAction(
       }
 
       const pricesIncludeTaxSetting = settings.find(
-        (s) => s.key === "pricesIncludeTax"
+        (s) => s.key === "pricesIncludeTax",
       );
       if (pricesIncludeTaxSetting) {
         pricesIncludeTax = Boolean(pricesIncludeTaxSetting.value);
@@ -326,7 +326,7 @@ export const createTransactionAndWarehouseItem = createProtectedAction(
     const { data: resData, error: resError } =
       await transactionRepo.create_with_warehouse_item(
         transaction,
-        notificationPayload
+        notificationPayload,
       );
     if (resError) {
       return { data: null, error: resError };
@@ -337,7 +337,7 @@ export const createTransactionAndWarehouseItem = createProtectedAction(
     revalidateTag(`warehouse-item-${user.businessId}`, "max");
     revalidateTag("warehouse-items", "max");
     return { data: resData, error: null };
-  }
+  },
 );
 
 export const getTransactionsByType = createProtectedAction(
@@ -350,11 +350,11 @@ export const getTransactionsByType = createProtectedAction(
 
     const transactions = await transactionRepo.get_by_type(
       user.businessId ?? "",
-      type
+      type,
     );
     if (transactions.error) {
       return { data: null, error: transactions.error };
     }
     return { data: transactions.data, error: null };
-  }
+  },
 );

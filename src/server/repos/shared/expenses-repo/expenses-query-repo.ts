@@ -32,7 +32,7 @@ export const get_all = async (businessId: string) => {
 export const get_all_paginated = async (
   businessId: string,
   page: number,
-  pageSize: number
+  pageSize: number,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -74,7 +74,7 @@ export const get_all_paginated = async (
 export async function get_by_time_interval(
   businessId: string,
   dateFrom: Date,
-  dateTo: Date
+  dateTo: Date,
 ) {
   try {
     const result = await db
@@ -84,8 +84,8 @@ export async function get_by_time_interval(
         and(
           eq(expensesTable.businessId, businessId),
           gte(expensesTable.createdAt, dateFrom),
-          lte(expensesTable.createdAt, dateTo)
-        )
+          lte(expensesTable.createdAt, dateTo),
+        ),
       );
     return {
       data: result,
@@ -106,7 +106,7 @@ export async function get_by_id(expenseId: string, businessId: string) {
     const expense = await db.query.expensesTable.findFirst({
       where: and(
         eq(expensesTable.id, expenseId),
-        eq(expensesTable.businessId, businessId)
+        eq(expensesTable.businessId, businessId),
       ),
       with: {
         createdByUser: true,

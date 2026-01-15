@@ -29,7 +29,7 @@ export async function get_by_id(categoryId: string, businessId: string) {
     const category = await db.query.categoriesTable.findFirst({
       where: and(
         eq(categoriesTable.id, categoryId),
-        eq(categoriesTable.businessId, businessId)
+        eq(categoriesTable.businessId, businessId),
       ),
     });
 

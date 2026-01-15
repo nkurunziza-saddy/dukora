@@ -118,7 +118,7 @@ async function ProductsContent({
 }
 
 export default async function ProductsPage(
-  props: PageProps<"/[locale]/store/[businessId]/products">
+  props: PageProps<"/[locale]/store/[businessId]/products">,
 ) {
   return (
     <Suspense fallback={<ProductsPageLoading />}>

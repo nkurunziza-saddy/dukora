@@ -45,6 +45,19 @@ import {
 } from "../ui/autocomplete";
 import { Separator } from "../ui/separator";
 
+interface Product {
+  id: string;
+  name: string;
+  sku?: string;
+}
+
+interface WarehouseItem {
+  id: string;
+  warehouse: { name: string };
+  warehouseId: string;
+  quantity: number;
+}
+
 export default function AnyTransactionForm({
   transaction,
 }: {
@@ -159,7 +172,9 @@ export default function AnyTransactionForm({
               <FieldLabel>{t("type")}</FieldLabel>
               <Select
                 items={transactionTypesObject}
-                onValueChange={field.handleChange}
+                onValueChange={(value) =>
+                  value && field.handleChange(value as typeof field.state.value)
+                }
                 value={field.state.value}
               >
                 <SelectTrigger className="w-full">
@@ -191,7 +206,7 @@ export default function AnyTransactionForm({
                 </div>
               ) : productsData ? (
                 <Autocomplete
-                  items={productsData.map((p: any) => ({
+                  items={productsData.map((p: Product) => ({
                     value: p.id,
                     label: p.name,
                     ...p,
@@ -259,7 +274,7 @@ export default function AnyTransactionForm({
                 ) : productDetailsData ? (
                   <Autocomplete
                     items={productDetailsData.warehouseItems.map(
-                      (item: any) => ({
+                      (item: WarehouseItem) => ({
                         value: item.id,
                         label: item.warehouse.name,
                         ...item,
@@ -271,9 +286,9 @@ export default function AnyTransactionForm({
                         const warehouseId =
                           typeof item === "string"
                             ? productDetailsData?.warehouseItems.find(
-                                (w: any) => w.id === item
+                                (w: WarehouseItem) => w.id === item
                               )?.warehouseId
-                            : (item as any).warehouseId;
+                            : (item as WarehouseItem).warehouseId;
                         if (warehouseId) {
                           form.setFieldValue("warehouseId", warehouseId);
                         }

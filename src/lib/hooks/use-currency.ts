@@ -13,14 +13,14 @@ export const useCurrency = () => {
     (value: number | string | null | undefined) => {
       return formatCurrencyUtil(value, currency);
     },
-    [currency]
+    [currency],
   );
 
   const formatWithCode = useCallback(
     (value: number | string | null | undefined, currencyCode?: string) => {
       return formatCurrencyWithCode(value, currencyCode || currency);
     },
-    [currency]
+    [currency],
   );
 
   return {

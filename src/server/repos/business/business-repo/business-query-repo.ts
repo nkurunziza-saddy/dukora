@@ -81,8 +81,8 @@ export async function get_popular(limit: number = 10) {
         customerOrdersTable,
         and(
           eq(businessesTable.id, customerOrdersTable.businessId),
-          notInArray(customerOrdersTable.status, ["DRAFT", "CANCELLED"])
-        )
+          notInArray(customerOrdersTable.status, ["DRAFT", "CANCELLED"]),
+        ),
       )
       .where(eq(businessesTable.isActive, true))
       .groupBy(businessesTable.id)
@@ -122,8 +122,8 @@ export async function get_user_recent(userId: string, limit: number = 10) {
       .where(
         and(
           eq(customerOrdersTable.userId, userId),
-          notInArray(customerOrdersTable.status, ["DRAFT", "CANCELLED"])
-        )
+          notInArray(customerOrdersTable.status, ["DRAFT", "CANCELLED"]),
+        ),
       )
       .groupBy(customerOrdersTable.businessId)
       .as("sq");
@@ -156,14 +156,14 @@ export async function get_user_frequent(userId: string, limit: number = 10) {
       .from(businessesTable)
       .innerJoin(
         customerOrdersTable,
-        eq(businessesTable.id, customerOrdersTable.businessId)
+        eq(businessesTable.id, customerOrdersTable.businessId),
       )
       .where(
         and(
           eq(businessesTable.isActive, true),
           eq(customerOrdersTable.userId, userId),
-          notInArray(customerOrdersTable.status, ["DRAFT", "CANCELLED"])
-        )
+          notInArray(customerOrdersTable.status, ["DRAFT", "CANCELLED"]),
+        ),
       )
       .groupBy(businessesTable.id)
       .orderBy(desc(count(customerOrdersTable.id)))

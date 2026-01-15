@@ -4,9 +4,9 @@ import { SettingsIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { useEffect, useId, useState } from "react";
+import { LANGUAGE_ITEMS } from "@/components/locale-switcher";
 import { Button } from "@/components/ui/button";
 import { Menu, MenuItem, MenuPopup, MenuTrigger } from "@/components/ui/menu";
-import { LANGUAGE_ITEMS } from "@/components/locale-switcher";
 
 export default function LocaleSwitcher() {
   const id = useId();

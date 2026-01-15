@@ -142,7 +142,7 @@ export function StoreProductsTable({ products }: StoreProductsTableProps) {
                           {storeProduct.compareAtPrice && (
                             <span className="text-xs text-muted-foreground line-through">
                               {formatCurrencyWithCode(
-                                Number(storeProduct.compareAtPrice)
+                                Number(storeProduct.compareAtPrice),
                               )}
                             </span>
                           )}
@@ -172,7 +172,7 @@ export function StoreProductsTable({ products }: StoreProductsTableProps) {
                         <div className="flex items-center gap-1 text-sm text-muted-foreground">
                           {format(
                             new Date(storeProduct.createdAt),
-                            "MMM d, yyyy"
+                            "MMM d, yyyy",
                           )}
                         </div>
                       </TableCell>
@@ -196,7 +196,7 @@ export function StoreProductsTable({ products }: StoreProductsTableProps) {
                               onClick={async () => {
                                 try {
                                   const result = await unpublishProduct(
-                                    storeProduct.id
+                                    storeProduct.id,
                                   );
                                   if (result.error) {
                                     toast.error("Failed to unpublish product", {
@@ -209,7 +209,7 @@ export function StoreProductsTable({ products }: StoreProductsTableProps) {
                                     description:
                                       "Product is now not available on your store",
                                   });
-                                } catch (error) {
+                                } catch (_error) {
                                   toast.error("Failed to unpublish product");
                                 }
                               }}
@@ -221,7 +221,7 @@ export function StoreProductsTable({ products }: StoreProductsTableProps) {
                       </TableCell>
                     </TableRow>
                   );
-                }
+                },
               )}
             </TableBody>
           </Table>

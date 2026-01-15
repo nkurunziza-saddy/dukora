@@ -17,7 +17,7 @@ export async function create(warehouse: InsertWarehouse, userId: string) {
       const existingWarehouse = await db.query.warehousesTable.findFirst({
         where: and(
           eq(warehousesTable.businessId, warehouse.businessId),
-          eq(warehousesTable.name, warehouse.name)
+          eq(warehousesTable.name, warehouse.name),
         ),
       });
       if (existingWarehouse) {
@@ -53,7 +53,7 @@ export async function update(
   warehouseId: string,
   businessId: string,
   userId: string,
-  updates: Partial<InsertWarehouse>
+  updates: Partial<InsertWarehouse>,
 ) {
   if (!warehouseId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -66,8 +66,8 @@ export async function update(
         .where(
           and(
             eq(warehousesTable.id, warehouseId),
-            eq(warehousesTable.businessId, businessId)
-          )
+            eq(warehousesTable.businessId, businessId),
+          ),
         )
         .returning();
 
@@ -103,7 +103,7 @@ export async function update(
 export async function remove(
   warehouseId: string,
   businessId: string,
-  userId: string
+  userId: string,
 ) {
   if (!warehouseId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -127,8 +127,8 @@ export async function remove(
         .where(
           and(
             eq(warehousesTable.id, warehouseId),
-            eq(warehousesTable.businessId, businessId)
-          )
+            eq(warehousesTable.businessId, businessId),
+          ),
         )
         .returning();
 
@@ -163,7 +163,7 @@ export async function remove(
 
 export async function create_many(
   warehouses: InsertWarehouse[],
-  userId: string
+  userId: string,
 ) {
   if (warehouses === null || warehouses.length === 0) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -179,7 +179,7 @@ export async function create_many(
         const existingWarehouse = await db.query.warehousesTable.findFirst({
           where: and(
             eq(warehousesTable.businessId, warehouse.businessId),
-            eq(warehousesTable.name, warehouse.name)
+            eq(warehousesTable.name, warehouse.name),
           ),
         });
         if (existingWarehouse) continue;

@@ -90,7 +90,7 @@ import { calculateNetPrice, calculateTaxAmount } from "../taxes/calculate-tax";
 export function calculateOrderTax(
   subtotal: number,
   taxRate: number,
-  pricesIncludeTax: boolean = false
+  pricesIncludeTax: boolean = false,
 ): CalculationResult {
   if (typeof subtotal !== "number" || subtotal < 0) {
     return { value: 0, error: ERROR_CODE.MISSING_INPUT };
@@ -111,7 +111,7 @@ export function calculateOrderTax(
 
 export function calculateOrderShipping(
   items: OrderItem[],
-  shippingRate = 0
+  shippingRate = 0,
 ): CalculationResult {
   if (!Array.isArray(items)) {
     return { value: 0, error: ERROR_CODE.MISSING_INPUT };
@@ -130,7 +130,7 @@ export function calculateOrderTotal(
   subtotal: number,
   discounts: number,
   tax = 0,
-  shipping = 0
+  shipping = 0,
 ): CalculationResult {
   if (
     typeof subtotal !== "number" ||
@@ -163,7 +163,7 @@ export function calculateAllOrderAmounts(
   items: OrderItem[],
   taxRate = 0,
   shippingRate = 0,
-  pricesIncludeTax = false
+  pricesIncludeTax = false,
 ): OrderCalculationResult & {
   error: ERROR_CODE | null;
   netSubtotal: number;
@@ -190,7 +190,7 @@ export function calculateAllOrderAmounts(
   const taxResult = calculateOrderTax(
     subtotalResult.value,
     taxRate,
-    pricesIncludeTax
+    pricesIncludeTax,
   );
   const shippingResult = calculateOrderShipping(items, shippingRate);
 
@@ -211,7 +211,7 @@ export function calculateAllOrderAmounts(
     subtotalResult.value,
     discountsResult.value,
     taxToAdd,
-    shippingResult.value
+    shippingResult.value,
   );
 
   return {

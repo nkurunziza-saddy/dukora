@@ -143,7 +143,9 @@ export default function CreateCustomerPaymentForm() {
                 <Field data-invalid={isInvalid}>
                   <FieldLabel htmlFor={field.name}>{t("currency")}</FieldLabel>
                   <Select
-                    onValueChange={(value) => field.handleChange(value)}
+                    onValueChange={(value) =>
+                      value && field.handleChange(value)
+                    }
                     value={field.state.value}
                   >
                     <SelectTrigger>

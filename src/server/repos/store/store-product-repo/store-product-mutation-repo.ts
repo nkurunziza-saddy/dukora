@@ -32,7 +32,7 @@ function generateSlug(name: string): string {
 async function ensureUniqueSlug(
   slug: string,
   businessId: string,
-  excludeId?: string
+  excludeId?: string,
 ): Promise<string> {
   let uniqueSlug = slug;
   let counter = 1;
@@ -42,7 +42,7 @@ async function ensureUniqueSlug(
       where: and(
         eq(storeProductsTable.slug, uniqueSlug),
         eq(storeProductsTable.businessId, businessId),
-        excludeId ? sql`${storeProductsTable.id} != ${excludeId}` : undefined
+        excludeId ? sql`${storeProductsTable.id} != ${excludeId}` : undefined,
       ),
     });
 
@@ -79,7 +79,7 @@ export async function publish_product(
     tags?: string[];
     featured?: boolean;
     featuredOrder?: number;
-  }
+  },
 ) {
   if (!productId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -90,7 +90,7 @@ export async function publish_product(
       where: and(
         eq(productsTable.id, productId),
         eq(productsTable.businessId, businessId),
-        isNull(productsTable.deletedAt)
+        isNull(productsTable.deletedAt),
       ),
     });
 
@@ -101,7 +101,7 @@ export async function publish_product(
     const existing = await db.query.storeProductsTable.findFirst({
       where: and(
         eq(storeProductsTable.productId, productId),
-        eq(storeProductsTable.businessId, businessId)
+        eq(storeProductsTable.businessId, businessId),
       ),
     });
 
@@ -168,7 +168,7 @@ export async function publish_product(
 export async function unpublish_product(
   storeProductId: string,
   businessId: string,
-  userId: string
+  userId: string,
 ) {
   if (!storeProductId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -186,8 +186,8 @@ export async function unpublish_product(
         .where(
           and(
             eq(storeProductsTable.id, storeProductId),
-            eq(storeProductsTable.businessId, businessId)
-          )
+            eq(storeProductsTable.businessId, businessId),
+          ),
         )
         .returning();
 
@@ -226,7 +226,7 @@ export async function update_store_product(
   storeProductId: string,
   businessId: string,
   userId: string,
-  updates: Partial<InsertStoreProduct>
+  updates: Partial<InsertStoreProduct>,
 ) {
   if (!storeProductId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -240,7 +240,7 @@ export async function update_store_product(
         updates.slug = await ensureUniqueSlug(
           baseSlug,
           businessId,
-          storeProductId
+          storeProductId,
         );
       }
 
@@ -250,8 +250,8 @@ export async function update_store_product(
         .where(
           and(
             eq(storeProductsTable.id, storeProductId),
-            eq(storeProductsTable.businessId, businessId)
-          )
+            eq(storeProductsTable.businessId, businessId),
+          ),
         )
         .returning();
 
@@ -292,7 +292,7 @@ export async function bulk_publish_products(
   userId: string,
   options?: {
     featured?: boolean;
-  }
+  },
 ) {
   if (!productIds.length || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -308,7 +308,7 @@ export async function bulk_publish_products(
           where: and(
             eq(productsTable.id, productId),
             eq(productsTable.businessId, businessId),
-            isNull(productsTable.deletedAt)
+            isNull(productsTable.deletedAt),
           ),
         });
 
@@ -318,7 +318,7 @@ export async function bulk_publish_products(
         const existing = await tx.query.storeProductsTable.findFirst({
           where: and(
             eq(storeProductsTable.productId, productId),
-            eq(storeProductsTable.businessId, businessId)
+            eq(storeProductsTable.businessId, businessId),
           ),
         });
 
@@ -377,7 +377,7 @@ export async function bulk_publish_products(
 export async function update_product_images(
   storeProductId: string,
   businessId: string,
-  images: string[]
+  images: string[],
 ) {
   if (!storeProductId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -393,8 +393,8 @@ export async function update_product_images(
       .where(
         and(
           eq(storeProductsTable.id, storeProductId),
-          eq(storeProductsTable.businessId, businessId)
-        )
+          eq(storeProductsTable.businessId, businessId),
+        ),
       )
       .returning();
 
@@ -438,7 +438,7 @@ export async function increment_view_count(storeProductId: string) {
  */
 export async function increment_sold_count(
   storeProductId: string,
-  quantity: number = 1
+  quantity: number = 1,
 ) {
   if (!storeProductId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -465,7 +465,7 @@ export async function increment_sold_count(
  */
 export async function update_cached_stock(
   storeProductId: string,
-  businessId: string
+  businessId: string,
 ) {
   if (!storeProductId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -476,7 +476,7 @@ export async function update_cached_stock(
     const storeProduct = await db.query.storeProductsTable.findFirst({
       where: and(
         eq(storeProductsTable.id, storeProductId),
-        eq(storeProductsTable.businessId, businessId)
+        eq(storeProductsTable.businessId, businessId),
       ),
     });
 

@@ -54,7 +54,7 @@ export function OrderSummary({ cartProducts }: OrderSummaryProps) {
               <div className="text-sm">
                 {formatWithCode(
                   (Number(product.price) || 0) * product.quantity,
-                  product.currency
+                  product.currency,
                 )}
               </div>
             </div>

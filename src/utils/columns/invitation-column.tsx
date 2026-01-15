@@ -9,7 +9,7 @@ import type { ExtendedInvitationPayload } from "@/lib/schema/schema.types";
 import { userStatuses } from "./user-column";
 
 export function InvitationColumn(
-  t: (key: string) => string
+  t: (key: string) => string,
 ): ColumnDef<ExtendedInvitationPayload>[] {
   return [
     {
@@ -19,7 +19,7 @@ export function InvitationColumn(
       ),
       cell: ({ row }) => {
         const role = userStatuses.find(
-          (s) => s.value === row.original.role.toLowerCase()
+          (s) => s.value === row.original.role.toLowerCase(),
         );
         if (!role) {
           return (

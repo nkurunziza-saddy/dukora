@@ -15,7 +15,7 @@ export const get_all_paginated = async (
   page: number,
   pageSize: number,
   search?: string,
-  status?: string
+  status?: string,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -31,8 +31,8 @@ export const get_all_paginated = async (
         or(
           like(customerOrdersTable.orderNumber, `%${search}%`),
           like(customerOrdersTable.customerEmail, `%${search}%`),
-          like(customerOrdersTable.customerName, `%${search}%`)
-        )!
+          like(customerOrdersTable.customerName, `%${search}%`),
+        )!,
       );
     }
 
@@ -133,11 +133,11 @@ export const get_items_by_order_id = async (orderId: string) => {
       .from(customerOrderItemsTable)
       .leftJoin(
         warehouseItemsTable,
-        eq(customerOrderItemsTable.warehouseItemId, warehouseItemsTable.id)
+        eq(customerOrderItemsTable.warehouseItemId, warehouseItemsTable.id),
       )
       .leftJoin(
         productsTable,
-        eq(warehouseItemsTable.productId, productsTable.id)
+        eq(warehouseItemsTable.productId, productsTable.id),
       )
       .where(eq(customerOrderItemsTable.customerOrderId, orderId));
 
@@ -168,7 +168,7 @@ export const get_by_user_id = async (userId: string) => {
 };
 
 export const get_by_stripe_payment_intent = async (
-  stripePaymentIntentId: string
+  stripePaymentIntentId: string,
 ) => {
   if (!stripePaymentIntentId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -179,7 +179,7 @@ export const get_by_stripe_payment_intent = async (
       .select()
       .from(customerOrdersTable)
       .where(
-        eq(customerOrdersTable.stripePaymentIntentId, stripePaymentIntentId)
+        eq(customerOrdersTable.stripePaymentIntentId, stripePaymentIntentId),
       )
       .limit(1);
 
@@ -191,7 +191,7 @@ export const get_by_stripe_payment_intent = async (
   } catch (error) {
     console.error(
       "Failed to get customer order by Stripe payment intent:",
-      error
+      error,
     );
     return { data: null, error: ERROR_CODE.FAILED_REQUEST };
   }
@@ -274,7 +274,7 @@ export const get_user_orders = async ({
 
 export const get_order_with_items = async (
   orderId: string,
-  userId?: string
+  userId?: string,
 ) => {
   if (!orderId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -309,11 +309,11 @@ export const get_order_with_items = async (
       .from(customerOrderItemsTable)
       .leftJoin(
         warehouseItemsTable,
-        eq(customerOrderItemsTable.warehouseItemId, warehouseItemsTable.id)
+        eq(customerOrderItemsTable.warehouseItemId, warehouseItemsTable.id),
       )
       .leftJoin(
         productsTable,
-        eq(warehouseItemsTable.productId, productsTable.id)
+        eq(warehouseItemsTable.productId, productsTable.id),
       )
       .where(eq(customerOrderItemsTable.customerOrderId, orderId));
 
@@ -360,8 +360,8 @@ export const get_order_stats = async (userId?: string, email?: string) => {
       .where(
         and(
           ...whereConditions,
-          sql`${customerOrdersTable.status} IN ('DRAFT', 'CONFIRMED', 'PROCESSING')`
-        )
+          sql`${customerOrdersTable.status} IN ('DRAFT', 'CONFIRMED', 'PROCESSING')`,
+        ),
       );
 
     return {

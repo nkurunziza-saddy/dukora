@@ -54,7 +54,11 @@ export function TimeRange({ currentValue = "0", session }: TimeRangeProps) {
 
   if (availableMonths && availableMonths.length === 0) {
     return (
-      <Select disabled onValueChange={setTimeRange} value={timeRange}>
+      <Select
+        disabled
+        onValueChange={(value) => value && setTimeRange(value)}
+        value={timeRange}
+      >
         <SelectTrigger
           aria-label={t("selectTimeRange")}
           className="w-40 rounded-lg sm:ml-auto"
@@ -82,7 +86,7 @@ export function TimeRange({ currentValue = "0", session }: TimeRangeProps) {
           label: p.label,
         })) || []
       }
-      onValueChange={setTimeRange}
+      onValueChange={(value) => value && setTimeRange(value)}
       value={timeRange}
     >
       <SelectTrigger

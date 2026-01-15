@@ -17,7 +17,7 @@ export const get_store_orders_paginated = async (
     status?: string;
     fulfillmentStatus?: string;
     isStoreOrder?: boolean;
-  }
+  },
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -35,14 +35,14 @@ export const get_store_orders_paginated = async (
         or(
           like(customerOrdersTable.orderNumber, `%${filters.search}%`),
           like(customerOrdersTable.customerEmail, `%${filters.search}%`),
-          like(customerOrdersTable.customerName, `%${filters.search}%`)
-        )!
+          like(customerOrdersTable.customerName, `%${filters.search}%`),
+        )!,
       );
     }
 
     if (filters?.status) {
       whereConditions.push(
-        eq(customerOrdersTable.status, filters.status as any)
+        eq(customerOrdersTable.status, filters.status as any),
       );
     }
 
@@ -50,8 +50,8 @@ export const get_store_orders_paginated = async (
       whereConditions.push(
         eq(
           customerOrdersTable.fulfillmentStatus,
-          filters.fulfillmentStatus as any
-        )
+          filters.fulfillmentStatus as any,
+        ),
       );
     }
 
@@ -99,7 +99,7 @@ export const get_order_by_id = async (orderId: string, businessId: string) => {
     const order = await db.query.customerOrdersTable.findFirst({
       where: and(
         eq(customerOrdersTable.id, orderId),
-        eq(customerOrdersTable.businessId, businessId)
+        eq(customerOrdersTable.businessId, businessId),
       ),
       with: {
         items: {
@@ -131,7 +131,7 @@ export const get_order_by_id = async (orderId: string, businessId: string) => {
  */
 export const get_pending_fulfillment_orders = async (
   businessId: string,
-  warehouseId?: string
+  warehouseId?: string,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -143,13 +143,13 @@ export const get_pending_fulfillment_orders = async (
       eq(customerOrdersTable.isStoreOrder, true),
       or(
         eq(customerOrdersTable.fulfillmentStatus, "PENDING"),
-        eq(customerOrdersTable.fulfillmentStatus, "RESERVED")
+        eq(customerOrdersTable.fulfillmentStatus, "RESERVED"),
       )!,
     ];
 
     if (warehouseId) {
       whereConditions.push(
-        eq(customerOrdersTable.fulfillmentWarehouseId, warehouseId)
+        eq(customerOrdersTable.fulfillmentWarehouseId, warehouseId),
       );
     }
 
@@ -173,7 +173,7 @@ export const get_customer_orders = async (
   userId: string,
   businessId: string,
   page: number = 1,
-  pageSize: number = 10
+  pageSize: number = 10,
 ) => {
   if (!userId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -190,8 +190,8 @@ export const get_customer_orders = async (
           and(
             eq(customerOrdersTable.userId, userId),
             eq(customerOrdersTable.businessId, businessId),
-            eq(customerOrdersTable.isStoreOrder, true)
-          )
+            eq(customerOrdersTable.isStoreOrder, true),
+          ),
         )
         .orderBy(desc(customerOrdersTable.createdAt))
         .limit(pageSize)
@@ -203,8 +203,8 @@ export const get_customer_orders = async (
           and(
             eq(customerOrdersTable.userId, userId),
             eq(customerOrdersTable.businessId, businessId),
-            eq(customerOrdersTable.isStoreOrder, true)
-          )
+            eq(customerOrdersTable.isStoreOrder, true),
+          ),
         ),
     ]);
 
@@ -229,7 +229,7 @@ export const get_customer_orders = async (
  */
 export const get_order_by_tracking_number = async (
   trackingNumber: string,
-  businessId: string
+  businessId: string,
 ) => {
   if (!trackingNumber || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -240,7 +240,7 @@ export const get_order_by_tracking_number = async (
       where: and(
         eq(customerOrdersTable.trackingNumber, trackingNumber),
         eq(customerOrdersTable.businessId, businessId),
-        eq(customerOrdersTable.isStoreOrder, true)
+        eq(customerOrdersTable.isStoreOrder, true),
       ),
     });
 
@@ -260,7 +260,7 @@ export const get_order_by_tracking_number = async (
  */
 export const get_recent_store_orders = async (
   businessId: string,
-  limit: number = 10
+  limit: number = 10,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -273,8 +273,8 @@ export const get_recent_store_orders = async (
       .where(
         and(
           eq(customerOrdersTable.businessId, businessId),
-          eq(customerOrdersTable.isStoreOrder, true)
-        )
+          eq(customerOrdersTable.isStoreOrder, true),
+        ),
       )
       .orderBy(desc(customerOrdersTable.createdAt))
       .limit(limit);

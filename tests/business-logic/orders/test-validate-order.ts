@@ -34,7 +34,7 @@ function assert(
   condition: boolean,
   testName: string,
   expected?: unknown,
-  actual?: unknown
+  actual?: unknown,
 ) {
   if (condition) {
     console.log(`${colors.green}✓${colors.reset} ${testName}`);
@@ -43,10 +43,10 @@ function assert(
     console.log(`${colors.red}✗${colors.reset} ${testName}`);
     if (expected !== undefined && actual !== undefined) {
       console.log(
-        `  Expected: ${colors.yellow}${JSON.stringify(expected)}${colors.reset}`
+        `  Expected: ${colors.yellow}${JSON.stringify(expected)}${colors.reset}`,
       );
       console.log(
-        `  Actual:   ${colors.red}${JSON.stringify(actual)}${colors.reset}`
+        `  Actual:   ${colors.red}${JSON.stringify(actual)}${colors.reset}`,
       );
     }
     testsFailed++;
@@ -71,21 +71,21 @@ function testValidateOrderItems() {
   const result1 = validateOrderItems(validItems);
   assert(
     result1.valid === true && result1.error === null,
-    "should pass with valid items"
+    "should pass with valid items",
   );
 
   // Test 2: Empty array
   const result2 = validateOrderItems([]);
   assert(
     result2.valid === false && result2.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with empty array"
+    "should fail with empty array",
   );
 
   // Test 3: Null input
   const result3 = validateOrderItems(null as any);
   assert(
     result3.valid === false && result3.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with null input"
+    "should fail with null input",
   );
 
   // Test 4: Missing productId
@@ -95,7 +95,7 @@ function testValidateOrderItems() {
   const result4 = validateOrderItems(items4);
   assert(
     result4.valid === false && result4.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with empty productId"
+    "should fail with empty productId",
   );
 
   // Test 5: Invalid quantity (zero)
@@ -105,7 +105,7 @@ function testValidateOrderItems() {
   const result5 = validateOrderItems(items5);
   assert(
     result5.valid === false && result5.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with zero quantity"
+    "should fail with zero quantity",
   );
 
   // Test 6: Invalid quantity (negative)
@@ -115,7 +115,7 @@ function testValidateOrderItems() {
   const result6 = validateOrderItems(items6);
   assert(
     result6.valid === false && result6.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with negative quantity"
+    "should fail with negative quantity",
   );
 
   // Test 7: Missing unitPrice
@@ -123,7 +123,7 @@ function testValidateOrderItems() {
   const result7 = validateOrderItems(items7);
   assert(
     result7.valid === false && result7.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with empty unitPrice"
+    "should fail with empty unitPrice",
   );
 
   // Test 8: Invalid unitPrice (not a number)
@@ -133,7 +133,7 @@ function testValidateOrderItems() {
   const result8 = validateOrderItems(items8);
   assert(
     result8.valid === false && result8.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with invalid unitPrice"
+    "should fail with invalid unitPrice",
   );
 
   // Test 9: Negative unitPrice
@@ -143,7 +143,7 @@ function testValidateOrderItems() {
   const result9 = validateOrderItems(items9);
   assert(
     result9.valid === false && result9.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with negative unitPrice"
+    "should fail with negative unitPrice",
   );
 
   // Test 10: Invalid discount (not a number)
@@ -153,7 +153,7 @@ function testValidateOrderItems() {
   const result10 = validateOrderItems(items10);
   assert(
     result10.valid === false && result10.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with invalid discount"
+    "should fail with invalid discount",
   );
 
   // Test 11: Negative discount
@@ -163,7 +163,7 @@ function testValidateOrderItems() {
   const result11 = validateOrderItems(items11);
   assert(
     result11.valid === false && result11.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with negative discount"
+    "should fail with negative discount",
   );
 
   // Test 12: Valid discount
@@ -173,7 +173,7 @@ function testValidateOrderItems() {
   const result12 = validateOrderItems(items12);
   assert(
     result12.valid === true && result12.error === null,
-    "should pass with valid discount"
+    "should pass with valid discount",
   );
 }
 
@@ -187,64 +187,64 @@ function testValidateCustomerInfo() {
   const result1 = validateCustomerInfo("test@example.com", "John Doe");
   assert(
     result1.valid === true && result1.error === null,
-    "should pass with valid email and name"
+    "should pass with valid email and name",
   );
 
   // Test 2: Valid info (with phone)
   const result2 = validateCustomerInfo(
     "test@example.com",
     "John Doe",
-    "+1234567890"
+    "+1234567890",
   );
   assert(
     result2.valid === true && result2.error === null,
-    "should pass with valid phone number"
+    "should pass with valid phone number",
   );
 
   // Test 3: Invalid email (empty)
   const result3 = validateCustomerInfo("", "John Doe");
   assert(
     result3.valid === false && result3.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with empty email"
+    "should fail with empty email",
   );
 
   // Test 4: Invalid email (bad format)
   const result4 = validateCustomerInfo("notanemail", "John Doe");
   assert(
     result4.valid === false && result4.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with invalid email format"
+    "should fail with invalid email format",
   );
 
   // Test 5: Invalid name (empty)
   const result5 = validateCustomerInfo("test@example.com", "");
   assert(
     result5.valid === false && result5.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with empty name"
+    "should fail with empty name",
   );
 
   // Test 6: Invalid phone (too short)
   const result6 = validateCustomerInfo("test@example.com", "John Doe", "123");
   assert(
     result6.valid === false && result6.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with invalid phone (too short)"
+    "should fail with invalid phone (too short)",
   );
 
   // Test 7: Valid phone with formatting
   const result7 = validateCustomerInfo(
     "test@example.com",
     "John Doe",
-    "+1 (234) 567-8900"
+    "+1 (234) 567-8900",
   );
   assert(
     result7.valid === true && result7.error === null,
-    "should pass with formatted phone number"
+    "should pass with formatted phone number",
   );
 
   // Test 8: Empty phone string (should pass - optional field)
   const result8 = validateCustomerInfo("test@example.com", "John Doe", "");
   assert(
     result8.valid === true && result8.error === null,
-    "should pass with empty phone string (optional)"
+    "should pass with empty phone string (optional)",
   );
 }
 
@@ -265,14 +265,14 @@ function testValidateAddress() {
   const result1 = validateAddress(validAddress);
   assert(
     result1.valid === true && result1.error === null,
-    "should pass with valid address"
+    "should pass with valid address",
   );
 
   // Test 2: Null address
   const result2 = validateAddress(null as any);
   assert(
     result2.valid === false && result2.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with null address"
+    "should fail with null address",
   );
 
   // Test 3: Missing street
@@ -286,7 +286,7 @@ function testValidateAddress() {
   const result3 = validateAddress(address3);
   assert(
     result3.valid === false && result3.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with empty street"
+    "should fail with empty street",
   );
 
   // Test 4: Missing city
@@ -300,7 +300,7 @@ function testValidateAddress() {
   const result4 = validateAddress(address4);
   assert(
     result4.valid === false && result4.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with empty city"
+    "should fail with empty city",
   );
 
   // Test 5: Missing state
@@ -314,7 +314,7 @@ function testValidateAddress() {
   const result5 = validateAddress(address5);
   assert(
     result5.valid === false && result5.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with empty state"
+    "should fail with empty state",
   );
 
   // Test 6: Missing postalCode
@@ -328,7 +328,7 @@ function testValidateAddress() {
   const result6 = validateAddress(address6);
   assert(
     result6.valid === false && result6.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with empty postalCode"
+    "should fail with empty postalCode",
   );
 
   // Test 7: Missing country
@@ -342,7 +342,7 @@ function testValidateAddress() {
   const result7 = validateAddress(address7);
   assert(
     result7.valid === false && result7.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with empty country"
+    "should fail with empty country",
   );
 }
 
@@ -356,21 +356,21 @@ function testValidateOrderId() {
   const result1 = validateOrderId("order-123");
   assert(
     result1.valid === true && result1.error === null,
-    "should pass with valid order ID"
+    "should pass with valid order ID",
   );
 
   // Test 2: Empty string
   const result2 = validateOrderId("");
   assert(
     result2.valid === false && result2.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with empty string"
+    "should fail with empty string",
   );
 
   // Test 3: Whitespace only
   const result3 = validateOrderId("   ");
   assert(
     result3.valid === false && result3.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with whitespace only"
+    "should fail with whitespace only",
   );
 }
 
@@ -384,21 +384,21 @@ function testValidateOrderNumber() {
   const result1 = validateOrderNumber("ORD-12345");
   assert(
     result1.valid === true && result1.error === null,
-    "should pass with valid order number"
+    "should pass with valid order number",
   );
 
   // Test 2: Empty string
   const result2 = validateOrderNumber("");
   assert(
     result2.valid === false && result2.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with empty string"
+    "should fail with empty string",
   );
 
   // Test 3: Whitespace only
   const result3 = validateOrderNumber("   ");
   assert(
     result3.valid === false && result3.error === ERROR_CODE.MISSING_INPUT,
-    "should fail with whitespace only"
+    "should fail with whitespace only",
   );
 }
 
@@ -407,13 +407,13 @@ function testValidateOrderNumber() {
 // ============================================================================
 async function runAllTests() {
   console.log(
-    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`
+    `${colors.blue}╔════════════════════════════════════════════════════════════╗${colors.reset}`,
   );
   console.log(
-    `${colors.blue}║  Order Validation Test Suite                              ║${colors.reset}`
+    `${colors.blue}║  Order Validation Test Suite                              ║${colors.reset}`,
   );
   console.log(
-    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`
+    `${colors.blue}╚════════════════════════════════════════════════════════════╝${colors.reset}`,
   );
 
   testValidateOrderItems();
@@ -424,7 +424,7 @@ async function runAllTests() {
 
   // Summary
   console.log(
-    `\n${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`
+    `\n${colors.blue}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`,
   );
   console.log(`${colors.cyan}Test Summary:${colors.reset}`);
   console.log(`  ${colors.green}Passed: ${testsPassed}${colors.reset}`);
@@ -444,7 +444,7 @@ async function runAllTests() {
 runAllTests().catch((error) => {
   console.error(
     `${colors.red}Test suite failed with error:${colors.reset}`,
-    error
+    error,
   );
   process.exit(1);
 });

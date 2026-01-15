@@ -7,8 +7,19 @@ import { Button } from "@/components/ui/button";
 import { Empty, EmptyDescription, EmptyTitle } from "@/components/ui/empty";
 import { useProductView } from "@/lib/hooks/use-product-view";
 
+interface StoreProduct {
+  id: string;
+  name: string;
+  price?: number | string;
+  imageUrl?: string;
+  category?: string;
+  description?: string;
+  availableStock?: number;
+  [key: string]: unknown;
+}
+
 interface ProductsListClientProps {
-  products: any[];
+  products: StoreProduct[];
   totalPages: number;
   currentPage: number;
   searchParams: { [key: string]: string | string[] | undefined };

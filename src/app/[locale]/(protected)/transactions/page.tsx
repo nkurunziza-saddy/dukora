@@ -49,20 +49,19 @@ async function TransactionsTable({
       pageSize={pageSize}
       tag="transactions"
       totalCount={transactions.data.totalCount}
-      enableManualSorting={true}
-      enableManualFiltering={true}
+      sorting={sorting}
+      search={search}
     />
   );
 }
 
 export default async function TransactionsPage(
-  props: PageProps<"/[locale]/transactions">
+  props: PageProps<"/[locale]/transactions">,
 ) {
   const query = await props.searchParams;
   const page = Number(query.page) || 1;
   const pageSize = Number(query.pageSize) || 10;
 
-  // Parse sorting
   let sorting: { id: string; desc: boolean }[] | undefined;
   if (query.sort) {
     const sortParam = String(query.sort);
@@ -70,8 +69,6 @@ export default async function TransactionsPage(
     sorting = [{ id, desc: desc === "desc" }];
   }
 
-  // Parse filters
-  // For now, we only support "type" filter as per requirement/repo implementation
   let filters: { id: string; value: unknown }[] | undefined;
   if (query.type) {
     filters = [{ id: "type", value: query.type }];

@@ -99,7 +99,7 @@ async function PaymentsContent() {
     .reduce((sum, p) => sum + p.amount, 0);
 
   const pendingPayments = allPayments.filter(
-    (p) => p.status === "pending"
+    (p) => p.status === "pending",
   ).length;
 
   return (

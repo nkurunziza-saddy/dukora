@@ -7,7 +7,7 @@ import type { InsertMetric } from "@/lib/schema/schema.types";
 import { ERROR_CODE } from "@/server/constants/errors";
 
 export async function insert_metric(
-  metric: Omit<InsertMetric, "id" | "createdAt">
+  metric: Omit<InsertMetric, "id" | "createdAt">,
 ) {
   try {
     const existingRecord = await db.query.metricsTable.findFirst({
@@ -15,7 +15,7 @@ export async function insert_metric(
         eq(metricsTable.businessId, metric.businessId),
         eq(metricsTable.name, metric.name),
         eq(metricsTable.period, metric.period),
-        eq(metricsTable.periodType, metric.periodType || "monthly")
+        eq(metricsTable.periodType, metric.periodType || "monthly"),
       ),
     });
     if (existingRecord) {
@@ -30,7 +30,7 @@ export async function insert_metric(
 }
 
 export async function upsert_metric(
-  metric: Omit<InsertMetric, "id" | "createdAt">
+  metric: Omit<InsertMetric, "id" | "createdAt">,
 ) {
   try {
     const result = await db
@@ -59,7 +59,7 @@ export async function upsert_metric(
 export async function delete_metrics_for_period(
   businessId: string,
   periodType: string,
-  period: Date
+  period: Date,
 ) {
   try {
     const result = await db
@@ -68,8 +68,8 @@ export async function delete_metrics_for_period(
         and(
           eq(metricsTable.businessId, businessId),
           eq(metricsTable.periodType, periodType),
-          eq(metricsTable.period, period)
-        )
+          eq(metricsTable.period, period),
+        ),
       );
     return { data: result, error: null };
   } catch (error) {
@@ -79,7 +79,7 @@ export async function delete_metrics_for_period(
 }
 
 export async function bulk_insert_metrics(
-  metrics: Omit<InsertMetric, "id" | "createdAt">[]
+  metrics: Omit<InsertMetric, "id" | "createdAt">[],
 ) {
   try {
     const result = await db.insert(metricsTable).values(metrics).returning();

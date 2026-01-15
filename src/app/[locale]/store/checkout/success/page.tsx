@@ -86,7 +86,7 @@ async function CheckoutSuccessContent({
 }) {
   const t = await getTranslations("store.checkout.success");
   const orderResult = await getCustomerOrderByOrderNumber(
-    searchParams.order as string
+    searchParams.order as string,
   );
   if (!searchParams.order) {
     redirect("/store");
@@ -173,7 +173,7 @@ async function CheckoutSuccessContent({
                 <p className="text-2xl font-bold">
                   {formatCurrencyWithCode(
                     parseFloat(order.totalAmount),
-                    order.currency || "RWF"
+                    order.currency || "RWF",
                   )}
                 </p>
               </div>
@@ -196,7 +196,7 @@ async function CheckoutSuccessContent({
                     <p className="text-sm">
                       {formatCurrencyWithCode(
                         parseFloat(item.unitPrice) * item.quantity,
-                        order.currency || "RWF"
+                        order.currency || "RWF",
                       )}
                     </p>
                   </div>

@@ -33,7 +33,7 @@ export async function create(userData: Omit<InsertUser, "id">) {
 export async function update(
   userId: string,
   userData: Partial<InsertUser>,
-  businessId: string
+  businessId: string,
 ) {
   if (!userId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -50,8 +50,8 @@ export async function update(
         and(
           eq(usersTable.id, userId),
           eq(usersTable.businessId, businessId),
-          isNull(usersTable.deletedAt)
-        )
+          isNull(usersTable.deletedAt),
+        ),
       )
       .returning();
 
@@ -82,8 +82,8 @@ export async function remove(userId: string, businessId: string) {
         and(
           eq(usersTable.id, userId),
           eq(usersTable.businessId, businessId),
-          isNull(usersTable.deletedAt)
-        )
+          isNull(usersTable.deletedAt),
+        ),
       )
       .returning();
 
@@ -116,7 +116,7 @@ export async function toggle_active(userId: string, businessId: string) {
         updatedAt: new Date(),
       })
       .where(
-        and(eq(usersTable.id, userId), eq(usersTable.businessId, businessId))
+        and(eq(usersTable.id, userId), eq(usersTable.businessId, businessId)),
       )
       .returning();
 

@@ -4,7 +4,7 @@ export function useFilters<T>() {
   function setFilters(
     filters: Partial<T>,
     sortBy?: keyof T,
-    sortOrder: "asc" | "desc" = "asc"
+    sortOrder: "asc" | "desc" = "asc",
   ): void {
     const router = useRouter();
     const searchParams = new URLSearchParams();

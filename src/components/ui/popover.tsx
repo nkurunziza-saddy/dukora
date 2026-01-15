@@ -35,7 +35,7 @@ function PopoverPopup({
           <PopoverPrimitive.Popup
             className={cn(
               "max-h-(--available-height) min-w-80 overflow-y-auto p-4",
-              className
+              className,
             )}
             data-slot="popover-content"
             {...props}

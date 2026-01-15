@@ -74,7 +74,7 @@ async function CategoriesContent({ businessId }: { businessId: string }) {
 }
 
 export default async function CategoriesPage(
-  props: PageProps<"/[locale]/store/[businessId]/categories">
+  props: PageProps<"/[locale]/store/[businessId]/categories">,
 ) {
   return (
     <div className="pt-10 pb-24 md:pb-32 md:pt-16 lg:pb-40 min-h-[calc(100vh-3rem)]">

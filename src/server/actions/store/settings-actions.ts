@@ -21,7 +21,7 @@ export const getStoreSettings = createProtectedAction(
       return { data: null, error: result.error };
     }
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const updateStoreSettings = createProtectedAction(
@@ -30,14 +30,14 @@ export const updateStoreSettings = createProtectedAction(
     const result = await storeSettingsRepo.update_store_settings(
       user.businessId ?? "",
       user.id,
-      updates
+      updates,
     );
     if (result.error) {
       return { data: null, error: result.error };
     }
     revalidateTag(`store-settings-${user.businessId}`, "max");
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const toggleStoreEnabled = createProtectedAction(
@@ -46,14 +46,14 @@ export const toggleStoreEnabled = createProtectedAction(
     const result = await storeSettingsRepo.toggle_store_enabled(
       user.businessId ?? "",
       user.id,
-      enabled
+      enabled,
     );
     if (result.error) {
       return { data: null, error: result.error };
     }
     revalidateTag(`store-settings-${user.businessId}`, "max");
     return { data: result.data, error: null };
-  }
+  },
 );
 
 export const updateDefaultWarehouse = createProtectedAction(
@@ -62,14 +62,14 @@ export const updateDefaultWarehouse = createProtectedAction(
     const result = await storeSettingsRepo.update_default_warehouse(
       user.businessId ?? "",
       user.id,
-      warehouseId
+      warehouseId,
     );
     if (result.error) {
       return { data: null, error: result.error };
     }
     revalidateTag(`store-settings-${user.businessId}`, "max");
     return { data: result.data, error: null };
-  }
+  },
 );
 
 async function getCachedIsStoreEnabled(businessId: string) {

@@ -22,7 +22,7 @@ export function OrderTimeline({
 
   const statusIndex = steps.findIndex((s) => s.key === status);
   const fulfillmentIndex = steps.findIndex(
-    (s) => s.key === fulfillmentStatus.toUpperCase()
+    (s) => s.key === fulfillmentStatus.toUpperCase(),
   );
   const currentIndex = Math.max(statusIndex, fulfillmentIndex);
 

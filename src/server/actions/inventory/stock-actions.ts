@@ -8,13 +8,13 @@ export const getLowStockAlertProducts = createProtectedAction(
   PERMISSION.PRODUCT_VIEW,
   async (user) => {
     const productsResult = await stockStatRepo.get_products_with_stock_alert(
-      user.businessId ?? ""
+      user.businessId ?? "",
     );
     if (productsResult.error) {
       return { data: null, error: productsResult.error };
     }
     return { data: productsResult.data, error: null };
-  }
+  },
 );
 
 export const getOutOfStockProducts = createProtectedAction(
@@ -22,13 +22,13 @@ export const getOutOfStockProducts = createProtectedAction(
   async (user) => {
     const productsResult = await stockStatRepo.get_by_quantity(
       user.businessId ?? "",
-      0
+      0,
     );
     if (productsResult.error) {
       return { data: null, error: productsResult.error };
     }
     return { data: productsResult.data, error: null };
-  }
+  },
 );
 
 export const getStockItemsByQuantity = createProtectedAction(
@@ -36,24 +36,24 @@ export const getStockItemsByQuantity = createProtectedAction(
   async (user, quantity: number) => {
     const productsResult = await stockStatRepo.get_by_quantity(
       user.businessId ?? "",
-      quantity
+      quantity,
     );
     if (productsResult.error) {
       return { data: null, error: productsResult.error };
     }
     return { data: productsResult.data, error: null };
-  }
+  },
 );
 
 export const getNegativeStockProducts = createProtectedAction(
   PERMISSION.PRODUCT_VIEW,
   async (user) => {
     const productsResult = await stockStatRepo.get_negative_item(
-      user.businessId ?? ""
+      user.businessId ?? "",
     );
     if (productsResult.error) {
       return { data: null, error: productsResult.error };
     }
     return { data: productsResult.data, error: null };
-  }
+  },
 );

@@ -37,7 +37,10 @@ export function ProductSortSelect() {
   };
 
   return (
-    <Select onValueChange={handleSortChange} value={currentSort}>
+    <Select
+      onValueChange={(value) => value && handleSortChange(value)}
+      value={currentSort}
+    >
       <SelectTrigger className="w-full md:w-48">
         <SelectValue className="capitalize" />
       </SelectTrigger>

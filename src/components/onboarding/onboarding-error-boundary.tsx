@@ -47,7 +47,9 @@ export class OnboardingErrorBoundary extends Component<Props, State> {
             </CardHeader>
             <CardFooter className="flex gap-2">
               <Button
-                onClick={() => this.setState({ hasError: false, error: undefined })}
+                onClick={() =>
+                  this.setState({ hasError: false, error: undefined })
+                }
                 variant="outline"
               >
                 Try Again

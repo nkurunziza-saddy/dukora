@@ -15,14 +15,14 @@ export const getUserSettings = createProtectedAction(
       return { data: null, error: settings.error };
     }
     return { data: settings.data, error: null };
-  }
+  },
 );
 
 export const upsertUserSettings = createProtectedAction(
   PERMISSION.USER_UPDATE,
   async (
     user,
-    settingsData: Partial<Omit<InsertUserSetting, "id" | "userId">>[]
+    settingsData: Partial<Omit<InsertUserSetting, "id" | "userId">>[],
   ) => {
     if (!settingsData?.length) {
       return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -39,7 +39,7 @@ export const upsertUserSettings = createProtectedAction(
       return userSettingsRepo.upsert(
         user.id,
         user.businessId ?? "",
-        newSetting
+        newSetting,
       );
     });
 
@@ -52,5 +52,5 @@ export const upsertUserSettings = createProtectedAction(
     revalidateTag(`user-settings-${user.businessId}`, "max");
     revalidateTag(`user-settings`, "max");
     return { data: { success: true }, error: null };
-  }
+  },
 );

@@ -1,6 +1,6 @@
 "use cache";
 
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { storeSettingsTable } from "@/lib/schema";
 import { ERROR_CODE } from "@/server/constants/errors";

@@ -41,7 +41,10 @@ export default async function StoreSettingsPage() {
         fallback={
           <div className="space-y-6">
             {[...Array(4)].map((_, i) => (
-              <div className="h-64 bg-muted animate-pulse rounded-lg" key={i} />
+              <div
+                className="h-64 bg-muted animate-pulse rounded-lg"
+                key={`settings-skeleton-${i}`}
+              />
             ))}
           </div>
         }

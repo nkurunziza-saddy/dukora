@@ -1,11 +1,11 @@
 "use client";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useFilters } from "./use-filters";
-import Table, { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "./table";
 import { useMemo } from "react";
+import Table, { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "./table";
+import { useFilters } from "./use-filters";
+import { fetchUsers } from "./user-action";
 import { sortByToState, stateToSortBy } from "./utils/table-sort-mapper";
 import { USER_COLUMNS } from "./utils/user-column";
-import { fetchUsers } from "./user-action";
 
 export default function UsersPage() {
   const { filters, resetFilters, setFilters } = useFilters();
@@ -36,7 +36,7 @@ export default function UsersPage() {
             setFilters(
               typeof pagination === "function"
                 ? pagination(paginationState)
-                : pagination
+                : pagination,
             );
           },
           rowCount: data?.rowCount,

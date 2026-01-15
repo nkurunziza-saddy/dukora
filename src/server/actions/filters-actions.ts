@@ -11,7 +11,7 @@ export async function getTransactionsByFilters(
   sortOrder: "asc" | "desc" = "desc",
   typeFilter?: TransactionType,
   dateFrom?: string,
-  dateTo?: string
+  dateTo?: string,
 ) {
   try {
     const currentUser = await getUserIfHasPermission(PERMISSION.FINANCIAL_VIEW);
@@ -28,7 +28,7 @@ export async function getTransactionsByFilters(
       sortOrder,
       typeFilter,
       dateFromObj,
-      dateToObj
+      dateToObj,
     );
 
     if (data.error) {

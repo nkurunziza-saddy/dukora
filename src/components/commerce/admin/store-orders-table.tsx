@@ -34,8 +34,28 @@ import {
 } from "@/components/ui/table";
 import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 
+type BadgeVariant =
+  | "default"
+  | "secondary"
+  | "success"
+  | "warning"
+  | "error"
+  | "outline";
+
+interface StoreOrder {
+  id: string;
+  orderNumber: string;
+  customerName: string;
+  customerEmail: string;
+  status: string;
+  fulfillmentStatus: string;
+  totalAmount: string | number;
+  createdAt: string | Date;
+  items?: unknown[];
+}
+
 interface StoreOrdersTableProps {
-  orders: any[];
+  orders: StoreOrder[];
 }
 
 const statusIcons = {
@@ -49,18 +69,18 @@ const statusIcons = {
   PARTIALLY_REFUNDED: XCircle,
 };
 
-const statusVariants: Record<string, any> = {
+const statusVariants: Record<string, BadgeVariant> = {
   PENDING: "secondary",
   CONFIRMED: "default",
   PROCESSING: "default",
   SHIPPED: "default",
   DELIVERED: "success",
-  CANCELLED: "destructive",
-  REFUNDED: "destructive",
+  CANCELLED: "error",
+  REFUNDED: "error",
   PARTIALLY_REFUNDED: "secondary",
 };
 
-const fulfillmentVariants: Record<string, any> = {
+const fulfillmentVariants: Record<string, BadgeVariant> = {
   PENDING: "secondary",
   RESERVED: "default",
   PICKED: "default",

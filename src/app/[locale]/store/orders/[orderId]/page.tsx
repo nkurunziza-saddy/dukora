@@ -9,6 +9,22 @@ import { Separator } from "@/components/ui/separator";
 import { formatCurrencyWithCode } from "@/lib/utils/currency-utils";
 import { getOrderWithItems } from "@/server/actions/shopper/orders-actions";
 
+interface Address {
+  street?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
+}
+
+interface OrderItem {
+  id: string;
+  productName?: string;
+  productSku?: string;
+  quantity: number;
+  unitPrice: string | number;
+}
+
 export default async function OrderPage(
   props: PageProps<"/[locale]/store/orders/[orderId]">
 ) {
@@ -21,8 +37,8 @@ export default async function OrderPage(
   }
 
   const order = result.data;
-  const shippingAddress = order.shippingAddress as any;
-  const billingAddress = order.billingAddress as any;
+  const shippingAddress = order.shippingAddress as Address;
+  const billingAddress = order.billingAddress as Address;
 
   return (
     <div className="min-h-screen bg-surface">
@@ -73,7 +89,7 @@ export default async function OrderPage(
                 {t("orderItems")}
               </h2>
               <div className="space-y-4">
-                {order.items.map((item: any) => (
+                {order.items.map((item: OrderItem) => (
                   <div
                     className="flex items-center justify-between py-3 border-b last:border-0"
                     key={item.id}

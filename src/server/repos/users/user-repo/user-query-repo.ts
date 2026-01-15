@@ -15,7 +15,10 @@ export const get_all = async (businessId: string) => {
       .select()
       .from(usersTable)
       .where(
-        and(eq(usersTable.businessId, businessId), isNull(usersTable.deletedAt))
+        and(
+          eq(usersTable.businessId, businessId),
+          isNull(usersTable.deletedAt),
+        ),
       );
     return { data: users, error: null };
   } catch (error) {
@@ -27,7 +30,7 @@ export const get_all = async (businessId: string) => {
 export const get_all_paginated = async (
   businessId: string,
   page: number,
-  pageSize: number
+  pageSize: number,
 ) => {
   if (!businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -39,7 +42,10 @@ export const get_all_paginated = async (
       .select()
       .from(usersTable)
       .where(
-        and(eq(usersTable.businessId, businessId), isNull(usersTable.deletedAt))
+        and(
+          eq(usersTable.businessId, businessId),
+          isNull(usersTable.deletedAt),
+        ),
       )
       .orderBy(usersTable.role)
       .limit(pageSize)
@@ -48,7 +54,10 @@ export const get_all_paginated = async (
       .select({ count: count() })
       .from(usersTable)
       .where(
-        and(eq(usersTable.businessId, businessId), isNull(usersTable.deletedAt))
+        and(
+          eq(usersTable.businessId, businessId),
+          isNull(usersTable.deletedAt),
+        ),
       );
     return {
       data: { users, totalCount: totalCount.count || 0 },
@@ -70,7 +79,7 @@ export const get_by_id = async (userId: string, businessId: string) => {
       where: and(
         eq(usersTable.id, userId),
         eq(usersTable.businessId, businessId),
-        isNull(usersTable.deletedAt)
+        isNull(usersTable.deletedAt),
       ),
       with: {
         business: true,

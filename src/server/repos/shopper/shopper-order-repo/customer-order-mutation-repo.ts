@@ -71,7 +71,7 @@ export const create_customer_order = async (orderData: {
             unitPrice: item.unitPrice,
             discount: item.discount || "0",
             notes: item.notes,
-          }))
+          })),
         );
       }
 
@@ -102,7 +102,7 @@ export const create_customer_order = async (orderData: {
 export const update_customer_order_status = async (
   orderId: string,
   status: string,
-  stripePaymentStatus?: string
+  stripePaymentStatus?: string,
 ) => {
   if (!orderId || !status) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -133,7 +133,7 @@ export const update_customer_order_status = async (
 export const update_customer_order_payment = async (
   orderId: string,
   stripePaymentIntentId: string,
-  stripePaymentStatus: string
+  stripePaymentStatus: string,
 ) => {
   if (!orderId || !stripePaymentIntentId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };

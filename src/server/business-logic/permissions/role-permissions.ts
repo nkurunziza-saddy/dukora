@@ -60,24 +60,24 @@ export function getPermissionsForRole(role: UserRole): PERMISSION[] {
 
 export function roleHasPermission(
   role: UserRole,
-  permission: PERMISSION
+  permission: PERMISSION,
 ): boolean {
   return RolePermissions[role]?.includes(permission) || false;
 }
 
 export function roleHasAllPermissions(
   role: UserRole,
-  permissions: PERMISSION[]
+  permissions: PERMISSION[],
 ): boolean {
   const rolePermissions = RolePermissions[role] || [];
   return permissions.every((permission) =>
-    rolePermissions.includes(permission)
+    rolePermissions.includes(permission),
   );
 }
 
 export function roleHasAnyPermission(
   role: UserRole,
-  permissions: PERMISSION[]
+  permissions: PERMISSION[],
 ): boolean {
   const rolePermissions = RolePermissions[role] || [];
   return permissions.some((permission) => rolePermissions.includes(permission));

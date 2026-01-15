@@ -23,7 +23,7 @@ export const revokeSession = createProtectedAction(
     revalidateTag("user-session", "max");
 
     return { data: { success: true }, error: null };
-  }
+  },
 );
 
 export const revokeAllOtherSessions = createProtectedAction(
@@ -39,5 +39,5 @@ export const revokeAllOtherSessions = createProtectedAction(
     revalidateTag("user-session", "max");
 
     return { data: { success: true }, error: null };
-  }
+  },
 );

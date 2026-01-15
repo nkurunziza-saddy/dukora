@@ -209,7 +209,7 @@ export default function PurchaseTransactionForm({
                                 "h-4 w-4",
                                 product.id === field.state.value
                                   ? "opacity-100"
-                                  : "opacity-0"
+                                  : "opacity-0",
                               )}
                             />
                           </div>
@@ -273,7 +273,7 @@ export default function PurchaseTransactionForm({
                                   "h-4 w-4",
                                   item.id === field.state.value
                                     ? "opacity-100"
-                                    : "opacity-0"
+                                    : "opacity-0",
                                 )}
                               />
                             </div>
@@ -342,7 +342,7 @@ export default function PurchaseTransactionForm({
                                 "h-4 w-4",
                                 supplier.id === field.state.value
                                   ? "opacity-100"
-                                  : "opacity-0"
+                                  : "opacity-0",
                               )}
                             />
                           </div>

@@ -9,7 +9,7 @@ import { ERROR_CODE } from "@/server/constants/errors";
 export async function create(
   _businessId: string,
   _userId: string,
-  schedule: InsertSchedule
+  schedule: InsertSchedule,
 ) {
   if (!schedule.title || !schedule.businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -32,7 +32,7 @@ export async function update(
   scheduleId: string,
   businessId: string,
   _userId: string,
-  updates: Partial<InsertSchedule>
+  updates: Partial<InsertSchedule>,
 ) {
   if (!scheduleId || !businessId) {
     return { data: null, error: ERROR_CODE.MISSING_INPUT };
@@ -45,8 +45,8 @@ export async function update(
       .where(
         and(
           eq(schedulesTable.id, scheduleId),
-          eq(schedulesTable.businessId, businessId)
-        )
+          eq(schedulesTable.businessId, businessId),
+        ),
       )
       .returning();
 
@@ -81,8 +81,8 @@ export async function remove(scheduleId: string, businessId: string) {
       .where(
         and(
           eq(schedulesTable.id, scheduleId),
-          eq(schedulesTable.businessId, businessId)
-        )
+          eq(schedulesTable.businessId, businessId),
+        ),
       )
       .returning();
 

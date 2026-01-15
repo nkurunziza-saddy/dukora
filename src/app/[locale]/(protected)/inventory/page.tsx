@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import StatCard from "@/components/shared/stat-card";
 import { constructI18nMetadata } from "@/lib/config/i18n-metadata";
 import { getProducts } from "@/server/actions/inventory/products-actions";
-import { getWarehouses } from "@/server/actions/warehouse/warehouses-actions";
 import { getWarehouseItemsByBusiness } from "@/server/actions/inventory/warehouse-items-actions";
+import { getWarehouses } from "@/server/actions/warehouse/warehouses-actions";
 import WarehouseTableClient from "./warehouse-clients";
 
 export async function generateMetadata(): Promise<Metadata> {

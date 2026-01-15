@@ -1,5 +1,6 @@
 import { DollarSign, Package, Store, TrendingUp } from "lucide-react";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import GotoStore from "@/components/commerce/admin/goto-store";
 import { InventoryProductsTable } from "@/components/commerce/admin/inventory-products-table";
@@ -125,7 +126,10 @@ export default async function StoreProductsPage() {
         fallback={
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {[...Array(4)].map((_, i) => (
-              <div className="h-32 bg-muted animate-pulse rounded-lg" key={i} />
+              <div
+                className="h-32 bg-muted animate-pulse rounded-lg"
+                key={`stat-skeleton-${i}`}
+              />
             ))}
           </div>
         }
