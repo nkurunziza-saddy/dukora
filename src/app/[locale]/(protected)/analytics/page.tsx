@@ -122,10 +122,9 @@ const Analytics = async ({
     {
       title: t("totalRevenue"),
       value: formatCurrencyWithCode(data?.grossRevenue || 0, currency),
-      trend: (data?.grossRevenue && data.grossRevenue > 0 ? "up" : "neutral") as
-        | "up"
-        | "down"
-        | "neutral",
+      trend: (data?.grossRevenue && data.grossRevenue > 0
+        ? "up"
+        : "neutral") as "up" | "down" | "neutral",
       description: t("totalRevenueDesc"),
     },
     {
@@ -355,22 +354,19 @@ const Analytics = async ({
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="space-y-1">
                 <p className="font-medium text-sm">{t("totalTransactions")}</p>
-                <p className="text-2xl font-bold text-success-foreground">
+                <p className="text-2xl font-bold">
                   {formatNumber(data.dataQuality.totalTransactions)}
                 </p>
               </div>
               <div className="space-y-1">
                 <p className="font-medium text-sm">{t("validTransactions")}</p>
-                <p className="text-2xl font-bold text-info">
+                <p className="text-2xl font-bold">
                   {formatNumber(data.dataQuality.validTransactions)}
                 </p>
               </div>
               <div className="space-y-1">
                 <p className="font-medium text-sm">{t("hasInventoryData")}</p>
                 <div className="flex items-center gap-2">
-                  <div
-                    className={`w-3 h-3 rounded-full ${data.dataQuality.hasInventoryData ? "bg-success" : "bg-destructive"}`}
-                  />
                   <span className="font-semibold">
                     {data.dataQuality.hasInventoryData ? t("yes") : t("no")}
                   </span>
@@ -379,9 +375,6 @@ const Analytics = async ({
               <div className="space-y-1">
                 <p className="font-medium text-sm">{t("hasExpenseData")}</p>
                 <div className="flex items-center gap-2">
-                  <div
-                    className={`w-3 h-3 rounded-full ${data.dataQuality.hasExpenseData ? "bg-success" : "bg-destructive"}`}
-                  />
                   <span className="font-semibold">
                     {data.dataQuality.hasExpenseData ? t("yes") : t("no")}
                   </span>
@@ -421,7 +414,7 @@ const Analytics = async ({
 };
 
 export default async function AnalyticsPage(
-  props: PageProps<"/[locale]/analytics">,
+  props: PageProps<"/[locale]/analytics">
 ) {
   const searchParams = await props.searchParams;
   return (

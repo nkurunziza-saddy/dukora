@@ -70,8 +70,22 @@ export default async function ProductsPage(
   }
 
   let filters: { id: string; value: unknown }[] | undefined;
-  if (query.status) {
-    filters = [{ id: "status", value: query.status }];
+  if (query.filters) {
+    try {
+      // Parse the JSON-encoded filters from URL (already decoded by Next.js)
+      const parsedFilters = JSON.parse(String(query.filters));
+      if (Array.isArray(parsedFilters) && parsedFilters.length > 0) {
+        filters = parsedFilters;
+      }
+    } catch {
+      // Fallback to legacy status param
+      if (query.status) {
+        filters = [{ id: "status", value: [query.status] }];
+      }
+    }
+  } else if (query.status) {
+    // Legacy support for simple status param
+    filters = [{ id: "status", value: [query.status] }];
   }
 
   const search = typeof query.search === "string" ? query.search : undefined;

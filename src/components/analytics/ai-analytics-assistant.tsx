@@ -67,18 +67,18 @@ export function AIAnalyticsAssistant({
         timeRange,
         monthName,
         year,
-        userMessage,
+        userMessage
       );
 
       sendMessage({ text: systematicPrompt });
     },
-    [analyticsData, timeRange, monthName, year, sendMessage, isLoading],
+    [analyticsData, timeRange, monthName, year, sendMessage, isLoading]
   );
 
   const handleClearMessages = useCallback(() => {
     if (
       confirm(
-        "Are you sure you want to clear all analytics messages? This action cannot be undone.",
+        "Are you sure you want to clear all analytics messages? This action cannot be undone."
       )
     ) {
       clearMessages();
@@ -122,7 +122,6 @@ export function AIAnalyticsAssistant({
         <CollapsibleTrigger className="w-full">
           <div className="flex gap-4 items-center justify-between p-2 hover:bg-muted/50 rounded-md transition-colors">
             <div className="flex items-center gap-2">
-              <SparklesIcon className="size-4 text-primary" />
               <h4 className="font-medium text-foreground">
                 AI Analytics Assistant
               </h4>
@@ -213,8 +212,8 @@ export function AIAnalyticsAssistant({
                               onClick={() =>
                                 navigator.clipboard.writeText(
                                   latestAssistantMessage.parts.find(
-                                    (part) => part.type === "text",
-                                  )?.text || "",
+                                    (part) => part.type === "text"
+                                  )?.text || ""
                                 )
                               }
                             >
@@ -253,7 +252,7 @@ function createAnalyticsPrompt(
   timeRange: string,
   monthName: string,
   year: number,
-  userQuestion: string,
+  userQuestion: string
 ): string {
   const dataContext = `
 ANALYTICS DATA CONTEXT:

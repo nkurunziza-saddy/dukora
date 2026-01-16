@@ -10,9 +10,12 @@ import type {
 } from "@tanstack/react-table";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { DataTable } from "@/components/table/data-table";
+import type { FacetedFilterConfig } from "@/components/table/types";
 import { sortByToState, stateToSortBy } from "@/lib/table-utils";
+import { productStatuses as commerceStatuses } from "@/utils/columns/commerce-column";
+import { productStatuses } from "@/utils/columns/product-column";
 
 export type tagEnum =
   | "products"
@@ -98,7 +101,8 @@ const ColumnWrapper = <T,>({
   const columnVisibility: VisibilityState = (() => {
     if (urlColumnVisibility) {
       try {
-        const parsed = JSON.parse(decodeURIComponent(urlColumnVisibility));
+        // URLSearchParams already decodes, so just parse directly
+        const parsed = JSON.parse(urlColumnVisibility);
         return { ...parsed }; // New object reference
       } catch {
         return {};
@@ -111,7 +115,8 @@ const ColumnWrapper = <T,>({
   const columnFilters: ColumnFiltersState = (() => {
     if (urlColumnFilters) {
       try {
-        const parsed = JSON.parse(decodeURIComponent(urlColumnFilters));
+        // URLSearchParams already decodes, so just parse directly
+        const parsed = JSON.parse(urlColumnFilters);
         return Array.isArray(parsed) ? [...parsed] : []; // New array reference
       } catch {
         return [];
@@ -146,7 +151,7 @@ const ColumnWrapper = <T,>({
         typeof window !== "undefined" ? window.location.pathname : "";
       router.push(`${currentPath}?${params.toString()}`);
     },
-    [router, searchParams, page, pageSize],
+    [router, searchParams, page, pageSize]
   );
 
   // Handle sorting changes - update URL
@@ -196,7 +201,7 @@ const ColumnWrapper = <T,>({
         typeof window !== "undefined" ? window.location.pathname : "";
       router.push(`${currentPath}?${params.toString()}`);
     },
-    [router, searchParams, propsSorting],
+    [router, searchParams, propsSorting]
   );
 
   // Handle global filter (search) changes - update URL
@@ -222,7 +227,7 @@ const ColumnWrapper = <T,>({
         typeof window !== "undefined" ? window.location.pathname : "";
       router.push(`${currentPath}?${params.toString()}`);
     },
-    [router, searchParams, propsSearch],
+    [router, searchParams, propsSearch]
   );
 
   // Handle column filters changes - update URL
@@ -232,7 +237,8 @@ const ColumnWrapper = <T,>({
         const urlFilters = searchParams.get("filters");
         if (urlFilters) {
           try {
-            return JSON.parse(decodeURIComponent(urlFilters));
+            // URLSearchParams already decodes, so just parse directly
+            return JSON.parse(urlFilters);
           } catch {
             return [];
           }
@@ -247,7 +253,8 @@ const ColumnWrapper = <T,>({
 
       const params = new URLSearchParams(searchParams.toString());
       if (newFilters && newFilters.length > 0) {
-        params.set("filters", encodeURIComponent(JSON.stringify(newFilters)));
+        // Don't use encodeURIComponent - URLSearchParams handles encoding
+        params.set("filters", JSON.stringify(newFilters));
       } else {
         params.delete("filters");
       }
@@ -259,7 +266,7 @@ const ColumnWrapper = <T,>({
         typeof window !== "undefined" ? window.location.pathname : "";
       router.push(`${currentPath}?${params.toString()}`);
     },
-    [router, searchParams],
+    [router, searchParams]
   );
 
   // Handle column visibility changes - update URL
@@ -269,7 +276,8 @@ const ColumnWrapper = <T,>({
         const urlColumns = searchParams.get("columns");
         if (urlColumns) {
           try {
-            return JSON.parse(decodeURIComponent(urlColumns));
+            // URLSearchParams already decodes, so just parse directly
+            return JSON.parse(urlColumns);
           } catch {
             return {};
           }
@@ -284,10 +292,8 @@ const ColumnWrapper = <T,>({
 
       const params = new URLSearchParams(searchParams.toString());
       if (newVisibility && Object.keys(newVisibility).length > 0) {
-        params.set(
-          "columns",
-          encodeURIComponent(JSON.stringify(newVisibility)),
-        );
+        // Don't use encodeURIComponent - URLSearchParams handles encoding
+        params.set("columns", JSON.stringify(newVisibility));
       } else {
         params.delete("columns");
       }
@@ -297,17 +303,43 @@ const ColumnWrapper = <T,>({
         typeof window !== "undefined" ? window.location.pathname : "";
       router.push(`${currentPath}?${params.toString()}`);
     },
-    [router, searchParams],
+    [router, searchParams]
   );
 
-  // Create a key from URL params to force table remount when URL changes
-  // This ensures table state always reflects URL params (like /us example pattern)
-  // The key changes when any URL param changes, forcing a fresh table instance
-  const tableKey = `table-${searchParams.toString()}`;
+  // Get faceted filters based on tag
+  const facetedFilters = useMemo((): FacetedFilterConfig[] => {
+    switch (tag) {
+      case "products":
+        return [
+          {
+            columnId: "status",
+            title: "Status",
+            options: productStatuses.map((s) => ({
+              label: s.label,
+              value: s.value,
+              icon: s.icon,
+            })),
+          },
+        ];
+      case "commerce":
+        return [
+          {
+            columnId: "status",
+            title: "Status",
+            options: commerceStatuses.map((s) => ({
+              label: s.label,
+              value: s.value,
+              icon: s.icon,
+            })),
+          },
+        ];
+      default:
+        return [];
+    }
+  }, [tag]);
 
   return (
     <DataTable
-      key={tableKey}
       columns={column(t)}
       data={data}
       rowCount={totalCount}
@@ -321,7 +353,7 @@ const ColumnWrapper = <T,>({
       onColumnFiltersChange={onColumnFiltersChange}
       columnVisibility={columnVisibility}
       onColumnVisibilityChange={onColumnVisibilityChange}
-      tag={tag}
+      facetedFilters={facetedFilters}
     />
   );
 };
